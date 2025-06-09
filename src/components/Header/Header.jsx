@@ -1,27 +1,171 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bars3Icon, XMarkIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, ShoppingCartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 const navigation = [
-  { name: 'Our Story', href: '#' },
-  { name: 'FAQ', href: '#' },
-  { name: 'Blog', href: '#' },
-  { name: 'Contact us', href: '#' },
+  { 
+    name: 'Our Story', 
+    href: '#',
+  },
+  { 
+    name: 'FAQ', 
+    href: '#',
+  },
+  { 
+    name: 'Blog', 
+    href: '#',
+  },
+  { 
+    name: 'Contact us', 
+    href: '#',
+  },
 ];
 
 const categories = [
-  { name: 'Apparels', href: '#' },
-  { name: 'Patachitra', href: '#' },
-  { name: 'Metal', href: '#' },
-  { name: 'Grass & Bamboo', href: '#' },
-  { name: 'Wood', href: '#' },
-  { name: 'Terracotta & Clay', href: '#' },
-  { name: 'Wall Tiles', href: '#' },
-  { name: 'Others', href: '#' },
+  { 
+    name: 'Apparels', 
+    href: '#',
+    submenu: [
+      {
+        name: 'Accessories',
+        items: ['Jewelry', 'Stole & Scarf']
+      },
+      {
+        name: 'Men',
+        items: ['Jackets', 'Kurtas']
+      },
+      {
+        name: 'Women',
+        items: ['Jackets', 'Full Length Dress', 'Short Length Dress', 'Sarees', 'Suit Pieces', 'Wrapper/Pants']
+      }
+    ]
+  },
+  { 
+    name: 'Patachitra', 
+    href: '#',
+    submenu: [
+      {
+        name: 'Wall Hangings',
+        items: []
+      },
+      {
+        name: 'Other Articles',
+        items: []
+      }
+    ]
+  },
+  { 
+    name: 'Metal', 
+    href: '#',
+    submenu: [
+      {
+        name: 'Home Decor',
+        items: []
+      },
+      {
+        name: 'Kitchenware',
+        items: []
+      }
+    ]
+  },
+  { 
+    name: 'Grass & Bamboo', 
+    href: '#',
+    submenu: [
+      {
+        name: 'Bags',
+        items: []
+      },
+      {
+        name: 'Dining Accessories',
+        items: []
+      },
+      {
+        name: 'Lamp Shades',
+        items: []
+      },
+      {
+        name: 'Office Stationery',
+        items: []
+      },
+      {
+        name: 'Rugs and Mats',
+        items: []
+      }
+    ]
+  },
+  { 
+    name: 'Wood', 
+    href: '#',
+    submenu: [
+      {
+        name: 'Home Decor',
+        items: []
+      },
+      {
+        name: 'Jewellery Box',
+        items: []
+      },
+      {
+        name: 'Mirror',
+        items: []
+      },
+      {
+        name: 'Table Accents',
+        items: []
+      }
+    ]
+  },
+  { 
+    name: 'Terracotta & Clay', 
+    href: '#',
+    submenu: [
+      {
+        name: 'Kitchenware',
+        items: []
+      },
+      {
+        name: 'Home Decor',
+        items: []
+      },
+      {
+        name: 'Lamps',
+        items: []
+      },
+      {
+        name: 'Showpiece',
+        items: []
+      },
+      {
+        name: 'Miniature Dolls',
+        items: []
+      }
+    ]
+  },
+  { 
+    name: 'Wall Tiles', 
+    href: '#',
+    submenu: [
+      {
+        name: 'Mural',
+        items: []
+      },
+      {
+        name: 'Wall Art',
+        items: []
+      }
+    ]
+  },
+  { 
+    name: 'Others', 
+    href: '#',
+    submenu: []
+  },
 ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   return (
     <header className="bg-white">
@@ -45,21 +189,33 @@ export default function Header() {
         animate={{ opacity: 1, y: 0 }}
         className="container mx-auto px-4 py-4"
       >
-        <nav className="flex items-center justify-between">
+        <nav className="flex flex-col lg:flex-row items-center justify-between gap-4">
           {/* Logo */}
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="flex-shrink-0"
           >
             <img
-              className="h-16 W-max"
+              className="h-24 w-auto"
               src="/logo.JPG"
               alt="Srejonee"
             />
           </motion.div>
 
-          {/* Desktop navigation */}
-          <div className="hidden lg:flex lg:gap-x-12">
+          {/* Search Box */}
+          <div className="relative w-full max-w-md mx-auto lg:mx-0">
+            <input
+              type="text"
+              placeholder="Products search"
+              className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+            <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+            </button>
+          </div>
+
+          {/* Desktop navigation and cart */}
+          <div className="hidden lg:flex lg:items-center lg:gap-x-8">
             {navigation.map((item) => (
               <motion.a
                 key={item.name}
@@ -70,10 +226,8 @@ export default function Header() {
                 {item.name}
               </motion.a>
             ))}
-          </div>
 
-          {/* Cart and mobile menu */}
-          <div className="flex items-center gap-4">
+            {/* Cart */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="relative p-2"
@@ -83,29 +237,58 @@ export default function Header() {
                 0
               </span>
             </motion.button>
-
-            <button
-              type="button"
-              className="lg:hidden"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <Bars3Icon className="h-6 w-6" />
-            </button>
           </div>
+
+          {/* Mobile menu button */}
+          <button
+            type="button"
+            className="lg:hidden"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Bars3Icon className="h-6 w-6" />
+          </button>
         </nav>
 
-        {/* Categories bar */}
+        {/* Categories bar with dropdowns */}
         <div className="hidden lg:block mt-4 border-t border-b border-gray-200">
           <div className="flex justify-between py-3">
             {categories.map((category) => (
-              <motion.a
+              <div
                 key={category.name}
-                href={category.href}
-                whileHover={{ scale: 1.05 }}
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="relative group"
+                onMouseEnter={() => setActiveDropdown(category.name)}
+                onMouseLeave={() => setActiveDropdown(null)}
               >
-                {category.name}
-              </motion.a>
+                <motion.a
+                  href={category.href}
+                  whileHover={{ scale: 1.05 }}
+                  className="text-sm text-gray-600 hover:text-gray-900"
+                >
+                  {category.name}
+                </motion.a>
+                
+                {/* Dropdown Menu */}
+                {category.submenu && category.submenu.length > 0 && activeDropdown === category.name && (
+                  <div className="absolute left-0 mt-2 w-60 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                    {category.submenu.map((submenu) => (
+                      <div key={submenu.name} className="p-4">
+                        <h3 className="font-semibold text-gray-900 mb-2">{submenu.name}</h3>
+                        {submenu.items && submenu.items.length > 0 && (
+                          <ul className="space-y-2">
+                            {submenu.items.map((item) => (
+                              <li key={item}>
+                                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+                                  {item}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -128,7 +311,7 @@ export default function Header() {
             <div className="flex items-center justify-between">
               <img
                 className="h-8"
-                src="/logo.png"
+                src="/logo.JPG"
                 alt="Srejonee"
               />
               <button
@@ -154,13 +337,34 @@ export default function Header() {
                 </div>
                 <div className="py-6">
                   {categories.map((category) => (
-                    <a
-                      key={category.name}
-                      href={category.href}
-                      className="block px-3 py-2 text-base leading-7 text-gray-900 hover:bg-gray-50"
-                    >
-                      {category.name}
-                    </a>
+                    <div key={category.name}>
+                      <a
+                        href={category.href}
+                        className="block px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      >
+                        {category.name}
+                      </a>
+                      {category.submenu && category.submenu.length > 0 && (
+                        <div className="pl-6">
+                          {category.submenu.map((submenu) => (
+                            <div key={submenu.name} className="py-2">
+                              <p className="text-sm font-medium text-gray-900">{submenu.name}</p>
+                              {submenu.items && submenu.items.length > 0 && (
+                                <ul className="mt-1 space-y-1">
+                                  {submenu.items.map((item) => (
+                                    <li key={item}>
+                                      <a href="#" className="block py-1 text-sm text-gray-600 hover:text-gray-900">
+                                        {item}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>

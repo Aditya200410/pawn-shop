@@ -5,37 +5,37 @@ const products = [
     id: 1,
     name: 'Terracotta Bankura Horse 6″',
     price: 4.91,
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Handicraft-heritage-of-Bengal.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg',
   },
   {
     id: 2,
     name: 'Terracotta Fighting Bull Large',
     price: 56.63,
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/untold-stories-behind-every-handicraft.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg',
   },
   {
     id: 3,
     name: 'Terracotta Yellow Bankura Horse 8″',
     price: 9.06,
-    image: '/products/horse-8.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg',
   },
   {
     id: 4,
     name: 'Terracotta Blue Bankura Horse 6″',
     price: 6.04,
-    image: '/products/horse-blue-6.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9779-600x600.jpg',
   },
   {
     id: 5,
     name: 'Terracotta Pink Bankura Horse 6″',
     price: 6.04,
-    image: '/products/horse-pink-6.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9791-300x300.jpg',
   },
   {
     id: 6,
     name: 'Terracotta Green Bankura Horse 6″',
     price: 6.04,
-    image: '/products/horse-green-6.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/37-600x720-1-600x600.jpg',
   },
 ];
 
