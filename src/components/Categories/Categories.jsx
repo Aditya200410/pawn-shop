@@ -5,37 +5,37 @@ const categories = [
     id: 1,
     name: 'Apparels & Accessories',
     description: 'We offer finest embroideried Kantha in dresses, beding or quilt.',
-    image: '/categories/apparels.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Apparels-accessories-sub-banner.jpg',
   },
   {
     id: 2,
     name: 'Metal Work',
     description: "Bengal's Dokra is a GI Tagged famous ancient Art Form",
-    image: '/categories/metal.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Grass-Bamboo-sub-banner.jpg',
   },
   {
     id: 3,
     name: 'Wood & Paper Pulp',
     description: 'Beautiful wooden dolls and wood carvings are intrinsic to Bengal',
-    image: '/categories/wood.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Grass-Bamboo-sub-banner.jpg',
   },
   {
     id: 4,
     name: 'Patachitra',
     description: 'Ancient Audio-visual art from of Bengal with bio colours',
-    image: '/categories/patachitra.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Apparels-accessories-sub-banner.jpg',
   },
   {
     id: 5,
     name: 'Terracotta & Clay',
     description: 'Bengal mastered in baking clay into long-lasting terracotta for centuries.',
-    image: '/categories/terracotta.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Apparels-accessories-sub-banner.jpg',
   },
   {
     id: 6,
     name: 'Miniature Dolls',
     description: 'Bengal produced finest woven-grass articles for generations',
-    image: '/categories/dolls.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Apparels-accessories-sub-banner.jpg',
   },
 ];
 

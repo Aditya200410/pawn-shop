@@ -50,9 +50,9 @@ export default function Footer() {
           {/* Company Info */}
           <motion.div variants={itemVariants} className="space-y-6">
             <img
-              src="/logo-white.png"
+              src="/logo.JPG"
               alt="Srejonee"
-              className="h-12"
+              className="h-16 w-fit"
             />
             <p className="text-gray-400">
               We take pride in reintroducing the huge treasure trove of Bengal Handicraft to Indians

@@ -5,13 +5,13 @@ const products = [
     id: 1,
     name: 'Terracotta Bankura Horse 6″',
     price: 4.91,
-    image: '/products/horse-6.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Handicraft-heritage-of-Bengal.jpg',
   },
   {
     id: 2,
     name: 'Terracotta Fighting Bull Large',
     price: 56.63,
-    image: '/products/bull-large.jpg',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/untold-stories-behind-every-handicraft.jpg',
   },
   {
     id: 3,

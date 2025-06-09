@@ -52,8 +52,8 @@ export default function Header() {
             className="flex-shrink-0"
           >
             <img
-              className="h-12"
-              src="/logo.png"
+              className="h-16 W-max"
+              src="/logo.JPG"
               alt="Srejonee"
             />
           </motion.div>
