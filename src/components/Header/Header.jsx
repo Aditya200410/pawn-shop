@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { 
   Bars3Icon, 
   XMarkIcon, 
@@ -34,6 +35,11 @@ const navigation = [
     name: 'Shop',
     href: '/shop',
     icon: ShoppingBagIcon
+  },
+  { 
+    name: 'FAQ',
+    href: '/faq',
+    icon: QuestionMarkCircleIcon
   },
   { 
     name: 'Account',
@@ -226,7 +232,7 @@ export default function Header() {
               <div className="flex items-center gap-6">
                 {/* Quick Links */}
                 <nav className="hidden md:flex items-center divide-x divide-gray-300">
-                  <a href="/our-story" className="text-sm text-gray-600 hover:text-gray-900 px-4">Our Story</a>
+                  <a href="/story" className="text-sm text-gray-600 hover:text-gray-900 px-4">Our Story</a>
                   <a href="/faq" className="text-sm text-gray-600 hover:text-gray-900 px-4">FAQ</a>
                   <a href="/blog" className="text-sm text-gray-600 hover:text-gray-900 px-4">Blog</a>
                   <a href="/contact" className="text-sm text-gray-600 hover:text-gray-900 px-4">Contact us</a>
@@ -293,13 +299,13 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <div className="flex-shrink-0">
+            <Link to="/" className="flex-shrink-0">
               <img
                 className="h-12 w-auto"
                 src="/logo.png"
                 alt="Srejonee"
               />
-            </div>
+            </Link>
 
             {/* Right Icons */}
             <div className="flex items-center gap-3">
@@ -361,11 +367,13 @@ export default function Header() {
                 whileHover={{ scale: 1.05 }}
                 className="flex-shrink-0"
               >
-                <img
-                  className="h-24 w-auto"
-                  src="/logo.png"
-                  alt="Srejonee"
-                />
+                <Link to="/">
+                  <img
+                    className="h-24 w-auto"
+                    src="/logo.png"
+                    alt="Srejonee"
+                  />
+                </Link>
               </motion.div>
 
               {/* Search Box */}
@@ -407,7 +415,7 @@ export default function Header() {
           </motion.div>
 
           {/* Categories bar with dropdowns */}
-          <div className="border-t border-b border-gray-200">
+          <div className=" border-gray-200">
             <div className="container mx-auto px-4">
               <div className="flex justify-between py-3">
                 {categories.map((category) => (
