@@ -1,4 +1,33 @@
 import { motion } from 'framer-motion';
+import { 
+  ShieldCheckIcon, 
+  TruckIcon, 
+  PhoneIcon, 
+  LockClosedIcon 
+} from '@heroicons/react/24/outline';
+
+const features = [
+  {
+    icon: ShieldCheckIcon,
+    title: 'Ethically Sourced Handicrafts',
+    description: 'Ethically Sourced Handicrafts'
+  },
+  {
+    icon: TruckIcon,
+    title: 'Fast & Safe Delivery',
+    description: 'Fast and Safe delivery for all orders'
+  },
+  {
+    icon: PhoneIcon,
+    title: 'Dedicated Customer Support',
+    description: 'Friendly 24/7 customer support'
+  },
+  {
+    icon: LockClosedIcon,
+    title: 'Secure Online Payment',
+    description: 'We possess SSL/ Secure certificate'
+  }
+];
 
 const popularProducts = [
   'Apparels and Accessories',
@@ -39,6 +68,48 @@ const itemVariants = {
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
+      {/* Features Section */}
+      <div className="border-b border-gray-800">
+        <div className="container mx-auto px-4 py-8">
+          <motion.div
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.1
+                }
+              }
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4"
+          >
+            {features.map((feature) => (
+              <motion.div
+                key={feature.title}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: { duration: 0.5 }
+                  }
+                }}
+                className="flex items-center gap-3 justify-center lg:justify-start"
+              >
+                <feature.icon className="h-8 w-8 text-[#8B4513]" />
+                <div>
+                  <h4 className="text-sm font-medium">{feature.title}</h4>
+                  <p className="text-xs text-gray-400">{feature.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Main Footer Content */}
       <motion.div
         variants={footerVariants}
         initial="hidden"
@@ -132,6 +203,12 @@ export default function Footer() {
           <div className="flex gap-4">
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
               Privacy Policy
+            </a>
+            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            Returns and Refund Policy
+            </a>
+            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            Shipping Policy
             </a>
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
               Terms & Conditions
