@@ -4,7 +4,7 @@ export default function MissionVision() {
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {/* Mission Block */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -90,6 +90,50 @@ export default function MissionVision() {
             </div>
           </motion.div>
         </div>
+
+        {/* Showroom Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="bg-white rounded-xl shadow-lg overflow-hidden p-8 text-center"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="relative h-64 rounded-lg overflow-hidden">
+              <img
+                src="https://srejonee.com/wp-content/uploads/2022/08/untold-stories-behind-every-handicraft.jpg"
+                alt="Srejonee Showroom 1"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
+            </div>
+            <div className="relative h-64 rounded-lg overflow-hidden">
+              <img
+                src="https://srejonee.com/wp-content/uploads/2022/08/Handicraft-heritage-of-Bengal.jpg"
+                alt="Srejonee Showroom 2"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mb-4 text-gray-900">Srejonee's Showroom</h2>
+          <p className="text-gray-600 text-lg mb-8 max-w-3xl mx-auto">
+            Visit our Showroom for a journey through handcrafted wonders, each with its unique story—Experience Srejonee's authenticity and passion in every piece.
+          </p>
+
+          <motion.a
+            href="https://www.google.com/maps/place/Srejonee+Art+%26+Creations/@22.5545665,88.3884223,15z/data=!4m6!3m5!1s0x3a027746c80c1b7f:0xe6ce6792b537654f!8m2!3d22.5555539!4d88.388783!16s%2Fg%2F11q_43sx49?entry=ttu&g_ep=EgoyMDI1MDYwNC4wIKXMDSoASAFQAw%3D%3D"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-primary hover:bg-primary/90 rounded-full transition-colors duration-300"
+          >
+            Get Direction
+          </motion.a>
+        </motion.div>
       </div>
     </section>
   );

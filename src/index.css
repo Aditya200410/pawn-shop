@@ -11,6 +11,14 @@
   body {
     @apply antialiased;
   }
+
+  /* Add padding to main content on mobile */
+  @media (max-width: 1024px) {
+    main {
+      padding-top: 6rem; /* 96px to account for the top navigation and search */
+      padding-bottom: 4rem; /* 64px to account for the bottom navigation */
+    }
+  }
 }
 
 @layer components {
