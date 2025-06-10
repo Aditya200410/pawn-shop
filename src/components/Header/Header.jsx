@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bars3Icon, XMarkIcon, ShoppingCartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { 
+  Bars3Icon, 
+  XMarkIcon, 
+  ShoppingCartIcon, 
+  MagnifyingGlassIcon,
+  ChevronDownIcon 
+} from '@heroicons/react/24/outline';
 
 const navigation = [
   { 
@@ -221,9 +227,12 @@ export default function Header() {
                 key={item.name}
                 href={item.href}
                 whileHover={{ scale: 1.05 }}
-                className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary"
+                className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary flex items-center gap-1"
               >
                 {item.name}
+                {item.submenu && (
+                  <ChevronDownIcon className="h-4 w-4" />
+                )}
               </motion.a>
             ))}
 
@@ -262,9 +271,12 @@ export default function Header() {
                 <motion.a
                   href={category.href}
                   whileHover={{ scale: 1.05 }}
-                  className="text-sm text-gray-600 hover:text-gray-900"
+                  className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
                 >
                   {category.name}
+                  {category.submenu && category.submenu.length > 0 && (
+                    <ChevronDownIcon className="h-4 w-4" />
+                  )}
                 </motion.a>
                 
                 {/* Dropdown Menu */}
@@ -272,7 +284,12 @@ export default function Header() {
                   <div className="absolute left-0 mt-2 w-60 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                     {category.submenu.map((submenu) => (
                       <div key={submenu.name} className="p-4">
-                        <h3 className="font-semibold text-gray-900 mb-2">{submenu.name}</h3>
+                        <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-1">
+                          {submenu.name}
+                          {submenu.items && submenu.items.length > 0 && (
+                            <ChevronDownIcon className="h-4 w-4" />
+                          )}
+                        </h3>
                         {submenu.items && submenu.items.length > 0 && (
                           <ul className="space-y-2">
                             {submenu.items.map((item) => (

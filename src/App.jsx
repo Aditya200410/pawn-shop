@@ -5,6 +5,7 @@ import Categories from './components/Categories/Categories';
 import FeaturedProducts from './components/Products/FeaturedProducts';
 import Testimonials from './components/Testimonials/Testimonials';
 import Footer from './components/Footer/Footer';
+import MissionVision from './components/MissionVision/MissionVision';
 
 function App() {
   return (
@@ -12,9 +13,11 @@ function App() {
       <Header />
       <main>
         <Hero />
+        
         <Categories />
         <FeaturedProducts />
         <Testimonials />
+        <MissionVision />
       </main>
       <Footer />
     </div>
