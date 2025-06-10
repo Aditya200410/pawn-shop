@@ -36,11 +36,7 @@ const navigation = [
     href: '/shop',
     icon: ShoppingBagIcon
   },
-  { 
-    name: 'FAQ',
-    href: '/faq',
-    icon: QuestionMarkCircleIcon
-  },
+ 
   { 
     name: 'Account',
     href: '/account',
@@ -403,13 +399,16 @@ export default function Header() {
                 ))}
 
                 {/* Help Center Button */}
+                <Link to="/contact">
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 bg-white rounded-full shadow-sm hover:bg-gray-50 border border-gray-200"
-                >
+                  className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 bg-[#8B4513] text-white rounded-full shadow-sm hover:bg-gray-50 border border-gray-200"
+               
+               >
                   <QuestionMarkCircleIcon className="h-4 w-4" />
                   Help Center
                 </motion.button>
+                </Link>
               </div>
             </nav>
           </motion.div>
