@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ShoppingBag } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
   const { name, price, image, outOfStock } = product;
@@ -12,101 +13,66 @@ const ProductCard = ({ product }) => {
   const discountedPrice = (price * 1.2).toFixed(2);
 
   return (
-    <div 
-      className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+    <div
+      className="group relative bg-white/30 backdrop-blur-md border border-white/20 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 p-4 flex flex-col"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Image Container */}
-      <div className="aspect-square overflow-hidden rounded-t-2xl relative">
+      {/* Product Image */}
+      <div className="relative overflow-hidden rounded-2xl aspect-square mb-4">
         {!imageError ? (
           <img
             src={image}
             alt={name}
-            className={`w-full h-full object-cover transition-transform duration-700 ${
-              isHovered ? 'scale-110' : 'scale-100'
-            }`}
+            className={`w-full h-full object-cover transition-all duration-700 ease-in-out rounded-2xl 
+              grayscale group-hover:grayscale-0 group-hover:scale-105`}
             onError={handleImageError}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-2xl">
+            <span className="text-gray-400 text-sm">Image not available</span>
           </div>
         )}
 
-        {/* Quick Add Overlay */}
-        
-
-       
-
-        {/* Status Badge */}
+        {/* Out of Stock Badge */}
         {outOfStock && (
-          <div className="absolute top-4 right-4">
-            <div className="bg-white/95 backdrop-blur-sm text-red-600 px-4 py-2 rounded-xl font-medium text-sm shadow-lg">
-              Out of Stock
-            </div>
+          <div className="absolute top-3 right-3 bg-white/80 text-red-600 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm backdrop-blur-md">
+            Out of Stock
           </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="flex flex-col flex-grow p-5">
-        {/* Title */}
-        <h3 className="text-lg font-medium text-gray-900 line-clamp-2 mb-4">
-          {name}
-        </h3>
+      {/* Product Info */}
+      <div className="flex flex-col flex-grow">
+        <h3 className="text-gray-900 font-semibold text-lg mb-2 line-clamp-2">{name}</h3>
 
-        {/* Price and Action */}
-        <div className="mt-auto">
-          {/* Price */}
-          <div className="mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-gray-900">
-                ${price.toFixed(2)}
-              </span>
-              <span className="text-sm text-gray-500 line-through">
-                ${discountedPrice}
-              </span>
-            </div>
-            <div className="text-sm text-green-600 font-medium mt-1">
-              Save ${(discountedPrice - price).toFixed(2)}
-            </div>
+        {/* Price Section */}
+        <div className="mb-5">
+          <div className="flex items-center space-x-2">
+            <span className="text-xl font-bold text-gray-900">₹{price.toFixed(2)}</span>
+            <span className="text-sm line-through text-gray-500">₹{discountedPrice}</span>
           </div>
-
-          {/* Add to Cart Button - Full Width */}
-          <button
-            className={`
-              w-full inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-medium
-              transition-all duration-300
-              ${outOfStock 
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                : 'bg-primary text-white hover:bg-primary-dark hover:shadow-lg active:translate-y-0.5'
-              }
-            `}
-            disabled={outOfStock}
-          >
-            {outOfStock ? (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Sold Out</span>
-              </>
-            ) : (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                <span>Add to Cart</span>
-              </>
-            )}
-          </button>
+          <span className="text-green-600 text-sm font-medium">
+            Save ₹{(discountedPrice - price).toFixed(2)}
+          </span>
         </div>
+
+        {/* Add to Cart Button */}
+        <button
+          className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-base transition-all duration-300
+            ${
+              outOfStock
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-black text-white hover:bg-neutral-800 hover:shadow-md'
+            }`}
+          disabled={outOfStock}
+        >
+          <ShoppingBag className="w-5 h-5" />
+          {outOfStock ? 'Sold Out' : 'Add to Cart'}
+        </button>
       </div>
     </div>
   );
 };
 
-export default ProductCard; 
+export default ProductCard;
