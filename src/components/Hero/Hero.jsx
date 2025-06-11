@@ -4,21 +4,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 const slides = [
   {
     id: 1,
-    image: '/hero1.jpg',
-    title: 'Discover Bengal\'s Finest Handicrafts',
-    description: 'Authentic handcrafted treasures from skilled artisans',
+    image: '/image1.png',
+    title: '',
+    
   },
   {
     id: 2,
-    image: '/hero2.jpg',
-    title: 'Traditional Art Forms',
-    description: 'Explore the rich heritage of Bengal\'s artistic traditions',
+    image: '/image.png',
+    title: '',
+   
   },
   {
     id: 3,
-    image: '/hero3.jpg',
-    title: 'Handmade with Love',
-    description: 'Each piece tells a unique story of craftsmanship',
+    image: '/image1.png',
+    title: '',
+   
   },
 ];
 
@@ -33,7 +33,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="relative h-[600px] overflow-hidden">
+    <div className="relative h-[400px] overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
@@ -47,10 +47,10 @@ export default function Hero() {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
           >
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0" />
           </div>
           
-          <div className="relative h-full flex items-center justify-center text-center">
+          <div className="relative h-full flex items-end pb-10 justify-center text-center">
             <div className="max-w-2xl px-4">
               <motion.h1
                 initial={{ y: 20, opacity: 0 }}
@@ -73,7 +73,7 @@ export default function Hero() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.6 }}
                 whileHover={{ scale: 1.05 }}
-                className="bg-white text-gray-900 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
+                className="bg-red-600 text-gray-900 px-8 py-3 rounded-full font-semibold hover:bg-red` transition-colors"
               >
                 Shop Now
               </motion.button>

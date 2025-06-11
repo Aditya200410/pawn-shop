@@ -129,7 +129,7 @@ export default function MissionVision() {
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-primary hover:bg-primary/90 rounded-full transition-colors duration-300"
+            className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-[#8B4513] hover:bg-primary/90 rounded-full transition-colors duration-300"
           >
             Get Direction
           </motion.a>
