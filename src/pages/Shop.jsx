@@ -1,16 +1,35 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Slider } from '@mui/material';
 import { products } from '../data/products';
 import { categories } from '../data/categories';
 import ProductCard from '../components/ProductCard';
 
 const Shop = () => {
+  const location = useLocation();
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 400]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState({
+    main: null,
+    sub: null,
+    item: null
+  });
   const [expandedCategories, setExpandedCategories] = useState({});
   const [sortBy, setSortBy] = useState('default');
   const [viewMode, setViewMode] = useState(16);
+
+  // Handle category selection from header dropdown
+  useEffect(() => {
+    if (location.state?.selectedCategory) {
+      setSelectedCategories(location.state.selectedCategory);
+      if (location.state.selectedCategory.main) {
+        setExpandedCategories(prev => ({
+          ...prev,
+          [location.state.selectedCategory.main]: true
+        }));
+      }
+    }
+  }, [location.state]);
 
   useEffect(() => {
     filterProducts();
@@ -25,14 +44,19 @@ const Shop = () => {
     );
 
     // Category filter
-    if (selectedCategories.length > 0) {
-      filtered = filtered.filter((product) =>
-        selectedCategories.some(cat => 
-          product.category === cat.main || 
-          (cat.sub && product.subcategory === cat.sub) ||
-          (cat.item && product.item === cat.item)
-        )
-      );
+    if (selectedCategories.main) {
+      filtered = filtered.filter(product => {
+        if (selectedCategories.item) {
+          return product.category === selectedCategories.main && 
+                 product.subcategory === selectedCategories.sub &&
+                 product.item === selectedCategories.item;
+        }
+        if (selectedCategories.sub) {
+          return product.category === selectedCategories.main && 
+                 product.subcategory === selectedCategories.sub;
+        }
+        return product.category === selectedCategories.main;
+      });
     }
 
     // Sorting
@@ -67,27 +91,18 @@ const Shop = () => {
     }));
   };
 
-  const handleCategoryChange = (main, sub = null, item = null) => {
-    const categoryKey = JSON.stringify({ main, sub, item });
-    setSelectedCategories(prev => {
-      const exists = prev.some(cat => 
-        JSON.stringify({ main: cat.main, sub: cat.sub, item: cat.item }) === categoryKey
-      );
-      if (exists) {
-        return prev.filter(cat => 
-          JSON.stringify({ main: cat.main, sub: cat.sub, item: cat.item }) !== categoryKey
-        );
-      }
-      return [...prev, { main, sub, item }];
+  const handleCategoryClick = (main, sub = null, item = null) => {
+    setSelectedCategories({
+      main: main === selectedCategories.main && !sub ? null : main,
+      sub: sub === selectedCategories.sub && !item ? null : sub,
+      item: item === selectedCategories.item ? null : item
     });
   };
 
-  const isSelected = (main, sub = null, item = null) => {
-    return selectedCategories.some(cat => 
-      cat.main === main && 
-      cat.sub === sub && 
-      cat.item === item
-    );
+  const isCategorySelected = (main, sub = null, item = null) => {
+    return selectedCategories.main === main && 
+           (!sub || selectedCategories.sub === sub) && 
+           (!item || selectedCategories.item === item);
   };
 
   return (
@@ -111,28 +126,25 @@ const Shop = () => {
             </div>
 
             <h3 className="text-lg font-semibold mt-8 mb-4">Product Categories</h3>
-            <div className="space-y-2">
+            <div className="space-y-1">
               {categories.map((category) => (
-                <div key={category.name} className="border-b border-gray-100 pb-2">
-                  <div className="flex items-center justify-between cursor-pointer hover:text-primary"
-                       onClick={() => toggleCategory(category.name)}>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={category.name}
-                        checked={isSelected(category.name)}
-                        onChange={() => handleCategoryChange(category.name)}
-                        className="mr-2 accent-primary"
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                      <label htmlFor={category.name} className="cursor-pointer">
-                        {category.name}
-                      </label>
-                    </div>
-                    {category.submenu && category.submenu.length > 0 && (
+                <div key={category.name} className="border-b border-gray-100 last:border-0">
+                  <div 
+                    className={`flex items-center justify-between py-2 cursor-pointer hover:text-primary transition-colors ${
+                      isCategorySelected(category.name) ? 'text-primary font-medium' : ''
+                    }`}
+                    onClick={() => {
+                      handleCategoryClick(category.name);
+                      if (category.submenu?.length > 0) {
+                        toggleCategory(category.name);
+                      }
+                    }}
+                  >
+                    <span>{category.name}</span>
+                    {category.submenu?.length > 0 && (
                       <svg
-                        className={`w-4 h-4 transition-transform ${
-                          expandedCategories[category.name] ? 'transform rotate-180' : ''
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          expandedCategories[category.name] ? 'rotate-180' : ''
                         }`}
                         fill="none"
                         stroke="currentColor"
@@ -142,48 +154,49 @@ const Shop = () => {
                       </svg>
                     )}
                   </div>
-                  
+
                   {/* Submenu */}
-                  {expandedCategories[category.name] && category.submenu && (
-                    <div className="ml-6 mt-2 space-y-2">
-                      {category.submenu.map((submenu) => (
+                  <div 
+                    className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                      expandedCategories[category.name] ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <div className="ml-4 mb-2 space-y-1">
+                      {category.submenu?.map((submenu) => (
                         <div key={submenu.name}>
-                          <div className="flex items-center hover:text-primary">
-                            <input
-                              type="checkbox"
-                              id={`${category.name}-${submenu.name}`}
-                              checked={isSelected(category.name, submenu.name)}
-                              onChange={() => handleCategoryChange(category.name, submenu.name)}
-                              className="mr-2 accent-primary"
-                            />
-                            <label htmlFor={`${category.name}-${submenu.name}`} className="cursor-pointer">
-                              {submenu.name}
-                            </label>
+                          <div 
+                            className={`py-2 cursor-pointer hover:text-primary transition-colors ${
+                              isCategorySelected(category.name, submenu.name) ? 'text-primary font-medium' : ''
+                            }`}
+                            onClick={() => handleCategoryClick(category.name, submenu.name)}
+                          >
+                            {submenu.name}
                           </div>
-                          
+
                           {/* Items */}
-                          {submenu.items && submenu.items.length > 0 && (
-                            <div className="ml-6 mt-1 space-y-1">
-                              {submenu.items.map((item) => (
-                                <div key={item} className="flex items-center hover:text-primary">
-                                  <input
-                                    type="checkbox"
-                                    id={`${category.name}-${submenu.name}-${item}`}
-                                    checked={isSelected(category.name, submenu.name, item)}
-                                    onChange={() => handleCategoryChange(category.name, submenu.name, item)}
-                                    className="mr-2 accent-primary"
-                                  />
-                                  <label htmlFor={`${category.name}-${submenu.name}-${item}`} className="cursor-pointer text-sm">
-                                    {item}
-                                  </label>
+                          <div 
+                            className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                              isCategorySelected(category.name, submenu.name) ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                            }`}
+                          >
+                            <div className="ml-4 space-y-1">
+                              {submenu.items?.map((item) => (
+                                <div
+                                  key={item}
+                                  className={`py-1 cursor-pointer hover:text-primary transition-colors ${
+                                    isCategorySelected(category.name, submenu.name, item) ? 'text-primary font-medium' : ''
+                                  }`}
+                                  onClick={() => handleCategoryClick(category.name, submenu.name, item)}
+                                >
+                                  {item}
                                 </div>
                               ))}
                             </div>
-                          )}
+                          </div>
                         </div>
                       ))}
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -192,6 +205,37 @@ const Shop = () => {
 
         {/* Products Grid */}
         <div className="w-full md:w-3/4">
+          {/* Category Path */}
+          {selectedCategories.main && (
+            <div className="mb-6 flex items-center text-sm text-gray-600">
+              <span className="hover:text-primary cursor-pointer" onClick={() => handleCategoryClick(null)}>
+                All Categories
+              </span>
+              <span className="mx-2">›</span>
+              <span className={`${!selectedCategories.sub ? 'text-primary font-medium' : 'hover:text-primary cursor-pointer'}`}
+                    onClick={() => handleCategoryClick(selectedCategories.main)}>
+                {selectedCategories.main}
+              </span>
+              {selectedCategories.sub && (
+                <>
+                  <span className="mx-2">›</span>
+                  <span className={`${!selectedCategories.item ? 'text-primary font-medium' : 'hover:text-primary cursor-pointer'}`}
+                        onClick={() => handleCategoryClick(selectedCategories.main, selectedCategories.sub)}>
+                    {selectedCategories.sub}
+                  </span>
+                </>
+              )}
+              {selectedCategories.item && (
+                <>
+                  <span className="mx-2">›</span>
+                  <span className="text-primary font-medium">
+                    {selectedCategories.item}
+                  </span>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-4">
               <span className="text-gray-600">Sort by:</span>

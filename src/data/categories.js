@@ -1,141 +1,116 @@
 export const categories = [
-  { 
-    name: 'Apparels', 
-    href: '#',
+  {
+    name: "Jewelry",
     submenu: [
       {
-        name: 'Accessories',
-        items: ['Jewelry', 'Stole & Scarf']
+        name: "Gold Jewelry",
+        items: ["Rings", "Necklaces", "Bracelets", "Earrings", "Pendants"]
       },
       {
-        name: 'Men',
-        items: ['Jackets', 'Kurtas']
+        name: "Diamond Jewelry",
+        items: ["Diamond Rings", "Diamond Necklaces", "Diamond Bracelets", "Diamond Earrings"]
       },
       {
-        name: 'Women',
-        items: ['Jackets', 'Full Length Dress', 'Short Length Dress', 'Sarees', 'Suit Pieces', 'Wrapper/Pants']
+        name: "Silver Jewelry",
+        items: ["Silver Rings", "Silver Necklaces", "Silver Bracelets", "Silver Earrings"]
+      },
+      {
+        name: "Gemstone Jewelry",
+        items: ["Ruby", "Sapphire", "Emerald", "Pearl", "Other Gemstones"]
       }
     ]
   },
-  { 
-    name: 'Patachitra', 
-    href: '#',
+  {
+    name: "Watches",
     submenu: [
       {
-        name: 'Wall Hangings',
-        items: []
+        name: "Luxury Watches",
+        items: ["Rolex", "Omega", "Cartier", "Tag Heuer", "Breitling"]
       },
       {
-        name: 'Other Articles',
-        items: []
+        name: "Fashion Watches",
+        items: ["Michael Kors", "Fossil", "Citizen", "Seiko", "Timex"]
+      },
+      {
+        name: "Smart Watches",
+        items: ["Apple Watch", "Samsung", "Fitbit", "Garmin"]
       }
     ]
   },
-  { 
-    name: 'Metal', 
-    href: '#',
+  {
+    name: "Electronics",
     submenu: [
       {
-        name: 'Home Decor',
-        items: []
+        name: "Smartphones",
+        items: ["iPhone", "Samsung", "Google Pixel", "OnePlus"]
       },
       {
-        name: 'Kitchenware',
-        items: []
+        name: "Laptops",
+        items: ["MacBook", "Dell", "HP", "Lenovo", "ASUS"]
+      },
+      {
+        name: "Gaming",
+        items: ["PlayStation", "Xbox", "Nintendo", "Gaming PCs"]
+      },
+      {
+        name: "Cameras",
+        items: ["DSLR", "Mirrorless", "Point & Shoot", "Video Cameras"]
       }
     ]
   },
-  { 
-    name: 'Grass & Bamboo', 
-    href: '#',
+  {
+    name: "Musical Instruments",
     submenu: [
       {
-        name: 'Bags',
-        items: []
+        name: "String Instruments",
+        items: ["Guitars", "Violins", "Bass", "Ukulele"]
       },
       {
-        name: 'Dining Accessories',
-        items: []
+        name: "Percussion",
+        items: ["Drums", "Cymbals", "Digital Drums", "Hand Percussion"]
       },
       {
-        name: 'Lamp Shades',
-        items: []
+        name: "Keyboards",
+        items: ["Digital Pianos", "Synthesizers", "MIDI Controllers"]
       },
       {
-        name: 'Office Stationery',
-        items: []
-      },
-      {
-        name: 'Rugs and Mats',
-        items: []
+        name: "Pro Audio",
+        items: ["Microphones", "Interfaces", "Speakers", "DJ Equipment"]
       }
     ]
   },
-  { 
-    name: 'Wood', 
-    href: '#',
+  {
+    name: "Tools",
     submenu: [
       {
-        name: 'Home Decor',
-        items: []
+        name: "Power Tools",
+        items: ["Drills", "Saws", "Sanders", "Power Sets"]
       },
       {
-        name: 'Jewellery Box',
-        items: []
+        name: "Hand Tools",
+        items: ["Wrenches", "Hammers", "Screwdrivers", "Tool Sets"]
       },
       {
-        name: 'Mirror',
-        items: []
-      },
-      {
-        name: 'Table Accents',
-        items: []
+        name: "Outdoor Tools",
+        items: ["Lawn Mowers", "Trimmers", "Blowers", "Garden Tools"]
       }
     ]
   },
-  { 
-    name: 'Terracotta & Clay', 
-    href: '#',
+  {
+    name: "Collectibles",
     submenu: [
       {
-        name: 'Kitchenware',
-        items: []
+        name: "Sports Memorabilia",
+        items: ["Autographs", "Cards", "Jerseys", "Equipment"]
       },
       {
-        name: 'Home Decor',
-        items: []
+        name: "Coins & Currency",
+        items: ["Gold Coins", "Silver Coins", "Rare Coins", "Paper Money"]
       },
       {
-        name: 'Lamps',
-        items: []
-      },
-      {
-        name: 'Showpiece',
-        items: []
-      },
-      {
-        name: 'Miniature Dolls',
-        items: []
+        name: "Art & Antiques",
+        items: ["Paintings", "Sculptures", "Vintage Items", "Fine Art"]
       }
     ]
-  },
-  { 
-    name: 'Wall Tiles', 
-    href: '#',
-    submenu: [
-      {
-        name: 'Mural',
-        items: []
-      },
-      {
-        name: 'Wall Art',
-        items: []
-      }
-    ]
-  },
-  { 
-    name: 'Others', 
-    href: '#',
-    submenu: []
-  },
+  }
 ]; 
