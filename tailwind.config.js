@@ -7,13 +7,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--primary-color)',
-        secondary: 'var(--secondary-color)',
+        primary: '#4A5568',
+        'primary-dark': '#2D3748',
+        secondary: '#718096',
+        accent: '#F56565',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       container: {
+        center: true,
         padding: {
           DEFAULT: '1rem',
           sm: '2rem',

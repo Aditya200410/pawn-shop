@@ -401,8 +401,8 @@ export default function Header() {
                 {/* Help Center Button */}
                 <Link to="/contact">
                 <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 bg-[#8B4513] text-white rounded-full shadow-sm hover:bg-gray-50 border border-gray-200"
+                  whileHover={{ scale: 1.05 , backgroundColor: '#6B3410' }}
+                  className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 bg-[#8B4513] text-white rounded-full shadow-sm"
                
                >
                   <QuestionMarkCircleIcon className="h-4 w-4" />
