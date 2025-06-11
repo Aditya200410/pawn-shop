@@ -341,7 +341,7 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="Products search"
-                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#8B4513] focus:border-transparent text-sm"
               />
               <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
@@ -355,7 +355,7 @@ export default function Header() {
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="container mx-auto px-4 py-4"
+            className="container mx-auto px-4 py-2"
           >
             <nav className="flex items-center justify-between gap-4">
               {/* Logo */}
@@ -365,7 +365,7 @@ export default function Header() {
               >
                 <Link to="/">
                   <img
-                    className="h-24 w-auto"
+                    className="h-16 max-w-[180px] w-auto"
                     src="/logo.png"
                     alt="Srejonee"
                   />
@@ -373,16 +373,17 @@ export default function Header() {
               </motion.div>
 
               {/* Search Box */}
-              <div className="relative w-full max-w-md">
-                <input
-                  type="text"
-                  placeholder="Products search"
-                  className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-                </button>
-              </div>
+             {/* Search */}
+        <div className="hidden md:flex items-center w-full max-w-md mx-6">
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Search products"
+              className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full text-sm focus:ring-2 focus:ring-[#8B4513] focus:outline-none"
+            />
+            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+          </div>
+        </div>
 
               {/* Desktop navigation */}
               <div className="flex items-center gap-x-8">
@@ -415,8 +416,8 @@ export default function Header() {
 
           {/* Categories bar with dropdowns */}
           <div className=" border-gray-200">
-            <div className="container mx-auto px-4">
-              <div className="flex justify-between py-3">
+            <div className="container max-w-7xl px-4">
+              <div className="flex justify-between py-2">
                 {categories.map((category) => (
                   <div
                     key={category.name}
@@ -539,7 +540,7 @@ export default function Header() {
 
         {/* Mobile Bottom Navigation */}
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 lg:hidden z-40">
-          <nav className="flex justify-around items-center h-14">
+          <nav className="flex justify-around items-center h-12">
             {navigation.map((item) => (
               <a
                 key={item.name}
