@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 const products = [
   {
@@ -83,27 +85,35 @@ export default function FeaturedProducts() {
             <motion.div
               key={product.id}
               variants={itemVariants}
-             
-              className="group"
+              className="group bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300"
             >
-              <div className="relative overflow-hidden rounded-lg  object-cover">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-48 object-contain transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300" />
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-6 py-2 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  Add to Cart
-                </motion.button>
-              </div>
-              <div className="mt-4 text-center">
-                <h3 className="text-lg font-medium text-gray-900">{product.name}</h3>
-                <p className="mt-1 text-lg font-semibold text-primary">${product.price.toFixed(2)}</p>
-              </div>
+              <Link to={`/product/${product.id}`} className="block">
+                <div className="relative overflow-hidden rounded-lg">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-48 object-contain transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <div className="flex justify-center space-x-4">
+                      <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                        <HeartIcon className="h-5 w-5" />
+                      </button>
+                      <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                        <ShoppingCartIcon className="h-5 w-5" />
+                      </button>
+                      <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                        <EyeIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">{product.name}</h3>
+                  <p className="text-lg font-semibold text-amber-800">₹{product.price.toFixed(2)}</p>
+                </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

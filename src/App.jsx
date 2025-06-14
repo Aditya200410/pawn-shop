@@ -20,41 +20,54 @@ import SignUp from './pages/Signup';
 import Account from './pages/Account';  
 import Wishlist from './pages/Wishlist';
 import ProductView from './pages/ProductView';
+import ScrollToTop from './components/ScrollToTop';
+import useScrollToTop from './hooks/useScrollToTop';
+import MostLoved from './components/Products/MostLoved';
+
+function AppContent() {
+  useScrollToTop();
+
+  return (
+    <div className="min-h-screen bg-white">
+      <Header />
+      <Routes>
+        <Route path="/" element={
+          <main>
+            <Hero />
+            <Categories />
+            <FeaturedProducts />
+            <WeeklyBestsellers />
+            <MostLoved />
+            <Testimonials />
+            <MissionVision />
+          </main>
+        } />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/story" element={<Story />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/product/:id" element={<ProductView />} />
+      </Routes>
+      <Footer />
+      <ScrollToTop />
+      <Toaster position="top-right" />
+    </div>
+  );
+}
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <div className="min-h-screen bg-white">
-            <Header />
-            <Routes>
-              <Route path="/" element={
-                <main>
-                  <Hero />
-                  <Categories />
-                  <FeaturedProducts />
-                  <WeeklyBestsellers />
-                  <Testimonials />
-                  <MissionVision />
-                </main>
-              } />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/story" element={<Story />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="/product/:id" element={<ProductView />} />
-            </Routes>
-            <Footer />
-          </div>
-          <Toaster position="top-right" />
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <CartProvider>
+          <AppContent />
+        </CartProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

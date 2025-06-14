@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 
 const bestsellers = [
   {
@@ -162,46 +163,48 @@ export default function WeeklyBestsellers() {
                   variants={itemVariants}
                   className="group bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    {product.discount && (
-                      <div className="absolute top-2 left-2 bg-amber-800 text-white px-2 py-1 rounded text-sm font-medium">
-                        -{product.discount}%
-                      </div>
-                    )}
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <div className="flex justify-center space-x-4">
-                        <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                          <HeartIcon className="h-5 w-5" />
-                        </button>
-                        <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                          <ShoppingCartIcon className="h-5 w-5" />
-                        </button>
-                        <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                          <EyeIcon className="h-5 w-5" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <p className="text-sm text-gray-500 mb-1">{product.category}</p>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">{product.name}</h3>
-                    <div className="flex items-center">
-                      {product.originalPrice ? (
-                        <>
-                          <span className="text-lg font-semibold text-amber-800">${product.price.toFixed(2)}</span>
-                          <span className="ml-2 text-sm text-gray-500 line-through">${product.originalPrice.toFixed(2)}</span>
-                        </>
-                      ) : (
-                        <span className="text-lg font-semibold text-amber-800">${product.price.toFixed(2)}</span>
+                  <Link to={`/product/${product.id}`} className="block">
+                    <div className="relative overflow-hidden rounded-t-lg">
+                      {product.discount && (
+                        <div className="absolute top-2 left-2 bg-amber-800 text-white px-2 py-1 rounded text-sm font-medium">
+                          -{product.discount}%
+                        </div>
                       )}
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <div className="flex justify-center space-x-4">
+                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                            <HeartIcon className="h-5 w-5" />
+                          </button>
+                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                            <ShoppingCartIcon className="h-5 w-5" />
+                          </button>
+                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                            <EyeIcon className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                    <div className="p-4">
+                      <p className="text-sm text-gray-500 mb-1">{product.category}</p>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">{product.name}</h3>
+                      <div className="flex items-center">
+                        {product.originalPrice ? (
+                          <>
+                            <span className="text-lg font-semibold text-amber-800">${product.price.toFixed(2)}</span>
+                            <span className="ml-2 text-sm text-gray-500 line-through">${product.originalPrice.toFixed(2)}</span>
+                          </>
+                        ) : (
+                          <span className="text-lg font-semibold text-amber-800">${product.price.toFixed(2)}</span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
                 </motion.div>
               ))
             ) : (

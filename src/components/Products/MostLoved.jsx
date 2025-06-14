@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 
 const mostLovedProducts = [
   {
@@ -96,7 +97,7 @@ export default function MostLoved() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
         >
           {mostLovedProducts.map((product) => (
             <motion.div
@@ -104,38 +105,40 @@ export default function MostLoved() {
               variants={itemVariants}
               className="group bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
-              <div className="relative overflow-hidden rounded-t-lg">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <div className="flex justify-center space-x-4">
-                    <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                      <HeartIcon className="h-5 w-5" />
-                    </button>
-                    <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                      <ShoppingCartIcon className="h-5 w-5" />
-                    </button>
-                    <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                      <EyeIcon className="h-5 w-5" />
+              <Link to={`/product/${product.id}`} className="block">
+                <div className="relative overflow-hidden rounded-t-lg">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-48 sm:h-64 lg:h-80 object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <div className="flex justify-center space-x-3 sm:space-x-4">
+                      <button className="p-1.5 sm:p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                        <HeartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      </button>
+                      <button className="p-1.5 sm:p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                        <ShoppingCartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      </button>
+                      <button className="p-1.5 sm:p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                        <EyeIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 sm:p-6">
+                  <p className="text-sm text-gray-500 mb-1">{product.category}</p>
+                  <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">{product.name}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-2">{product.description}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+                    <span className="text-lg sm:text-xl font-semibold text-amber-800">₹{product.price.toFixed(2)}</span>
+                    <button className="w-full sm:w-auto px-4 py-2 bg-amber-800 text-white rounded-full hover:bg-amber-900 transition-colors text-sm sm:text-base">
+                      Add to cart
                     </button>
                   </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <p className="text-sm text-gray-500 mb-1">{product.category}</p>
-                <h3 className="text-xl font-medium text-gray-900 mb-2">{product.name}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xl font-semibold text-amber-800">₹{product.price.toFixed(2)}</span>
-                  <button className="px-4 py-2 bg-amber-800 text-white rounded-full hover:bg-amber-900 transition-colors">
-                    Add to cart
-                  </button>
-                </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

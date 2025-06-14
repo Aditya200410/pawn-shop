@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, ShareIcon, StarIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { products } from '../data/products';
+import MostLoved from '../components/Products/MostLoved';
+import WeeklyBestsellers from '../components/Products/WeeklyBestsellers';
 
 const ProductView = () => {
   const { id } = useParams();
@@ -42,7 +44,7 @@ const ProductView = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-sm p-8">
+        <div className="bg-white rounded-lg shadow-sm p-8 mb-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Product Images */}
             <div className="space-y-4">
@@ -178,6 +180,16 @@ const ProductView = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Most Loved Section */}
+        <div className="mb-12">
+          <MostLoved />
+        </div>
+
+        {/* Weekly Bestsellers Section */}
+        <div>
+          <WeeklyBestsellers />
         </div>
       </div>
     </div>
