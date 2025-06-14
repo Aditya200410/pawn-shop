@@ -47,6 +47,12 @@ const navigation = [
     href: '/wishlist',
     icon: HeartIcon,
     badge: '0'
+  },
+  { 
+    name: 'Cart',
+    href: '/cart',
+    icon: ShoppingCartIcon,
+    badge: '0'
   }
 ];
 
@@ -395,19 +401,19 @@ export default function Header() {
                     className="text-gray-600 hover:text-gray-900 flex items-center gap-1 relative"
                     title={item.name}
                   >
-                    <item.icon className="h-5 w-5" />
+                    <item.icon className="h-6 w-6" />
                   </motion.a>
                 ))}
 
                 {/* Help Center Button */}
-                <Link to="/contact">
+                <Link to="/login">
                 <motion.button 
                   whileHover={{ scale: 1.05 , backgroundColor: '#6B3410' }}
                   className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 bg-[#8B4513] text-white rounded-full shadow-sm"
                
                >
-                  <QuestionMarkCircleIcon className="h-4 w-4" />
-                  Help Center
+                  <UserIcon className="h-4 w-4" />
+                  Login/register
                 </motion.button>
                 </Link>
               </div>
@@ -547,15 +553,14 @@ export default function Header() {
                 href={item.href}
                 className="flex flex-col items-center justify-center text-gray-600 hover:text-[#8B4513] transition-colors py-1"
               >
-                <item.icon className="h-5 w-5" />
+                <item.icon className="h-8 w-8" />
                 <span className="text-[10px] mt-0.5">{item.name}</span>
               </a>
             ))}
             <button
               className="flex flex-col items-center justify-center text-gray-600 hover:text-[#8B4513] transition-colors py-1 relative"
             >
-              <ShoppingCartIcon className="h-5 w-5" />
-              <span className="text-[10px] mt-0.5">Cart</span>
+            
             </button>
           </nav>
         </div>

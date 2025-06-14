@@ -11,6 +11,17 @@ export default {
         'primary-dark': '#2D3748',
         secondary: '#718096',
         accent: '#F56565',
+        pink: {
+          400: '#f472b6',
+          500: '#ec4899',
+          600: '#db2777',
+          700: '#be185d',
+        },
+        purple: {
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7e22ce',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
