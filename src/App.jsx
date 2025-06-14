@@ -19,6 +19,7 @@ import Login from './pages/Login';
 import SignUp from './pages/Signup';  
 import Account from './pages/Account';  
 import Wishlist from './pages/Wishlist';
+import ProductView from './pages/ProductView';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/account" element={<Account />} />
               <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/product/:id" element={<ProductView />} />
             </Routes>
             <Footer />
           </div>

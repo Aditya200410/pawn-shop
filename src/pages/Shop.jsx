@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { Slider } from '@mui/material';
+import { motion } from 'framer-motion';
+import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { products } from '../data/products';
 import { categories } from '../data/categories';
 import ProductCard from '../components/ProductCard';
@@ -15,7 +17,7 @@ const Shop = () => {
     item: null
   });
   const [expandedCategories, setExpandedCategories] = useState({});
-  const [sortBy, setSortBy] = useState('default');
+  const [sortBy, setSortBy] = useState('popularity');
   const [viewMode, setViewMode] = useState(16);
 
   // Handle category selection from header dropdown
@@ -106,176 +108,100 @@ const Shop = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Filters Sidebar */}
-        <div className="w-full md:w-1/4">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-4">Filter by Price</h3>
-            <Slider
-              value={priceRange}
-              onChange={handlePriceChange}
-              valueLabelDisplay="auto"
-              min={0}
-              max={400}
-              className="text-primary"
-            />
-            <div className="flex justify-between mt-2 text-gray-600">
-              <span>${priceRange[0]}</span>
-              <span>${priceRange[1]}</span>
-            </div>
-
-            <h3 className="text-lg font-semibold mt-8 mb-4">Product Categories</h3>
-            <div className="space-y-1">
-              {categories.map((category) => (
-                <div key={category.name} className="border-b border-gray-100 last:border-0">
-                  <div 
-                    className={`flex items-center justify-between py-2 cursor-pointer hover:text-primary transition-colors ${
-                      isCategorySelected(category.name) ? 'text-primary font-medium' : ''
-                    }`}
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+          {/* Filters */}
+          <div className="w-full md:w-64 space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Categories</h3>
+              <div className="space-y-2">
+                {categories.map((category) => (
+                  <button
+                    key={category.name}
                     onClick={() => {
                       handleCategoryClick(category.name);
                       if (category.submenu?.length > 0) {
                         toggleCategory(category.name);
                       }
                     }}
-                  >
-                    <span>{category.name}</span>
-                    {category.submenu?.length > 0 && (
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          expandedCategories[category.name] ? 'rotate-180' : ''
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    )}
-                  </div>
-
-                  {/* Submenu */}
-                  <div 
-                    className={`overflow-hidden transition-all duration-200 ease-in-out ${
-                      expandedCategories[category.name] ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                      isCategorySelected(category.name) ? 'bg-amber-800 text-white' : 'text-gray-600 hover:bg-gray-100'
                     }`}
                   >
-                    <div className="ml-4 mb-2 space-y-1">
-                      {category.submenu?.map((submenu) => (
-                        <div key={submenu.name}>
-                          <div 
-                            className={`py-2 cursor-pointer hover:text-primary transition-colors ${
-                              isCategorySelected(category.name, submenu.name) ? 'text-primary font-medium' : ''
-                            }`}
-                            onClick={() => handleCategoryClick(category.name, submenu.name)}
-                          >
-                            {submenu.name}
-                          </div>
-
-                          {/* Items */}
-                          <div 
-                            className={`overflow-hidden transition-all duration-200 ease-in-out ${
-                              isCategorySelected(category.name, submenu.name) ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-                            }`}
-                          >
-                            <div className="ml-4 space-y-1">
-                              {submenu.items?.map((item) => (
-                                <div
-                                  key={item}
-                                  className={`py-1 cursor-pointer hover:text-primary transition-colors ${
-                                    isCategorySelected(category.name, submenu.name, item) ? 'text-primary font-medium' : ''
-                                  }`}
-                                  onClick={() => handleCategoryClick(category.name, submenu.name, item)}
-                                >
-                                  {item}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                    {category.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Products Grid */}
-        <div className="w-full md:w-3/4">
-          {/* Category Path */}
-          {selectedCategories.main && (
-            <div className="mb-6 flex items-center text-sm text-gray-600">
-              <span className="hover:text-primary cursor-pointer" onClick={() => handleCategoryClick(null)}>
-                All Categories
-              </span>
-              <span className="mx-2">›</span>
-              <span className={`${!selectedCategories.sub ? 'text-primary font-medium' : 'hover:text-primary cursor-pointer'}`}
-                    onClick={() => handleCategoryClick(selectedCategories.main)}>
-                {selectedCategories.main}
-              </span>
-              {selectedCategories.sub && (
-                <>
-                  <span className="mx-2">›</span>
-                  <span className={`${!selectedCategories.item ? 'text-primary font-medium' : 'hover:text-primary cursor-pointer'}`}
-                        onClick={() => handleCategoryClick(selectedCategories.main, selectedCategories.sub)}>
-                    {selectedCategories.sub}
-                  </span>
-                </>
-              )}
-              {selectedCategories.item && (
-                <>
-                  <span className="mx-2">›</span>
-                  <span className="text-primary font-medium">
-                    {selectedCategories.item}
-                  </span>
-                </>
-              )}
-            </div>
-          )}
-
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-600">Sort by:</span>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Sort By</h3>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-800 focus:border-transparent"
               >
-                <option value="default">Default sorting</option>
-                <option value="popularity">Sort by popularity</option>
-                <option value="latest">Sort by latest</option>
-                <option value="price-low">Sort by price: low to high</option>
-                <option value="price-high">Sort by price: high to low</option>
-              </select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-600">View:</span>
-              <select
-                value={viewMode}
-                onChange={(e) => setViewMode(Number(e.target.value))}
-                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value={16}>16</option>
-                <option value={32}>32</option>
-                <option value={-1}>All</option>
+                <option value="popularity">Popularity</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
               </select>
             </div>
           </div>
 
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              No products found matching your criteria.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {/* Products Grid */}
+          <div className="flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="group bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300"
+                >
+                  <Link to={`/product/${product.id}`} className="block">
+                    <div className="relative overflow-hidden rounded-t-lg">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      {product.outOfStock && (
+                        <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-sm">
+                          Out of Stock
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <div className="flex justify-center space-x-4">
+                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                            <HeartIcon className="h-5 w-5" />
+                          </button>
+                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                            <ShoppingCartIcon className="h-5 w-5" />
+                          </button>
+                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
+                            <EyeIcon className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm text-gray-500 mb-1">{product.category}</p>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">{product.name}</h3>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold text-amber-800">₹{product.price.toFixed(2)}</span>
+                        <div className="flex items-center">
+                          <span className="text-sm text-gray-500 mr-1">Rating:</span>
+                          <span className="text-amber-800">{product.popularity}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
               ))}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

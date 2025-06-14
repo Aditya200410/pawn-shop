@@ -133,7 +133,7 @@ export default function WeeklyBestsellers() {
                 disabled={isLoading}
                 className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
                   selectedCategory === category
-                    ? 'bg-pink-500 text-white'
+                    ? 'bg-amber-800 text-white'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
@@ -145,7 +145,7 @@ export default function WeeklyBestsellers() {
 
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-800"></div>
           </div>
         ) : (
           <motion.div
@@ -164,7 +164,7 @@ export default function WeeklyBestsellers() {
                 >
                   <div className="relative overflow-hidden rounded-t-lg">
                     {product.discount && (
-                      <div className="absolute top-2 left-2 bg-pink-500 text-white px-2 py-1 rounded text-sm font-medium">
+                      <div className="absolute top-2 left-2 bg-amber-800 text-white px-2 py-1 rounded text-sm font-medium">
                         -{product.discount}%
                       </div>
                     )}
@@ -176,13 +176,13 @@ export default function WeeklyBestsellers() {
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                       <div className="flex justify-center space-x-4">
-                        <button className="p-2 text-gray-600 hover:text-pink-500 transition-colors">
+                        <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
                           <HeartIcon className="h-5 w-5" />
                         </button>
-                        <button className="p-2 text-gray-600 hover:text-pink-500 transition-colors">
+                        <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
                           <ShoppingCartIcon className="h-5 w-5" />
                         </button>
-                        <button className="p-2 text-gray-600 hover:text-pink-500 transition-colors">
+                        <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
                           <EyeIcon className="h-5 w-5" />
                         </button>
                       </div>
@@ -194,11 +194,11 @@ export default function WeeklyBestsellers() {
                     <div className="flex items-center">
                       {product.originalPrice ? (
                         <>
-                          <span className="text-lg font-semibold text-pink-500">${product.price.toFixed(2)}</span>
+                          <span className="text-lg font-semibold text-amber-800">${product.price.toFixed(2)}</span>
                           <span className="ml-2 text-sm text-gray-500 line-through">${product.originalPrice.toFixed(2)}</span>
                         </>
                       ) : (
-                        <span className="text-lg font-semibold text-pink-500">${product.price.toFixed(2)}</span>
+                        <span className="text-lg font-semibold text-amber-800">${product.price.toFixed(2)}</span>
                       )}
                     </div>
                   </div>

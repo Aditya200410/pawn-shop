@@ -27,6 +27,30 @@ const mostLovedProducts = [
     description: 'A new classic for the contemporary dining room, the Mondrian table reinterprets the light and elegant design of the sofa and coffee table collection of the same name.',
     image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg',
   },
+  {
+    id: 1,
+    name: 'Curve Chair',
+    category: 'Chairs',
+    price: 320.00,
+    description: 'Soft curves and tapering slender lines are inspired by modern design. The result is a classic yet contemporary chair, ideally combined with the table by the same name.',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg',
+  },
+  {
+    id: 2,
+    name: 'Palissade Sofa',
+    category: 'Sofas',
+    price: 1890.00,
+    description: 'The slender organic forms are fluid and graceful. Noguchi emphasises the lightness of the elements with thin yet comfortable upholstery and a choice of cover fabrics in natural colours.',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg',
+  },
+  {
+    id: 3,
+    name: 'Aruda Table',
+    category: 'Tables',
+    price: 699.00,
+    description: 'A new classic for the contemporary dining room, the Mondrian table reinterprets the light and elegant design of the sofa and coffee table collection of the same name.',
+    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg',
+  },
 ];
 
 const containerVariants = {
@@ -89,13 +113,13 @@ export default function MostLoved() {
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                   <div className="flex justify-center space-x-4">
-                    <button className="p-2 text-gray-600 hover:text-pink-500 transition-colors">
+                    <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
                       <HeartIcon className="h-5 w-5" />
                     </button>
-                    <button className="p-2 text-gray-600 hover:text-pink-500 transition-colors">
+                    <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
                       <ShoppingCartIcon className="h-5 w-5" />
                     </button>
-                    <button className="p-2 text-gray-600 hover:text-pink-500 transition-colors">
+                    <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
                       <EyeIcon className="h-5 w-5" />
                     </button>
                   </div>
@@ -106,8 +130,8 @@ export default function MostLoved() {
                 <h3 className="text-xl font-medium text-gray-900 mb-2">{product.name}</h3>
                 <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xl font-semibold text-pink-500">₹{product.price.toFixed(2)}</span>
-                  <button className="px-4 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-colors">
+                  <span className="text-xl font-semibold text-amber-800">₹{product.price.toFixed(2)}</span>
+                  <button className="px-4 py-2 bg-amber-800 text-white rounded-full hover:bg-amber-900 transition-colors">
                     Add to cart
                   </button>
                 </div>
