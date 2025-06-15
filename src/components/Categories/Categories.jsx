@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const categories = [
   {
@@ -73,6 +73,20 @@ const itemVariants = {
 };
 
 export default function Categories() {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category) => {
+    navigate('/shop', {
+      state: {
+        selectedCategory: {
+          main: category.name,
+          sub: null,
+          item: null
+        }
+      }
+    });
+  };
+
   return (
     <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 py-16">
@@ -80,7 +94,7 @@ export default function Categories() {
           <h2 className="text-4xl font-light tracking-tight text-gray-900 mb-4">
             Shop by <span className="font-serif italic">Category</span>
           </h2>
-          <div className="w-24 h-1 bg-amber-800"></div>
+          <div className="w-24 h-1 bg-orange-600"></div>
         </div>
 
         <motion.div
@@ -91,35 +105,31 @@ export default function Categories() {
           className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto"
         >
           {categories.map((category) => (
-            <Link
+            <motion.div
               key={category.id}
-              to="/shop"
-              state={{ selectedCategory: { main: category.name } }}
+              variants={itemVariants}
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.2 }
+              }}
+              onClick={() => handleCategoryClick(category)}
+              className="group relative aspect-square rounded-full overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
             >
-              <motion.div
-                variants={itemVariants}
-                whileHover={{ 
-                  scale: 1.05,
-                  transition: { duration: 0.2 }
-                }}
-                className="group relative aspect-square rounded-full overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <div className="absolute inset-0">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 flex flex-col items-center justify-end p-6 z-20 text-white text-center">
-                    <h3 className="text-xl font-semibold mb-1">{category.name}</h3>
-                    <p className="text-sm text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      {category.description}
-                    </p>
-                  </div>
+              <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-end p-6 z-20 text-white text-center">
+                  <h3 className="text-xl font-semibold mb-1">{category.name}</h3>
+                  <p className="text-sm text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {category.description}
+                  </p>
                 </div>
-              </motion.div>
-            </Link>
+              </div>
+            </motion.div>
           ))}
         </motion.div>
       </div>

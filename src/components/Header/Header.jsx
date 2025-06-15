@@ -551,7 +551,7 @@ export default function Header() {
                 href={item.href}
                 className="flex flex-col items-center justify-center text-gray-600 hover:text-[#8B4513] transition-colors py-1"
               >
-                <item.icon className="h-8 w-8" />
+                <item.icon className="h-6 w-6" />
                 <span className="text-[10px] mt-0.5">{item.name}</span>
               </a>
             ))}

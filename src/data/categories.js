@@ -1,115 +1,95 @@
 export const categories = [
   {
-    name: "Jewelry",
+    name: "Chairs",
     submenu: [
       {
-        name: "Gold Jewelry",
-        items: ["Rings", "Necklaces", "Bracelets", "Earrings", "Pendants"]
+        name: "Dining Chairs",
+        items: ["Wooden Chairs", "Metal Chairs", "Plastic Chairs"]
       },
       {
-        name: "Diamond Jewelry",
-        items: ["Diamond Rings", "Diamond Necklaces", "Diamond Bracelets", "Diamond Earrings"]
+        name: "Living Room Chairs",
+        items: ["Armchairs", "Recliners", "Accent Chairs"]
       },
       {
-        name: "Silver Jewelry",
-        items: ["Silver Rings", "Silver Necklaces", "Silver Bracelets", "Silver Earrings"]
-      },
-      {
-        name: "Gemstone Jewelry",
-        items: ["Ruby", "Sapphire", "Emerald", "Pearl", "Other Gemstones"]
+        name: "Office Chairs",
+        items: ["Executive Chairs", "Ergonomic Chairs", "Gaming Chairs"]
       }
     ]
   },
   {
-    name: "Watches",
+    name: "Tables",
     submenu: [
       {
-        name: "Luxury Watches",
-        items: ["Rolex", "Omega", "Cartier", "Tag Heuer", "Breitling"]
+        name: "Coffee Tables",
+        items: ["Wooden Tables", "Glass Tables", "Metal Tables"]
       },
       {
-        name: "Fashion Watches",
-        items: ["Michael Kors", "Fossil", "Citizen", "Seiko", "Timex"]
+        name: "Dining Tables",
+        items: ["Wooden Tables", "Glass Tables", "Metal Tables"]
       },
       {
-        name: "Smart Watches",
-        items: ["Apple Watch", "Samsung", "Fitbit", "Garmin"]
+        name: "Study Tables",
+        items: ["Wooden Tables", "Metal Tables", "Computer Tables"]
       }
     ]
   },
   {
-    name: "Electronics",
+    name: "Sofas",
     submenu: [
       {
-        name: "Smartphones",
-        items: ["iPhone", "Samsung", "Google Pixel", "OnePlus"]
+        name: "Living Room Sets",
+        items: ["3-Seater Sofas", "2-Seater Sofas", "Sectional Sofas"]
       },
       {
-        name: "Laptops",
-        items: ["MacBook", "Dell", "HP", "Lenovo", "ASUS"]
+        name: "Recliners",
+        items: ["Single Recliners", "Double Recliners", "Power Recliners"]
       },
       {
-        name: "Gaming",
-        items: ["PlayStation", "Xbox", "Nintendo", "Gaming PCs"]
-      },
-      {
-        name: "Cameras",
-        items: ["DSLR", "Mirrorless", "Point & Shoot", "Video Cameras"]
+        name: "Sofa Beds",
+        items: ["Convertible Sofas", "Futons", "Daybeds"]
       }
     ]
   },
   {
-    name: "Musical Instruments",
+    name: "Storage",
     submenu: [
       {
-        name: "String Instruments",
-        items: ["Guitars", "Violins", "Bass", "Ukulele"]
+        name: "Bookshelves",
+        items: ["Wooden Shelves", "Metal Shelves", "Wall Shelves"]
       },
       {
-        name: "Percussion",
-        items: ["Drums", "Cymbals", "Digital Drums", "Hand Percussion"]
+        name: "Cabinets",
+        items: ["TV Units", "Display Cabinets", "Storage Cabinets"]
       },
       {
-        name: "Keyboards",
-        items: ["Digital Pianos", "Synthesizers", "MIDI Controllers"]
-      },
-      {
-        name: "Pro Audio",
-        items: ["Microphones", "Interfaces", "Speakers", "DJ Equipment"]
+        name: "Wardrobes",
+        items: ["Wooden Wardrobes", "Metal Wardrobes", "Sliding Wardrobes"]
       }
     ]
   },
   {
-    name: "Tools",
+    name: "Metal",
     submenu: [
       {
-        name: "Power Tools",
-        items: ["Drills", "Saws", "Sanders", "Power Sets"]
+        name: "Home Decor",
+        items: ["Wall Art", "Sculptures", "Showpieces"]
       },
       {
-        name: "Hand Tools",
-        items: ["Wrenches", "Hammers", "Screwdrivers", "Tool Sets"]
-      },
-      {
-        name: "Outdoor Tools",
-        items: ["Lawn Mowers", "Trimmers", "Blowers", "Garden Tools"]
+        name: "Furniture",
+        items: ["Metal Chairs", "Metal Tables", "Metal Shelves"]
       }
     ]
   },
   {
-    name: "Collectibles",
+    name: "Terracotta & Clay",
     submenu: [
       {
-        name: "Sports Memorabilia",
-        items: ["Autographs", "Cards", "Jerseys", "Equipment"]
+        name: "Showpiece",
+        items: ["Bankura Horses", "Sculptures", "Wall Hangings"]
       },
       {
-        name: "Coins & Currency",
-        items: ["Gold Coins", "Silver Coins", "Rare Coins", "Paper Money"]
-      },
-      {
-        name: "Art & Antiques",
-        items: ["Paintings", "Sculptures", "Vintage Items", "Fine Art"]
+        name: "Planters",
+        items: ["Small Planters", "Medium Planters", "Large Planters"]
       }
     ]
   }

@@ -119,7 +119,7 @@ export default function FeaturedProducts() {
                     </button>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-4 opacity-100 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-all duration-300 transform translate-y-0 md:translate-y-full group-hover:translate-y-0 group-focus:translate-y-0">
-                    <button className="w-full bg-amber-800 text-white py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors flex items-center justify-center gap-2">
+                    <button className="w-3/4 mx-auto bg-orange-600 text-white py-3 rounded-full font-semibold hover:bg-orange-700 transition-colors flex items-center justify-center gap-2">
                       <ShoppingCartIcon className="h-5 w-5" />
                       Add to Cart
                     </button>
@@ -127,10 +127,10 @@ export default function FeaturedProducts() {
                 </div>
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-amber-800 transition-colors">
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-orange-800 transition-colors">
                       {product.name}
                     </h3>
-                    <span className="text-lg font-bold text-amber-800">${product.price}</span>
+                    <span className="text-lg font-bold text-orange-800">${product.price}</span>
                   </div>
                   <p className="text-sm text-gray-500 mb-4">{product.category}</p>
                   <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>

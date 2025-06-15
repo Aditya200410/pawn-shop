@@ -120,7 +120,7 @@ export default function MostLoved() {
                     </button>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-4 opacity-100 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-all duration-300 transform translate-y-0 md:translate-y-full group-hover:translate-y-0 group-focus:translate-y-0">
-                    <button className="w-full bg-amber-800 text-white py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors flex items-center justify-center gap-2">
+                    <button className="w-3/4 mx-auto bg-orange-600 text-white py-3 rounded-full font-semibold hover:bg-orange-700 transition-colors flex items-center justify-center gap-2">
                       <ShoppingCartIcon className="h-5 w-5" />
                       Add to Cart
                     </button>
@@ -131,8 +131,8 @@ export default function MostLoved() {
                   <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">{product.name}</h3>
                   <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-2">{product.description}</p>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-                    <span className="text-lg sm:text-xl font-semibold text-amber-800">₹{product.price.toFixed(2)}</span>
-                    <button className="w-full sm:w-auto px-4 py-2 bg-amber-800 text-white rounded-full hover:bg-amber-900 transition-colors text-sm sm:text-base">
+                    <span className="text-lg sm:text-xl font-semibold text-orange-600">₹{product.price.toFixed(2)}</span>
+                    <button className="w-full sm:w-auto px-4 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors text-sm sm:text-base">
                       Add to cart
                     </button>
                   </div>
