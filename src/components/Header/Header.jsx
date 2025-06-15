@@ -449,9 +449,7 @@ export default function Header() {
                           <div key={submenu.name} className="p-4">
                             <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-1">
                               {submenu.name}
-                              {submenu.items && submenu.items.length > 0 && (
-                                <ChevronDownIcon className="h-4 w-4" />
-                              )}
+                              
                             </h3>
                             {submenu.items && submenu.items.length > 0 && (
                               <ul className="space-y-2">

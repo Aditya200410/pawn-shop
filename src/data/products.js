@@ -4,6 +4,116 @@ const placeholderImage = 'https://placehold.co/400x400/e2e8f0/475569?text=Produc
 export const products = [
   {
     id: 1,
+    name: "Classic Wooden Chair",
+    shortDescription: "Handcrafted wooden chair with premium oak finish, perfect for dining rooms and study spaces.",
+    description: "Experience the perfect blend of traditional craftsmanship and modern design with our Classic Wooden Chair. This exquisite piece is crafted with attention to detail and premium materials, making it a perfect addition to your home decor collection. The chair features a sturdy oak frame, ergonomic design, and a comfortable seating experience.",
+    productDetails: "Made from sustainably sourced premium oak, this chair features traditional joinery techniques combined with modern finishing methods. The seat is hand-woven using natural fibers, providing both comfort and durability. Each piece is individually crafted by skilled artisans, ensuring unique character and exceptional quality.",
+    category: "Chairs",
+    subcategory: "Dining Chairs",
+    price: 12999.00,
+    originalPrice: 15999.00,
+    image: "/images/products/chair-1.jpg",
+    popularity: 4.5,
+    date: "2024-01-15",
+    outOfStock: false,
+    specifications: {
+      material: "Premium Oak",
+      dimensions: "H: 90cm, W: 45cm, D: 55cm",
+      weight: "8.5 kg",
+      assembly: "Required",
+      care: "Wipe with damp cloth, avoid direct sunlight"
+    }
+  },
+  {
+    id: 2,
+    name: "Modern Armchair",
+    shortDescription: "Contemporary armchair with plush cushioning and elegant design, ideal for living rooms and reading corners.",
+    description: "Elevate your living space with our Modern Armchair, featuring a sleek design and exceptional comfort. The chair combines contemporary aesthetics with practical functionality, making it a versatile addition to any room. Its plush cushioning and supportive structure ensure hours of comfortable seating.",
+    productDetails: "Crafted with a solid hardwood frame and premium upholstery, this armchair offers both style and durability. The cushions are filled with high-density foam and wrapped in soft fabric, providing optimal comfort. The chair's modern silhouette and clean lines make it a perfect fit for contemporary interiors.",
+    category: "Armchairs",
+    subcategory: "Living Room",
+    price: 24999.00,
+    originalPrice: 29999.00,
+    image: "/images/products/armchair-1.jpg",
+    popularity: 4.8,
+    date: "2024-02-01",
+    outOfStock: false,
+    specifications: {
+      material: "Hardwood Frame, Premium Fabric",
+      dimensions: "H: 85cm, W: 75cm, D: 80cm",
+      weight: "25 kg",
+      assembly: "Minimal Assembly Required",
+      care: "Professional cleaning recommended"
+    }
+  },
+  {
+    id: 3,
+    name: "Rustic Coffee Table",
+    shortDescription: "Handcrafted coffee table with natural wood grain and metal accents, perfect for living room centerpieces.",
+    description: "Add character to your living room with our Rustic Coffee Table. This handcrafted piece combines natural wood elements with modern metal accents, creating a unique and versatile centerpiece. The table's spacious surface and sturdy construction make it both functional and stylish.",
+    productDetails: "Each table is crafted from reclaimed wood, showcasing unique grain patterns and natural variations. The metal frame is powder-coated for durability and features a subtle matte finish. The table's design allows for easy cleaning and maintenance while maintaining its rustic charm.",
+    category: "Tables",
+    subcategory: "Coffee Tables",
+    price: 18999.00,
+    originalPrice: 22999.00,
+    image: "/images/products/table-1.jpg",
+    popularity: 4.6,
+    date: "2024-02-15",
+    outOfStock: false,
+    specifications: {
+      material: "Reclaimed Wood, Powder-coated Metal",
+      dimensions: "H: 45cm, W: 120cm, D: 60cm",
+      weight: "35 kg",
+      assembly: "Required",
+      care: "Dust regularly, use wood polish monthly"
+    }
+  },
+  {
+    id: 4,
+    name: "Vintage Bookshelf",
+    shortDescription: "Elegant bookshelf with adjustable shelves and classic design, perfect for displaying books and decorative items.",
+    description: "Organize your space with our Vintage Bookshelf, featuring adjustable shelves and timeless design. This versatile piece combines functionality with aesthetic appeal, making it ideal for both storage and display purposes. The classic design elements add character to any room.",
+    productDetails: "Constructed from solid hardwood with a rich finish, this bookshelf offers durability and style. The adjustable shelves allow for customization based on your storage needs. The back panel features a subtle pattern that adds depth to the design while maintaining versatility.",
+    category: "Storage",
+    subcategory: "Bookshelves",
+    price: 29999.00,
+    originalPrice: 34999.00,
+    image: "/images/products/bookshelf-1.jpg",
+    popularity: 4.7,
+    date: "2024-03-01",
+    outOfStock: false,
+    specifications: {
+      material: "Solid Hardwood",
+      dimensions: "H: 180cm, W: 90cm, D: 35cm",
+      weight: "45 kg",
+      assembly: "Required",
+      care: "Dust regularly, avoid direct sunlight"
+    }
+  },
+  {
+    id: 5,
+    name: "Modern Sofa Set",
+    shortDescription: "Contemporary 3-seater sofa with matching armchairs, featuring premium fabric and comfortable cushioning.",
+    description: "Transform your living room with our Modern Sofa Set, offering both comfort and style. The set includes a spacious 3-seater sofa and two matching armchairs, perfect for creating a cohesive living space. The premium fabric and plush cushioning ensure maximum comfort.",
+    productDetails: "Each piece is crafted with a sturdy hardwood frame and high-quality upholstery. The cushions are filled with a combination of high-density foam and feather for optimal comfort. The set's modern design features clean lines and subtle details that complement various interior styles.",
+    category: "Sofas",
+    subcategory: "Living Room Sets",
+    price: 89999.00,
+    originalPrice: 99999.00,
+    image: "/images/products/sofa-1.jpg",
+    popularity: 4.9,
+    date: "2024-03-15",
+    outOfStock: false,
+    specifications: {
+      material: "Hardwood Frame, Premium Fabric",
+      dimensions: "Sofa: 220x90x85cm, Armchair: 75x85x85cm",
+      weight: "Sofa: 85kg, Armchair: 35kg",
+      assembly: "Professional Assembly Required",
+      care: "Professional cleaning recommended"
+    }
+  },
+  {
+    id: 6,
     name: "Fighting Bull (Pair)",
     price: 29.66,
     category: "Metal",
@@ -13,7 +123,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 2,
+    id: 7,
     name: "Fighting Bull (Single)",
     price: 15.51,
     category: "Metal",
@@ -23,7 +133,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 3,
+    id: 8,
     name: "Maa Durga Statue",
     price: 87.63,
     category: "Metal",
@@ -34,7 +144,7 @@ export const products = [
     outOfStock: true,
   },
   {
-    id: 4,
+    id: 9,
     name: "Terracotta Bankura Horse 12″",
     price: 14.42,
     category: "Terracotta & Clay",
@@ -44,7 +154,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 5,
+    id: 10,
     name: "Terracotta Bankura Horse 16″",
     price: 17.37,
     category: "Terracotta & Clay",
@@ -54,7 +164,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 6,
+    id: 11,
     name: "Kathakali Horse (Small)",
     price: 11.33,
     category: "Terracotta & Clay",
@@ -64,7 +174,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 7,
+    id: 12,
     name: "Terracotta Black Bankura Horse 12″",
     price: 14.42,
     category: "Terracotta & Clay",
@@ -74,7 +184,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 8,
+    id: 13,
     name: "Terracotta Black Bankura Horse 16″",
     price: 17.37,
     category: "Terracotta & Clay",
@@ -84,7 +194,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 9,
+    id: 14,
     name: "Terracotta Blue Bankura Horse 6″",
     price: 6.04,
     category: "Terracotta & Clay",
@@ -94,7 +204,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 10,
+    id: 15,
     name: "Terracotta Green Bankura Horse 6″",
     price: 6.04,
     category: "Terracotta & Clay",
@@ -104,7 +214,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 11,
+    id: 16,
     name: "Terracotta Pink Bankura Horse 6″",
     price: 6.04,
     category: "Terracotta & Clay",
@@ -114,7 +224,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 12,
+    id: 17,
     name: "Terracotta Yellow Bankura Horse 8″",
     price: 9.06,
     category: "Terracotta & Clay",
@@ -124,7 +234,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 13,
+    id: 18,
     name: "Terracotta Bankura Horse 24″",
     price: 52.85,
     category: "Terracotta & Clay",
@@ -134,7 +244,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 14,
+    id: 19,
     name: "Terracotta Bankura Horse 28″",
     price: 64.18,
     category: "Terracotta & Clay",
@@ -144,7 +254,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 15,
+    id: 20,
     name: "Terracotta Bankura Horse 6″",
     price: 4.91,
     category: "Terracotta & Clay",
@@ -154,7 +264,7 @@ export const products = [
     date: "2024-03-01",
   },
   {
-    id: 16,
+    id: 21,
     name: "Terracotta Bankura Horse 8″",
     price: 5.96,
     category: "Terracotta & Clay",

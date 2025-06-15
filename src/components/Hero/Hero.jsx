@@ -5,20 +5,23 @@ const slides = [
   {
     id: 1,
     image: '/image1.png',
-    title: '',
-    
+    title: 'Discover Handcrafted Treasures',
+    description: 'Explore our collection of authentic Bengali handicrafts, each piece telling a unique story of tradition and artistry.',
+    cta: 'Shop Collection'
   },
   {
     id: 2,
     image: '/image.png',
-    title: '',
-   
+    title: 'Artisanal Excellence',
+    description: 'From terracotta to metalwork, experience the finest craftsmanship passed down through generations.',
+    cta: 'View Gallery'
   },
   {
     id: 3,
     image: '/image1.png',
-    title: '',
-   
+    title: 'Heritage Meets Modern',
+    description: 'Where traditional Bengali artistry meets contemporary design, creating timeless pieces for your home.',
+    cta: 'Learn More'
   },
 ];
 
@@ -41,11 +44,11 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="relative h-[500px] overflow-hidden">
+    <div className="relative h-[600px] overflow-hidden">
       {/* Navigation Buttons */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +67,7 @@ export default function Hero() {
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -95,36 +98,57 @@ export default function Hero() {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
           >
-            <div className="absolute inset-0" />
+            <div className="absolute inset-0 bg-black/30" />
           </div>
           
-          <div className="relative h-full flex items-end pb-10 justify-center text-center">
-            <div className="max-w-2xl px-4">
-              <motion.h1
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-4xl md:text-5xl font-bold text-white mb-4"
-              >
-                {slides[currentSlide].title}
-              </motion.h1>
-              <motion.p
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="text-lg md:text-xl text-white mb-8"
-              >
-                {slides[currentSlide].description}
-              </motion.p>
-              <motion.button
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                whileHover={{ scale: 1.05 }}
-                className="bg-red-600 text-gray-900 px-8 py-3 rounded-full font-semibold hover:bg-red` transition-colors"
-              >
-                Shop Now
-              </motion.button>
+          <div className="relative h-full flex items-center">
+            <div className="container mx-auto px-4">
+              <div className="max-w-2xl md:ml-0 mx-auto md:mx-0 text-center md:text-left">
+                <motion.h1
+                  initial={{ y: -50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ 
+                    delay: 0.2, 
+                    duration: 0.8, 
+                    ease: [0.22, 1, 0.36, 1],
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
+                >
+                  {slides[currentSlide].title}
+                </motion.h1>
+                <motion.p
+                  initial={{ y: -50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ 
+                    delay: 0.4, 
+                    duration: 0.8, 
+                    ease: [0.22, 1, 0.36, 1],
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="text-lg md:text-xl text-white/90 mb-8"
+                >
+                  {slides[currentSlide].description}
+                </motion.p>
+                <motion.button
+                  initial={{ y: -50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ 
+                    delay: 0.6, 
+                    duration: 0.8, 
+                    ease: [0.22, 1, 0.36, 1],
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-amber-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors"
+                >
+                  {slides[currentSlide].cta}
+                </motion.button>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -136,7 +160,7 @@ export default function Hero() {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`h-2 w-2 rounded-full transition-all ${
+            className={`h-2 w-2 rounded-full transition-all duration-300 ${
               currentSlide === index ? 'w-8 bg-white' : 'bg-white/50'
             }`}
           />

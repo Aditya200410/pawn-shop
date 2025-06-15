@@ -4,41 +4,54 @@ import { Link } from 'react-router-dom';
 const categories = [
   {
     id: 1,
-    name: 'Apparels & Accessories',
-    description: 'We offer finest embroideried Kantha in dresses, beding or quilt.',
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Metal-work-small-image.jpg',
+    name: 'Terracotta',
+    description: 'Traditional clay art',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Handicraft-heritage-of-Bengal.jpg',
   },
   {
     id: 2,
     name: 'Metal Work',
-    description: "Bengal's Dokra is a GI Tagged famous ancient Art Form",
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Terracotta-Clay-small-image.jpg',
+    description: 'Artistic metal crafts',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/untold-stories-behind-every-handicraft.jpg',
   },
   {
     id: 3,
-    name: 'Wood & Paper Pulp',
-    description: 'Beautiful wooden dolls and wood carvings are intrinsic to Bengal',
-    image: 'https://srejonee.com/wp-content/uploads/2024/07/DSC9933-e1719832715970.jpg',
+    name: 'Wood Carving',
+    description: 'Intricate wooden designs',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Handicraft-heritage-of-Bengal.jpg',
   },
   {
     id: 4,
-    name: 'Patachitra',
-    description: 'Ancient Audio-visual art from of Bengal with bio colours',
-    image: 'https://srejonee.com/wp-content/uploads/2024/07/DSC9933-e1719832715970.jpg',
+    name: 'Bamboo',
+    description: 'Eco-friendly bamboo crafts',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/untold-stories-behind-every-handicraft.jpg',
   },
   {
     id: 5,
-    name: 'Terracotta & Clay',
-    description: 'Bengal mastered in baking clay into long-lasting terracotta for centuries.',
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Terracotta-Clay-small-image.jpg',
+    name: 'Textiles',
+    description: 'Traditional fabrics',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Handicraft-heritage-of-Bengal.jpg',
   },
   {
     id: 6,
-    name: 'Miniature Dolls',
-    description: 'Bengal produced finest woven-grass articles for generations',
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Apparels-accessories-small-img.jpg',
+    name: 'Jewelry',
+    description: 'Handcrafted ornaments',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/untold-stories-behind-every-handicraft.jpg',
+  },
+  {
+    id: 7,
+    name: 'Paintings',
+    description: 'Traditional art forms',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/Handicraft-heritage-of-Bengal.jpg',
+  },
+  {
+    id: 8,
+    name: 'Pottery',
+    description: 'Clay pottery items',
+    image: 'https://srejonee.com/wp-content/uploads/2022/08/untold-stories-behind-every-handicraft.jpg',
   },
 ];
+
 const containerVariants = {
   hidden: {},
   visible: {
@@ -62,23 +75,20 @@ const itemVariants = {
 export default function Categories() {
   return (
     <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl font-bold mb-2">Shop by Category</h2>
-          <p className="text-gray-600">Discover our curated collection of premium items</p>
-        </motion.div>
+      <div className="container mx-auto px-4 py-16">
+        <div className="mb-12">
+          <h2 className="text-4xl font-light tracking-tight text-gray-900 mb-4">
+            Shop by <span className="font-serif italic">Category</span>
+          </h2>
+          <div className="w-24 h-1 bg-amber-800"></div>
+        </div>
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto"
         >
           {categories.map((category) => (
             <Link
@@ -89,20 +99,20 @@ export default function Categories() {
               <motion.div
                 variants={itemVariants}
                 whileHover={{ 
-                  scale: 1.03,
+                  scale: 1.05,
                   transition: { duration: 0.2 }
                 }}
-                className="group relative rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="group relative aspect-square rounded-full overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <div className="aspect-[3/4] overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                <div className="absolute inset-0">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
                   <img
                     src={category.image}
                     alt={category.name}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute inset-x-0 bottom-0 p-4 z-20 text-white">
-                    <h3 className="text-lg font-semibold mb-1">{category.name}</h3>
+                  <div className="absolute inset-0 flex flex-col items-center justify-end p-6 z-20 text-white text-center">
+                    <h3 className="text-xl font-semibold mb-1">{category.name}</h3>
                     <p className="text-sm text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       {category.description}
                     </p>

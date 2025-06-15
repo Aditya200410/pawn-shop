@@ -12,6 +12,7 @@ const bestsellers = [
     originalPrice: 6.00,
     image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg',
     discount: 20,
+    description: 'Traditional Bankura horse, handcrafted by skilled artisans'
   },
   {
     id: 2,
@@ -19,6 +20,7 @@ const bestsellers = [
     category: 'Terracotta',
     price: 56.63,
     image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg',
+    description: 'Majestic fighting bull sculpture, a symbol of strength and tradition'
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ const bestsellers = [
     originalPrice: 10.00,
     image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg',
     discount: 10,
+    description: 'Vibrant yellow Bankura horse, perfect for modern interiors'
   },
   {
     id: 4,
@@ -35,6 +38,7 @@ const bestsellers = [
     category: 'Terracotta',
     price: 6.04,
     image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9779-600x600.jpg',
+    description: 'Elegant blue Bankura horse, adds a touch of sophistication'
   },
   {
     id: 5,
@@ -42,6 +46,7 @@ const bestsellers = [
     category: 'Metal',
     price: 29.99,
     image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg',
+    description: 'Intricate metal wall decoration, showcasing traditional patterns'
   },
   {
     id: 6,
@@ -51,6 +56,7 @@ const bestsellers = [
     originalPrice: 55.00,
     image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg',
     discount: 15,
+    description: 'Hand-carved wooden sculpture, a masterpiece of craftsmanship'
   },
   {
     id: 7,
@@ -115,105 +121,80 @@ export default function WeeklyBestsellers() {
   };
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-24 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold text-gray-900"
-          >
-            Weekly bestsellers
-          </motion.h2>
-          <div className="flex flex-wrap justify-center gap-2 mt-4 md:mt-0">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => handleCategoryChange(category)}
-                disabled={isLoading}
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                  selectedCategory === category
-                    ? 'bg-amber-800 text-white'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+        <div className="mb-16">
+          <h2 className="text-4xl font-light tracking-tight text-gray-900 mb-4">
+            Weekly <span className="font-serif italic">Bestsellers</span>
+          </h2>
+          <div className="w-24 h-1 bg-amber-800"></div>
         </div>
 
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-800"></div>
-          </div>
-        ) : (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-          >
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <motion.div
-                  key={product.id}
-                  variants={itemVariants}
-                  className="group bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300"
-                >
-                  <Link to={`/product/${product.id}`} className="block">
-                    <div className="relative overflow-hidden rounded-t-lg">
-                      {product.discount && (
-                        <div className="absolute top-2 left-2 bg-amber-800 text-white px-2 py-1 rounded text-sm font-medium">
-                          -{product.discount}%
-                        </div>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {filteredProducts.map((product) => (
+            <motion.div
+              key={product.id}
+              variants={itemVariants}
+              className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
+            >
+              <Link to={`/product/${product.id}`} className="block">
+                <div className="relative overflow-hidden">
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover transform group-hover:scale-110 group-focus:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300" />
+                    {product.discount && (
+                      <div className="absolute top-4 left-4 bg-amber-800 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                        {product.discount}% OFF
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300">
+                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
+                      <HeartIcon className="h-5 w-5 text-gray-700" />
+                    </button>
+                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
+                      <ShoppingCartIcon className="h-5 w-5 text-gray-700" />
+                    </button>
+                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
+                      <EyeIcon className="h-5 w-5 text-gray-700" />
+                    </button>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 opacity-100 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-all duration-300 transform translate-y-0 md:translate-y-full group-hover:translate-y-0 group-focus:translate-y-0">
+                    <button className="w-full bg-amber-800 text-white py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors flex items-center justify-center gap-2">
+                      <ShoppingCartIcon className="h-5 w-5" />
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-amber-800 transition-colors">
+                      {product.name}
+                    </h3>
+                    <div className="text-right">
+                      <span className="text-lg font-bold text-amber-800">${product.price}</span>
+                      {product.originalPrice && (
+                        <span className="block text-sm text-gray-500 line-through">${product.originalPrice}</span>
                       )}
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                        <div className="flex justify-center space-x-4">
-                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                            <HeartIcon className="h-5 w-5" />
-                          </button>
-                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                            <ShoppingCartIcon className="h-5 w-5" />
-                          </button>
-                          <button className="p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                            <EyeIcon className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </div>
                     </div>
-                    <div className="p-4">
-                      <p className="text-sm text-gray-500 mb-1">{product.category}</p>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">{product.name}</h3>
-                      <div className="flex items-center">
-                        {product.originalPrice ? (
-                          <>
-                            <span className="text-lg font-semibold text-amber-800">${product.price.toFixed(2)}</span>
-                            <span className="ml-2 text-sm text-gray-500 line-through">${product.originalPrice.toFixed(2)}</span>
-                          </>
-                        ) : (
-                          <span className="text-lg font-semibold text-amber-800">${product.price.toFixed(2)}</span>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-8">
-                <p className="text-gray-500">No products found in this category.</p>
-              </div>
-            )}
-          </motion.div>
-        )}
+                  </div>
+                  <p className="text-sm text-gray-500 mb-4">{product.category}</p>
+                  <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

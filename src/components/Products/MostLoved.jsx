@@ -76,20 +76,13 @@ const itemVariants = {
 
 export default function MostLoved() {
   return (
-    <section className="py-16 bg-gray-50 border-t border-gray-200">
+    <section className="py-24 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold text-gray-900 mb-4"
-          >
-            Most Loved Products
-          </motion.h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Discover our most cherished pieces that have captured the hearts of our customers
-          </p>
+        <div className="mb-16">
+          <h2 className="text-4xl font-light tracking-tight text-gray-900 mb-4">
+            Most <span className="font-serif italic">Loved</span>
+          </h2>
+          <div className="w-24 h-1 bg-amber-800"></div>
         </div>
 
         <motion.div
@@ -107,24 +100,30 @@ export default function MostLoved() {
             >
               <Link to={`/product/${product.id}`} className="block">
                 <div className="relative overflow-hidden rounded-t-lg">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-48 sm:h-64 lg:h-80 object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <div className="flex justify-center space-x-3 sm:space-x-4">
-                      <button className="p-1.5 sm:p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                        <HeartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </button>
-                      <button className="p-1.5 sm:p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                        <ShoppingCartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </button>
-                      <button className="p-1.5 sm:p-2 text-gray-600 hover:text-amber-800 transition-colors">
-                        <EyeIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </button>
-                    </div>
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover transform group-hover:scale-110 group-focus:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300">
+                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
+                      <HeartIcon className="h-5 w-5 text-gray-700" />
+                    </button>
+                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
+                      <ShoppingCartIcon className="h-5 w-5 text-gray-700" />
+                    </button>
+                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
+                      <EyeIcon className="h-5 w-5 text-gray-700" />
+                    </button>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 opacity-100 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-all duration-300 transform translate-y-0 md:translate-y-full group-hover:translate-y-0 group-focus:translate-y-0">
+                    <button className="w-full bg-amber-800 text-white py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors flex items-center justify-center gap-2">
+                      <ShoppingCartIcon className="h-5 w-5" />
+                      Add to Cart
+                    </button>
                   </div>
                 </div>
                 <div className="p-4 sm:p-6">

@@ -5,6 +5,7 @@ import {
   PhoneIcon, 
   LockClosedIcon 
 } from '@heroicons/react/24/outline';
+import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon } from 'lucide-react';
 
 const features = [
   {
@@ -67,155 +68,83 @@ const itemVariants = {
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      {/* Features Section */}
-      <div className="border-b border-gray-800">
-        <div className="container mx-auto px-4 py-8">
-          <motion.div
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.1
-                }
-              }
-            }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4"
-          >
-            {features.map((feature) => (
-              <motion.div
-                key={feature.title}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.5 }
-                  }
-                }}
-                className="flex items-center gap-3 justify-center lg:justify-start"
-              >
-                <feature.icon className="h-8 w-8 text-[#8B4513]" />
-                <div>
-                  <h4 className="text-sm font-medium">{feature.title}</h4>
-                  <p className="text-xs text-gray-400">{feature.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Main Footer Content */}
-      <motion.div
-        variants={footerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="container mx-auto px-4 py-16"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Company Info */}
-          <motion.div variants={itemVariants} className="space-y-6">
+    <footer className="bg-black text-gray-700">
+      <div className="container mx-auto px-4 py-16">
+        {/* Logo and Description Section */}
+        <div className="max-w-2xl mb-16">
+          <div className="h-20 w-auto mb-6">
             <img
               src="/logo.JPG"
-              alt="Srejonee"
-              className="h-16 w-fit"
+              alt="Loog"
+              className="h-full w-auto object-contain"
             />
-            <p className="text-gray-400">
-              We take pride in reintroducing the huge treasure trove of Bengal Handicraft to Indians
-              in every corner of the country and the larger audience worldwide.
-            </p>
-          </motion.div>
+          </div>
+          <p className="text-base text-white font-light leading-relaxed">
+            We believe that your home deserves the best. That's why we offer an exclusive collection of premium items crafted with care. Our pieces are designed to not only enhance your living spaces but also stand the test of time, providing lasting beauty and durability.
+          </p>
+        </div>
 
-          {/* Popular Products */}
-          <motion.div variants={itemVariants} className="space-y-6">
-            <h3 className="text-lg font-semibold">Our Popular Products</h3>
-            <ul className="space-y-3">
-              {popularProducts.map((product) => (
-                <li key={product}>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    {product}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Quick Links */}
-          <motion.div variants={itemVariants} className="space-y-6">
-            <h3 className="text-lg font-semibold">Quick Links</h3>
+          <div>
+            <h4 className="text-lg font-medium text-white mb-6">Useful Links</h4>
             <ul className="space-y-3">
-              {quickLinks.map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
+              <li><a href="#" className="text-white hover:text-white transition-colors">Home</a></li>
+              <li><a href="#" className="text-white hover:text-white transition-colors">Shop</a></li>
+              <li><a href="#" className="text-white hover:text-white transition-colors">About Us</a></li>
+              <li><a href="#" className="text-white hover:text-white transition-colors">Blog</a></li>
+              <li><a href="#" className="text-white hover:text-white transition-colors">Contact Us</a></li>
             </ul>
-          </motion.div>
+          </div>
+
+          {/* Categories */}
+          <div>
+            <h4 className="text-lg font-medium text-white mb-6">Categories</h4>
+            <ul className="space-y-3">
+              <li><a href="#" className="text-white hover:text-white transition-colors">Accessories</a></li>
+              <li><a href="#" className="text-white hover:text-white transition-colors">Armchairs</a></li>
+              <li><a href="#" className="text-white hover:text-white transition-colors">Beds</a></li>
+              <li><a href="#" className="text-white hover:text-white transition-colors">Chairs</a></li>
+              <li><a href="#" className="text-white hover:text-white transition-colors">Decor</a></li>
+            </ul>
+          </div>
 
           {/* Contact Info */}
-          <motion.div variants={itemVariants} className="space-y-6">
-            <h3 className="text-lg font-semibold">Quick Contact</h3>
-            <div className="space-y-4">
-              <p className="text-gray-400">
-                <strong className="text-white">M/S Srejonee Art & Creations</strong>
-                <br />
-                623 Active Business Park
-                <br />
-                54/10 D C Dey Road Tangra,
-                <br />
-                Kolkata – 700015
-                <br />
-                West Bengal, India
-              </p>
-              <p className="text-gray-400">
-                <strong className="text-white">Email:</strong>
-                <br />
-                <a href="mailto:info@srejonee.com" className="hover:text-white transition-colors">
-                  info@srejonee.com
-                </a>
-              </p>
-              <p className="text-gray-400">
-                <strong className="text-white">Mobile no.:</strong>
-                <br />
-                <a href="tel:+917439906048" className="hover:text-white transition-colors">
-                  +91 74399 06048
-                </a>
-              </p>
+          <div>
+            <h4 className="text-lg font-medium text-white mb-6">Contact Us</h4>
+            <ul className="space-y-3">
+              <li className="text-white">Phone: +91 1234567890</li>
+              <li className="text-white">Email: info@logo.com</li>
+              <li className="text-white">Store Address: India</li>
+            </ul>
+          </div>
+
+          {/* Social Media */}
+          <div>
+            <h4 className="text-lg font-medium text-white mb-6">Follow Us</h4>
+            <div className="flex space-x-4">
+              <a href="#" className="text-white hover:text-white transition-colors">
+                <FacebookIcon className="h-6 w-6" />
+              </a>
+              <a href="#" className="text-white hover:text-white transition-colors">
+                <InstagramIcon className="h-6 w-6" />
+              </a>
+              <a href="#" className="text-white hover:text-white transition-colors">
+                <TwitterIcon className="h-6 w-6" />
+              </a>
+              <a href="#" className="text-white hover:text-white transition-colors">
+                <YoutubeIcon className="h-6 w-6" />
+              </a>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Bottom Bar */}
-        <motion.div
-          variants={itemVariants}
-          className="border-t border-gray-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center"
-        >
-          <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} Srejonee Art & Creations | All rights reserved
-          </p>
-          <div className="flex gap-4">
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Privacy Policy
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-            Returns and Refund Policy
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-            Shipping Policy
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Terms & Conditions
-            </a>
-          </div>
-        </motion.div>
-      </motion.div>
+        <div className="border-t border-gray-200 mt-16 pt-8 text-sm text-center text-white">
+          <p>© {new Date().getFullYear()} Riko Crafts, built with ❤️. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
   );
 } 
