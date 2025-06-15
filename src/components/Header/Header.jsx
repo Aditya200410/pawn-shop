@@ -1,285 +1,89 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { 
-  Bars3Icon, 
-  XMarkIcon, 
-  ShoppingCartIcon, 
-  MagnifyingGlassIcon,
-  ChevronDownIcon,
-  EnvelopeIcon,
-  PhoneIcon,
-  HomeIcon,
-  ShoppingBagIcon,
-  UserIcon,
-  HeartIcon,
-  QuestionMarkCircleIcon,
-  MapPinIcon
-} from '@heroicons/react/24/outline';
-import { 
-  FaFacebookF, 
-  FaTwitter, 
-  FaInstagram, 
-  FaLinkedinIn, 
-  FaYoutube,
-  FaWhatsapp
-} from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingBag, Menu, X, ChevronDown, Search, User, Heart, Home, ShoppingCart } from 'lucide-react';
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
+import { categories } from '../../data/categories';
 
-const navigation = [
-  { 
-    name: 'Home',
-    href: '/',
-    icon: HomeIcon
-  },
-  { 
-    name: 'Shop',
-    href: '/shop',
-    icon: ShoppingBagIcon
-  },
- 
-  { 
-    name: 'Account',
-    href: '/account',
-    icon: UserIcon
-  },
-  { 
-    name: 'Wishlist',
-    href: '/wishlist',
-    icon: HeartIcon,
-    badge: '0'
-  },
-  { 
-    name: 'Cart',
-    href: '/cart',
-    icon: ShoppingCartIcon,
-    badge: '0'
-  }
-];
+const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
 
-const categories = [
-  { 
-    name: 'Apparels', 
-    href: '#',
-    submenu: [
-      {
-        name: 'Accessories',
-        items: ['Jewelry', 'Stole & Scarf']
-      },
-      {
-        name: 'Men',
-        items: ['Jackets', 'Kurtas']
-      },
-      {
-        name: 'Women',
-        items: ['Jackets', 'Full Length Dress', 'Short Length Dress', 'Sarees', 'Suit Pieces', 'Wrapper/Pants']
-      }
-    ]
-  },
-  { 
-    name: 'Patachitra', 
-    href: '#',
-    submenu: [
-      {
-        name: 'Wall Hangings',
-        items: []
-      },
-      {
-        name: 'Other Articles',
-        items: []
-      }
-    ]
-  },
-  { 
-    name: 'Metal', 
-    href: '#',
-    submenu: [
-      {
-        name: 'Home Decor',
-        items: []
-      },
-      {
-        name: 'Kitchenware',
-        items: []
-      }
-    ]
-  },
-  { 
-    name: 'Grass & Bamboo', 
-    href: '#',
-    submenu: [
-      {
-        name: 'Bags',
-        items: []
-      },
-      {
-        name: 'Dining Accessories',
-        items: []
-      },
-      {
-        name: 'Lamp Shades',
-        items: []
-      },
-      {
-        name: 'Office Stationery',
-        items: []
-      },
-      {
-        name: 'Rugs and Mats',
-        items: []
-      }
-    ]
-  },
-  { 
-    name: 'Wood', 
-    href: '#',
-    submenu: [
-      {
-        name: 'Home Decor',
-        items: []
-      },
-      {
-        name: 'Jewellery Box',
-        items: []
-      },
-      {
-        name: 'Mirror',
-        items: []
-      },
-      {
-        name: 'Table Accents',
-        items: []
-      }
-    ]
-  },
-  { 
-    name: 'Terracotta & Clay', 
-    href: '#',
-    submenu: [
-      {
-        name: 'Kitchenware',
-        items: []
-      },
-      {
-        name: 'Home Decor',
-        items: []
-      },
-      {
-        name: 'Lamps',
-        items: []
-      },
-      {
-        name: 'Showpiece',
-        items: []
-      },
-      {
-        name: 'Miniature Dolls',
-        items: []
-      }
-    ]
-  },
-  { 
-    name: 'Wall Tiles', 
-    href: '#',
-    submenu: [
-      {
-        name: 'Mural',
-        items: []
-      },
-      {
-        name: 'Wall Art',
-        items: []
-      }
-    ]
-  },
-  { 
-    name: 'Others', 
-    href: '#',
-    submenu: []
-  },
-];
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
 
-export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleCategoryClick = (category, subcategory = null, item = null) => {
+    navigate('/shop', {
+      state: {
+        selectedCategory: {
+          main: category,
+          sub: subcategory,
+          item: item
+        }
+      }
+    });
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <>
-      {/* Spacer div for mobile fixed header */}
-      <div className="h-[88px] lg:hidden"></div>
-
-      <header className="bg-white">
-        {/* Top bar - hidden on mobile */}
-        <div className="hidden md:block bg-gray-100 py-2">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white">
+        {/* Top Bar - Desktop Only */}
+        <div className="hidden md:block border-b border-gray-100">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row md:justify-between items-center gap-2 md:gap-4">
-              {/* Contact Info */}
-              <div className="hidden md:flex items-center gap-6">
-                <a 
-                  href="mailto:info@srejonee.com" 
-                  className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2"
-                >
-                  <EnvelopeIcon className="h-4 w-4" />
-                  info@srejonee.com
+            <div className="flex items-center justify-between h-10 text-sm">
+              <div className="flex items-center space-x-6">
+                <a href="tel:+911234567890" className="text-gray-600 hover:text-orange-600">
+                  +91 1234567890
                 </a>
-                <a 
-                  href="tel:+917439906048" 
-                  className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2"
-                >
-                  <PhoneIcon className="h-4 w-4" />
-                  +91 74399 06048
+                <a href="mailto:info@poemsofwood.com" className="text-gray-600 hover:text-orange-600">
+                  info@poemsofwood.com
                 </a>
               </div>
-
-              {/* Quick Links and Social Media */}
-              <div className="flex items-center gap-6">
-                {/* Quick Links */}
-                <nav className="hidden md:flex items-center divide-x divide-gray-300">
-                  <a href="/story" className="text-sm text-gray-600 hover:text-gray-900 px-4">Our Story</a>
-                  <a href="/faq" className="text-sm text-gray-600 hover:text-gray-900 px-4">FAQ</a>
-                  <a href="/blog" className="text-sm text-gray-600 hover:text-gray-900 px-4">Blog</a>
-                  <a href="/contact" className="text-sm text-gray-600 hover:text-gray-900 px-4">Contact us</a>
-                </nav>
-                
-                {/* Social Media Icons */}
-                <div className="hidden md:flex items-center gap-4">
-                  <a 
-                    href="https://facebook.com/srejonee" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[#8B4513] hover:text-[#6B3410] transition-colors"
-                  >
+              <div className="flex items-center space-x-6">
+                <Link to="/" className="text-gray-600 hover:text-orange-600">
+                  Home
+                </Link>
+                <Link to="/shop" className="text-gray-600 hover:text-orange-600">
+                  Shop
+                </Link>
+                <Link to="/about" className="text-gray-600 hover:text-orange-600">
+                  About us
+                </Link>
+                <Link to="/contact" className="text-gray-600 hover:text-orange-600">
+                  Contact us
+                </Link>
+                <div className="flex items-center space-x-4 pl-4 border-l border-gray-200">
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
                     <FaFacebookF className="w-4 h-4" />
                   </a>
-                  <a 
-                    href="https://twitter.com/srejonee" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[#8B4513] hover:text-[#6B3410] transition-colors"
-                  >
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
                     <FaTwitter className="w-4 h-4" />
                   </a>
-                  <a 
-                    href="https://instagram.com/srejonee" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[#8B4513] hover:text-[#6B3410] transition-colors"
-                  >
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
                     <FaInstagram className="w-4 h-4" />
                   </a>
-                  <a 
-                    href="https://linkedin.com/company/srejonee" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[#8B4513] hover:text-[#6B3410] transition-colors"
-                  >
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
                     <FaLinkedinIn className="w-4 h-4" />
                   </a>
-                  <a 
-                    href="https://youtube.com/srejonee" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[#8B4513] hover:text-[#6B3410] transition-colors"
-                  >
+                  <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
                     <FaYoutube className="w-4 h-4" />
                   </a>
                 </div>
@@ -288,281 +92,247 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Header */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200">
-          <div className="flex items-center justify-between px-4 py-2">
-            {/* Menu Button */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              className="p-2"
-            >
-              <Bars3Icon className="h-6 w-6 text-gray-600" />
-            </button>
-
+        {/* Main Header */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16 md:h-24">
             {/* Logo */}
-            <Link to="/" className="flex-shrink-0">
-              <img
-                className="h-12 w-auto"
-                src="/logo.png"
-                alt="Srejonee"
-              />
+            <Link to="/" className="flex items-center">
+              <img src="/logo.png" alt="Poems of Wood" className="h-12 md:h-20" />
             </Link>
 
-            {/* Right Icons */}
-            <div className="flex items-center gap-3">
-              {/* Location */}
-              <a 
-                href="https://maps.google.com/?q=623+Active+Business+Park+54/10+D+C+Dey+Road+Tangra,+Kolkata"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-600 hover:text-[#8B4513]"
-              >
-                <MapPinIcon className="h-5 w-5" />
-              </a>
-
-              {/* WhatsApp */}
-              <a 
-                href="https://wa.me/917439906048"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-600 hover:text-[#25D366]"
-              >
-                <FaWhatsapp className="h-5 w-5" />
-              </a>
-
-              {/* Call */}
-              <a 
-                href="tel:+917439906048"
-                className="text-gray-600 hover:text-[#8B4513]"
-              >
-                <PhoneIcon className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-
-          {/* Search Box */}
-          <div className="px-4 py-2 border-t border-gray-100">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Products search"
-                className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#8B4513] focus:border-transparent text-sm"
-              />
-              <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Desktop Header */}
-        <div className="hidden lg:block">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="container mx-auto px-4 py-2"
-          >
-            <nav className="flex items-center justify-between gap-4">
-              {/* Logo */}
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="flex-shrink-0"
-              >
-                <Link to="/">
-                  <img
-                    className="h-16 max-w-[180px] w-auto"
-                    src="/logo.png"
-                    alt="Srejonee"
-                  />
-                </Link>
-              </motion.div>
-
-              {/* Search Box */}
-             {/* Search */}
-        <div className="hidden md:flex items-center w-full max-w-md mx-6">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Search products"
-              className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full text-sm focus:ring-2 focus:ring-[#8B4513] focus:outline-none"
-            />
-            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
-          </div>
-        </div>
-
-              {/* Desktop navigation */}
-              <div className="flex items-center gap-x-8">
-                {navigation.map((item) => (
-                  <motion.a
-                    key={item.name}
-                    href={item.href}
-                    whileHover={{ scale: 1.05 }}
-                    className="text-gray-600 hover:text-gray-900 flex items-center gap-1 relative"
-                    title={item.name}
-                  >
-                    <item.icon className="h-6 w-6" />
-                  </motion.a>
-                ))}
-
-                {/* Help Center Button */}
-                <Link to="/login">
-                <motion.button 
-                  whileHover={{ scale: 1.05 , backgroundColor: '#6B3410' }}
-                  className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 bg-[#8B4513] text-white rounded-full shadow-sm"
-               
-               >
-                  <UserIcon className="h-4 w-4" />
-                  Login/register
-                </motion.button>
-                </Link>
-              </div>
-            </nav>
-          </motion.div>
-
-          {/* Categories bar with dropdowns */}
-          <div className=" border-gray-200">
-            <div className="container max-w-7xl px-4">
-              <div className="flex justify-between py-2">
-                {categories.map((category) => (
-                  <div
-                    key={category.name}
-                    className="relative group"
-                    onMouseEnter={() => setActiveDropdown(category.name)}
-                    onMouseLeave={() => setActiveDropdown(null)}
-                  >
-                    <motion.a
-                      href={category.href}
-                      whileHover={{ scale: 1.05 }}
-                      className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
-                    >
-                      {category.name}
-                      {category.submenu && category.submenu.length > 0 && (
-                        <ChevronDownIcon className="h-4 w-4" />
-                      )}
-                    </motion.a>
-                    
-                    {/* Dropdown Menu */}
-                    {category.submenu && category.submenu.length > 0 && activeDropdown === category.name && (
-                      <div className="absolute left-0 mt-2 w-60 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                        {category.submenu.map((submenu) => (
-                          <div key={submenu.name} className="p-4">
-                            <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-1">
-                              {submenu.name}
-                              
-                            </h3>
-                            {submenu.items && submenu.items.length > 0 && (
-                              <ul className="space-y-2">
-                                {submenu.items.map((item) => (
-                                  <li key={item}>
-                                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                                      {item}
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu Sidebar */}
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 lg:hidden"
-          >
-            <div className="fixed inset-0 bg-black/30" onClick={() => setMobileMenuOpen(false)} />
-            <motion.div
-              className="fixed inset-y-0 left-0 z-50 w-full overflow-y-auto bg-white px-4 py-4 sm:max-w-sm"
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <img
-                  className="h-8"
-                  src="/logo.png"
-                  alt="Srejonee"
+            {/* Search Box - Desktop Only */}
+            <div className="hidden md:block flex-1 max-w-xl mx-8">
+              <form onSubmit={handleSearch} className="relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                 />
-                <button
-                  type="button"
-                  className="p-2 text-gray-600"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <XMarkIcon className="h-6 w-6" />
+                <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600">
+                  <Search className="w-5 h-5" />
                 </button>
-              </div>
+              </form>
+            </div>
 
-              {/* Categories Menu */}
-              <div className="divide-y divide-gray-200">
-                {categories.map((category) => (
-                  <div key={category.name} className="py-3">
-                    <a
-                      href={category.href}
-                      className="flex items-center justify-between text-base font-medium text-gray-900"
+            {/* Right Icons - Desktop Only */}
+            <div className="hidden md:flex items-center space-x-6">
+              <Link to="/wishlist" className="text-gray-700 hover:text-orange-600 transition-colors">
+                <Heart className="w-5 h-5" />
+              </Link>
+              <Link to="/cart" className="text-gray-700 hover:text-orange-600 transition-colors relative">
+                <ShoppingBag className="w-5 h-5" />
+                <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  0
+                </span>
+              </Link>
+              <Link 
+                to="/login" 
+                className="flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+              >
+                Login / Register
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden text-gray-700 hover:text-orange-600 transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
+       
+        </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: '100%' }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: '100%' }}
+              transition={{ type: 'tween', duration: 0.3 }}
+              className="md:hidden fixed inset-0 bg-white z-50 overflow-y-auto"
+            >
+              <div className="container mx-auto px-4 py-4">
+                {/* Mobile Menu Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <Link to="/" className="flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+                    <img src="/logo.png" alt="Poems of Wood" className="h-12" />
+                  </Link>
+                  <button
+                    className="text-gray-700 hover:text-orange-600 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                {/* Mobile Search */}
+                <form onSubmit={handleSearch} className="relative mb-4">
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
+                  />
+                  <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600">
+                    <Search className="w-5 h-5" />
+                  </button>
+                </form>
+
+                {/* Mobile Navigation */}
+                <nav className="space-y-4">
+                  <div className="space-y-3">
+                    <Link
+                      to="/"
+                      className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      {category.name}
-                      {category.submenu && category.submenu.length > 0 && (
-                        <ChevronDownIcon className="h-5 w-5 text-gray-500" />
-                      )}
-                    </a>
-                    {category.submenu && category.submenu.length > 0 && (
-                      <div className="mt-2 pl-4 space-y-2">
-                        {category.submenu.map((submenu) => (
-                          <div key={submenu.name} className="py-2">
-                            <p className="text-sm font-medium text-gray-900">{submenu.name}</p>
-                            {submenu.items && submenu.items.length > 0 && (
-                              <ul className="mt-1 space-y-1">
-                                {submenu.items.map((item) => (
-                                  <li key={item}>
-                                    <a href="#" className="block py-1 text-sm text-gray-600 hover:text-gray-900">
-                                      {item}
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                      Home
+                    </Link>
+                    <Link
+                      to="/shop"
+                      className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Shop
+                    </Link>
+                    <Link
+                      to="/about"
+                      className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      About us
+                    </Link>
+                    <Link
+                      to="/contact"
+                      className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Contact us
+                    </Link>
                   </div>
-                ))}
+
+                  {/* Categories Section */}
+                  <div className="pt-4 border-t border-gray-100">
+                    <h3 className="text-base font-medium text-gray-900 mb-3">Categories</h3>
+                    <div className="space-y-3">
+                      {categories.map((category) => (
+                        <div key={category.name} className="space-y-2">
+                          <button
+                            onClick={() => handleCategoryClick(category.name)}
+                            className="text-sm text-gray-700 hover:text-orange-600 transition-colors"
+                          >
+                            {category.name}
+                          </button>
+                          {category.submenu && (
+                            <div className="pl-4 space-y-2">
+                              {category.submenu.map((sub) => (
+                                <div key={sub.name}>
+                                  <button
+                                    onClick={() => handleCategoryClick(category.name, sub.name)}
+                                    className="text-sm text-gray-600 hover:text-orange-600 transition-colors"
+                                  >
+                                    {sub.name}
+                                  </button>
+                                  {sub.items && (
+                                    <div className="pl-4 space-y-2">
+                                      {sub.items.map((item) => (
+                                        <button
+                                          key={item}
+                                          onClick={() => handleCategoryClick(category.name, sub.name, item)}
+                                          className="text-sm text-gray-600 hover:text-orange-600 transition-colors"
+                                        >
+                                          {item}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Account Section */}
+                  <div className="pt-4 border-t border-gray-100">
+                    <Link
+                      to="/login"
+                      className="flex items-center justify-center w-full px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Login / Register
+                    </Link>
+                  </div>
+
+                  {/* Social Links */}
+                  <div className="pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-center space-x-6">
+                      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
+                        <FaFacebookF className="w-5 h-5" />
+                      </a>
+                      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
+                        <FaTwitter className="w-5 h-5" />
+                      </a>
+                      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
+                        <FaInstagram className="w-5 h-5" />
+                      </a>
+                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
+                        <FaLinkedinIn className="w-5 h-5" />
+                      </a>
+                      <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
+                        <FaYoutube className="w-5 h-5" />
+                      </a>
+                    </div>
+                  </div>
+                </nav>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-
-        {/* Mobile Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 lg:hidden z-40">
-          <nav className="flex justify-around items-center h-12">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="flex flex-col items-center justify-center text-gray-600 hover:text-[#8B4513] transition-colors py-1"
-              >
-                <item.icon className="h-6 w-6" />
-                <span className="text-[10px] mt-0.5">{item.name}</span>
-              </a>
-            ))}
-            <button
-              className="flex flex-col items-center justify-center text-gray-600 hover:text-[#8B4513] transition-colors py-1 relative"
-            >
-            
-            </button>
-          </nav>
-        </div>
+          )}
+        </AnimatePresence>
       </header>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+        <nav className="flex justify-around items-center h-14">
+          <Link to="/" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+            <Home className="w-5 h-5" />
+            <span className="text-xs mt-0.5">Home</span>
+          </Link>
+          <Link to="/shop" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+            <ShoppingCart className="w-5 h-5" />
+            <span className="text-xs mt-0.5">Shop</span>
+          </Link>
+          <Link to="/wishlist" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+            <Heart className="w-5 h-5" />
+            <span className="text-xs mt-0.5">Wishlist</span>
+          </Link>
+          <Link to="/cart" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors relative">
+            <ShoppingBag className="w-5 h-5" />
+            <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+              0
+            </span>
+            <span className="text-xs mt-0.5">Cart</span>
+          </Link>
+          <Link to="/login" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+            <User className="w-5 h-5" />
+            <span className="text-xs mt-0.5">Account</span>
+          </Link>
+        </nav>
+      </div>
+
+      {/* Spacer to prevent content from being hidden under fixed header and bottom nav */}
+      <div className="h-[40px] md:h-[100px] mb-14 md:mb-0"></div>
     </>
   );
-} 
+};
+
+export default Header; 
