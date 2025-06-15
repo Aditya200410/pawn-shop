@@ -6,10 +6,12 @@ import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { products } from '../data/products';
 import MostLoved from '../components/Products/MostLoved';
 import WeeklyBestsellers from '../components/Products/WeeklyBestsellers';
+import { useCart } from '../context/CartContext';
 
 const ProductView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
@@ -86,6 +88,10 @@ const ProductView = () => {
 
   const handleNextImage = () => {
     setSelectedImage((prev) => (prev === productImages.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleAddToCart = () => {
+    addToCart({ ...product, quantity });
   };
 
   return (
@@ -223,7 +229,8 @@ const ProductView = () => {
 
               <div className="flex space-x-4">
                 <button 
-                  className="flex-1 bg-orange-600 text-white py-4 px-8 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center space-x-2 text-lg font-medium"
+                  className="flex-1 bg-orange-600 text-white py-4 px-8 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center space-x-2 text-lg font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  onClick={handleAddToCart}
                   disabled={product.outOfStock}
                 >
                   <ShoppingCartIcon className="h-6 w-6" />

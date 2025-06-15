@@ -103,8 +103,8 @@ const Header = () => {
             {/* Search Box - Desktop Only */}
             <div className="hidden md:block flex-1 max-w-xl mx-8">
               <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
+              <input
+                type="text"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -112,9 +112,9 @@ const Header = () => {
                 />
                 <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600">
                   <Search className="w-5 h-5" />
-                </button>
+              </button>
               </form>
-            </div>
+        </div>
 
             {/* Right Icons - Desktop Only */}
             <div className="hidden md:flex items-center space-x-6">
@@ -132,7 +132,7 @@ const Header = () => {
                 className="flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
               >
                 Login / Register
-              </Link>
+                </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -201,7 +201,7 @@ const Header = () => {
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Shop
-                    </Link>
+                </Link>
                     <Link
                       to="/about"
                       className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
@@ -227,8 +227,8 @@ const Header = () => {
                           <button
                             onClick={() => handleCategoryClick(category.name)}
                             className="text-sm text-gray-700 hover:text-orange-600 transition-colors"
-                          >
-                            {category.name}
+                    >
+                      {category.name}
                           </button>
                           {category.submenu && (
                             <div className="pl-4 space-y-2">
@@ -248,19 +248,19 @@ const Header = () => {
                                           onClick={() => handleCategoryClick(category.name, sub.name, item)}
                                           className="text-sm text-gray-600 hover:text-orange-600 transition-colors"
                                         >
-                                          {item}
+                                      {item}
                                         </button>
-                                      ))}
+                                ))}
                                     </div>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
+                ))}
+          </div>
+        </div>
 
                   {/* Account Section */}
                   <div className="pt-4 border-t border-gray-100">
@@ -291,16 +291,16 @@ const Header = () => {
                       <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
                         <FaYoutube className="w-5 h-5" />
                       </a>
-                    </div>
+                      </div>
                   </div>
                 </nav>
               </div>
-            </motion.div>
-          )}
+          </motion.div>
+        )}
         </AnimatePresence>
       </header>
 
-      {/* Mobile Bottom Navigation */}
+        {/* Mobile Bottom Navigation */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
         <nav className="flex justify-around items-center h-14">
           <Link to="/" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
@@ -326,8 +326,8 @@ const Header = () => {
             <User className="w-5 h-5" />
             <span className="text-xs mt-0.5">Account</span>
           </Link>
-        </nav>
-      </div>
+          </nav>
+        </div>
 
       {/* Spacer to prevent content from being hidden under fixed header and bottom nav */}
       <div className="h-[40px] md:h-[100px] mb-14 md:mb-0"></div>

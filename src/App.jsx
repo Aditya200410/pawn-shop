@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
+import { CartProvider, useCart } from './context/CartContext';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
 import Categories from './components/Categories/Categories';
@@ -16,16 +16,20 @@ import Story from './pages/Story';
 import ContactPage from './pages/ContactPage';
 import Shop from './pages/Shop';
 import Login from './pages/Login';
-import SignUp from './pages/Signup';  
+import Signup from './pages/Signup';  
 import Account from './pages/Account';  
 import Wishlist from './pages/Wishlist';
 import ProductView from './pages/ProductView';
-import ScrollToTop from './components/ScrollToTop';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import useScrollToTop from './hooks/useScrollToTop';
 import MostLoved from './components/Products/MostLoved';
+import Cart from './components/Cart';
+import Checkout from './pages/Checkout';
+import Toast from './components/Toast/Toast';
 
 function AppContent() {
   useScrollToTop();
+  const { toast, setToast } = useCart();
 
   return (
     <div className="min-h-screen bg-white">
@@ -47,27 +51,36 @@ function AppContent() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/account" element={<Account />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/product/:id" element={<ProductView />} />
       </Routes>
       <Footer />
       <ScrollToTop />
       <Toaster position="top-right" />
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
 
 function App() {
   return (
-    <Router>
+    <CartProvider>
       <AuthProvider>
-        <CartProvider>
+        <Router>
           <AppContent />
-        </CartProvider>
+        </Router>
       </AuthProvider>
-    </Router>
+    </CartProvider>
   );
 }
 
