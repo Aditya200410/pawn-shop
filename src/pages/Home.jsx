@@ -1,6 +1,6 @@
 import React from 'react';
 import Hero from '../components/Hero';
-import Categories from '../components/Categories/FeaturedCategories';
+import Categories from '../components/Categories/Categories';
 import WeeklyBestsellers from '../components/Products/WeeklyBestsellers';
 import MostLoved from '../components/Products/MostLoved';
 import Testimonials from '../components/Testimonials';

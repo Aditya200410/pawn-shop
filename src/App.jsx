@@ -38,7 +38,7 @@ function AppContent() {
         <Route path="/" element={
           <main>
             <Hero />
-            <Categories />
+            <Categories/>
             <FeaturedProducts />
             <WeeklyBestsellers />
             <MostLoved />

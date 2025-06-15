@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Menu, X, ChevronDown, Search, User, Heart, Home, ShoppingCart } from 'lucide-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
 import { categories } from '../../data/categories';
+import { useCart } from '../../context/CartContext';
+import logo from '/logo.png';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +14,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { cartItems } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,12 +42,43 @@ const Header = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  const isActive = (path) => location.pathname === path;
+
+  const menuItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Shop', path: '/shop' },
+   
+  
+  ];
+
+  const mobileMenuVariants = {
+    closed: {
+      x: '100%',
+      transition: {
+        type: 'tween',
+        duration: 0.3,
+        ease: 'easeInOut'
+      }
+    },
+    open: {
+      x: 0,
+      transition: {
+        type: 'tween',
+        duration: 0.3,
+        ease: 'easeInOut'
+      }
     }
   };
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white">
+      <header className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white shadow-md' : 'bg-white/80 backdrop-blur-md'
+      }`}>
         {/* Top Bar - Desktop Only */}
         <div className="hidden md:block border-b border-gray-100">
           <div className="container mx-auto px-4">
@@ -58,11 +92,9 @@ const Header = () => {
                 </a>
               </div>
               <div className="flex items-center space-x-6">
-                <Link to="/" className="text-gray-600 hover:text-orange-600">
-                  Home
-                </Link>
-                <Link to="/shop" className="text-gray-600 hover:text-orange-600">
-                  Shop
+               
+                <Link to="/faq" className="text-gray-600 hover:text-orange-600">
+                  FAQ
                 </Link>
                 <Link to="/about" className="text-gray-600 hover:text-orange-600">
                   About us
@@ -94,213 +126,217 @@ const Header = () => {
 
         {/* Main Header */}
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16 md:h-24">
+          <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center">
-              <img src="/logo.png" alt="Poems of Wood" className="h-12 md:h-20" />
+            <Link to="/" className="text-2xl font-serif">
+              Riko Craft
             </Link>
 
-            {/* Search Box - Desktop Only */}
-            <div className="hidden md:block flex-1 max-w-xl mx-8">
+            {/* Desktop Search */}
+            <div className="hidden md:block flex-1 max-w-2xl mx-8">
               <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
+                <input
+                  type="text"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
+                  className="w-full pl-4 pr-12 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                 />
-                <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600">
-                  <Search className="w-5 h-5" />
-              </button>
+                <button 
+                  type="submit" 
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors"
+                >
+                  <Search size={18} />
+                </button>
               </form>
-        </div>
+            </div>
 
-            {/* Right Icons - Desktop Only */}
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              {menuItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`text-sm font-medium transition-colors duration-200 ${
+                    isActive(item.path) ? 'text-orange-600' : 'text-gray-600 hover:text-orange-600'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Desktop Icons */}
             <div className="hidden md:flex items-center space-x-6">
-              <Link to="/wishlist" className="text-gray-700 hover:text-orange-600 transition-colors">
-                <Heart className="w-5 h-5" />
+              <Link to="/wishlist" className="text-gray-600 hover:text-orange-600 transition-colors">
+                <Heart size={20} />
               </Link>
-              <Link to="/cart" className="text-gray-700 hover:text-orange-600 transition-colors relative">
-                <ShoppingBag className="w-5 h-5" />
-                <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                  0
-                </span>
+              <Link to="/cart" className="text-gray-600 hover:text-orange-600 transition-colors relative">
+                <ShoppingCart size={20} />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartItems.length}
+                  </span>
+                )}
               </Link>
               <Link 
                 to="/login" 
                 className="flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
               >
                 Login / Register
-                </Link>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-gray-700 hover:text-orange-600 transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden text-gray-600 hover:text-orange-600 transition-colors"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-
-       
         </div>
 
         {/* Mobile Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: '100%' }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: '100%' }}
-              transition={{ type: 'tween', duration: 0.3 }}
-              className="md:hidden fixed inset-0 bg-white z-50 overflow-y-auto"
-            >
-              <div className="container mx-auto px-4 py-4">
-                {/* Mobile Menu Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <Link to="/" className="flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
-                    <img src="/logo.png" alt="Poems of Wood" className="h-12" />
-                  </Link>
-                  <button
-                    className="text-gray-700 hover:text-orange-600 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/50 md:hidden z-40"
+              />
+              
+              {/* Menu Panel */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
+                className="fixed top-0 right-0 w-[85%] max-w-sm h-full bg-white shadow-xl md:hidden z-50 overflow-y-auto"
+              >
+                <div className="flex flex-col h-full">
+                  {/* Menu Header */}
+                  <div className="p-6 border-b">
+                    <div className="flex items-center justify-between mb-6 relative">
+                      <button
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="text-gray-600 hover:text-orange-600 transition-colors absolute left-0"
+                      >
+                        <X size={24} />
+                      </button>
+                      <Link to="/" className="mx-auto" onClick={() => setIsMobileMenuOpen(false)}>
+                        <img src={logo} alt="Riko Craft" className="h-12 w-auto" />
+                      </Link>
+                    </div>
+
+                    {/* Search Box */}
+                    <form onSubmit={handleSearch} className="relative mb-6">
+                      <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
+                      />
+                      <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600">
+                        <Search size={18} />
+                      </button>
+                    </form>
+
+                    {/* Quick Actions */}
+                    <div className="space-y-4">
+                      <Link
+                        to="/cart"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <ShoppingCart size={24} className="text-orange-600" />
+                          <span className="font-medium">Shopping Cart</span>
+                        </div>
+                        {cartItems.length > 0 && (
+                          <span className="bg-orange-600 text-white text-sm rounded-full w-6 h-6 flex items-center justify-center">
+                            {cartItems.length}
+                          </span>
+                        )}
+                      </Link>
+                      <Link
+                        to="/login"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center justify-center w-full px-4 py-3 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+                      >
+                        Login / Register
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <nav className="flex-1 p-6">
+                    <ul className="space-y-6">
+                      <li>
+                        <Link
+                          to="/"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block text-lg font-medium text-gray-600 hover:text-orange-600 transition-colors"
+                        >
+                          Home
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/shop"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block text-lg font-medium text-gray-600 hover:text-orange-600 transition-colors"
+                        >
+                          Shop
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/story"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block text-lg font-medium text-gray-600 hover:text-orange-600 transition-colors"
+                        >
+                          Story
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/contact"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block text-lg font-medium text-gray-600 hover:text-orange-600 transition-colors"
+                        >
+                          Contact
+                        </Link>
+                      </li>
+                    </ul>
+                  </nav>
+
+                  {/* Menu Footer */}
+                  <div className="p-6 border-t">
+                    <div className="flex items-center space-x-4">
+                      <Link to="/account" className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors">
+                        <User size={20} />
+                        <span>Account</span>
+                      </Link>
+                      <Link to="/wishlist" className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors">
+                        <Heart size={20} />
+                        <span>Wishlist</span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-
-                {/* Mobile Search */}
-                <form onSubmit={handleSearch} className="relative mb-4">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
-                  />
-                  <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600">
-                    <Search className="w-5 h-5" />
-                  </button>
-                </form>
-
-                {/* Mobile Navigation */}
-                <nav className="space-y-4">
-                  <div className="space-y-3">
-                    <Link
-                      to="/"
-                      className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      to="/shop"
-                      className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Shop
-                </Link>
-                    <Link
-                      to="/about"
-                      className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      About us
-                    </Link>
-                    <Link
-                      to="/contact"
-                      className="block text-base font-medium text-gray-900 hover:text-orange-600 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Contact us
-                    </Link>
-                  </div>
-
-                  {/* Categories Section */}
-                  <div className="pt-4 border-t border-gray-100">
-                    <h3 className="text-base font-medium text-gray-900 mb-3">Categories</h3>
-                    <div className="space-y-3">
-                      {categories.map((category) => (
-                        <div key={category.name} className="space-y-2">
-                          <button
-                            onClick={() => handleCategoryClick(category.name)}
-                            className="text-sm text-gray-700 hover:text-orange-600 transition-colors"
-                    >
-                      {category.name}
-                          </button>
-                          {category.submenu && (
-                            <div className="pl-4 space-y-2">
-                              {category.submenu.map((sub) => (
-                                <div key={sub.name}>
-                                  <button
-                                    onClick={() => handleCategoryClick(category.name, sub.name)}
-                                    className="text-sm text-gray-600 hover:text-orange-600 transition-colors"
-                                  >
-                                    {sub.name}
-                                  </button>
-                                  {sub.items && (
-                                    <div className="pl-4 space-y-2">
-                                      {sub.items.map((item) => (
-                                        <button
-                                          key={item}
-                                          onClick={() => handleCategoryClick(category.name, sub.name, item)}
-                                          className="text-sm text-gray-600 hover:text-orange-600 transition-colors"
-                                        >
-                                      {item}
-                                        </button>
-                                ))}
-                                    </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-          </div>
-        </div>
-
-                  {/* Account Section */}
-                  <div className="pt-4 border-t border-gray-100">
-                    <Link
-                      to="/login"
-                      className="flex items-center justify-center w-full px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Login / Register
-                    </Link>
-                  </div>
-
-                  {/* Social Links */}
-                  <div className="pt-4 border-t border-gray-100">
-                    <div className="flex items-center justify-center space-x-6">
-                      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                        <FaFacebookF className="w-5 h-5" />
-                      </a>
-                      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                        <FaTwitter className="w-5 h-5" />
-                      </a>
-                      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                        <FaInstagram className="w-5 h-5" />
-                      </a>
-                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                        <FaLinkedinIn className="w-5 h-5" />
-                      </a>
-                      <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                        <FaYoutube className="w-5 h-5" />
-                      </a>
-                      </div>
-                  </div>
-                </nav>
-              </div>
-          </motion.div>
-        )}
+              </motion.div>
+            </>
+          )}
         </AnimatePresence>
       </header>
 
-        {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
         <nav className="flex justify-around items-center h-14">
           <Link to="/" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
@@ -326,8 +362,8 @@ const Header = () => {
             <User className="w-5 h-5" />
             <span className="text-xs mt-0.5">Account</span>
           </Link>
-          </nav>
-        </div>
+        </nav>
+      </div>
 
       {/* Spacer to prevent content from being hidden under fixed header and bottom nav */}
       <div className="h-[40px] md:h-[100px] mb-14 md:mb-0"></div>

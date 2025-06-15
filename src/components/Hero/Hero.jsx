@@ -44,7 +44,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="relative h-[600px] overflow-hidden">
+    <div className="relative h-[600px] overflow-hidden mt-16 md:mt-20">
       {/* Navigation Buttons */}
       <button
         onClick={prevSlide}
