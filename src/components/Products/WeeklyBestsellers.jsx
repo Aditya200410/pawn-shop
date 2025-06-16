@@ -149,7 +149,7 @@ export default function WeeklyBestsellers() {
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover transform group-hover:scale-110 group-focus:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-contain group-focus:scale-110 transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300" />
                     {product.discount && (
@@ -160,13 +160,13 @@ export default function WeeklyBestsellers() {
                   </div>
                   <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300">
                     <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-                      <HeartIcon className="h-5 w-5 text-gray-700" />
+                   
                     </button>
                     <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-                      <ShoppingCartIcon className="h-5 w-5 text-gray-700" />
+                     
                     </button>
                     <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-                      <EyeIcon className="h-5 w-5 text-gray-700" />
+                      
                     </button>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-4 opacity-100 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-all duration-300 transform translate-y-0 md:translate-y-full group-hover:translate-y-0 group-focus:translate-y-0">

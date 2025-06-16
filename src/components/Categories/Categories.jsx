@@ -68,10 +68,16 @@ export default function Categories() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-12"
         >
-          <h2 className="text-3xl font-bold mb-2">Shop by Category</h2>
-          <p className="text-gray-600">Discover our curated collection of premium items</p>
+      
+    
+        <div className="mb-16">
+          <h2 className="text-4xl font-light tracking-tight text-gray-900 mb-4">
+            <span className="font-serif italic">Shop Category</span>
+          </h2>
+          <div className="w-24 h-1 bg-amber-800"></div>
+        </div>
         </motion.div>
 
         <motion.div
