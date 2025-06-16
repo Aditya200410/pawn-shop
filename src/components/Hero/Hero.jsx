@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const slides = [
   {
@@ -44,11 +45,11 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="relative h-[600px] overflow-hidden mt-16 md:mt-20">
+    <div className="relative h-[600px] overflow-hidden mt-[20px] md:mt-[50px] z-[1]">
       {/* Navigation Buttons */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-[1] bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +68,7 @@ export default function Hero() {
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
+        className="absolute right-4 top-1/2 -translate-y-1/2  bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +93,7 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="absolute inset-0"
+          className="absolute inset-0 z-0"
         >
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -155,7 +156,7 @@ export default function Hero() {
       </AnimatePresence>
 
       {/* Slide indicators */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2 z-[1]">
         {slides.map((_, index) => (
           <button
             key={index}

@@ -76,8 +76,8 @@ const Header = () => {
 
   return (
     <>
-      <header className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md' : 'bg-white/80 backdrop-blur-md'
+      <header className={`fixed w-full z-[10000] transition-all duration-300 ${
+        isScrolled ? 'bg-white shadow-md' : 'bg-white shadow-md'
       }`}>
         {/* Top Bar - Desktop Only */}
         <div className="hidden md:block border-b border-gray-100">
@@ -126,11 +126,16 @@ const Header = () => {
 
         {/* Main Header */}
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link to="/" className="text-2xl font-serif">
+          <div className="flex items-center justify-between h-[90px] md:h-[120px]">
+            {/* Logo Text */}
+            <Link to="/" className="text-2xl font-serif text-gray-900">
               Riko Craft
             </Link>
+
+            {/* Logo Image - Centered (Mobile Only) */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 md:hidden">
+              <img src={logo} alt="Riko Craft" className="h-16 w-auto" />
+            </div>
 
             {/* Desktop Search */}
             <div className="hidden md:block flex-1 max-w-2xl mx-8">
@@ -173,11 +178,6 @@ const Header = () => {
               </Link>
               <Link to="/cart" className="text-gray-600 hover:text-orange-600 transition-colors relative">
                 <ShoppingCart size={20} />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartItems.length}
-                  </span>
-                )}
               </Link>
               <Link 
                 to="/login" 
@@ -207,7 +207,7 @@ const Header = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="fixed inset-0 bg-black/50 md:hidden z-40"
+                className="fixed inset-0 bg-black/50 md:hidden z-[100]"
               />
               
               {/* Menu Panel */}
@@ -216,22 +216,22 @@ const Header = () => {
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-                className="fixed top-0 right-0 w-[85%] max-w-sm h-full bg-white shadow-xl md:hidden z-50 overflow-y-auto"
+                className="fixed top-0 right-0 w-[85%] max-w-sm h-full bg-white shadow-xl md:hidden z-[100] overflow-y-auto"
               >
                 <div className="flex flex-col h-full">
                   {/* Menu Header */}
                   <div className="p-6 border-b">
                     <div className="flex items-center justify-between mb-6 relative">
-                      <button
+                <button
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="text-gray-600 hover:text-orange-600 transition-colors absolute left-0"
-                      >
+                >
                         <X size={24} />
-                      </button>
+                </button>
                       <Link to="/" className="mx-auto" onClick={() => setIsMobileMenuOpen(false)}>
                         <img src={logo} alt="Riko Craft" className="h-12 w-auto" />
                       </Link>
-                    </div>
+              </div>
 
                     {/* Search Box */}
                     <form onSubmit={handleSearch} className="relative mb-6">
@@ -253,16 +253,12 @@ const Header = () => {
                         to="/cart"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                      >
+                    >
                         <div className="flex items-center space-x-3">
                           <ShoppingCart size={24} className="text-orange-600" />
                           <span className="font-medium">Shopping Cart</span>
                         </div>
-                        {cartItems.length > 0 && (
-                          <span className="bg-orange-600 text-white text-sm rounded-full w-6 h-6 flex items-center justify-center">
-                            {cartItems.length}
-                          </span>
-                        )}
+                       
                       </Link>
                       <Link
                         to="/login"
@@ -312,8 +308,8 @@ const Header = () => {
                         >
                           Contact
                         </Link>
-                      </li>
-                    </ul>
+                                  </li>
+                              </ul>
                   </nav>
 
                   {/* Menu Footer */}
@@ -327,17 +323,17 @@ const Header = () => {
                         <Heart size={20} />
                         <span>Wishlist</span>
                       </Link>
-                    </div>
+                      </div>
                   </div>
-                </div>
-              </motion.div>
+              </div>
+            </motion.div>
             </>
-          )}
+        )}
         </AnimatePresence>
       </header>
 
-      {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+        {/* Mobile Bottom Navigation */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-[10000]">
         <nav className="flex justify-around items-center h-14">
           <Link to="/" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
             <Home className="w-5 h-5" />
@@ -353,20 +349,18 @@ const Header = () => {
           </Link>
           <Link to="/cart" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors relative">
             <ShoppingBag className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-              0
-            </span>
+            
             <span className="text-xs mt-0.5">Cart</span>
           </Link>
           <Link to="/login" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
             <User className="w-5 h-5" />
             <span className="text-xs mt-0.5">Account</span>
           </Link>
-        </nav>
-      </div>
+          </nav>
+        </div>
 
       {/* Spacer to prevent content from being hidden under fixed header and bottom nav */}
-      <div className="h-[40px] md:h-[100px] mb-14 md:mb-0"></div>
+      <div className="h-[90px] md:h-[120px]"></div>
     </>
   );
 };
