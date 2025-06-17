@@ -189,7 +189,7 @@ const Shop = () => {
                       )}
                     </button>
                     <AnimatePresence>
-                      {expandedCategories[category.name] && category.submenu && (
+                    {expandedCategories[category.name] && category.submenu && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
@@ -197,37 +197,37 @@ const Shop = () => {
                           transition={{ duration: 0.3 }}
                           className="ml-4 mt-2 space-y-2 overflow-hidden"
                         >
-                          {category.submenu.map((sub) => (
-                            <div key={sub.name}>
-                              <button
-                                onClick={() => {
-                                  handleCategoryClick(category.name, sub.name);
-                                  if (sub.items?.length > 0) {
-                                    toggleCategory(sub.name);
-                                  }
-                                }}
+                        {category.submenu.map((sub) => (
+                          <div key={sub.name}>
+                            <button
+                              onClick={() => {
+                                handleCategoryClick(category.name, sub.name);
+                                if (sub.items?.length > 0) {
+                                  toggleCategory(sub.name);
+                                }
+                              }}
                                 className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
                                   isCategorySelected(category.name, sub.name) 
                                     ? 'bg-amber-600 text-white shadow-md' 
                                     : 'text-gray-600 hover:bg-gray-50'
-                                }`}
-                              >
-                                <span>{sub.name}</span>
-                                {sub.items?.length > 0 && (
-                                  <svg
+                              }`}
+                            >
+                              <span>{sub.name}</span>
+                              {sub.items?.length > 0 && (
+                                <svg
                                     className={`w-4 h-4 transform transition-transform duration-300 ${
-                                      expandedCategories[sub.name] ? 'rotate-180' : ''
-                                    }`}
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                )}
-                              </button>
+                                    expandedCategories[sub.name] ? 'rotate-180' : ''
+                                  }`}
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              )}
+                            </button>
                               <AnimatePresence>
-                                {expandedCategories[sub.name] && sub.items && (
+                            {expandedCategories[sub.name] && sub.items && (
                                   <motion.div
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
@@ -235,26 +235,26 @@ const Shop = () => {
                                     transition={{ duration: 0.3 }}
                                     className="ml-4 mt-2 space-y-2 overflow-hidden"
                                   >
-                                    {sub.items.map((item) => (
-                                      <button
-                                        key={item}
-                                        onClick={() => handleCategoryClick(category.name, sub.name, item)}
+                                {sub.items.map((item) => (
+                                  <button
+                                    key={item}
+                                    onClick={() => handleCategoryClick(category.name, sub.name, item)}
                                         className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 ${
                                           isCategorySelected(category.name, sub.name, item) 
                                             ? 'bg-amber-600 text-white shadow-md' 
                                             : 'text-gray-600 hover:bg-gray-50'
-                                        }`}
-                                      >
-                                        {item}
-                                      </button>
-                                    ))}
+                                    }`}
+                                  >
+                                    {item}
+                                  </button>
+                                ))}
                                   </motion.div>
-                                )}
+                            )}
                               </AnimatePresence>
-                            </div>
-                          ))}
+                          </div>
+                        ))}
                         </motion.div>
-                      )}
+                    )}
                     </AnimatePresence>
                   </div>
                 ))}
@@ -475,7 +475,7 @@ const Shop = () => {
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
                       </select>
-                    </div>
+          </div>
 
                     {/* Clear Filters Button */}
                     {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < 100000 || sortBy !== 'popularity') && (
@@ -516,9 +516,9 @@ const Shop = () => {
                     <Link to={`/product/${product.id}`} className="block">
                       <div className="relative overflow-hidden">
                         <div className="aspect-[4/3] overflow-hidden bg-gray-100">
-                          <img
-                            src={product.image}
-                            alt={product.name}
+                        <img
+                          src={product.image}
+                          alt={product.name}
                             className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                             onError={(e) => {
                               e.target.onerror = null;
@@ -526,12 +526,12 @@ const Shop = () => {
                             }}
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          {product.outOfStock && (
+                        {product.outOfStock && (
                             <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg">
-                              Out of Stock
-                            </div>
-                          )}
-                        </div>
+                            Out of Stock
+                          </div>
+                        )}
+                          </div>
                         <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           <motion.button
                             whileHover={{ scale: 1.1 }}

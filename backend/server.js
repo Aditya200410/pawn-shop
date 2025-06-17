@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
+const cartRoutes = require('./routes/cart');
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ mongoose.connection.on('disconnected', () => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

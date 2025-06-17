@@ -173,8 +173,8 @@ const Header = () => {
 
             {/* Desktop Icons */}
             <div className="hidden md:flex items-center space-x-6">
-              <Link to="/wishlist" className="text-gray-600 hover:text-orange-600 transition-colors">
-                <Heart size={20} />
+              <Link to="/account" className="text-gray-600 hover:text-orange-600 transition-colors">
+                <User size={20} />
               </Link>
               <Link to="/cart" className="text-gray-600 hover:text-orange-600 transition-colors relative">
                 <ShoppingCart size={20} />
@@ -319,11 +319,7 @@ const Header = () => {
                         <User size={20} />
                         <span>Account</span>
                       </Link>
-                      <Link to="/wishlist" className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors">
-                        <Heart size={20} />
-                        <span>Wishlist</span>
-                      </Link>
-                      </div>
+                    </div>
                   </div>
               </div>
             </motion.div>
@@ -343,13 +339,12 @@ const Header = () => {
             <ShoppingCart className="w-5 h-5" />
             <span className="text-xs mt-0.5">Shop</span>
           </Link>
-          <Link to="/wishlist" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
-            <Heart className="w-5 h-5" />
-            <span className="text-xs mt-0.5">Wishlist</span>
+          <Link to="/account" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+            <User className="w-5 h-5" />
+            <span className="text-xs mt-0.5">Account</span>
           </Link>
           <Link to="/cart" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors relative">
             <ShoppingBag className="w-5 h-5" />
-            
             <span className="text-xs mt-0.5">Cart</span>
           </Link>
           <Link to="/login" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">

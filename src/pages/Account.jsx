@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; // Added Link
-import { UserCircleIcon, PencilSquareIcon, ArrowLeftOnRectangleIcon, CheckCircleIcon, XCircleIcon, ShoppingCartIcon, ClockIcon, TrashIcon } from '@heroicons/react/24/outline'; // Added icons
+import { UserCircleIcon, PencilSquareIcon, ArrowLeftOnRectangleIcon, CheckCircleIcon, XCircleIcon, ShoppingCartIcon, ClockIcon, TrashIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline'; // Added icons
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import cartService from '../services/cartService';
 
 const Account = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -23,7 +24,7 @@ const Account = () => {
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice, loading: cartLoading } = useCart();
   const { user, logout, updateProfile, isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -76,6 +77,37 @@ const Account = () => {
       toast.error(errorMessage);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1) return;
+    try {
+      await updateQuantity(productId, newQuantity);
+      toast.success('Cart updated successfully');
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      toast.error('Failed to update cart');
+    }
+  };
+
+  const handleRemoveFromCart = async (productId) => {
+    try {
+      await removeFromCart(productId);
+      toast.success('Item removed from cart');
+    } catch (error) {
+      console.error('Error removing item:', error);
+      toast.error('Failed to remove item from cart');
+    }
+  };
+
+  const handleClearCart = async () => {
+    try {
+      await clearCart();
+      toast.success('Cart cleared successfully');
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      toast.error('Failed to clear cart');
     }
   };
 
@@ -163,24 +195,13 @@ const Account = () => {
     }
   };
 
-  if (loading) {
+  if (loading || cartLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
       </div>
     );
   }
-
-  // Calculate cart total
-  const calculateCartTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price, 0);
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -194,33 +215,206 @@ const Account = () => {
               Personal details and account information.
             </p>
           </div>
-          <div className="border-t border-gray-200">
-            <dl>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Full name
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user?.name}
-                </dd>
+
+          {/* Tabs */}
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8 px-4 sm:px-6" aria-label="Tabs">
+              <button
+                onClick={() => setActiveTab('profile')}
+                className={`${
+                  activeTab === 'profile'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Profile
+              </button>
+              <button
+                onClick={() => setActiveTab('cart')}
+                className={`${
+                  activeTab === 'cart'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Cart
+              </button>
+              <button
+                onClick={() => setActiveTab('orders')}
+                className={`${
+                  activeTab === 'orders'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Orders
+              </button>
+            </nav>
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-4">
+            {activeTab === 'profile' && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Full name
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {user?.name}
+                  </dd>
+                </div>
+                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Email address
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {user?.email}
+                  </dd>
+                </div>
+                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Account type
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {user?.role}
+                  </dd>
+                </div>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Email address
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user?.email}
-                </dd>
+            )}
+
+            {activeTab === 'cart' && (
+              <div className="px-4 py-5 sm:p-6">
+                {cartItems.length === 0 ? (
+                  <div className="text-center py-8">
+                    <ShoppingCartIcon className="mx-auto h-12 w-12 text-gray-400" />
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">No items in cart</h3>
+                    <p className="mt-1 text-sm text-gray-500">Get started by adding some items to your cart.</p>
+                    <div className="mt-6">
+                      <Link
+                        to="/shop"
+                        className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Go to Shop
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {cartItems.map((item) => (
+                      <div key={item.product?._id || item.id} className="flex items-center justify-between border-b pb-4">
+                        <div className="flex items-center space-x-4">
+                          <img
+                            src={item.product?.image || item.image}
+                            alt={item.product?.name || item.name}
+                            className="h-16 w-16 object-cover rounded"
+                          />
+                          <div>
+                            <h4 className="text-sm font-medium text-gray-900">{item.product?.name || item.name}</h4>
+                            <p className="text-sm text-gray-500">₹{item.product?.price || item.price}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => handleUpdateQuantity(item.product?._id || item.id, item.quantity - 1)}
+                              className="p-1 rounded-full hover:bg-gray-100"
+                              disabled={item.quantity <= 1}
+                            >
+                              <MinusIcon className="h-4 w-4" />
+                            </button>
+                            <span className="text-sm font-medium">{item.quantity}</span>
+                            <button
+                              onClick={() => handleUpdateQuantity(item.product?._id || item.id, item.quantity + 1)}
+                              className="p-1 rounded-full hover:bg-gray-100"
+                            >
+                              <PlusIcon className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <button
+                            onClick={() => handleRemoveFromCart(item.product?._id || item.id)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <TrashIcon className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="flex justify-between items-center pt-4">
+                      <div className="text-lg font-medium">
+                        Total: ₹{getTotalPrice().toFixed(2)}
+                      </div>
+                      <div className="space-x-4">
+                        <button
+                          onClick={handleClearCart}
+                          className="text-sm text-red-600 hover:text-red-800"
+                        >
+                          Clear Cart
+                        </button>
+                        <Link
+                          to="/checkout"
+                          className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          Proceed to Checkout
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Account type
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user?.role}
-                </dd>
+            )}
+
+            {activeTab === 'orders' && (
+              <div className="space-y-4">
+                {orders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <ShoppingCartIcon className="mx-auto h-12 w-12 text-gray-400" />
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">No orders found</h3>
+                    <p className="mt-1 text-sm text-gray-500">Start shopping to place an order.</p>
+                    <div className="mt-6">
+                      <Link
+                        to="/shop"
+                        className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        Browse Products
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-medium text-gray-900">Orders</h3>
+                    </div>
+                    <div className="space-y-4">
+                      {orders.map((order) => (
+                        <div key={order._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                          <div className="flex items-center space-x-4">
+                            <img
+                              src={order.product.image}
+                              alt={order.product.name}
+                              className="h-16 w-16 object-cover rounded"
+                            />
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-900">{order.product.name}</h4>
+                              <p className="text-sm text-gray-500">Order ID: {order._id}</p>
+                              <p className="text-sm text-gray-500">Status: {order.status}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-4">
+                            <button
+                              onClick={() => handleLogout()}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <ArrowLeftOnRectangleIcon className="h-5 w-5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-            </dl>
+            )}
           </div>
         </div>
 

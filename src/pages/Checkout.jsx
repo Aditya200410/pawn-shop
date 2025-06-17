@@ -57,7 +57,7 @@ const Checkout = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center">
+      <div className="container mx-auto px-4 py-16 text-center mt-10">
         <h2 className="text-2xl font-semibold mb-4">Your cart is empty</h2>
         <p className="text-gray-600 mb-8">Please add items to your cart before proceeding to checkout.</p>
         <button

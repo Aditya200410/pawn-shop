@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Plus, Minus, X, ArrowRight, Truck, Shield, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -19,8 +20,17 @@ const staggerContainer = {
 };
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity, getTotalPrice } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getTotalPrice, loading } = useCart();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -109,39 +119,49 @@ const Cart = () => {
                 <tbody className="divide-y divide-gray-100">
                   {cartItems.map((item) => (
                     <motion.tr
-                      key={item.id}
+                      key={item.product?._id || item.id}
                       className="hover:bg-gray-50/50 transition-colors"
                       variants={fadeInUp}
                     >
                       <td className="px-4 md:px-6 py-4 md:py-6">
                         <div className="flex items-center space-x-3 md:space-x-4">
-                          <Link to={`/product/${item.id}`} className="block w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                          <Link to={`/product/${item.product?._id || item.id}`} className="block w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                            <img src={item.product?.image || item.image} alt={item.product?.name || item.name} className="w-full h-full object-cover" />
                           </Link>
                           <div className="min-w-0 flex-1">
-                            <Link to={`/product/${item.id}`} className="text-gray-900 hover:text-orange-600 font-medium text-sm md:text-base line-clamp-2">
-                              {item.name}
+                            <Link to={`/product/${item.product?._id || item.id}`} className="text-gray-900 hover:text-orange-600 font-medium text-sm md:text-base line-clamp-2">
+                              {item.product?.name || item.name}
                             </Link>
-                            <div className="text-sm text-gray-500 md:hidden mt-1">{item.category}</div>
+                            <div className="text-sm text-gray-500 md:hidden mt-1">{item.product?.category || item.category}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 md:px-6 py-4 md:py-6 text-gray-600 hidden md:table-cell">{item.category}</td>
+                      <td className="px-4 md:px-6 py-4 md:py-6 text-gray-600 hidden md:table-cell">{item.product?.category || item.category}</td>
                       <td className="px-4 md:px-6 py-4 md:py-6 text-center">
                         <div className="flex items-center justify-center space-x-2 md:space-x-3">
-                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-600 hover:text-orange-600 transition disabled:opacity-50" disabled={item.quantity <= 1}>
+                          <button 
+                            onClick={() => updateQuantity(item.product?._id || item.id, item.quantity - 1)} 
+                            className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-600 hover:text-orange-600 transition disabled:opacity-50" 
+                            disabled={item.quantity <= 1}
+                          >
                             <Minus className="w-4 h-4" />
                           </button>
                           <span className="font-medium">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-600 hover:text-orange-600 transition">
+                          <button 
+                            onClick={() => updateQuantity(item.product?._id || item.id, item.quantity + 1)} 
+                            className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-600 hover:text-orange-600 transition"
+                          >
                             <Plus className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
-                      <td className="px-4 md:px-6 py-4 md:py-6 text-right text-sm">₹{item.price.toFixed(2)}</td>
-                      <td className="px-4 md:px-6 py-4 md:py-6 text-right font-medium text-sm">₹{(item.price * item.quantity).toFixed(2)}</td>
+                      <td className="px-4 md:px-6 py-4 md:py-6 text-right text-sm">₹{item.product?.price || item.price}</td>
+                      <td className="px-4 md:px-6 py-4 md:py-6 text-right font-medium text-sm">₹{((item.product?.price || item.price) * item.quantity).toFixed(2)}</td>
                       <td className="px-4 md:px-6 py-4 md:py-6 text-right">
-                        <button onClick={() => removeFromCart(item.id)} className="text-gray-400 hover:text-red-600 transition p-1.5">
+                        <button 
+                          onClick={() => removeFromCart(item.product?._id || item.id)} 
+                          className="text-gray-400 hover:text-red-600 transition p-1.5"
+                        >
                           <X className="w-4 h-4" />
                         </button>
                       </td>

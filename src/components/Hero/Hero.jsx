@@ -51,44 +51,44 @@ export default function Hero() {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={prevSlide}
+        onClick={prevSlide}
           className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
-        >
-          <svg
+      >
+        <svg
             className="w-6 h-6 text-gray-700"
-            fill="none"
+          fill="none"
             stroke="currentColor"
-            viewBox="0 0 24 24"
+          viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={nextSlide}
+        onClick={nextSlide}
           className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
-        >
-          <svg
+      >
+        <svg
             className="w-6 h-6 text-gray-700"
-            fill="none"
+          fill="none"
             stroke="currentColor"
-            viewBox="0 0 24 24"
+          viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
         </motion.button>
       </div>
 
@@ -111,9 +111,9 @@ export default function Hero() {
           <div className="relative h-full flex items-center">
             <div className="container mx-auto px-4">
               <div className="max-w-2xl md:ml-0 mx-auto md:mx-0 text-center md:text-left">
-                <motion.h1
+              <motion.h1
                   initial={{ y: -50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
+                animate={{ y: 0, opacity: 1 }}
                   transition={{ 
                     delay: 0.2, 
                     duration: 0.8, 
@@ -122,12 +122,12 @@ export default function Hero() {
                     stiffness: 100
                   }}
                   className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
-                >
-                  {slides[currentSlide].title}
-                </motion.h1>
-                <motion.p
+              >
+                {slides[currentSlide].title}
+              </motion.h1>
+              <motion.p
                   initial={{ y: -50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
+                animate={{ y: 0, opacity: 1 }}
                   transition={{ 
                     delay: 0.4, 
                     duration: 0.8, 
@@ -136,12 +136,12 @@ export default function Hero() {
                     stiffness: 100
                   }}
                   className="text-lg md:text-xl text-white/90 mb-8"
-                >
-                  {slides[currentSlide].description}
-                </motion.p>
-                <motion.button
+              >
+                {slides[currentSlide].description}
+              </motion.p>
+              <motion.button
                   initial={{ y: -50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
+                animate={{ y: 0, opacity: 1 }}
                   transition={{ 
                     delay: 0.6, 
                     duration: 0.8, 
@@ -149,12 +149,12 @@ export default function Hero() {
                     type: "spring",
                     stiffness: 100
                   }}
-                  whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="bg-amber-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors"
-                >
+              >
                   {slides[currentSlide].cta}
-                </motion.button>
+              </motion.button>
               </div>
             </div>
           </div>
