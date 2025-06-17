@@ -140,21 +140,21 @@ const Header = () => {
             {/* Desktop Search */}
             <div className="hidden md:block flex-1 max-w-2xl mx-8">
               <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
+              <input
+                type="text"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-4 pr-12 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
-                />
+              />
                 <button 
                   type="submit" 
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors"
                 >
                   <Search size={18} />
-                </button>
+              </button>
               </form>
-            </div>
+        </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
@@ -202,18 +202,18 @@ const Header = () => {
           {isMobileMenuOpen && (
             <>
               {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="fixed inset-0 bg-black/50 md:hidden z-[100]"
               />
               
               {/* Menu Panel */}
-              <motion.div
+            <motion.div
                 initial={{ x: '100%' }}
-                animate={{ x: 0 }}
+              animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
                 className="fixed top-0 right-0 w-[85%] max-w-sm h-full bg-white shadow-xl md:hidden z-[100] overflow-y-auto"
@@ -319,7 +319,7 @@ const Header = () => {
                         <User size={20} />
                         <span>Account</span>
                       </Link>
-                    </div>
+                      </div>
                   </div>
               </div>
             </motion.div>
@@ -347,10 +347,7 @@ const Header = () => {
             <ShoppingBag className="w-5 h-5" />
             <span className="text-xs mt-0.5">Cart</span>
           </Link>
-          <Link to="/login" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
-            <User className="w-5 h-5" />
-            <span className="text-xs mt-0.5">Account</span>
-          </Link>
+          
           </nav>
         </div>
 

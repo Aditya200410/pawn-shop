@@ -187,7 +187,7 @@ const Account = () => {
       setIsLoggingOut(true);
       await logout();
       toast.success('Logged out successfully');
-      navigate('/login');
+    navigate('/login');
     } catch (error) {
       toast.error('Failed to logout. Please try again.');
     } finally {
@@ -215,7 +215,7 @@ const Account = () => {
               Personal details and account information.
             </p>
           </div>
-
+          
           {/* Tabs */}
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8 px-4 sm:px-6" aria-label="Tabs">
@@ -280,7 +280,7 @@ const Account = () => {
                     {user?.role}
                   </dd>
                 </div>
-              </div>
+            </div>
             )}
 
             {activeTab === 'cart' && (
@@ -296,7 +296,7 @@ const Account = () => {
                         className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                         Go to Shop
-                      </Link>
+                    </Link>
                     </div>
                   </div>
                 ) : (
@@ -351,12 +351,12 @@ const Account = () => {
                         >
                           Clear Cart
                         </button>
-                        <Link
-                          to="/checkout"
+                      <Link 
+                        to="/checkout" 
                           className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
+                      >
                           Proceed to Checkout
-                        </Link>
+                      </Link>
                       </div>
                     </div>
                   </div>
@@ -385,8 +385,8 @@ const Account = () => {
                     <div className="flex justify-between items-center">
                       <h3 className="text-lg font-medium text-gray-900">Orders</h3>
                     </div>
-                    <div className="space-y-4">
-                      {orders.map((order) => (
+                  <div className="space-y-4">
+                    {orders.map((order) => (
                         <div key={order._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                           <div className="flex items-center space-x-4">
                             <img
@@ -407,10 +407,10 @@ const Account = () => {
                             >
                               <ArrowLeftOnRectangleIcon className="h-5 w-5" />
                             </button>
-                          </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
+                  </div>
                   </>
                 )}
               </div>
