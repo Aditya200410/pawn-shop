@@ -4,23 +4,47 @@
     "name": "Curve Chair",
     "category": "Chairs",
     "price": 320.00,
-    "description": "Soft curves and tapering slender lines are inspired by modern design. The result is a classic yet contemporary chair, ideally combined with the table by the same name.",
-    "image": "https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg"
+    "regularPrice": 320.00,
+    "image": "https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg",
+    "preview": "https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg",
+    "color": "",
+    "size": "",
+    "font": "",
+    "rating": 0,
+    "reviews": 0,
+    "inStock": true,
+    "description": "Soft curves and tapering slender lines are inspired by modern design. The result is a classic yet contemporary chair, ideally combined with the table by the same name."
   },
   {
     "id": 2,
     "name": "Palissade Sofa",
     "category": "Sofas",
     "price": 1890.00,
-    "description": "The slender organic forms are fluid and graceful. Noguchi emphasises the lightness of the elements with thin yet comfortable upholstery and a choice of cover fabrics in natural colours.",
-    "image": "https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg"
+    "regularPrice": 1890.00,
+    "image": "https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg",
+    "preview": "https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg",
+    "color": "",
+    "size": "",
+    "font": "",
+    "rating": 0,
+    "reviews": 0,
+    "inStock": true,
+    "description": "The slender organic forms are fluid and graceful. Noguchi emphasises the lightness of the elements with thin yet comfortable upholstery and a choice of cover fabrics in natural colours."
   },
   {
     "id": 3,
     "name": "Aruda Table",
     "category": "Tables",
     "price": 699.00,
-    "description": "A new classic for the contemporary dining room, the Mondrian table reinterprets the light and elegant design of the sofa and coffee table collection of the same name.",
-    "image": "https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg"
+    "regularPrice": 699.00,
+    "image": "https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg",
+    "preview": "https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg",
+    "color": "",
+    "size": "",
+    "font": "",
+    "rating": 0,
+    "reviews": 0,
+    "inStock": true,
+    "description": "A new classic for the contemporary dining room, the Mondrian table reinterprets the light and elegant design of the sofa and coffee table collection of the same name."
   }
 ]

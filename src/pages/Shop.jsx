@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, EyeIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
 // import { products } from '../data/products';
 import { categories } from '../data/categories';
+import ProductCard from '../components/ProductCard/ProductCard.jsx';
 
 const Shop = () => {
   const location = useLocation();
@@ -153,11 +154,7 @@ const Shop = () => {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12"
-    >
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">
       <div className="container mx-auto px-4">
         {/* Mobile Filter Button */}
         <div className="md:hidden mb-6">
@@ -540,76 +537,11 @@ const Shop = () => {
                 <span className="text-lg text-red-600">{error}</span>
               </div>
             ) : filteredProducts.length > 0 ? (
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
-                  <motion.div
-                    key={product.id}
-                    variants={itemVariants}
-                    className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
-                  >
-                    <Link to={`/product/${product.id}`} className="block">
-                      <div className="relative overflow-hidden">
-                        <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
-                          <img
-                            src={product.image || 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image'}
-                            alt={product.name}
-                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 z-0"
-                            onError={e => {
-                              e.target.onerror = null;
-                              e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image';
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
-                          {!product.inStock && (
-                            <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg z-20">
-                              Out of Stock
-                            </div>
-                          )}
-                        </div>
-                        <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-lg"
-                          >
-                            <HeartIcon className="h-5 w-5 text-gray-700" />
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-lg"
-                          >
-                            <ShoppingCartIcon className="h-5 w-5 text-gray-700" />
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-lg"
-                          >
-                            <EyeIcon className="h-5 w-5 text-gray-700" />
-                          </motion.button>
-                        </div>
-                      </div>
-                      <div className="p-6">
-                        <p className="text-sm text-gray-500 mb-2">{product.category}</p>
-                        <h3 className="text-lg font-medium text-gray-900 mb-3 line-clamp-2">{product.name}</h3>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xl font-semibold text-amber-600">₹{product.price?.toFixed ? product.price.toFixed(2) : product.price}</span>
-                          <div className="flex items-center">
-                            <span className="text-sm text-gray-500 mr-1">Rating:</span>
-                            <span className="text-amber-600">{product.rating}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
+                  <ProductCard key={product.id} product={product} />
                 ))}
-              </motion.div>
+              </div>
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -652,7 +584,7 @@ const Shop = () => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
