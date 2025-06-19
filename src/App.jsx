@@ -25,6 +25,7 @@ import MostLoved from './components/Products/MostLoved';
 import Cart from './components/Cart';
 import Checkout from './pages/Checkout';
 import Toast from './components/Toast/Toast';
+import ForgetPassword from './pages/ForgotPassword';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -71,6 +72,8 @@ function AppContent() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/product/:id" element={<ProductView />} />
+        <Route path="/forgetpassword" element={<ForgetPassword />} />
+
       </Routes>
       <Footer />
       <ScrollToTop />

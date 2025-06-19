@@ -3,12 +3,13 @@ import { useLocation, Link } from 'react-router-dom';
 import { Slider } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, EyeIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { products } from '../data/products';
+// import { products } from '../data/products';
 import { categories } from '../data/categories';
 
 const Shop = () => {
   const location = useLocation();
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedCategories, setSelectedCategories] = useState({
     main: null,
@@ -19,6 +20,28 @@ const Shop = () => {
   const [sortBy, setSortBy] = useState('popularity');
   const [viewMode, setViewMode] = useState(16);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch('/api/shop');
+        if (!res.ok) throw new Error('Failed to fetch products');
+        const data = await res.json();
+        console.log('Fetched products:', data);
+        setProducts(data);
+      } catch (err) {
+        setError(err.message || 'Error fetching products');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Handle category selection from header dropdown
   useEffect(() => {
@@ -35,7 +58,7 @@ const Shop = () => {
 
   useEffect(() => {
     filterProducts();
-  }, [priceRange, selectedCategories, sortBy]);
+  }, [products, priceRange, selectedCategories, sortBy]);
 
   const filterProducts = () => {
     let filtered = [...products];
@@ -64,7 +87,7 @@ const Shop = () => {
     // Sorting
     switch (sortBy) {
       case 'popularity':
-        filtered.sort((a, b) => b.popularity - a.popularity);
+        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case 'latest':
         filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -475,7 +498,7 @@ const Shop = () => {
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
                       </select>
-          </div>
+                    </div>
 
                     {/* Clear Filters Button */}
                     {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < 100000 || sortBy !== 'popularity') && (
@@ -500,7 +523,23 @@ const Shop = () => {
 
           {/* Products Grid */}
           <div className="flex-1">
-            {filteredProducts.length > 0 ? (
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100">
+                <svg className="w-12 h-12 animate-spin text-amber-600 mb-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+                <span className="text-lg text-gray-700">Loading products...</span>
+              </div>
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100">
+                <svg className="w-12 h-12 text-red-500 mb-4" fill="none" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path fill="currentColor" d="M15 9l-6 6m0-6l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="text-lg text-red-600">{error}</span>
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <motion.div
                 variants={containerVariants}
                 initial="hidden"
@@ -515,24 +554,24 @@ const Shop = () => {
                   >
                     <Link to={`/product/${product.id}`} className="block">
                       <div className="relative overflow-hidden">
-                        <div className="aspect-[4/3] overflow-hidden bg-gray-100">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                            onError={(e) => {
+                        <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+                          <img
+                            src={product.image || 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image'}
+                            alt={product.name}
+                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 z-0"
+                            onError={e => {
                               e.target.onerror = null;
                               e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image';
                             }}
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        {product.outOfStock && (
-                            <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg">
-                            Out of Stock
-                          </div>
-                        )}
-                          </div>
-                        <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+                          {!product.inStock && (
+                            <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg z-20">
+                              Out of Stock
+                            </div>
+                          )}
+                        </div>
+                        <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                           <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
@@ -560,10 +599,10 @@ const Shop = () => {
                         <p className="text-sm text-gray-500 mb-2">{product.category}</p>
                         <h3 className="text-lg font-medium text-gray-900 mb-3 line-clamp-2">{product.name}</h3>
                         <div className="flex items-center justify-between">
-                          <span className="text-xl font-semibold text-amber-600">₹{product.price.toFixed(2)}</span>
+                          <span className="text-xl font-semibold text-amber-600">₹{product.price?.toFixed ? product.price.toFixed(2) : product.price}</span>
                           <div className="flex items-center">
                             <span className="text-sm text-gray-500 mr-1">Rating:</span>
-                            <span className="text-amber-600">{product.popularity}</span>
+                            <span className="text-amber-600">{product.rating}</span>
                           </div>
                         </div>
                       </div>

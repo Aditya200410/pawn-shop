@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export const authService = {
     async register(userData) {
@@ -26,7 +26,7 @@ export const authService = {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
-            body: JSON.stringify(credentials),
+            body: JSON.stringify({ username: credentials.email, password: credentials.password }),
         });
         
         if (!response.ok) {

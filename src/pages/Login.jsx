@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -26,8 +26,7 @@ const Login = () => {
       toast.success('Welcome back!');
       navigate('/account');
     } catch (err) {
-      setError(err.message || 'Failed to login');
-      toast.error(err.message || 'Failed to login');
+      setError(err.message || contextError || 'Failed to login');
     } finally {
       setIsLoading(false);
     }

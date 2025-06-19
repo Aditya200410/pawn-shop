@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, ShareIcon, StarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
-import { products } from '../data/products';
 import MostLoved from '../components/Products/MostLoved';
 import WeeklyBestsellers from '../components/Products/WeeklyBestsellers';
 import { useCart } from '../context/CartContext';
@@ -35,20 +34,31 @@ const ProductView = () => {
       text: 'Beautiful design and very comfortable. Would recommend to others.',
     },
   ]);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Find the product from the products array
-  const product = products.find(p => p.id === parseInt(id));
-
-  // If product not found, redirect to shop page
   useEffect(() => {
-    if (!product) {
-      navigate('/shop');
-    }
-  }, [product, navigate]);
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/shop');
+        if (!res.ok) throw new Error('Failed to fetch products');
+        const data = await res.json();
+        const found = data.find(p => String(p.id) === String(id));
+        setProduct(found);
+        if (!found) navigate('/shop');
+      } catch (err) {
+        setProduct(null);
+        navigate('/shop');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [id, navigate]);
 
-  if (!product) {
-    return null;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!product) return null;
 
   // Generate multiple images for the product (in a real app, these would come from the backend)
   const productImages = [

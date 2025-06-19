@@ -1,57 +1,7 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
-
-const products = [
-  {
-    id: 1,
-    name: 'Terracotta Bankura Horse 6″',
-    price: 4.91,
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg',
-    category: 'Terracotta',
-    description: 'Handcrafted traditional Bankura horse, a symbol of Bengali heritage'
-  },
-  {
-    id: 2,
-    name: 'Terracotta Fighting Bull Large',
-    price: 56.63,
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg',
-    category: 'Terracotta',
-    description: 'Majestic fighting bull sculpture, showcasing traditional craftsmanship'
-  },
-  {
-    id: 3,
-    name: 'Terracotta Yellow Bankura Horse 8″',
-    price: 9.06,
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg',
-    category: 'Terracotta',
-    description: 'Vibrant yellow Bankura horse, perfect for home decoration'
-  },
-  {
-    id: 4,
-    name: 'Terracotta Blue Bankura Horse 6″',
-    price: 6.04,
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9779-600x600.jpg',
-    category: 'Terracotta',
-    description: 'Elegant blue Bankura horse, a unique addition to your collection'
-  },
-  {
-    id: 5,
-    name: 'Terracotta Pink Bankura Horse 6″',
-    price: 6.04,
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9791-300x300.jpg',
-    category: 'Terracotta',
-    description: 'Charming pink Bankura horse, adds a pop of color to any space'
-  },
-  {
-    id: 6,
-    name: 'Terracotta Green Bankura Horse 6″',
-    price: 6.04,
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/37-600x720-1-600x600.jpg',
-    category: 'Terracotta',
-    description: 'Fresh green Bankura horse, brings nature-inspired elegance'
-  },
-];
 
 const containerVariants = {
   hidden: {},
@@ -74,6 +24,35 @@ const itemVariants = {
 };
 
 export default function FeaturedProducts() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch('/api/featured-products');
+        if (!res.ok) throw new Error('Failed to fetch featured products');
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        setError(err.message || 'Error fetching featured products');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return <div className="py-24 text-center">Loading featured products...</div>;
+  }
+  if (error) {
+    return <div className="py-24 text-center text-red-600">{error}</div>;
+  }
+
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-4">

@@ -1,0 +1,97 @@
+[
+  {
+    "customerName": "aditya Kumar",
+    "email": "adityakumar098k@gmail.com",
+    "phone": "9134763424",
+    "address": {
+      "street": "Burla",
+      "city": "Sambalpur",
+      "state": "Odisha",
+      "pincode": "768018",
+      "country": "India"
+    },
+    "items": [
+      {
+        "id": "1749130378698",
+        "type": "floro",
+        "text": "aditya",
+        "font": "font-chewy",
+        "color": "#ff00ff",
+        "size": "medium",
+        "shape": "rectangle",
+        "usage": "outdoor",
+        "addOns": [
+          "stars"
+        ],
+        "dimmer": true,
+        "price": 3199,
+        "preview": "",
+        "_id": "6841a844d376cad363beaad0"
+      },
+      {
+        "id": "1749131525865",
+        "type": "neon",
+        "text": "aditya",
+        "font": "font-bungee",
+        "color": "#00ffff",
+        "size": "large",
+        "shape": "cut-to-shape",
+        "usage": "outdoor",
+        "addOns": [
+          "butterfly"
+        ],
+        "dimmer": true,
+        "price": 3299,
+        "preview": "",
+        "_id": "6841a844d376cad363beaad1"
+      }
+    ],
+    "totalAmount": 6498,
+    "paymentMethod": "card",
+    "orderStatus": "processing",
+    "paymentStatus": "completed",
+    "_id": "6841a844d376cad363beaacf",
+    "createdAt": "2025-06-05T14:23:00.204Z",
+    "updatedAt": "2025-06-05T14:23:00.204Z",
+    "__v": 0,
+    "id": "6841a844d376cad363beaacf"
+  },
+  {
+    "customerName": "aditya Kumar",
+    "email": "qW@GMAIL.COM",
+    "phone": "9134763424",
+    "address": {
+      "street": "Burla",
+      "city": "Sambalpur",
+      "state": "Odisha",
+      "pincode": "768018",
+      "country": "India"
+    },
+    "items": [
+      {
+        "id": "1749562732083",
+        "type": "neon",
+        "text": "jbfjqF",
+        "font": "font-gloria-hallelujah",
+        "color": "#39ff14",
+        "size": "large",
+        "shape": "cut-to-shape",
+        "usage": "indoor",
+        "addOns": [],
+        "dimmer": false,
+        "price": 499,
+        "preview": "",
+        "_id": "6848357742ce5dbada4f5ef9"
+      }
+    ],
+    "totalAmount": 499,
+    "paymentMethod": "card",
+    "orderStatus": "processing",
+    "paymentStatus": "completed",
+    "_id": "6848357742ce5dbada4f5ef8",
+    "createdAt": "2025-06-10T13:39:03.734Z",
+    "updatedAt": "2025-06-10T13:39:03.734Z",
+    "__v": 0,
+    "id": "6848357742ce5dbada4f5ef8"
+  }
+]

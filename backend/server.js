@@ -1,62 +1,60 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const cookieParser = require('cookie-parser');
-const authRoutes = require('./routes/auth');
-const cartRoutes = require('./routes/cart');
-
-dotenv.config();
-
+// File: admin/backend/server.js
+require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const productRoutes = require("./routes/shop");
+const orderRoutes = require("./routes/orders");
+const authRoutes = require('./routes/auth'); // Assuming your auth routes are here
+const lovedRoutes = require('./routes/loved'); // Assuming your loved routes are here
+const categoryRoutes = require('./routes/category');
+const featuredProductRoutes = require('./routes/featuredProduct');
 const app = express();
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true
+  origin: [
+    'http://localhost:3000', // main client
+    'http://localhost:5173'  // admin panel (Vite default)
+  ],
+  credentials: true
 }));
 app.use(express.json());
-app.use(cookieParser());
 
-// MongoDB Connection with improved options
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pawn-shop', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-    socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-    family: 4 // Use IPv4, skip trying IPv6
-})
-.then(() => {
-    console.log('Connected to MongoDB successfully');
-})
-.catch((err) => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1); // Exit if cannot connect to database
-});
+// MongoDB Connection URL from environment variable
+const MONGODB_URI ="mongodb://127.0.0.1:27017/pawn";
 
-// Handle MongoDB connection errors after initial connection
-mongoose.connection.on('error', err => {
-    console.error('MongoDB connection error:', err);
-});
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log("MongoDB connected to:", MONGODB_URI))
+  .catch(err => console.error("MongoDB connection error:", err));
 
-mongoose.connection.on('disconnected', () => {
-    console.log('MongoDB disconnected');
-});
-
-// Routes
+// API Routes
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+const shopRoutes = require('./routes/shop');
+app.use('/api/shop', shopRoutes);
+const bestSellerRoutes = require('./routes/bestSeller');
+app.use('/api/bestseller', bestSellerRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/cart', cartRoutes);
+app.use('/api/loved', lovedRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/featured-products', featuredProductRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ 
-        message: 'Something went wrong!',
-        error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
+// Port from environment variable
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-}); 
+  console.log(`Server is running on port ${PORT}`);
+});
+
+
+
+

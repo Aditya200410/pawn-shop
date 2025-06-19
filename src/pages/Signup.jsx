@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -38,8 +38,7 @@ const Signup = () => {
       toast.success('Account created successfully! Please sign in.');
       navigate('/login');
     } catch (err) {
-      setError(err.message || 'Failed to create account');
-      toast.error(err.message || 'Failed to create account');
+      setError(err.message || contextError || 'Failed to create account');
     } finally {
       setIsLoading(false);
     }

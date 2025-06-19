@@ -5,25 +5,26 @@ import { toast } from 'react-hot-toast';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        const stored = localStorage.getItem('user');
+        return stored ? JSON.parse(stored) : null;
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const initAuth = async () => {
             try {
-                if (authService.isAuthenticated()) {
-                    const { user } = await authService.getCurrentUser();
-                    setUser(user);
-                }
+                const data = await authService.getCurrentUser();
+                setUser(data.user);
+                localStorage.setItem('user', JSON.stringify(data.user));
             } catch (err) {
-                console.error('Auth initialization error:', err);
-                authService.logout();
+                setUser(null);
+                localStorage.removeItem('user');
             } finally {
                 setLoading(false);
             }
         };
-
         initAuth();
     }, []);
 
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
             setError(null);
             const data = await authService.login(credentials);
             setUser(data.user);
+            localStorage.setItem('user', JSON.stringify(data.user));
             return data;
         } catch (err) {
             setError(err.message);
@@ -44,6 +46,7 @@ export const AuthProvider = ({ children }) => {
             setError(null);
             const data = await authService.register(userData);
             setUser(data.user);
+            localStorage.setItem('user', JSON.stringify(data.user));
             return data;
         } catch (err) {
             setError(err.message);
@@ -51,15 +54,21 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        authService.logout();
+    const logout = async () => {
+        try {
+            await authService.logout();
+        } catch (err) {
+            // Optionally handle logout error
+        }
         setUser(null);
+        localStorage.removeItem('user');
     };
 
     const updateProfile = async (userData) => {
         try {
             const response = await authService.updateProfile(userData);
             setUser(response.data.user);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
             return response.data;
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Failed to update profile';

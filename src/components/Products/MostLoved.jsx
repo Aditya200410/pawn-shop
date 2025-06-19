@@ -1,58 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-
-const mostLovedProducts = [
-  {
-    id: 1,
-    name: 'Curve Chair',
-    category: 'Chairs',
-    price: 320.00,
-    description: 'Soft curves and tapering slender lines are inspired by modern design. The result is a classic yet contemporary chair, ideally combined with the table by the same name.',
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg',
-  },
-  {
-    id: 2,
-    name: 'Palissade Sofa',
-    category: 'Sofas',
-    price: 1890.00,
-    description: 'The slender organic forms are fluid and graceful. Noguchi emphasises the lightness of the elements with thin yet comfortable upholstery and a choice of cover fabrics in natural colours.',
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg',
-  },
-  {
-    id: 3,
-    name: 'Aruda Table',
-    category: 'Tables',
-    price: 699.00,
-    description: 'A new classic for the contemporary dining room, the Mondrian table reinterprets the light and elegant design of the sofa and coffee table collection of the same name.',
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg',
-  },
-  {
-    id: 1,
-    name: 'Curve Chair',
-    category: 'Chairs',
-    price: 320.00,
-    description: 'Soft curves and tapering slender lines are inspired by modern design. The result is a classic yet contemporary chair, ideally combined with the table by the same name.',
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9788-300x300.jpg',
-  },
-  {
-    id: 2,
-    name: 'Palissade Sofa',
-    category: 'Sofas',
-    price: 1890.00,
-    description: 'The slender organic forms are fluid and graceful. Noguchi emphasises the lightness of the elements with thin yet comfortable upholstery and a choice of cover fabrics in natural colours.',
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9785-300x300.jpg',
-  },
-  {
-    id: 3,
-    name: 'Aruda Table',
-    category: 'Tables',
-    price: 699.00,
-    description: 'A new classic for the contemporary dining room, the Mondrian table reinterprets the light and elegant design of the sofa and coffee table collection of the same name.',
-    image: 'https://srejonee.com/wp-content/uploads/2025/05/MG_9782-300x300.jpg',
-  },
-];
 
 const containerVariants = {
   hidden: {},
@@ -75,6 +24,35 @@ const itemVariants = {
 };
 
 export default function MostLoved() {
+  const [mostLovedProducts, setMostLovedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchLoved = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch('/api/loved');
+        if (!res.ok) throw new Error('Failed to fetch most loved products');
+        const data = await res.json();
+        setMostLovedProducts(data);
+      } catch (err) {
+        setError(err.message || 'Error fetching most loved products');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLoved();
+  }, []);
+
+  if (loading) {
+    return <div className="py-24 text-center">Loading most loved products...</div>;
+  }
+  if (error) {
+    return <div className="py-24 text-center text-red-600">{error}</div>;
+  }
+
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-4">
@@ -128,7 +106,7 @@ export default function MostLoved() {
                   <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">{product.name}</h3>
                   <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-2">{product.description}</p>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-                    <span className="text-lg sm:text-xl font-semibold text-orange-600">₹{product.price.toFixed(2)}</span>
+                    <span className="text-lg sm:text-xl font-semibold text-orange-600">₹{product.price?.toFixed(2)}</span>
                     <button className="w-full sm:w-auto px-4 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors text-sm sm:text-base">
                       Add to cart
                     </button>

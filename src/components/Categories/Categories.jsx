@@ -1,44 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-
-const categories = [
-  {
-    id: 1,
-    name: 'Apparels & Accessories',
-    description: 'We offer finest embroideried Kantha in dresses, beding or quilt.',
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Metal-work-small-image.jpg',
-  },
-  {
-    id: 2,
-    name: 'Metal Work',
-    description: "Bengal's Dokra is a GI Tagged famous ancient Art Form",
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Terracotta-Clay-small-image.jpg',
-  },
-  {
-    id: 3,
-    name: 'Wood & Paper Pulp',
-    description: 'Beautiful wooden dolls and wood carvings are intrinsic to Bengal',
-    image: 'https://srejonee.com/wp-content/uploads/2024/07/DSC9933-e1719832715970.jpg',
-  },
-  {
-    id: 4,
-    name: 'Patachitra',
-    description: 'Ancient Audio-visual art from of Bengal with bio colours',
-    image: 'https://srejonee.com/wp-content/uploads/2024/07/DSC9933-e1719832715970.jpg',
-  },
-  {
-    id: 5,
-    name: 'Terracotta & Clay',
-    description: 'Bengal mastered in baking clay into long-lasting terracotta for centuries.',
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Terracotta-Clay-small-image.jpg',
-  },
-  {
-    id: 6,
-    name: 'Miniature Dolls',
-    description: 'Bengal produced finest woven-grass articles for generations',
-    image: 'https://srejonee.com/wp-content/uploads/2022/08/Apparels-accessories-small-img.jpg',
-  },
-];
 
 const containerVariants = {
   hidden: {},
@@ -60,7 +23,36 @@ const itemVariants = {
   },
 };
 
-export default function Categories() {
+const Categories = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/categories');
+      // The response data is in the format { categories: [...] }
+      setCategories(response.data.categories || []);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setError('Failed to load categories');
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center py-8">Loading categories...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
+
   return (
     <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4">
@@ -70,8 +62,6 @@ export default function Categories() {
           viewport={{ once: true }}
           className="mb-12"
         >
-      
-    
         <div className="mb-16">
           <h2 className="text-4xl font-light tracking-tight text-gray-900 mb-4">
             <span className="font-serif italic">Shop Category</span>
@@ -122,4 +112,6 @@ export default function Categories() {
       </div>
     </section>
   );
-}
+};
+
+export default Categories;
