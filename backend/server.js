@@ -15,7 +15,8 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000', // main client
-    'http://localhost:5173'  // admin panel (Vite default)
+    'http://localhost:5173', // admin panel (old Vite default)
+    'http://localhost:5174'  // admin panel (your current Vite port)
   ],
   credentials: true
 }));

@@ -1,14 +1,8 @@
 {
   "categories": [
     {
-      "id": 1,
-      "name": "lol",
-      "description": "We offer finest embroideried Kantha in dresses, beding or quilt.",
-      "image": "https://srejonee.com/wp-content/uploads/2022/08/Metal-work-small-image.jpg"
-    },
-    {
       "id": 2,
-      "name": "Metal Work",
+      "name": "lol",
       "description": "Bengal's Dokra is a GI Tagged famous ancient Art Form",
       "image": "https://srejonee.com/wp-content/uploads/2022/08/Terracotta-Clay-small-image.jpg"
     },
@@ -35,12 +29,6 @@
       "name": "Miniature Dolls",
       "description": "Bengal produced finest woven-grass articles for generations",
       "image": "https://srejonee.com/wp-content/uploads/2022/08/Apparels-accessories-small-img.jpg"
-    },
-    {
-      "id": 7,
-      "name": "jkbcla",
-      "description": "acljkq",
-      "image": "https://srejonee.com/wp-content/uploads/2022/08/Metal-work-small-image.jpg"
     }
   ]
 }
