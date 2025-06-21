@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import config from '../config/config.js';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -23,7 +24,7 @@ export default function Orders() {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://pawnbackend-xmqa.onrender.com/api/orders', {
+      const response = await axios.get(config.API_URLS.ORDERS, {
         headers: {
           Authorization: `Bearer ${token}`
         }

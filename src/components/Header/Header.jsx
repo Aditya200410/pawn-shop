@@ -127,10 +127,18 @@ const Header = () => {
         {/* Main Header */}
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-[90px] md:h-[120px]">
-            {/* Logo Text */}
-            <Link to="/" className="text-2xl font-serif text-gray-900">
+            {/* Desktop Logo */}
+            <Link to="/" className="hidden md:block text-2xl font-serif text-gray-900">
               Riko Craft
             </Link>
+
+            {/* Mobile Hamburger Menu - Left */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden text-gray-600 hover:text-orange-600 transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
 
             {/* Logo Image - Centered (Mobile Only) */}
             <div className="absolute left-1/2 transform -translate-x-1/2 md:hidden">
@@ -178,6 +186,11 @@ const Header = () => {
               </Link>
               <Link to="/cart" className="text-gray-600 hover:text-orange-600 transition-colors relative">
                 <ShoppingCart size={20} />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {cartItems.length}
+                  </span>
+                )}
               </Link>
               <Link 
                 to="/login" 
@@ -187,13 +200,18 @@ const Header = () => {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-gray-600 hover:text-orange-600 transition-colors"
+            {/* Mobile Cart Icon - Right */}
+            <Link 
+              to="/cart" 
+              className="md:hidden text-gray-600 hover:text-orange-600 transition-colors relative"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              <ShoppingCart size={24} />
+              {cartItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartItems.length}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
 
@@ -212,11 +230,11 @@ const Header = () => {
               
               {/* Menu Panel */}
             <motion.div
-                initial={{ x: '100%' }}
+                initial={{ x: '-100%' }}
               animate={{ x: 0 }}
-                exit={{ x: '100%' }}
+                exit={{ x: '-100%' }}
                 transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-                className="fixed top-0 right-0 w-[85%] max-w-sm h-full bg-white shadow-xl md:hidden z-[100] overflow-y-auto"
+                className="fixed top-0 left-0 w-[85%] max-w-sm h-full bg-white shadow-xl md:hidden z-[100] overflow-y-auto"
               >
                 <div className="flex flex-col h-full">
                   {/* Menu Header */}
@@ -224,7 +242,7 @@ const Header = () => {
                     <div className="flex items-center justify-between mb-6 relative">
                 <button
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-gray-600 hover:text-orange-600 transition-colors absolute left-0"
+                        className="text-gray-600 hover:text-orange-600 transition-colors absolute right-0"
                 >
                         <X size={24} />
                 </button>
@@ -258,7 +276,11 @@ const Header = () => {
                           <ShoppingCart size={24} className="text-orange-600" />
                           <span className="font-medium">Shopping Cart</span>
                         </div>
-                       
+                        {cartItems.length > 0 && (
+                          <span className="bg-orange-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
+                            {cartItems.length}
+                          </span>
+                        )}
                       </Link>
                       <Link
                         to="/login"
@@ -346,6 +368,11 @@ const Header = () => {
           <Link to="/cart" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors relative">
             <ShoppingBag className="w-5 h-5" />
             <span className="text-xs mt-0.5">Cart</span>
+            {cartItems.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                {cartItems.length}
+              </span>
+            )}
           </Link>
           
           </nav>

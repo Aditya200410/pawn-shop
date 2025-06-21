@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import cartService from '../services/cartService';
+import config from '../config/config.js';
 
 const Account = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -62,7 +63,7 @@ const Account = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://pawnbackend-xmqa.onrender.com/api/orders', {
+      const response = await axios.get(config.API_URLS.ORDERS, {
         headers: {
           Authorization: `Bearer ${token}`
         }

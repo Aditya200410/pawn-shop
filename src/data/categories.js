@@ -1,95 +1,97 @@
 export const categories = [
   {
-    name: "Chairs",
+    name: "Wooden Craft",
     submenu: [
       {
-        name: "Dining Chairs",
-        items: ["Wooden Chairs", "Metal Chairs", "Plastic Chairs"]
+        name: "Animal Figurines",
+        items: ["Horses", "Deer", "Elephants", "Cranes", "Ducks", "Owls", "Flamingos", "Cows"]
       },
       {
-        name: "Living Room Chairs",
-        items: ["Armchairs", "Recliners", "Accent Chairs"]
+        name: "Wall Decor",
+        items: ["Deer Faces", "Elephant Faces", "Wall Hangings"]
       },
-      {
-        name: "Office Chairs",
-        items: ["Executive Chairs", "Ergonomic Chairs", "Gaming Chairs"]
-      }
-    ]
-  },
-  {
-    name: "Tables",
-    submenu: [
-      {
-        name: "Coffee Tables",
-        items: ["Wooden Tables", "Glass Tables", "Metal Tables"]
-      },
-      {
-        name: "Dining Tables",
-        items: ["Wooden Tables", "Glass Tables", "Metal Tables"]
-      },
-      {
-        name: "Study Tables",
-        items: ["Wooden Tables", "Metal Tables", "Computer Tables"]
-      }
-    ]
-  },
-  {
-    name: "Sofas",
-    submenu: [
-      {
-        name: "Living Room Sets",
-        items: ["3-Seater Sofas", "2-Seater Sofas", "Sectional Sofas"]
-      },
-      {
-        name: "Recliners",
-        items: ["Single Recliners", "Double Recliners", "Power Recliners"]
-      },
-      {
-        name: "Sofa Beds",
-        items: ["Convertible Sofas", "Futons", "Daybeds"]
-      }
-    ]
-  },
-  {
-    name: "Storage",
-    submenu: [
-      {
-        name: "Bookshelves",
-        items: ["Wooden Shelves", "Metal Shelves", "Wall Shelves"]
-      },
-      {
-        name: "Cabinets",
-        items: ["TV Units", "Display Cabinets", "Storage Cabinets"]
-      },
-      {
-        name: "Wardrobes",
-        items: ["Wooden Wardrobes", "Metal Wardrobes", "Sliding Wardrobes"]
-      }
-    ]
-  },
-  {
-    name: "Metal",
-    submenu: [
       {
         name: "Home Decor",
-        items: ["Wall Art", "Sculptures", "Showpieces"]
+        items: ["Boats", "House Boats", "Village Scenes", "Homes"]
       },
       {
-        name: "Furniture",
-        items: ["Metal Chairs", "Metal Tables", "Metal Shelves"]
+        name: "Religious Items",
+        items: ["Ganesh", "Laxmi Mata", "Maa Durga"]
+      },
+      {
+        name: "Home Accessories",
+        items: ["Pen Stands", "Multi-purpose Stands", "Key Holders"]
+      },
+      {
+        name: "Office Accessories",
+        items: ["Pen Stands", "Desk Organizers"]
+      },
+      {
+        name: "Accessories",
+        items: ["Key Rings", "Decorative Items"]
       }
     ]
   },
   {
-    name: "Terracotta & Clay",
+    name: "Terracotta Items",
     submenu: [
       {
-        name: "Showpiece",
-        items: ["Bankura Horses", "Sculptures", "Wall Hangings"]
+        name: "Animal Figurines",
+        items: ["Horse Pairs", "Small Horses", "Elephants"]
       },
       {
-        name: "Planters",
-        items: ["Small Planters", "Medium Planters", "Large Planters"]
+        name: "Cultural Items",
+        items: ["Kathakali Horses", "Couples", "Tribal Items"]
+      },
+      {
+        name: "Religious Items",
+        items: ["Maa Durga", "Shankh", "Ganesh Items"]
+      },
+      {
+        name: "Tribal Items",
+        items: ["Singing Figures", "Musical Instruments", "Masks"]
+      }
+    ]
+  },
+  {
+    name: "Dokra Art",
+    submenu: [
+      {
+        name: "Religious Items",
+        items: ["Ganesh Ji", "Laxmi Mata", "Maa Durga", "Radha Krishna"]
+      },
+      {
+        name: "Animal Figurines",
+        items: ["Elephants", "Owls", "Tortoises", "Bulls", "Peacocks"]
+      },
+      {
+        name: "Decorative Items",
+        items: ["Wall Mounts", "Agarabatti Stands", "Diyas"]
+      },
+      {
+        name: "Handicrafts",
+        items: ["Tribal Items", "Brass Metal Items"]
+      }
+    ]
+  },
+  {
+    name: "Handmade Jewellery",
+    submenu: [
+      {
+        name: "Necklaces",
+        items: ["Traditional", "Modern", "Beaded"]
+      },
+      {
+        name: "Earrings",
+        items: ["Studs", "Drops", "Hoops"]
+      },
+      {
+        name: "Bracelets",
+        items: ["Bangles", "Chains", "Cuffs"]
+      },
+      {
+        name: "Rings",
+        items: ["Traditional", "Modern", "Statement"]
       }
     ]
   }

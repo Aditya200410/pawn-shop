@@ -6,6 +6,7 @@ import { HeartIcon, ShoppingCartIcon, EyeIcon, FunnelIcon, XMarkIcon } from '@he
 // import { products } from '../data/products';
 import { categories } from '../data/categories';
 import ProductCard from '../components/ProductCard/ProductCard.jsx';
+import config from '../config/config.js';
 
 const Shop = () => {
   const location = useLocation();
@@ -30,7 +31,7 @@ const Shop = () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch('https://pawnbackend-xmqa.onrender.com/api/shop');
+        const res = await fetch(config.API_URLS.SHOP);
         if (!res.ok) throw new Error('Failed to fetch products');
         const data = await res.json();
         console.log('Fetched products:', data);

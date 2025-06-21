@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import config from '../../config/config.js';
 
 const containerVariants = {
   hidden: {},
@@ -28,13 +29,24 @@ export default function WeeklyBestsellers() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   useEffect(() => {
     const fetchBestsellers = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const res = await fetch('https://pawnbackend-xmqa.onrender.com/api/bestseller');
+        const res = await fetch(config.API_URLS.BESTSELLER);
         if (!res.ok) throw new Error('Failed to fetch bestsellers');
         const data = await res.json();
         setBestsellers(data);
@@ -50,11 +62,17 @@ export default function WeeklyBestsellers() {
   const categories = useMemo(() => ['All', ...new Set(bestsellers.map(product => product.category))], [bestsellers]);
 
   const filteredProducts = useMemo(() => {
-    if (selectedCategory === 'All') {
-      return bestsellers;
+    let products = selectedCategory === 'All' 
+      ? bestsellers 
+      : bestsellers.filter(product => product.category === selectedCategory);
+    
+    // Limit products on mobile devices
+    if (isMobile) {
+      products = products.slice(0, 6); // Show only 6 products on mobile
     }
-    return bestsellers.filter(product => product.category === selectedCategory);
-  }, [selectedCategory, bestsellers]);
+    
+    return products;
+  }, [selectedCategory, bestsellers, isMobile]);
 
   const handleCategoryChange = (category) => {
     setIsLoading(true);
@@ -65,87 +83,186 @@ export default function WeeklyBestsellers() {
   };
 
   if (isLoading) {
-    return <div className="py-24 text-center">Loading bestsellers...</div>;
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+      </div>
+    );
   }
   if (error) {
-    return <div className="py-24 text-center text-red-600">{error}</div>;
+    return (
+      <div className="text-center py-16">
+        <div className="text-red-500 text-lg font-medium">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <section className="py-24 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <div className="mb-16">
-          <h2 className="text-4xl font-light tracking-tight text-gray-900 mb-4">
-            Weekly <span className="font-serif italic">Bestsellers</span>
-          </h2>
-          <div className="w-24 h-1 bg-amber-800"></div>
-        </div>
+    <section className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16 md:mb-20"
+        >
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-gray-900 mb-6">
+              Weekly <span className="font-serif italic">Bestsellers</span>
+            </h2>
+            <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
+              Discover our most popular handcrafted treasures, chosen by customers for their exceptional quality and timeless beauty
+            </p>
+            <div className="w-20 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
+          </div>
+        </motion.div>
 
+        {/* Products Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          className={`grid gap-6 md:gap-8 max-w-7xl mx-auto ${
+            isMobile 
+              ? 'grid-cols-2 sm:grid-cols-2' 
+              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+          }`}
         >
           {filteredProducts.map((product) => (
             <motion.div
               key={product.id}
               variants={itemVariants}
-              className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
+              className={`group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 ${
+                isMobile ? 'max-w-[180px] mx-auto' : ''
+              }`}
             >
               <Link to={`/product/${product.id}`} className="block">
                 <div className="relative overflow-hidden">
-                  <div className="aspect-[4/3] overflow-hidden">
+                  <div className={`overflow-hidden ${
+                    isMobile ? 'aspect-square' : 'aspect-[4/3]'
+                  }`}>
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-contain group-focus:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     {product.discount && (
-                      <div className="absolute top-4 left-4 bg-amber-800 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                      <div className={`absolute top-3 left-3 bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${
+                        isMobile ? 'text-xs' : ''
+                      }`}>
                         {product.discount}% OFF
                       </div>
                     )}
                   </div>
-                  <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300">
-                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-                   
-                    </button>
-                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-                     
-                    </button>
-                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-                      
-                    </button>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 opacity-100 md:opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-all duration-300 transform translate-y-0 md:translate-y-full group-hover:translate-y-0 group-focus:translate-y-0">
-                    <button className="w-3/4 mx-auto bg-orange-600 text-white py-3 rounded-full font-semibold hover:bg-orange-700 transition-colors flex items-center justify-center gap-2">
-                      <ShoppingCartIcon className="h-5 w-5" />
-                      Add to Cart
-                    </button>
-                  </div>
+                  
+                  {/* Mobile: Show quick action buttons */}
+                  {isMobile && (
+                    <div className="absolute top-3 right-3">
+                      <button className="p-1.5 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
+                        <HeartIcon className="h-3 w-3 text-gray-600" />
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Desktop: Show full action buttons */}
+                  {!isMobile && (
+                    <>
+                      <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
+                          <HeartIcon className="h-4 w-4 text-gray-600" />
+                        </button>
+                        <button className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
+                          <EyeIcon className="h-4 w-4 text-gray-600" />
+                        </button>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-full group-hover:translate-y-0">
+                        <button className="w-full bg-orange-600 text-white py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center justify-center gap-2 text-sm shadow-lg">
+                          <ShoppingCartIcon className="h-4 w-4" />
+                          Add to Cart
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-amber-800 transition-colors">
-                      {product.name}
-                    </h3>
-                    <div className="text-right">
-                      <span className="text-lg font-bold text-amber-800">${product.price}</span>
-                      {product.originalPrice && (
-                        <span className="block text-sm text-gray-500 line-through">${product.originalPrice}</span>
+                
+                <div className={`${isMobile ? 'p-4' : 'p-6'}`}>
+                  <div className={`${isMobile ? 'mb-2' : 'mb-3'}`}>
+                    <p className={`text-gray-500 ${isMobile ? 'text-xs' : 'text-sm'} font-medium`}>
+                      {product.category}
+                    </p>
+                  </div>
+                  
+                  <h3 className={`font-semibold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 ${
+                    isMobile ? 'text-sm mb-3' : 'text-lg mb-3'
+                  }`}>
+                    {product.name}
+                  </h3>
+                  
+                  {!isMobile && (
+                    <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">{product.description}</p>
+                  )}
+                  
+                  <div className={`flex items-center justify-between pt-3 border-t border-gray-100 ${
+                    isMobile ? 'flex-col items-start gap-2' : ''
+                  }`}>
+                    <div className={`${isMobile ? 'w-full' : ''}`}>
+                      <span className={`font-bold text-orange-600 ${
+                        isMobile ? 'text-sm' : 'text-lg'
+                      }`}>
+                        ₹{product.price?.toFixed(2)}
+                      </span>
+                      {product.originalPrice && !isMobile && (
+                        <span className="block text-sm text-gray-500 line-through">₹{product.originalPrice?.toFixed(2)}</span>
                       )}
                     </div>
+                    
+                    {isMobile && (
+                      <button className="w-full bg-orange-600 text-white py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors text-xs shadow-sm">
+                        Add to Cart
+                      </button>
+                    )}
                   </div>
-                  <p className="text-sm text-gray-500 mb-4">{product.category}</p>
-                  <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
                 </div>
+
+                {/* Hover Effect Border */}
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-xl transition-colors duration-300 pointer-events-none" />
               </Link>
             </motion.div>
           ))}
         </motion.div>
+        
+        {/* Show "View More" button on mobile if there are more products */}
+        {isMobile && bestsellers.length > 6 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <div className="max-w-md mx-auto">
+              <p className="text-gray-600 text-sm mb-4">
+                Explore more bestseller products in our collection
+              </p>
+              <Link 
+                to="/shop" 
+                className="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
+              >
+                View More Products
+                <svg 
+                  className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );

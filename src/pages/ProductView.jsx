@@ -6,6 +6,7 @@ import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import MostLoved from '../components/Products/MostLoved';
 import WeeklyBestsellers from '../components/Products/WeeklyBestsellers';
 import { useCart } from '../context/CartContext';
+import config from '../config/config.js';
 
 const ProductView = () => {
   const { id } = useParams();
@@ -41,7 +42,7 @@ const ProductView = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch('https://pawnbackend-xmqa.onrender.com/api/shop');
+        const res = await fetch(config.API_URLS.SHOP);
         if (!res.ok) throw new Error('Failed to fetch products');
         const data = await res.json();
         const found = data.find(p => String(p.id) === String(id));

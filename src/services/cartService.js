@@ -1,13 +1,12 @@
 import axios from 'axios';
-
-const API_URL = 'https://pawnbackend-xmqa.onrender.com/api';
+import config from '../config/config.js';
 
 const cartService = {
     // Get user's cart
     getCart: async () => {
         try {
-            const response = await axios.get(`${API_URL}/cart`, {
-                withCredentials: true
+            const response = await axios.get(`${config.API_URLS.CART}`, {
+                withCredentials: config.CORS.WITH_CREDENTIALS
             });
             return response.data;
         } catch (error) {
@@ -19,9 +18,9 @@ const cartService = {
     addToCart: async (productId, quantity) => {
         try {
             const response = await axios.post(
-                `${API_URL}/cart/add`,
+                `${config.API_URLS.CART}/add`,
                 { productId, quantity },
-                { withCredentials: true }
+                { withCredentials: config.CORS.WITH_CREDENTIALS }
             );
             return response.data;
         } catch (error) {
@@ -33,9 +32,9 @@ const cartService = {
     updateQuantity: async (productId, quantity) => {
         try {
             const response = await axios.put(
-                `${API_URL}/cart/update`,
+                `${config.API_URLS.CART}/update`,
                 { productId, quantity },
-                { withCredentials: true }
+                { withCredentials: config.CORS.WITH_CREDENTIALS }
             );
             return response.data;
         } catch (error) {
@@ -47,8 +46,8 @@ const cartService = {
     removeFromCart: async (productId) => {
         try {
             const response = await axios.delete(
-                `${API_URL}/cart/remove/${productId}`,
-                { withCredentials: true }
+                `${config.API_URLS.CART}/remove/${productId}`,
+                { withCredentials: config.CORS.WITH_CREDENTIALS }
             );
             return response.data;
         } catch (error) {
@@ -59,8 +58,8 @@ const cartService = {
     // Clear cart
     clearCart: async () => {
         try {
-            const response = await axios.delete(`${API_URL}/cart/clear`, {
-                withCredentials: true
+            const response = await axios.delete(`${config.API_URLS.CART}/clear`, {
+                withCredentials: config.CORS.WITH_CREDENTIALS
             });
             return response.data;
         } catch (error) {

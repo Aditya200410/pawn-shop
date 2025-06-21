@@ -1,13 +1,11 @@
-const API_URL = '/api';
+import config from '../config/config.js';
 
 export const authService = {
     async register(userData) {
-        const response = await fetch(`${API_URL}/auth/register`, {
+        const response = await fetch(`${config.API_URLS.AUTH}/register`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
+            headers: config.CORS.HEADERS,
+            credentials: config.CORS.WITH_CREDENTIALS ? 'include' : 'omit',
             body: JSON.stringify(userData),
         });
         
@@ -20,12 +18,10 @@ export const authService = {
     },
 
     async login(credentials) {
-        const response = await fetch(`${API_URL}/auth/login`, {
+        const response = await fetch(`${config.API_URLS.AUTH}/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
+            headers: config.CORS.HEADERS,
+            credentials: config.CORS.WITH_CREDENTIALS ? 'include' : 'omit',
             body: JSON.stringify({ username: credentials.email, password: credentials.password }),
         });
         
@@ -38,8 +34,8 @@ export const authService = {
     },
 
     async getCurrentUser() {
-        const response = await fetch(`${API_URL}/auth/me`, {
-            credentials: 'include',
+        const response = await fetch(`${config.API_URLS.AUTH}/me`, {
+            credentials: config.CORS.WITH_CREDENTIALS ? 'include' : 'omit',
         });
         
         if (!response.ok) {
@@ -51,9 +47,9 @@ export const authService = {
     },
 
     async logout() {
-        const response = await fetch(`${API_URL}/auth/logout`, {
+        const response = await fetch(`${config.API_URLS.AUTH}/logout`, {
             method: 'POST',
-            credentials: 'include',
+            credentials: config.CORS.WITH_CREDENTIALS ? 'include' : 'omit',
         });
         
         if (!response.ok) {

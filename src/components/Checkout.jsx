@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import config from '../config/config.js';
 
 export default function Checkout() {
   const { cartItems, clearCart } = useCart();
@@ -135,7 +136,7 @@ export default function Checkout() {
       console.log('Sending order data:', JSON.stringify(orderData, null, 2));
       
       // Send order data to backend
-      const response = await axios.post('https://pawnbackend-xmqa.onrender.com/api/orders', orderData);
+      const response = await axios.post(config.API_URLS.ORDERS, orderData);
 
       if (response.data) {
         // Clear cart and show success message
