@@ -146,50 +146,27 @@ export default function WeeklyBestsellers() {
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  
-                  {/* Mobile: Show quick action buttons */}
-                  {isMobile && (
-                    <div className="absolute top-3 right-3">
-                      <button className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
-                        <HeartIcon className="h-4 w-4 text-gray-600" />
-                      </button>
-                    </div>
-                  )}
-                  
-                  {/* Desktop: Show action buttons */}
-                  {!isMobile && (
-                    <>
-                      <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
-                          <HeartIcon className="h-4 w-4 text-gray-600" />
-                        </button>
-                        <button className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
-                          <EyeIcon className="h-4 w-4 text-gray-600" />
-                        </button>
-                      </div>
-                    </>
-                  )}
                 </div>
                 
-                <div className={`${isMobile ? 'p-5' : 'p-4'}`}>
-                  <div className={`${isMobile ? 'mb-3' : 'mb-2'}`}>
+                <div className={`${isMobile ? 'p-5' : 'p-6'}`}>
+                  <div className="mb-4">
                     <p className={`text-gray-500 ${isMobile ? 'text-sm' : 'text-sm'} font-medium uppercase tracking-wide`}>
                       {product.category}
                     </p>
                   </div>
                   
                   <h3 className={`font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 ${
-                    isMobile ? 'text-base mb-4 leading-tight' : 'text-lg mb-2'
+                    isMobile ? 'text-base mb-4 leading-tight' : 'text-lg mb-4'
                   }`}>
                     {product.name}
                   </h3>
                   
                   {!isMobile && (
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">{product.description}</p>
+                    <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">{product.description}</p>
                   )}
                   
                   <div className={`flex items-center justify-between pt-4 border-t border-gray-100 ${
