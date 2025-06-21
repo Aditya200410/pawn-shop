@@ -139,7 +139,7 @@ export default function FeaturedProducts() {
                     </div>
                   )}
                   
-                  {/* Desktop: Show full action buttons */}
+                  {/* Desktop: Show action buttons */}
                   {!isMobile && (
                     <>
                       <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -148,12 +148,6 @@ export default function FeaturedProducts() {
                         </button>
                         <button className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
                           <EyeIcon className="h-4 w-4 text-gray-600" />
-                        </button>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-full group-hover:translate-y-0">
-                        <button className="w-full bg-orange-600 text-white py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center justify-center gap-2 text-sm shadow-lg">
-                          <ShoppingCartIcon className="h-4 w-4" />
-                          Add to Cart
                         </button>
                       </div>
                     </>
@@ -186,11 +180,17 @@ export default function FeaturedProducts() {
                       ₹{product.price?.toFixed(2)}
                     </span>
                     
-                    {isMobile && (
-                      <button className="w-full bg-orange-600 text-white py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors text-xs shadow-sm">
+                    {/* Add to Cart Button - Always Visible */}
+                    <button className={`bg-orange-600 text-white font-medium hover:bg-orange-700 transition-colors shadow-sm ${
+                      isMobile 
+                        ? 'w-full py-2 rounded-lg text-xs' 
+                        : 'px-4 py-2 rounded-lg text-sm'
+                    }`}>
+                      <div className="flex items-center justify-center gap-2">
+                        <ShoppingCartIcon className={isMobile ? "h-3 w-3" : "h-4 w-4"} />
                         Add to Cart
-                      </button>
-                    )}
+                      </div>
+                    </button>
                   </div>
                 </div>
 
