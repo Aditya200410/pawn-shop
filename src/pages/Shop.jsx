@@ -155,7 +155,7 @@ const Shop = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">
+    <div className="min-h-screen py-12">
       <div className="container mx-auto px-4">
         {/* Mobile Filter Button */}
         <div className="md:hidden mb-6">
@@ -538,7 +538,7 @@ const Shop = () => {
                 <span className="text-lg text-red-600">{error}</span>
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

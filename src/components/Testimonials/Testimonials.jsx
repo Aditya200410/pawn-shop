@@ -1,101 +1,235 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Star, Quote, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 
 const testimonials = [
   {
     id: 1,
     name: 'Mr. Shankar Roy',
-    location: 'California',
+    location: 'California, USA',
     rating: 5,
-    text: 'Gem of a place to procure handicrafts from Bengal. Srejonee did an awesome job of packaging the fragile 3 ft terracotta horse. It reached USA in perfect condition.',
+    text: 'Gem of a place to procure handicrafts from Bengal. rickocraft did an awesome job of packaging the fragile 3 ft terracotta horse. It reached USA in perfect condition.',
+    image: 'https://randomuser.me/api/portraits/men/75.jpg',
+    category: 'Terracotta Art'
   },
   {
     id: 2,
     name: 'Anne Calladine',
-    location: 'France',
+    location: 'Paris, France',
     rating: 5,
-    text: 'Srejonee is highly professional and fully dedicated to preserve Indian art. I ordered a terracotta bankura horse. I received it in perfect condition although it is particularly fragile.',
+    text: 'rickocraft is highly professional and fully dedicated to preserve Indian art. I ordered a terracotta bankura horse. I received it in perfect condition although it is particularly fragile.',
+    image: 'https://randomuser.me/api/portraits/women/76.jpg',
+    category: 'Handicrafts'
   },
   {
     id: 3,
     name: 'Mitalee Talukdar',
-    location: 'Assam',
+    location: 'Assam, India',
     rating: 5,
-    text: 'Thanks a lot Srejoni Arts for providing us such a beautiful 4 and a half feet Terracotta horse. It was not only delivered in one piece but an executive came to drop it to our door step.',
+    text: 'Thanks a lot rickocraft Arts for providing us such a beautiful 4 and a half feet Terracotta horse. It was not only delivered in one piece but an executive came to drop it to our door step.',
+    image: 'https://randomuser.me/api/portraits/women/77.jpg',
+    category: 'Traditional Art'
   },
 ];
 
+const slideVariants = {
+  hidden: (direction) => ({
+    x: direction > 0 ? '100%' : '-100%',
+    opacity: 0,
+    scale: 0.8,
+    rotateY: direction > 0 ? 15 : -15,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
+  }),
+  visible: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    rotateY: 0,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
+  },
+  exit: (direction) => ({
+    x: direction < 0 ? '100%' : '-100%',
+    opacity: 0,
+    scale: 0.8,
+    rotateY: direction < 0 ? 15 : -15,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
+  }),
+};
+
 export default function Testimonials() {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [[current, direction], setCurrent] = useState([0, 0]);
+
+  const paginate = (newDirection) => {
+    setCurrent([(current + newDirection + testimonials.length) % testimonials.length, newDirection]);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+      paginate(1);
+    }, 6000); // Auto-slide every 6 seconds
     return () => clearInterval(timer);
-  }, []);
+  }, [current]);
+
+  const testimonial = testimonials[current];
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
+    <section className="py-32 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-50/30 via-white to-rose-50/30"></div>
+      <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-amber-200/20 to-orange-200/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-rose-200/20 to-pink-200/20 rounded-full blur-3xl"></div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl font-bold text-center mb-12"
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
         >
-          Testimonials
-        </motion.h2>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-2 rounded-full mb-6"
+          >
+            <Sparkles className="w-4 h-4 text-amber-600" />
+            <span className="text-sm font-medium text-amber-800">Customer Stories</span>
+          </motion.div>
+          
+          <h2 className="text-5xl md:text-6xl font-light tracking-tight text-gray-900 mb-6">
+            What Our <span className="font-serif italic bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Customers</span> Say
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Discover the authentic experiences of art lovers who have brought home pieces of our cultural heritage
+          </p>
+        </motion.div>
 
-        <div className="relative max-w-3xl mx-auto">
-          <AnimatePresence mode="wait">
+        <div className="relative max-w-4xl mx-auto h-[500px] md:h-[600px] flex items-center justify-center">
+          <AnimatePresence initial={false} custom={direction}>
             <motion.div
-              key={currentTestimonial}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white rounded-lg shadow-lg p-8"
+              key={current}
+              custom={direction}
+              variants={slideVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="absolute w-full perspective-1000"
             >
-              <div className="flex items-center mb-4">
-                {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
-                  <svg
-                    key={i}
-                    className="w-5 h-5 text-yellow-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
+              <div className="relative">
+                {/* Main Card */}
+                <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-3xl p-8 md:p-12 shadow-2xl shadow-amber-500/10">
+                  {/* Quote Icon */}
+                  <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Quote className="w-6 h-6 text-white" />
+                  </div>
+                  
+                  {/* Category Badge */}
+                  <div className="absolute top-6 right-6">
+                    <span className="px-3 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 text-xs font-medium rounded-full">
+                      {testimonial.category}
+                    </span>
+                  </div>
+                  
+                  {/* Testimonial Text */}
+                  <blockquote className="text-gray-700 text-lg md:text-xl leading-relaxed mb-8 mt-4 font-light italic">
+                    "{testimonial.text}"
+                  </blockquote>
 
-              <blockquote className="text-gray-700 text-lg italic mb-6">
-                "{testimonials[currentTestimonial].text}"
-              </blockquote>
-
-              <div className="flex items-center">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">
-                    {testimonials[currentTestimonial].name}
-                  </h3>
-                  <p className="text-gray-600">{testimonials[currentTestimonial].location}</p>
+                  {/* Customer Info */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="relative">
+                        <img 
+                          src={testimonial.image} 
+                          alt={testimonial.name}
+                          className="w-14 h-14 md:w-16 md:h-16 rounded-2xl object-cover border-4 border-white shadow-lg"
+                        />
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="font-semibold text-gray-900 text-lg">{testimonial.name}</h3>
+                        <p className="text-gray-500 text-sm flex items-center gap-1">
+                          <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
+                          {testimonial.location}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Rating */}
+                    <div className="flex items-center gap-1">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />
+                      ))}
+                      <span className="ml-2 text-sm text-gray-500 font-medium">{testimonial.rating}.0</span>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Decorative Elements */}
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-2xl blur-xl"></div>
+                <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-br from-rose-200/30 to-pink-200/30 rounded-xl blur-lg"></div>
               </div>
             </motion.div>
           </AnimatePresence>
 
-          {/* Navigation dots */}
-          <div className="flex justify-center mt-8 gap-2">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentTestimonial(index)}
-                className={`h-2 w-2 rounded-full transition-all ${
-                  currentTestimonial === index ? 'w-8 bg-primary' : 'bg-gray-300'
-                }`}
-              />
-            ))}
+          {/* Navigation Buttons */}
+          <motion.button 
+            whileHover={{ scale: 1.1, x: -5 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => paginate(-1)} 
+            className="absolute top-1/2 -translate-y-1/2 -left-6 z-10 p-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:bg-white group"
+          >
+            <ArrowLeft className="w-6 h-6 text-gray-700 group-hover:text-amber-600 transition-colors" />
+          </motion.button>
+          
+          <motion.button 
+            whileHover={{ scale: 1.1, x: 5 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => paginate(1)} 
+            className="absolute top-1/2 -translate-y-1/2 -right-6 z-10 p-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:bg-white group"
+          >
+            <ArrowRight className="w-6 h-6 text-gray-700 group-hover:text-amber-600 transition-colors" />
+          </motion.button>
+        </div>
+
+        {/* Enhanced Dots */}
+        <div className="flex justify-center items-center gap-3 mt-12">
+          {testimonials.map((_, i) => (
+            <motion.button
+              key={i}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setCurrent([i, i > current ? 1 : -1])}
+              className={`relative transition-all duration-500 ${
+                i === current 
+                  ? 'w-12 h-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full shadow-lg' 
+                  : 'w-3 h-3 bg-gray-300 rounded-full hover:bg-gray-400'
+              }`}
+            >
+              {i === current && (
+                <motion.div
+                  layoutId="activeDot"
+                  className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mt-8 max-w-md mx-auto">
+          <div className="w-full bg-gray-200 rounded-full h-1">
+            <motion.div
+              className="bg-gradient-to-r from-amber-500 to-orange-500 h-1 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${((current + 1) / testimonials.length) * 100}%` }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
           </div>
         </div>
       </div>

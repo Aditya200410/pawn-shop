@@ -1,50 +1,6 @@
 import { motion } from 'framer-motion';
-import { 
-  ShieldCheckIcon, 
-  TruckIcon, 
-  PhoneIcon, 
-  LockClosedIcon 
-} from '@heroicons/react/24/outline';
-import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon } from 'lucide-react';
-
-const features = [
-  {
-    icon: ShieldCheckIcon,
-    title: 'Ethically Sourced Handicrafts',
-    description: 'Ethically Sourced Handicrafts'
-  },
-  {
-    icon: TruckIcon,
-    title: 'Fast & Safe Delivery',
-    description: 'Fast and Safe delivery for all orders'
-  },
-  {
-    icon: PhoneIcon,
-    title: 'Dedicated Customer Support',
-    description: 'Friendly 24/7 customer support'
-  },
-  {
-    icon: LockClosedIcon,
-    title: 'Secure Online Payment',
-    description: 'We possess SSL/ Secure certificate'
-  }
-];
-
-const popularProducts = [
-  'Apparels and Accessories',
-  'Patachitra',
-  'Terracotta & Clay',
-  'Metal & Buffalo Horn',
-  'Grass & Bamboo',
-  'Wood',
-];
-
-const quickLinks = [
-  'Our Story',
-  'FAQ',
-  'Blog',
-  'Contact us',
-];
+import { Link } from 'react-router-dom';
+import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon, Star } from 'lucide-react';
 
 const footerVariants = {
   hidden: {},
@@ -68,81 +24,206 @@ const itemVariants = {
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-gray-700">
-      <div className="container mx-auto px-4 py-16">
-        {/* Logo and Description Section */}
-        <div className="max-w-2xl mb-16">
-          <div className="h-20 w-auto mb-6">
-            <img
-              src="/logo.JPG"
-              alt="Loog"
-              className="h-full w-auto object-contain"
-            />
-          </div>
-          <p className="text-base text-white font-light leading-relaxed">
-            We believe that your home deserves the best. That's why we offer an exclusive collection of premium items crafted with care. Our pieces are designed to not only enhance your living spaces but also stand the test of time, providing lasting beauty and durability.
-          </p>
-        </div>
-
+    <footer 
+      className="bg-cover bg-center text-white relative"
+      style={{ backgroundImage: 'url(/footer.png)' }}
+    >
+      <div className="absolute inset-0 bg-black/70" />
+      <div className="relative z-10">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-medium text-white mb-6">Useful Links</h4>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-white hover:text-white transition-colors">Home</a></li>
-              <li><a href="#" className="text-white hover:text-white transition-colors">Shop</a></li>
-              <li><a href="#" className="text-white hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="text-white hover:text-white transition-colors">Blog</a></li>
-              <li><a href="#" className="text-white hover:text-white transition-colors">Contact Us</a></li>
-            </ul>
-          </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {/* Brand Section */}
+            <div className="md:col-span-2">
+              <div className="mb-6">
+                {/* Logo and Description Row */}
+                <div className="flex flex-col md:flex-row items-start gap-4 mb-4">
+                  <img
+                    src="/logo.png"
+                    alt="Riko Craft"
+                    className="h-14 md:h-16 w-auto"
+                  />
+                  <div className="flex-1">
+                    <p className="text-gray-300 leading-relaxed text-sm">
+                      Riko Craft offers nature-powered handcrafted treasures crafted with pure artistry for timeless beauty in your home.
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Rating */}
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-200">4.5/5</span>
+                  <span className="text-sm text-gray-400">Based on 374 reviews</span>
+                </div>
 
-          {/* Categories */}
-          <div>
-            <h4 className="text-lg font-medium text-white mb-6">Categories</h4>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-white hover:text-white transition-colors">Accessories</a></li>
-              <li><a href="#" className="text-white hover:text-white transition-colors">Armchairs</a></li>
-              <li><a href="#" className="text-white hover:text-white transition-colors">Beds</a></li>
-              <li><a href="#" className="text-white hover:text-white transition-colors">Chairs</a></li>
-              <li><a href="#" className="text-white hover:text-white transition-colors">Decor</a></li>
-            </ul>
-          </div>
+                {/* Social Media Links - Mobile Only */}
+                <div className="flex items-center space-x-4 md:hidden">
+                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                    <FacebookIcon className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                  </a>
+                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                    <InstagramIcon className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                  </a>
+                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                    <TwitterIcon className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                  </a>
+                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                    <YoutubeIcon className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                  </a>
+                </div>
+              </div>
+            </div>
 
-          {/* Contact Info */}
-          <div>
-            <h4 className="text-lg font-medium text-white mb-6">Contact Us</h4>
-            <ul className="space-y-3">
-              <li className="text-white">Phone: +91 1234567890</li>
-              <li className="text-white">Email: info@logo.com</li>
-              <li className="text-white">Store Address: India</li>
-            </ul>
-          </div>
+            {/* Popular Categories and Useful Links Row - Mobile */}
+            <div className="grid grid-cols-2 gap-6 md:hidden">
+              {/* Popular Categories */}
+              <div>
+                <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
+                <ul className="space-y-3">
+                  <li>
+                    <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Wooden Craft
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Terracotta Items
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Dokra Art
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Handmade Jewellery
+                    </Link>
+                  </li>
+                </ul>
+              </div>
 
-          {/* Social Media */}
-          <div>
-            <h4 className="text-lg font-medium text-white mb-6">Follow Us</h4>
-            <div className="flex space-x-4">
-              <a href="#" className="text-white hover:text-white transition-colors">
-                <FacebookIcon className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-white hover:text-white transition-colors">
-                <InstagramIcon className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-white hover:text-white transition-colors">
-                <TwitterIcon className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-white hover:text-white transition-colors">
-                <YoutubeIcon className="h-6 w-6" />
-              </a>
+              {/* Useful Links */}
+              <div>
+                <h4 className="text-base font-semibold text-white mb-4">Useful Links</h4>
+                <ul className="space-y-3">
+                  <li>
+                    <Link to="/" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/about" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/blog" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Blog
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/contact" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Contact Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/faq" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      FAQ
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Popular Categories - Desktop */}
+            <div className="hidden md:block">
+              <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
+              <ul className="space-y-3">
+                <li>
+                  <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    Wooden Craft
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    Terracotta Items
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    Dokra Art
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    Handmade Jewellery
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Useful Links - Desktop */}
+            <div className="hidden md:block">
+              <h4 className="text-base font-semibold text-white mb-4">Useful Links</h4>
+              <ul className="space-y-3">
+                <li>
+                  <Link to="/" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/about" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/blog" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/contact" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/faq" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    FAQ
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
-        </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-200 mt-16 pt-8 text-sm text-center text-white">
-          <p>© {new Date().getFullYear()} Riko Crafts, built with ❤️. All rights reserved.</p>
+          {/* Bottom Bar */}
+          <div className="border-t border-white/10 mt-6 pt-6">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+              <p className="text-sm text-gray-400 text-center md:text-left">
+                © 2025 All Rights Reserved by Riko Craft.
+              </p>
+              {/* Social Media Links - Desktop Only */}
+              <div className="hidden md:flex items-center space-x-3 md:space-x-4">
+                <a href="#" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <FacebookIcon className="w-4 h-4 text-gray-300 group-hover:text-white" />
+                </a>
+                <a href="#" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <InstagramIcon className="w-4 h-4 text-gray-300 group-hover:text-white" />
+                </a>
+                <a href="#" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <TwitterIcon className="w-4 h-4 text-gray-300 group-hover:text-white" />
+                </a>
+                <a href="#" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <YoutubeIcon className="w-4 h-4 text-gray-300 group-hover:text-white" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

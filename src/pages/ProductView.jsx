@@ -360,17 +360,23 @@ const ProductView = () => {
 
                   {activeTab === 'specifications' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {Object.entries(product.specifications).map(([key, value]) => (
-                        <motion.div 
-                          key={key}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="flex flex-col p-4 bg-white rounded-xl shadow-sm"
-                        >
-                          <span className="text-sm text-gray-500 capitalize font-medium">{key}</span>
-                          <span className="text-gray-900 font-medium">{value}</span>
-                        </motion.div>
-                      ))}
+                      {product.specifications && Object.entries(product.specifications).length > 0 ? (
+                        Object.entries(product.specifications).map(([key, value]) => (
+                          <motion.div 
+                            key={key}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="flex flex-col p-4 bg-white rounded-xl shadow-sm"
+                          >
+                            <span className="text-sm text-gray-500 capitalize font-medium">{key}</span>
+                            <span className="text-gray-900 font-medium">{value}</span>
+                          </motion.div>
+                        ))
+                      ) : (
+                        <div className="col-span-full text-center py-8">
+                          <p className="text-gray-500 text-lg">No specifications available for this product.</p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </motion.div>

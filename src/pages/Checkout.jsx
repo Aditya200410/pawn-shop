@@ -57,7 +57,7 @@ const Checkout = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center mt-10">
+      <div className="container px-4 py-16 text-center mt-15">
         <h2 className="text-2xl font-semibold mb-4">Your cart is empty</h2>
         <p className="text-gray-600 mb-8">Please add items to your cart before proceeding to checkout.</p>
         <button
@@ -71,9 +71,9 @@ const Checkout = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-4 sm:py-8">
+    <div className="container mx-15 px-4 py-4 sm:py-8 mt-20 sm:mt-24">
       {/* Checkout Steps */}
-      <div className="flex items-center justify-center mb-8 sm:mb-12 overflow-x-auto">
+      <div className="flex items-center justify-center mb-8 sm:mb-12 overflow-x-auto  mx-15">
         <div className="flex items-center min-w-max px-4">
           <div className="flex items-center">
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-600 text-white flex items-center justify-center text-sm sm:text-lg font-medium">

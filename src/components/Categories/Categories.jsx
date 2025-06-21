@@ -63,7 +63,7 @@ const Categories = () => {
   }
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div
@@ -89,7 +89,7 @@ const Categories = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto"
+          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto"
         >
           {categories.map((category, index) => (
             <Link
@@ -101,56 +101,49 @@ const Categories = () => {
               <motion.div
                 variants={itemVariants}
                 whileHover={{ 
-                  scale: 1.02,
+                  scale: 1.05,
                   transition: { duration: 0.2 }
                 }}
-                className="relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
+                className="relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 aspect-square"
               >
+                {/* Category Title - Above Image */}
+                <div className="absolute top-0 left-0 right-0 z-10 p-3 bg-gradient-to-b from-black/80 to-transparent">
+                  <h3 className="text-sm font-semibold text-white text-center line-clamp-2 leading-tight">
+                    {category.name}
+                  </h3>
+                </div>
+
                 {/* Image Container */}
-                <div className="relative aspect-square overflow-hidden">
+                <div className="relative w-full h-full overflow-hidden">
                   <img
                     src={category.image}
                     alt={category.name}
-                    className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500"
                   />
+                  
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Category Badge */}
-                  <div className="absolute top-4 left-4">
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold bg-white/95 text-gray-800 backdrop-blur-sm shadow-sm">
-                      {index + 1}
-                    </span>
-                  </div>
-                </div>
 
-                {/* Content */}
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-1 group-hover:text-orange-600 transition-colors duration-200">
-                    {category.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">
-                    {category.description}
-                  </p>
-                  
-                  {/* View More Button */}
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <span className="text-sm text-orange-600 font-medium group-hover:text-orange-700 transition-colors duration-200">
-                      Explore Collection
-                    </span>
-                    <svg 
-                      className="w-5 h-5 text-orange-600 group-hover:translate-x-1 transition-transform duration-200" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                  {/* Bottom Overlay with Explore Text */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                    <div className="flex items-center justify-center gap-1">
+                      <span className="text-xs text-white font-medium">
+                        Explore
+                      </span>
+                      <svg 
+                        className="w-3 h-3 text-white group-hover:translate-x-0.5 transition-transform duration-200" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
 
                 {/* Hover Effect Border */}
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-xl transition-colors duration-300 pointer-events-none" />
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-2xl transition-colors duration-300 pointer-events-none" />
               </motion.div>
             </Link>
           ))}

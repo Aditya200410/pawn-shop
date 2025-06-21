@@ -26,6 +26,7 @@ import Cart from './components/Cart';
 import Checkout from './pages/Checkout';
 import Toast from './components/Toast/Toast';
 import ForgetPassword from './pages/ForgotPassword';
+import AboutUs from './pages/AboutUs';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -47,7 +48,7 @@ function AppContent() {
   const { toast, setToast } = useCart();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <Header />
       <Routes>
         <Route path="/" element={
@@ -63,6 +64,7 @@ function AppContent() {
         } />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/story" element={<Story />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/login" element={<Login />} />

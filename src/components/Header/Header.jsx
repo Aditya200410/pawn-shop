@@ -76,7 +76,7 @@ const Header = () => {
 
   return (
     <>
-      <header className={`fixed w-full z-[10000] transition-all duration-300 ${
+      <header className={`w-full z-[10000] transition-all duration-300 ${
         isScrolled ? 'bg-white shadow-md' : 'bg-white shadow-md'
       }`}>
         {/* Top Bar - Desktop Only */}
@@ -87,8 +87,8 @@ const Header = () => {
                 <a href="tel:+911234567890" className="text-gray-600 hover:text-orange-600">
                   +91 1234567890
                 </a>
-                <a href="mailto:info@poemsofwood.com" className="text-gray-600 hover:text-orange-600">
-                  info@poemsofwood.com
+                <a href="mailto:info@rikocraft.com" className="text-gray-600 hover:text-orange-600">
+                  info@rikocraft.com
                 </a>
               </div>
               <div className="flex items-center space-x-6">
@@ -128,8 +128,8 @@ const Header = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-[90px] md:h-[120px]">
             {/* Desktop Logo */}
-            <Link to="/" className="hidden md:block text-2xl font-serif text-gray-900">
-              Riko Craft
+            <Link to="/" className="hidden md:block">
+              <img src={logo} alt="Riko Craft" className="h-20 w-auto" />
             </Link>
 
             {/* Mobile Hamburger Menu - Left */}
@@ -377,9 +377,6 @@ const Header = () => {
           
           </nav>
         </div>
-
-      {/* Spacer to prevent content from being hidden under fixed header and bottom nav */}
-      <div className="h-[90px] md:h-[120px]"></div>
     </>
   );
 };

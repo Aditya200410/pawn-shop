@@ -68,7 +68,7 @@ export default function WeeklyBestsellers() {
     
     // Limit products on mobile devices
     if (isMobile) {
-      products = products.slice(0, 6); // Show only 6 products on mobile
+      products = products.slice(0, 4); // Show only 4 products on mobile
     }
     
     return products;
@@ -98,20 +98,20 @@ export default function WeeklyBestsellers() {
   }
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-12 md:py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-10 md:mb-12"
         >
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-gray-900 mb-6">
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-gray-900 mb-4 md:mb-6">
               Weekly <span className="font-serif italic">Bestsellers</span>
             </h2>
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
+            <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
               Discover our most popular handcrafted treasures, chosen by customers for their exceptional quality and timeless beauty
             </p>
             <div className="w-20 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
@@ -124,9 +124,9 @@ export default function WeeklyBestsellers() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className={`grid gap-6 md:gap-8 max-w-7xl mx-auto ${
+          className={`grid gap-4 md:gap-6 max-w-7xl mx-auto ${
             isMobile 
-              ? 'grid-cols-2 sm:grid-cols-2' 
+              ? 'grid-cols-2 gap-4' 
               : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
           }`}
         >
@@ -134,8 +134,8 @@ export default function WeeklyBestsellers() {
             <motion.div
               key={product.id}
               variants={itemVariants}
-              className={`group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 ${
-                isMobile ? 'max-w-[180px] mx-auto' : ''
+              className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 ${
+                isMobile ? 'w-full' : ''
               }`}
             >
               <Link to={`/product/${product.id}`} className="block">
@@ -149,20 +149,13 @@ export default function WeeklyBestsellers() {
                       className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    {product.discount && (
-                      <div className={`absolute top-3 left-3 bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${
-                        isMobile ? 'text-xs' : ''
-                      }`}>
-                        {product.discount}% OFF
-                      </div>
-                    )}
                   </div>
                   
                   {/* Mobile: Show quick action buttons */}
                   {isMobile && (
                     <div className="absolute top-3 right-3">
-                      <button className="p-1.5 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
-                        <HeartIcon className="h-3 w-3 text-gray-600" />
+                      <button className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm">
+                        <HeartIcon className="h-4 w-4 text-gray-600" />
                       </button>
                     </div>
                   )}
@@ -182,29 +175,29 @@ export default function WeeklyBestsellers() {
                   )}
                 </div>
                 
-                <div className={`${isMobile ? 'p-4' : 'p-6'}`}>
-                  <div className={`${isMobile ? 'mb-2' : 'mb-3'}`}>
-                    <p className={`text-gray-500 ${isMobile ? 'text-xs' : 'text-sm'} font-medium`}>
+                <div className={`${isMobile ? 'p-5' : 'p-4'}`}>
+                  <div className={`${isMobile ? 'mb-3' : 'mb-2'}`}>
+                    <p className={`text-gray-500 ${isMobile ? 'text-sm' : 'text-sm'} font-medium uppercase tracking-wide`}>
                       {product.category}
                     </p>
                   </div>
                   
-                  <h3 className={`font-semibold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 ${
-                    isMobile ? 'text-sm mb-3' : 'text-lg mb-3'
+                  <h3 className={`font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 ${
+                    isMobile ? 'text-base mb-4 leading-tight' : 'text-lg mb-2'
                   }`}>
                     {product.name}
                   </h3>
                   
                   {!isMobile && (
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">{product.description}</p>
+                    <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">{product.description}</p>
                   )}
                   
-                  <div className={`flex items-center justify-between pt-3 border-t border-gray-100 ${
-                    isMobile ? 'flex-col items-start gap-2' : ''
+                  <div className={`flex items-center justify-between pt-4 border-t border-gray-100 ${
+                    isMobile ? 'flex-col items-start gap-3' : ''
                   }`}>
                     <div className={`${isMobile ? 'w-full' : ''}`}>
                       <span className={`font-bold text-orange-600 ${
-                        isMobile ? 'text-sm' : 'text-lg'
+                        isMobile ? 'text-lg' : 'text-lg'
                       }`}>
                         ₹{product.price?.toFixed(2)}
                       </span>
@@ -214,13 +207,13 @@ export default function WeeklyBestsellers() {
                     </div>
                     
                     {/* Add to Cart Button - Always Visible */}
-                    <button className={`bg-orange-600 text-white font-medium hover:bg-orange-700 transition-colors shadow-sm ${
+                    <button className={`bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl ${
                       isMobile 
-                        ? 'w-full py-2 rounded-lg text-xs' 
-                        : 'px-4 py-2 rounded-lg text-sm'
+                        ? 'w-full py-3 rounded-xl text-sm' 
+                        : 'px-6 py-2 rounded-xl text-sm'
                     }`}>
                       <div className="flex items-center justify-center gap-2">
-                        <ShoppingCartIcon className={isMobile ? "h-3 w-3" : "h-4 w-4"} />
+                        <ShoppingCartIcon className={isMobile ? "h-4 w-4" : "h-4 w-4"} />
                         Add to Cart
                       </div>
                     </button>
@@ -228,14 +221,14 @@ export default function WeeklyBestsellers() {
                 </div>
 
                 {/* Hover Effect Border */}
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-xl transition-colors duration-300 pointer-events-none" />
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-2xl transition-colors duration-300 pointer-events-none" />
               </Link>
             </motion.div>
           ))}
         </motion.div>
         
         {/* Show "View More" button on mobile if there are more products */}
-        {isMobile && bestsellers.length > 6 && (
+        {isMobile && bestsellers.length > 4 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -243,16 +236,16 @@ export default function WeeklyBestsellers() {
             className="text-center mt-12"
           >
             <div className="max-w-md mx-auto">
-              <p className="text-gray-600 text-sm mb-4">
+              <p className="text-gray-600 text-sm mb-6">
                 Explore more bestseller products in our collection
               </p>
               <Link 
                 to="/shop" 
-                className="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
               >
                 View More Products
                 <svg 
-                  className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" 
+                  className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"

@@ -10,6 +10,10 @@
 @layer base {
   body {
     @apply antialiased;
+    background-image: url('/back.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
   }
 
   /* Add padding to main content on mobile */
@@ -40,6 +44,28 @@
 
   .container {
     @apply max-w-7xl mx-auto;
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
   }
 }
 

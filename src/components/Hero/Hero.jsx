@@ -45,17 +45,17 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="relative h-[600px] overflow-hidden mt-[20px] md:mt-[50px] z-[1]">
+    <div className="relative h-[500px] md:h-[600px] overflow-hidden z-[1]">
       {/* Navigation Buttons */}
-      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 z-[1]">
+      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 md:px-4 z-[1]">
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         onClick={prevSlide}
-          className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
+          className="p-1.5 md:p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
       >
         <svg
-            className="w-6 h-6 text-gray-700"
+            className="w-5 h-5 md:w-6 md:h-6 text-gray-700"
           fill="none"
             stroke="currentColor"
           viewBox="0 0 24 24"
@@ -73,10 +73,10 @@ export default function Hero() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         onClick={nextSlide}
-          className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
+          className="p-1.5 md:p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
       >
         <svg
-            className="w-6 h-6 text-gray-700"
+            className="w-5 h-5 md:w-6 md:h-6 text-gray-700"
           fill="none"
             stroke="currentColor"
           viewBox="0 0 24 24"
@@ -110,7 +110,7 @@ export default function Hero() {
           
           <div className="relative h-full flex items-center">
             <div className="container mx-auto px-4">
-              <div className="max-w-2xl md:ml-0 mx-auto md:mx-0 text-center md:text-left">
+              <div className="max-w-2xl mx-auto text-center">
               <motion.h1
                   initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -121,7 +121,7 @@ export default function Hero() {
                     type: "spring",
                     stiffness: 100
                   }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
+                  className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4 px-4"
               >
                 {slides[currentSlide].title}
               </motion.h1>
@@ -135,7 +135,7 @@ export default function Hero() {
                     type: "spring",
                     stiffness: 100
                   }}
-                  className="text-lg md:text-xl text-white/90 mb-8"
+                  className="text-sm sm:text-base md:text-xl text-white/90 mb-6 md:mb-8 px-4"
               >
                 {slides[currentSlide].description}
               </motion.p>
@@ -151,7 +151,7 @@ export default function Hero() {
                   }}
                 whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-amber-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors"
+                  className="bg-amber-800 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors text-sm md:text-base"
               >
                   {slides[currentSlide].cta}
               </motion.button>
@@ -162,13 +162,13 @@ export default function Hero() {
       </AnimatePresence>
 
       {/* Slide indicators */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2 z-[1]">
+      <div className="absolute bottom-4 md:bottom-8 left-0 right-0 flex justify-center gap-2 z-[1]">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`h-2 w-2 rounded-full transition-all duration-300 ${
-              currentSlide === index ? 'w-8 bg-white' : 'bg-white/50'
+            className={`h-1.5 md:h-2 w-1.5 md:w-2 rounded-full transition-all duration-300 ${
+              currentSlide === index ? 'w-6 md:w-8 bg-white' : 'bg-white/50'
             }`}
           />
         ))}
