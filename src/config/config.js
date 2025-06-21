@@ -3,7 +3,7 @@
 
 const config = {
   // Backend API URL - Change this to switch between environments
-  API_BASE_URL: 'http://localhost:5000',
+  API_BASE_URL: 'https://pawnbackend-xmqa.onrender.com',
   
   // API endpoints
   API_ENDPOINTS: {

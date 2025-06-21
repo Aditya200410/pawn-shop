@@ -58,7 +58,7 @@ function main() {
     Object.keys(environments).forEach(key => {
       console.log(`  ${key}: ${environments[key]}`);
     });
-    console.log('\n💡 Currently set to: localhost:5000 (local development)');
+    console.log('\n💡 Currently set to: https://pawnbackend-xmqa.onrender.com (deployed backend)');
     process.exit(1);
   }
   
