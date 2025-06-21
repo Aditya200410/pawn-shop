@@ -14,9 +14,11 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: [
-    'http://localhost:3000', // main client
-    'http://localhost:5173', // admin panel (old Vite default)
-    'http://localhost:5174'  // admin panel (your current Vite port)
+    'https://pawn-shop-frontend.vercel.app', // main client
+    'https://pawn-shop.vercel.app', // alternative client URL
+    'http://localhost:3000', // local development
+    'http://localhost:5173', // local development
+    'http://localhost:5174'  // local development
   ],
   credentials: true
 }));

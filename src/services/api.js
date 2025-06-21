@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://pawnbackend-xmqa.onrender.com/api';
 
 // Create axios instance with base URL
 const api = axios.create({
@@ -8,6 +8,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Enable cookies for CORS
 });
 
 // Add a request interceptor to add the auth token to requests

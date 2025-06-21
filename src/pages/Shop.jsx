@@ -30,7 +30,7 @@ const Shop = () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch('/api/shop');
+        const res = await fetch('https://pawnbackend-xmqa.onrender.com/api/shop');
         if (!res.ok) throw new Error('Failed to fetch products');
         const data = await res.json();
         console.log('Fetched products:', data);

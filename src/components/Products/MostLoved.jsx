@@ -33,7 +33,7 @@ export default function MostLoved() {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch('/api/loved');
+        const res = await fetch('https://pawnbackend-xmqa.onrender.com/api/loved');
         if (!res.ok) throw new Error('Failed to fetch most loved products');
         const data = await res.json();
         setMostLovedProducts(data);

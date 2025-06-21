@@ -34,7 +34,7 @@ const Categories = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/categories');
+      const response = await axios.get('https://pawnbackend-xmqa.onrender.com/api/categories');
       // The response data is in the format { categories: [...] }
       setCategories(response.data.categories || []);
       setLoading(false);

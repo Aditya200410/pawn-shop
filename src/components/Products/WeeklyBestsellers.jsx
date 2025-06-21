@@ -34,7 +34,7 @@ export default function WeeklyBestsellers() {
       try {
         setIsLoading(true);
         setError(null);
-        const res = await fetch('/api/bestseller');
+        const res = await fetch('https://pawnbackend-xmqa.onrender.com/api/bestseller');
         if (!res.ok) throw new Error('Failed to fetch bestsellers');
         const data = await res.json();
         setBestsellers(data);

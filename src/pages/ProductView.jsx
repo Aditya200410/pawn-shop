@@ -41,7 +41,7 @@ const ProductView = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/shop');
+        const res = await fetch('https://pawnbackend-xmqa.onrender.com/api/shop');
         if (!res.ok) throw new Error('Failed to fetch products');
         const data = await res.json();
         const found = data.find(p => String(p.id) === String(id));

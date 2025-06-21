@@ -135,7 +135,7 @@ export default function Checkout() {
       console.log('Sending order data:', JSON.stringify(orderData, null, 2));
       
       // Send order data to backend
-      const response = await axios.post('http://localhost:5000/api/orders', orderData);
+      const response = await axios.post('https://pawnbackend-xmqa.onrender.com/api/orders', orderData);
 
       if (response.data) {
         // Clear cart and show success message

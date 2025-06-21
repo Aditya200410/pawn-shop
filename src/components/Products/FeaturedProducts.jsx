@@ -33,7 +33,7 @@ export default function FeaturedProducts() {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch('/api/featured-products');
+        const res = await fetch('https://pawnbackend-xmqa.onrender.com/api/featured-products');
         if (!res.ok) throw new Error('Failed to fetch featured products');
         const data = await res.json();
         setProducts(data);
