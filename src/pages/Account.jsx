@@ -220,7 +220,7 @@ const Account = () => {
       setIsLoggingOut(true);
       await logout();
       toast.success('Logged out successfully');
-      navigate('/login');
+    navigate('/login');
     } catch (error) {
       toast.error('Failed to logout. Please try again.');
     } finally {
@@ -303,7 +303,7 @@ const Account = () => {
                     <span className="font-medium">{tab.label}</span>
                   </motion.button>
                 ))}
-              </nav>
+            </nav>
             </motion.div>
           </div>
 
@@ -347,7 +347,7 @@ const Account = () => {
                         <div className="p-3 bg-blue-100 rounded-xl">
                           <ShoppingCartIcon className="h-6 w-6 text-blue-600" />
                         </div>
-                      </div>
+                </div>
                     </motion.div>
 
                     <motion.div
@@ -358,11 +358,11 @@ const Account = () => {
                         <div>
                           <p className="text-sm font-medium text-gray-600">Account Status</p>
                           <p className="text-2xl font-bold text-green-600">Active</p>
-                        </div>
+                </div>
                         <div className="p-3 bg-green-100 rounded-xl">
                           <CheckCircleIcon className="h-6 w-6 text-green-600" />
-                        </div>
-                      </div>
+                </div>
+            </div>
                     </motion.div>
                   </div>
 
@@ -415,7 +415,7 @@ const Account = () => {
                   {/* Recent Activity */}
                   <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-                    <div className="space-y-4">
+                  <div className="space-y-4">
                       <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl">
                         <div className="p-2 bg-amber-100 rounded-lg">
                           <UserCircleIcon className="h-4 w-4 text-amber-600" />
@@ -657,53 +657,53 @@ const Account = () => {
                             <div>
                               <h4 className="font-medium text-gray-900">{item.product?.name || item.name}</h4>
                               <p className="text-sm text-gray-500">₹{(item.product?.price || item.price).toFixed(2)}</p>
-                            </div>
                           </div>
-                          <div className="flex items-center space-x-4">
+                        </div>
+                        <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-2 bg-white rounded-lg p-2">
                               <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                                onClick={() => handleUpdateQuantity(item.product?._id || item.id, item.quantity - 1)}
-                                className="p-1 rounded-full hover:bg-gray-100"
-                                disabled={item.quantity <= 1}
-                              >
-                                <MinusIcon className="h-4 w-4" />
+                              onClick={() => handleUpdateQuantity(item.product?._id || item.id, item.quantity - 1)}
+                              className="p-1 rounded-full hover:bg-gray-100"
+                              disabled={item.quantity <= 1}
+                            >
+                              <MinusIcon className="h-4 w-4" />
                               </motion.button>
                               <span className="font-medium px-2">{item.quantity}</span>
                               <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                                onClick={() => handleUpdateQuantity(item.product?._id || item.id, item.quantity + 1)}
-                                className="p-1 rounded-full hover:bg-gray-100"
-                              >
-                                <PlusIcon className="h-4 w-4" />
+                              onClick={() => handleUpdateQuantity(item.product?._id || item.id, item.quantity + 1)}
+                              className="p-1 rounded-full hover:bg-gray-100"
+                            >
+                              <PlusIcon className="h-4 w-4" />
                               </motion.button>
-                            </div>
+                          </div>
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
-                              onClick={() => handleRemoveFromCart(item.product?._id || item.id)}
+                            onClick={() => handleRemoveFromCart(item.product?._id || item.id)}
                               className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            >
-                              <TrashIcon className="h-5 w-5" />
+                          >
+                            <TrashIcon className="h-5 w-5" />
                             </motion.button>
-                          </div>
+                        </div>
                         </motion.div>
-                      ))}
+                    ))}
                       
                       <div className="border-t pt-6">
                         <div className="flex justify-between items-center mb-4">
-                          <div className="text-lg font-medium">
-                            Total: ₹{getTotalPrice().toFixed(2)}
-                          </div>
+                      <div className="text-lg font-medium">
+                        Total: ₹{getTotalPrice().toFixed(2)}
+                      </div>
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={handleClearCart}
-                            className="text-sm text-red-600 hover:text-red-800"
-                          >
-                            Clear Cart
+                          onClick={handleClearCart}
+                          className="text-sm text-red-600 hover:text-red-800"
+                        >
+                          Clear Cart
                           </motion.button>
                         </div>
                         <div className="flex space-x-4">
@@ -720,17 +720,17 @@ const Account = () => {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/checkout')}
                             className="flex-1 px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors"
-                          >
-                            Proceed to Checkout
+                      >
+                          Proceed to Checkout
                           </motion.button>
                         </div>
-                      </div>
                     </div>
-                  )}
+                  </div>
+                )}
                 </motion.div>
-              )}
+            )}
 
-              {activeTab === 'orders' && (
+            {activeTab === 'orders' && (
                 <motion.div
                   key="orders"
                   initial={{ opacity: 0, y: 20 }}
@@ -740,7 +740,7 @@ const Account = () => {
                 >
                   <h3 className="text-xl font-semibold text-gray-900 mb-6">Order History</h3>
                   
-                  {orders.length === 0 ? (
+                {orders.length === 0 ? (
                     <div className="text-center py-12">
                       <GiftIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
                       <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
@@ -753,10 +753,10 @@ const Account = () => {
                       >
                         Browse Products
                       </motion.button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {orders.map((order) => (
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {orders.map((order) => (
                         <motion.div
                           key={order._id}
                           initial={{ opacity: 0, y: 20 }}
@@ -764,15 +764,15 @@ const Account = () => {
                           className="p-4 bg-gray-50 rounded-xl border border-gray-200"
                         >
                           <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center space-x-4">
-                              <img
+                          <div className="flex items-center space-x-4">
+                            <img
                                 src={config.fixImageUrl(order.product?.image)}
                                 alt={order.product?.name}
                                 className="h-16 w-16 object-cover rounded-lg"
-                              />
-                              <div>
+                            />
+                            <div>
                                 <h4 className="font-medium text-gray-900">{order.product?.name}</h4>
-                                <p className="text-sm text-gray-500">Order ID: {order._id}</p>
+                              <p className="text-sm text-gray-500">Order ID: {order._id}</p>
                                 <p className="text-sm text-gray-500">₹{order.total?.toFixed(2)}</p>
                               </div>
                             </div>
@@ -838,7 +838,7 @@ const Account = () => {
                     </div>
                   </div>
                 </motion.div>
-              )}
+                )}
             </AnimatePresence>
           </div>
         </div>

@@ -23,9 +23,16 @@ const ProductCard = ({ product }) => {
     addToCart(product);
   };
 
-  // Use the first image from images array if available, otherwise fallback to product.image
-  const mainImage = (product.images && product.images.length > 0)
-    ? config.fixImageUrl(product.images[0])
+  // Use the first valid image from images array if available, otherwise fallback to product.image
+  const validImages = (product.images && Array.isArray(product.images))
+    ? product.images.filter(img => {
+        if (!img || typeof img !== 'string') return false;
+        const ext = img.toLowerCase().split('.').pop();
+        return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+      })
+    : [];
+  const mainImage = validImages.length > 0
+    ? config.fixImageUrl(validImages[0])
     : config.fixImageUrl(product.image);
 
   return (

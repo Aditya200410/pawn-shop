@@ -64,14 +64,14 @@ const ProductView = () => {
   // Use product.images array if available, otherwise fallback to single image
   const productImages = (() => {
     if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-      // Filter out any non-image files and map to fixed URLs
+      // Filter out any non-image files and empty/undefined strings, and map to fixed URLs
       const validImages = product.images
         .filter(img => {
+          if (!img || typeof img !== 'string') return false;
           const ext = img.toLowerCase().split('.').pop();
           return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
         })
         .map(img => config.fixImageUrl(img));
-      
       return validImages.length > 0 ? validImages : [config.fixImageUrl(product.image)];
     }
     return [config.fixImageUrl(product.image)];
@@ -438,8 +438,8 @@ const ProductView = () => {
                 </motion.div>
                   )}
 
-              {activeTab === 'specifications' && (
-                <motion.div
+                  {activeTab === 'specifications' && (
+                          <motion.div 
                   key="specifications"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
