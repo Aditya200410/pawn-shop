@@ -106,89 +106,89 @@ export default function MostLoved() {
 
         {/* Products Grid */}
         <div className="flex justify-center">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
             className={`grid gap-3 md:gap-6 lg:gap-8 max-w-7xl ${
-              isMobile 
+            isMobile 
                 ? 'grid-cols-2 gap-3' 
-                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-            }`}
-          >
-            {displayedProducts.map((product) => (
-              <motion.div
-                key={product.id}
-                variants={itemVariants}
-                className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 ${
-                  isMobile ? 'w-full' : ''
-                }`}
-              >
-                <Link to={`/product/${product.id}`} className="block">
-                  <div className="relative overflow-hidden">
-                    <div className={`overflow-hidden ${
-                      isMobile ? 'aspect-square' : 'aspect-[4/3]'
-                    }`}>
-                      <img
+              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+          }`}
+        >
+          {displayedProducts.map((product) => (
+            <motion.div
+              key={product.id}
+              variants={itemVariants}
+              className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 ${
+                isMobile ? 'w-full' : ''
+              }`}
+            >
+              <Link to={`/product/${product.id}`} className="block">
+                <div className="relative overflow-hidden">
+                  <div className={`overflow-hidden ${
+                    isMobile ? 'aspect-square' : 'aspect-[4/3]'
+                  }`}>
+                    <img
                         src={config.fixImageUrl(product.image)}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={e => {
                           e.target.onerror = null;
                           e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image';
                         }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  
+                </div>
+                
                   <div className={`${isMobile ? 'p-4' : 'p-5 md:p-6'}`}>
                     <div className="mb-3 md:mb-4">
                       <p className={`text-gray-500 ${isMobile ? 'text-xs' : 'text-sm'} font-medium uppercase tracking-wide`}>
-                        {product.category}
-                      </p>
-                    </div>
-                    
-                    <h3 className={`font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 ${
+                      {product.category}
+                    </p>
+                  </div>
+                  
+                  <h3 className={`font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 ${
                       isMobile ? 'text-sm md:text-base mb-3 leading-tight' : 'text-lg mb-4'
-                    }`}>
-                      {product.name}
-                    </h3>
-                    
-                    {!isMobile && (
-                      <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">{product.description}</p>
-                    )}
-                    
+                  }`}>
+                    {product.name}
+                  </h3>
+                  
+                  {!isMobile && (
+                    <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">{product.description}</p>
+                  )}
+                  
                     <div className={`flex items-center justify-between pt-3 md:pt-4 border-t border-gray-100 ${
                       isMobile ? 'flex-col items-start gap-2 md:gap-3' : ''
-                    }`}>
-                      <span className={`font-bold text-orange-600 ${
+                  }`}>
+                    <span className={`font-bold text-orange-600 ${
                         isMobile ? 'text-base md:text-lg' : 'text-lg'
-                      }`}>
-                        ₹{product.price?.toFixed(2)}
-                      </span>
-                      
-                      {/* Add to Cart Button - Always Visible */}
-                      <button className={`bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl ${
-                        isMobile 
+                    }`}>
+                      ₹{product.price?.toFixed(2)}
+                    </span>
+                    
+                    {/* Add to Cart Button - Always Visible */}
+                    <button className={`bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl ${
+                      isMobile 
                           ? 'w-full py-2.5 md:py-3 rounded-xl text-xs md:text-sm' 
-                          : 'px-6 py-2 rounded-xl text-sm'
-                      }`}>
-                        <div className="flex items-center justify-center gap-2">
+                        : 'px-6 py-2 rounded-xl text-sm'
+                    }`}>
+                      <div className="flex items-center justify-center gap-2">
                           <ShoppingCartIcon className={isMobile ? "h-3 w-3 md:h-4 md:w-4" : "h-4 w-4"} />
-                          Add to Cart
-                        </div>
-                      </button>
-                    </div>
+                        Add to Cart
+                      </div>
+                    </button>
                   </div>
+                </div>
 
-                  {/* Hover Effect Border */}
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-2xl transition-colors duration-300 pointer-events-none" />
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
+                {/* Hover Effect Border */}
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-2xl transition-colors duration-300 pointer-events-none" />
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
         </div>
         
         {/* Show "View More" button on mobile if there are more products */}

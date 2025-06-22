@@ -2,10 +2,11 @@ import config from '../config/config.js';
 
 export const authService = {
     async register(userData) {
+        try {
         const response = await fetch(`${config.API_URLS.AUTH}/register`, {
             method: 'POST',
             headers: config.CORS.HEADERS,
-            credentials: config.CORS.WITH_CREDENTIALS ? 'include' : 'omit',
+                credentials: 'include',
             body: JSON.stringify(userData),
         });
         
@@ -15,13 +16,18 @@ export const authService = {
         }
         
         return response.json();
+        } catch (error) {
+            console.error('Registration error:', error);
+            throw error;
+        }
     },
 
     async login(credentials) {
+        try {
         const response = await fetch(`${config.API_URLS.AUTH}/login`, {
             method: 'POST',
             headers: config.CORS.HEADERS,
-            credentials: config.CORS.WITH_CREDENTIALS ? 'include' : 'omit',
+                credentials: 'include',
             body: JSON.stringify({ username: credentials.email, password: credentials.password }),
         });
         
@@ -31,11 +37,26 @@ export const authService = {
         }
         
         return response.json();
+        } catch (error) {
+            console.error('Login error:', error);
+            throw error;
+        }
     },
 
     async getCurrentUser() {
+        try {
+            const token = localStorage.getItem('token');
+            const headers = {
+                ...config.CORS.HEADERS,
+            };
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
         const response = await fetch(`${config.API_URLS.AUTH}/me`, {
-            credentials: config.CORS.WITH_CREDENTIALS ? 'include' : 'omit',
+                headers,
+                credentials: 'include',
         });
         
         if (!response.ok) {
@@ -44,12 +65,17 @@ export const authService = {
         }
         
         return response.json();
+        } catch (error) {
+            console.error('Get current user error:', error);
+            throw error;
+        }
     },
 
     async logout() {
+        try {
         const response = await fetch(`${config.API_URLS.AUTH}/logout`, {
             method: 'POST',
-            credentials: config.CORS.WITH_CREDENTIALS ? 'include' : 'omit',
+                credentials: 'include',
         });
         
         if (!response.ok) {
@@ -58,9 +84,65 @@ export const authService = {
         }
         
         return response.json();
+        } catch (error) {
+            console.error('Logout error:', error);
+            throw error;
+        }
+    },
+
+    async updateProfile(userData) {
+        try {
+            const token = localStorage.getItem('token');
+            const headers = {
+                ...config.CORS.HEADERS,
+            };
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
+            const response = await fetch(`${config.API_URLS.AUTH}/update-profile`, {
+                method: 'PUT',
+                headers,
+                credentials: 'include',
+                body: JSON.stringify(userData),
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to update profile');
+            }
+            
+            return response.json();
+        } catch (error) {
+            console.error('Update profile error:', error);
+            throw error;
+        }
+    },
+
+    async forgotPassword(email) {
+        try {
+            const response = await fetch(`${config.API_URLS.AUTH}/forgot-password`, {
+                method: 'POST',
+                headers: config.CORS.HEADERS,
+                credentials: 'include',
+                body: JSON.stringify({ email }),
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to send reset link');
+            }
+            
+            return response.json();
+        } catch (error) {
+            console.error('Forgot password error:', error);
+            throw error;
+        }
     },
 
     isAuthenticated() {
-        return document.cookie.includes('token=');
+        const token = localStorage.getItem('token');
+        return !!token;
     }
 }; 

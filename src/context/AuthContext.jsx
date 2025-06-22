@@ -34,6 +34,10 @@ export const AuthProvider = ({ children }) => {
             const data = await authService.login(credentials);
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
+            // Store the token in localStorage
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+            }
             return data;
         } catch (err) {
             setError(err.message);
@@ -47,6 +51,10 @@ export const AuthProvider = ({ children }) => {
             const data = await authService.register(userData);
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
+            // Store the token in localStorage
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+            }
             return data;
         } catch (err) {
             setError(err.message);
@@ -62,6 +70,7 @@ export const AuthProvider = ({ children }) => {
         }
         setUser(null);
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
     };
 
     const updateProfile = async (userData) => {

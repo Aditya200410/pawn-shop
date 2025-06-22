@@ -5,6 +5,7 @@ import { ShoppingBag, Menu, X, ChevronDown, Search, User, Heart, Home, ShoppingC
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
 import { categories } from '../../data/categories';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import logo from '/logo.png';
 
 const Header = () => {
@@ -15,6 +16,7 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { cartItems } = useCart();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -181,9 +183,20 @@ const Header = () => {
 
             {/* Desktop Icons */}
             <div className="hidden md:flex items-center space-x-6">
-              <Link to="/account" className="text-gray-600 hover:text-orange-600 transition-colors">
-                <User size={20} />
-              </Link>
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <div className="text-sm text-gray-600">
+                    <span className="font-medium">Hi, {user.name}</span>
+                  </div>
+                  <Link to="/account" className="text-gray-600 hover:text-orange-600 transition-colors">
+                    <User size={20} />
+                  </Link>
+                </div>
+              ) : (
+                <Link to="/account" className="text-gray-600 hover:text-orange-600 transition-colors">
+                  <User size={20} />
+                </Link>
+              )}
               <Link to="/cart" className="text-gray-600 hover:text-orange-600 transition-colors relative">
                 <ShoppingCart size={20} />
                 {cartItems.length > 0 && (
@@ -192,12 +205,21 @@ const Header = () => {
                   </span>
                 )}
               </Link>
-              <Link 
-                to="/login" 
-                className="flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
-              >
-                Login / Register
-              </Link>
+              {user ? (
+                <Link 
+                  to="/account" 
+                  className="flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+                >
+                  My Account
+                </Link>
+              ) : (
+                <Link 
+                  to="/login" 
+                  className="flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+                >
+                  Login / Register
+                </Link>
+              )}
             </div>
 
             {/* Mobile Cart Icon - Right */}
@@ -267,6 +289,19 @@ const Header = () => {
 
                     {/* Quick Actions */}
                     <div className="space-y-4">
+                      {/* User Greeting */}
+                      {user ? (
+                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                          <div className="flex items-center space-x-3">
+                            <User size={24} className="text-orange-600" />
+                            <div>
+                              <p className="font-medium text-orange-800">Hi, {user.name}</p>
+                              <p className="text-sm text-orange-600">{user.email}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : null}
+                      
                       <Link
                         to="/cart"
                         onClick={() => setIsMobileMenuOpen(false)}
@@ -282,13 +317,23 @@ const Header = () => {
                           </span>
                         )}
                       </Link>
-                      <Link
-                        to="/login"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center justify-center w-full px-4 py-3 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
-                      >
-                        Login / Register
-                      </Link>
+                      {user ? (
+                        <Link
+                          to="/account"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center justify-center w-full px-4 py-3 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+                        >
+                          My Account
+                        </Link>
+                      ) : (
+                        <Link
+                          to="/login"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center justify-center w-full px-4 py-3 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+                        >
+                          Login / Register
+                        </Link>
+                      )}
                     </div>
                   </div>
 

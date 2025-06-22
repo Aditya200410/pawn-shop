@@ -65,6 +65,7 @@ const config = {
     WITH_CREDENTIALS: true,
     HEADERS: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
     },
   },
 };

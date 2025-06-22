@@ -37,6 +37,8 @@ const ProductView = () => {
   ]);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [productImages, setProductImages] = useState([]);
+  const [imagesLoading, setImagesLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -58,16 +60,39 @@ const ProductView = () => {
     fetchProduct();
   }, [id, navigate]);
 
+  useEffect(() => {
+    const fetchProductImages = async () => {
+      if (!product) return;
+      
+      try {
+        setImagesLoading(true);
+        const res = await fetch(`${config.API_URLS.SHOP}/${product.id}/images`);
+        if (!res.ok) throw new Error('Failed to fetch product images');
+        const data = await res.json();
+        
+        // Fix image URLs and add fallback to main product image
+        const fixedImages = data.images.map(img => config.fixImageUrl(img));
+        
+        // If no additional images found, use the main product image
+        if (fixedImages.length === 0) {
+          setProductImages([config.fixImageUrl(product.image)]);
+        } else {
+          setProductImages(fixedImages);
+        }
+      } catch (err) {
+        console.error('Error fetching product images:', err);
+        // Fallback to main product image
+        setProductImages([config.fixImageUrl(product.image)]);
+      } finally {
+        setImagesLoading(false);
+      }
+    };
+    
+    fetchProductImages();
+  }, [product]);
+
   if (loading) return <div>Loading...</div>;
   if (!product) return null;
-
-  // Generate multiple images for the product (in a real app, these would come from the backend)
-  const productImages = [
-    config.fixImageUrl(product.image),
-    config.fixImageUrl(product.image),
-    config.fixImageUrl(product.image),
-    config.fixImageUrl(product.image),
-  ];
 
   const handleQuantityChange = (value) => {
     if (value >= 1) {
@@ -134,6 +159,11 @@ const ProductView = () => {
             className="lg:col-span-5 space-y-6"
           >
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 group shadow-lg">
+              {imagesLoading ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+                </div>
+              ) : (
               <AnimatePresence mode="wait">
                 <motion.img
                   key={selectedImage}
@@ -144,12 +174,13 @@ const ProductView = () => {
                   src={productImages[selectedImage]}
                   alt={product.name}
                   className="w-full h-full object-cover"
-                  onError={e => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://placehold.co/600x600/e2e8f0/475569?text=Product+Image';
-                  }}
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://placehold.co/600x600/e2e8f0/475569?text=Product+Image';
+                    }}
                 />
               </AnimatePresence>
+              )}
               {product.outOfStock && (
                 <motion.div 
                   initial={{ opacity: 0, y: -10 }}
@@ -160,7 +191,9 @@ const ProductView = () => {
                 </motion.div>
               )}
               
-              {/* Navigation Arrows */}
+              {/* Navigation Arrows - Only show if there are multiple images */}
+              {productImages.length > 1 && (
+                <>
               <motion.button
                 initial={{ opacity: 0, x: -10 }}
                 whileHover={{ x: -5 }}
@@ -188,8 +221,12 @@ const ProductView = () => {
               >
                 {selectedImage + 1} / {productImages.length}
               </motion.div>
+                </>
+              )}
             </div>
             
+            {/* Thumbnail Images - Only show if there are multiple images */}
+            {productImages.length > 1 && (
             <div className="grid grid-cols-4 gap-4">
               {productImages.map((image, index) => (
                 <motion.button
@@ -203,18 +240,19 @@ const ProductView = () => {
                       : 'border-transparent hover:border-gray-300'
                   }`}
                 >
-                  <img
-                    src={image}
-                    alt={`${product.name} - Image ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    onError={e => {
-                      e.target.onerror = null;
-                      e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Image';
-                    }}
+                  <img 
+                    src={image} 
+                      alt={`${product.name} - Image ${index + 1}`}
+                    className="w-full h-full object-cover" 
+                      onError={e => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Image';
+                      }}
                   />
                 </motion.button>
               ))}
             </div>
+            )}
           </motion.div>
 
           {/* Product Details - Right Side */}
@@ -235,22 +273,22 @@ const ProductView = () => {
                     New Arrival
                   </span>
                 )}
-              </div>
-              
+            </div>
+
               <h1 className="text-4xl font-bold text-gray-900 leading-tight">
                 {product.name}
               </h1>
               
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <StarIconSolid
-                      key={i}
+                {[...Array(5)].map((_, i) => (
+                  <StarIconSolid
+                    key={i}
                       className={`h-5 w-5 ${
                         i < Math.floor(averageRating) ? 'text-yellow-400' : 'text-gray-300'
-                      }`}
-                    />
-                  ))}
+                    }`}
+                  />
+                ))}
                   <span className="ml-2 text-sm text-gray-600">
                     {averageRating.toFixed(1)} ({reviews.length} reviews)
                   </span>
@@ -331,9 +369,9 @@ const ProductView = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div className="flex gap-4">
-                <motion.button
+                <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleAddToCart}
@@ -348,7 +386,7 @@ const ProductView = () => {
                   {product.outOfStock ? 'Out of Stock' : 'Add to Cart'}
                 </motion.button>
                 
-                <motion.button
+                <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="p-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
@@ -356,7 +394,7 @@ const ProductView = () => {
                   <HeartIcon className="h-5 w-5 text-gray-600" />
                 </motion.button>
                 
-                <motion.button
+                <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="p-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
@@ -366,12 +404,12 @@ const ProductView = () => {
               </div>
             </div>
           </motion.div>
-        </div>
+            </div>
 
         {/* Product Tabs */}
         <div className="mt-16">
           <div className="border-b border-gray-200">
-            <nav className="flex space-x-8">
+                <nav className="flex space-x-8">
               {[
                 { id: 'description', label: 'Description' },
                 { id: 'reviews', label: `Reviews (${reviews.length})` },
@@ -382,18 +420,18 @@ const ProductView = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.id
-                      ? 'border-amber-600 text-amber-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
+                          ? 'border-amber-600 text-amber-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
                   {tab.label}
                 </button>
-              ))}
-            </nav>
-          </div>
+                  ))}
+                </nav>
+              </div>
 
           <div className="py-8">
-            <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait">
               {activeTab === 'description' && (
                 <motion.div
                   key="description"
@@ -404,8 +442,8 @@ const ProductView = () => {
                   className="prose max-w-none"
                 >
                   <p className="text-gray-700 leading-relaxed">
-                    {product.description}
-                  </p>
+                        {product.description}
+                      </p>
                   
                   <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-gray-50 p-6 rounded-xl">
@@ -429,10 +467,10 @@ const ProductView = () => {
                     </div>
                   </div>
                 </motion.div>
-              )}
+                  )}
 
               {activeTab === 'reviews' && (
-                <motion.div
+                          <motion.div 
                   key="reviews"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -555,20 +593,20 @@ const ProductView = () => {
                       <li>• Refund processed within 5-7 days</li>
                       <li>• Contact customer service for returns</li>
                     </ul>
-                  </div>
+                    </div>
                 </motion.div>
               )}
-            </AnimatePresence>
-          </div>
+              </AnimatePresence>
+            </div>
         </div>
 
         {/* Related Products */}
         <div className="mt-16">
           <h3 className="text-2xl font-bold text-gray-900 mb-8">You Might Also Like</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div>
             <MostLoved />
           </div>
-        </div>
+          </div>
       </div>
     </motion.div>
   );
