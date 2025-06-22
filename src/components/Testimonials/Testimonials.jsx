@@ -73,7 +73,7 @@ export default function Testimonials() {
   const testimonial = testimonials[current];
 
   return (
-    <section className="py-16 md:py-24 lg:py-32 relative overflow-hidden">
+    <section className="py-8 md:py-12 lg:py-16 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-amber-50/30 via-white to-rose-50/30"></div>
       <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-amber-200/20 to-orange-200/20 rounded-full blur-3xl"></div>
@@ -85,28 +85,28 @@ export default function Testimonials() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-8 md:mb-12 lg:mb-16"
+          className="text-center mb-6 md:mb-8 lg:mb-10"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-2 rounded-full mb-4 md:mb-6"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-2 rounded-full mb-3 md:mb-4"
           >
             <Sparkles className="w-4 h-4 text-amber-600" />
             <span className="text-sm font-medium text-amber-800">Customer Stories</span>
           </motion.div>
           
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight text-gray-900 mb-4 md:mb-6">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 mb-3 md:mb-4">
             What Our <span className="font-serif italic bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Customers</span> Say
           </h2>
-          <p className="text-base md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Discover the authentic experiences of art lovers who have brought home pieces of our cultural heritage
           </p>
         </motion.div>
 
-        <div className="relative max-w-4xl mx-auto h-[400px] md:h-[500px] lg:h-[600px] flex items-center justify-center">
+        <div className="relative max-w-4xl mx-auto h-[300px] md:h-[350px] lg:h-[400px] flex items-center justify-center">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={current}
@@ -119,21 +119,21 @@ export default function Testimonials() {
             >
               <div className="relative">
                 {/* Main Card */}
-                <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-3xl p-6 md:p-8 lg:p-12 shadow-2xl shadow-amber-500/10">
+                <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-3xl p-4 md:p-6 lg:p-8 shadow-2xl shadow-amber-500/10">
                   {/* Quote Icon */}
-                  <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Quote className="w-6 h-6 text-white" />
+                  <div className="absolute -top-3 -left-3 w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Quote className="w-5 h-5 text-white" />
                   </div>
                   
                   {/* Category Badge */}
-                  <div className="absolute top-6 right-6">
+                  <div className="absolute top-4 right-4">
                     <span className="px-3 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 text-xs font-medium rounded-full">
                       {testimonial.category}
                     </span>
                   </div>
                   
                   {/* Testimonial Text */}
-                  <blockquote className="text-gray-700 text-base md:text-lg lg:text-xl leading-relaxed mb-6 md:mb-8 mt-4 font-light italic">
+                  <blockquote className="text-gray-700 text-sm md:text-base lg:text-lg leading-relaxed mb-4 md:mb-6 mt-3 font-light italic">
                     "{testimonial.text}"
                   </blockquote>
 
@@ -144,15 +144,15 @@ export default function Testimonials() {
                         <img 
                           src={testimonial.image} 
                           alt={testimonial.name}
-                          className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-2xl object-cover border-4 border-white shadow-lg"
+                          className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-2xl object-cover border-4 border-white shadow-lg"
                         />
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                         </div>
                       </div>
-                      <div className="ml-4">
-                        <h3 className="font-semibold text-gray-900 text-base md:text-lg">{testimonial.name}</h3>
-                        <p className="text-gray-500 text-sm flex items-center gap-1">
+                      <div className="ml-3">
+                        <h3 className="font-semibold text-gray-900 text-sm md:text-base">{testimonial.name}</h3>
+                        <p className="text-gray-500 text-xs flex items-center gap-1">
                           <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
                           {testimonial.location}
                         </p>
@@ -162,16 +162,16 @@ export default function Testimonials() {
                     {/* Rating */}
                     <div className="flex items-center gap-1">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 md:w-5 md:h-5 text-amber-400 fill-amber-400" />
+                        <Star key={i} className="w-3 h-3 md:w-4 md:h-4 text-amber-400 fill-amber-400" />
                       ))}
-                      <span className="ml-2 text-sm text-gray-500 font-medium">{testimonial.rating}.0</span>
+                      <span className="ml-2 text-xs text-gray-500 font-medium">{testimonial.rating}.0</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-2xl blur-xl"></div>
-                <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-br from-rose-200/30 to-pink-200/30 rounded-xl blur-lg"></div>
+                <div className="absolute -bottom-3 -right-3 w-20 h-20 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-2xl blur-xl"></div>
+                <div className="absolute -top-3 -left-3 w-12 h-12 bg-gradient-to-br from-rose-200/30 to-pink-200/30 rounded-xl blur-lg"></div>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -181,23 +181,23 @@ export default function Testimonials() {
             whileHover={{ scale: 1.1, x: -5 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => paginate(-1)} 
-            className="absolute top-1/2 -translate-y-1/2 -left-6 z-10 p-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:bg-white group"
+            className="absolute top-1/2 -translate-y-1/2 -left-4 z-10 p-3 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:bg-white group"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-700 group-hover:text-amber-600 transition-colors" />
+            <ArrowLeft className="w-5 h-5 text-gray-700 group-hover:text-amber-600 transition-colors" />
           </motion.button>
           
           <motion.button 
             whileHover={{ scale: 1.1, x: 5 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => paginate(1)} 
-            className="absolute top-1/2 -translate-y-1/2 -right-6 z-10 p-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:bg-white group"
+            className="absolute top-1/2 -translate-y-1/2 -right-4 z-10 p-3 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:bg-white group"
           >
-            <ArrowRight className="w-6 h-6 text-gray-700 group-hover:text-amber-600 transition-colors" />
+            <ArrowRight className="w-5 h-5 text-gray-700 group-hover:text-amber-600 transition-colors" />
           </motion.button>
         </div>
 
         {/* Enhanced Dots */}
-        <div className="flex justify-center items-center gap-3 mt-8 md:mt-12">
+        <div className="flex justify-center items-center gap-3 mt-6 md:mt-8">
           {testimonials.map((_, index) => (
             <motion.button
               key={index}
