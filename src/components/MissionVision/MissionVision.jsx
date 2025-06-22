@@ -29,7 +29,7 @@ const cardVariants = {
 
 export default function MissionVision() {
   return (
-    <section className="py-8 md:py-12 lg:py-16 bg-gradient-to-br from-amber-50/50 via-white to-amber-50/50">
+    <section className="py-6 md:py-10 lg:py-12 bg-gradient-to-br from-amber-50/50 via-white to-amber-50/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

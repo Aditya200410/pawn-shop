@@ -68,7 +68,7 @@ export default function Testimonials() {
   const testimonial = testimonials[current];
 
   return (
-    <section className="py-8 md:py-12 lg:py-16 relative overflow-hidden">
+    <section className="py-6 md:py-10 lg:py-12 relative overflow-hidden">
       {/* Simplified Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-amber-50/30 via-white to-rose-50/30"></div>
       

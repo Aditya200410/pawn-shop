@@ -79,20 +79,20 @@ const Categories = () => {
   }
 
   return (
-    <section className="py-8 md:py-16 lg:py-20">
+    <section className="py-6 md:py-10 lg:py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8 md:mb-12 lg:mb-16"
+          className="text-center mb-6 md:mb-8 lg:mb-10"
         >
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 mb-3 md:mb-4">
               <span className="font-serif italic">Our Categories</span>
             </h2>
-            <p className="text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-6 md:mb-8 max-w-2xl mx-auto">
+            <p className="text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-4 md:mb-6 max-w-2xl mx-auto">
               Discover our carefully curated collection of handcrafted treasures, each piece telling a unique story of craftsmanship and tradition
             </p>
             <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
@@ -174,7 +174,7 @@ const Categories = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-8 md:mt-12 lg:mt-16"
+          className="text-center mt-6 md:mt-8 lg:mt-10"
         >
           <div className="max-w-md mx-auto">
             <p className="text-gray-600 text-sm md:text-base mb-4 md:mb-6">

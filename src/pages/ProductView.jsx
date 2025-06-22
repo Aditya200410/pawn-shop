@@ -62,9 +62,25 @@ const ProductView = () => {
   if (!product) return null;
 
   // Use product.images array if available, otherwise fallback to single image
-  const productImages = (product.images && product.images.length > 0)
-    ? product.images.map(img => config.fixImageUrl(img))
-    : [config.fixImageUrl(product.image)];
+  const productImages = (() => {
+    if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+      // Filter out any non-image files and map to fixed URLs
+      const validImages = product.images
+        .filter(img => {
+          const ext = img.toLowerCase().split('.').pop();
+          return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+        })
+        .map(img => config.fixImageUrl(img));
+      
+      return validImages.length > 0 ? validImages : [config.fixImageUrl(product.image)];
+    }
+    return [config.fixImageUrl(product.image)];
+  })();
+
+  // Debug logging to check images
+  console.log('Product:', product.name);
+  console.log('Product images array:', product.images);
+  console.log('Processed productImages:', productImages);
 
   const handleQuantityChange = (value) => {
     if (value >= 1) {

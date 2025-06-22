@@ -15,11 +15,13 @@ const Header = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isDesktopSearchFocused, setIsDesktopSearchFocused] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
   const searchInputRef = useRef(null);
   const searchBarRef = useRef(null);
+  const desktopSearchRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { cartItems } = useCart();
@@ -45,6 +47,11 @@ const Header = () => {
         setSearchResults([]);
         setSearchQuery('');
       }
+      if (isDesktopSearchFocused && desktopSearchRef.current && !desktopSearchRef.current.contains(e.target)) {
+        setIsDesktopSearchFocused(false);
+        setSearchResults([]);
+        setSearchQuery('');
+      }
     };
     // Close on Esc
     const handleEsc = (e) => {
@@ -64,7 +71,7 @@ const Header = () => {
 
   // Search products as user types
   useEffect(() => {
-    if (!isSearchOpen || !searchQuery.trim()) {
+    if (!searchQuery.trim()) {
       setSearchResults([]);
       setSearchError(null);
       return;
@@ -86,7 +93,7 @@ const Header = () => {
         setSearchError('Failed to fetch products');
         setSearchLoading(false);
       });
-  }, [searchQuery, isSearchOpen]);
+  }, [searchQuery]);
 
   const handleCategoryClick = (category, subcategory = null, item = null) => {
     navigate('/shop', {
@@ -118,6 +125,7 @@ const Header = () => {
 
   const handleResultClick = (id) => {
     setIsSearchOpen(false);
+    setIsDesktopSearchFocused(false);
     setSearchResults([]);
     setSearchQuery('');
     navigate(`/product/${id}`);
@@ -294,23 +302,67 @@ const Header = () => {
             </div>
 
             {/* Desktop Search */}
-            <div className="hidden md:block flex-1 max-w-2xl mx-8">
+            <div className="hidden md:block flex-1 max-w-2xl mx-8 relative" ref={desktopSearchRef}>
               <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
+                <input
+                  type="text"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsDesktopSearchFocused(true)}
                   className="w-full pl-4 pr-12 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
-              />
+                />
                 <button 
                   type="submit" 
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors"
                 >
                   <Search size={18} />
-              </button>
+                </button>
               </form>
-        </div>
+              
+              {/* Desktop Search Results Dropdown */}
+              {(isDesktopSearchFocused && searchQuery.trim()) && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50">
+                  {searchLoading && (
+                    <div className="flex items-center justify-center py-6 text-orange-600">
+                      <svg className="w-6 h-6 animate-spin mr-2" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                      </svg>
+                      Loading...
+                    </div>
+                  )}
+                  {searchError && (
+                    <div className="py-6 text-center text-red-500">{searchError}</div>
+                  )}
+                  {!searchLoading && !searchError && searchResults.length > 0 && (
+                    <ul>
+                      {searchResults.slice(0, 6).map(product => (
+                        <li
+                          key={product.id}
+                          className="flex items-center px-4 py-3 hover:bg-orange-50 cursor-pointer transition-colors border-b last:border-b-0"
+                          onClick={() => handleResultClick(product.id)}
+                        >
+                          <img
+                            src={config.fixImageUrl(product.image)}
+                            alt={product.name}
+                            className="w-12 h-12 object-cover rounded-lg mr-4 border"
+                          />
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-900">{product.name}</div>
+                            <div className="text-sm text-gray-500 truncate">{product.description}</div>
+                          </div>
+                          <div className="ml-4 text-orange-600 font-semibold whitespace-nowrap">₹{product.price}</div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {!searchLoading && !searchError && searchQuery && searchResults.length === 0 && (
+                    <div className="py-6 text-center text-gray-500">No products found.</div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
@@ -423,6 +475,14 @@ const Header = () => {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
+                        onFocus={() => {
+                          setIsMobileMenuOpen(false);
+                          setIsSearchOpen(true);
+                        }}
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          setIsSearchOpen(true);
+                        }}
                       />
                       <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600">
                         <Search size={18} />
