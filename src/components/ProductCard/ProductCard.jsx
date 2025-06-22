@@ -23,6 +23,11 @@ const ProductCard = ({ product }) => {
     addToCart(product);
   };
 
+  // Use the first image from images array if available, otherwise fallback to product.image
+  const mainImage = (product.images && product.images.length > 0)
+    ? config.fixImageUrl(product.images[0])
+    : config.fixImageUrl(product.image);
+
   return (
     <div className="group relative bg-white rounded-2xl  hover: transition-all d
     uration-400 ease-in-out overflow-hidden border border-gray-100 hover:border-amber-200 hover:-translate-y-1.5">
@@ -30,7 +35,7 @@ const ProductCard = ({ product }) => {
       <Link to={`/product/${product.id}`} className="block relative">
         <div className="aspect-square w-full overflow-hidden bg-gray-50">
           <img
-            src={config.fixImageUrl(product.image)}
+            src={mainImage}
             alt={product.name}
             className="w-full h-full object-cover object-center transition-transform duration-400 ease-in-out group-hover:scale-110"
             onError={e => {
