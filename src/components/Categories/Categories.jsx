@@ -132,7 +132,7 @@ const Categories = () => {
                 {/* Image Container */}
                 <div className="relative w-full h-full overflow-hidden">
                   <img
-                    src={category.image}
+                    src={config.fixImageUrl(category.image)}
                     alt={category.name}
                     className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500"
                     onError={e => {
