@@ -21,44 +21,61 @@ function getImagesFromFolder(folderPath) {
       return ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
     });
     
-    return imageFiles.map(file => path.join(folderPath, file).replace(/\\/g, '/'));
+    return imageFiles.map(file => `/pawnbackend/data${path.join(folderPath, file).replace(/\\/g, '/').replace(rikocraftPath.replace(/\\/g, '/'), '')}`);
   } catch (error) {
     console.log(`Error reading folder ${folderPath}:`, error.message);
     return [];
   }
 }
 
-// Update each product
-shopData.forEach((product, index) => {
-  // Skip if already has images array
-  if (product.images) {
-    console.log(`Product ${product.id} already has images array`);
-    return;
+// Function to get folder path from product image path
+function getFolderPathFromImage(imagePath) {
+  // Extract the folder path from the image path
+  const parts = imagePath.split('/');
+  const categoryIndex = parts.findIndex(part => part === 'Rikocraft.com');
+  if (categoryIndex === -1) return null;
+  
+  // Get the category and product folder
+  const category = parts[categoryIndex + 1];
+  const productFolder = parts[categoryIndex + 2];
+  
+  return path.join(rikocraftPath, category, productFolder);
+}
+
+// Update products that don't have images array
+let updatedCount = 0;
+const updatedProducts = shopData.map(product => {
+  // If product already has images array, skip it
+  if (product.images && Array.isArray(product.images)) {
+    return product;
   }
   
-  // Extract folder path from image field
-  const imagePath = product.image;
-  // Remove the /pawnbackend/data/ prefix and get the folder path
-  const relativePath = imagePath.replace('/pawnbackend/data/', '');
-  const folderPath = path.dirname(relativePath);
-  const fullFolderPath = path.join(rikocraftPath, folderPath);
+  // Get folder path from the main image
+  const folderPath = getFolderPathFromImage(product.image);
+  if (!folderPath) {
+    console.log(`Could not determine folder path for product ${product.id}: ${product.name}`);
+    return product;
+  }
   
   // Get all images from the folder
-  const images = getImagesFromFolder(fullFolderPath);
+  const images = getImagesFromFolder(folderPath);
   
   if (images.length > 0) {
-    // Convert back to the proper format for the JSON
-    const jsonImages = images.map(imgPath => {
-      const relativeImgPath = imgPath.replace(rikocraftPath.replace(/\\/g, '/'), '');
-      return `/pawnbackend/data${relativeImgPath}`;
-    });
-    product.images = jsonImages;
-    console.log(`Updated product ${product.id} with ${images.length} images`);
+    console.log(`Added ${images.length} images to product ${product.id}: ${product.name}`);
+    updatedCount++;
+    return {
+      ...product,
+      images: images
+    };
   } else {
-    console.log(`No images found for product ${product.id} in ${fullFolderPath}`);
+    console.log(`No images found for product ${product.id}: ${product.name}`);
+    return product;
   }
 });
 
-// Write back to file
-fs.writeFileSync(shopDataPath, JSON.stringify(shopData, null, 2));
-console.log('Updated shop.json with images arrays for all products'); 
+// Write the updated data back to the file
+fs.writeFileSync(shopDataPath, JSON.stringify(updatedProducts, null, 2));
+
+console.log(`\nUpdate complete!`);
+console.log(`Updated ${updatedCount} products with images array.`);
+console.log(`Total products: ${shopData.length}`); 
