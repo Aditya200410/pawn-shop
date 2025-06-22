@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { 
   UserCircleIcon, 
   PencilSquareIcon, 
@@ -28,11 +28,16 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
-import cartService from '../services/cartService';
+import orderService from '../services/orderService';
 import config from '../config/config.js';
 
+// Helper to get tab from URL
+const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
+};
+
 const Account = () => {
+  const query = useQuery();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -45,7 +50,7 @@ const Account = () => {
   });
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(query.get('tab') || 'overview');
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -80,27 +85,24 @@ const Account = () => {
   }, [user, navigate]);
 
   useEffect(() => {
-    if (activeTab === 'orders' && user) {
+    if (activeTab === 'orders') {
       fetchOrders();
     }
-  }, [activeTab, user]);
+  }, [activeTab]);
 
   const fetchOrders = async () => {
+    if (!user?.email) return;
+    setLoading(true);
     try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get(config.API_URLS.ORDERS, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const userOrders = response.data.filter(order => order.email === user.email);
-      setOrders(userOrders);
+      const data = await orderService.getOrdersByEmail(user.email);
+      if (data.success) {
+        setOrders(data.orders);
+      } else {
+        throw new Error(data.message);
+      }
     } catch (error) {
       console.error('Error fetching orders:', error);
-      const errorMessage = error.response?.data?.message || 'Failed to fetch orders';
-      setError(errorMessage);
-      toast.error(errorMessage);
+      toast.error(error.message || 'Failed to fetch orders');
     } finally {
       setLoading(false);
     }
@@ -250,6 +252,46 @@ const Account = () => {
     { id: 'orders', label: 'Orders', icon: GiftIcon },
     
   ];
+
+  // JSX for the orders tab
+  const OrdersTab = () => (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <h2 className="text-2xl font-bold mb-4">My Orders</h2>
+      {loading ? (
+        <p>Loading orders...</p>
+      ) : orders.length > 0 ? (
+        <div className="space-y-6">
+          {orders.map(order => (
+            <div key={order._id} className="bg-white p-4 rounded-lg shadow-sm border">
+              <div className="flex justify-between items-center mb-2">
+                <div>
+                  <p className="font-bold">Order ID: #{order._id.substring(0, 8)}</p>
+                  <p className="text-sm text-gray-500">Date: {format(new Date(order.createdAt), 'PPpp')}</p>
+                </div>
+                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${order.orderStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                  {order.orderStatus}
+                </span>
+              </div>
+              <div className="border-t my-2"></div>
+              {order.items.map(item => (
+                <div key={item.productId} className="flex items-center my-2">
+                  <img src={config.fixImageUrl(item.image)} alt={item.name} className="w-16 h-16 object-cover rounded-md mr-4"/>
+                  <div>
+                    <p>{item.name}</p>
+                    <p className="text-sm text-gray-600">Qty: {item.quantity} - ₹{item.price}</p>
+                  </div>
+                </div>
+              ))}
+              <div className="border-t my-2"></div>
+              <p className="text-right font-bold">Total: ₹{order.totalAmount}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>You have no orders yet.</p>
+      )}
+    </motion.div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
@@ -723,7 +765,7 @@ const Account = () => {
                 </motion.div>
             )}
 
-            {activeTab === 'orders' && (
+              {activeTab === 'orders' && (
                 <motion.div
                   key="orders"
                   initial={{ opacity: 0, y: 20 }}
@@ -733,53 +775,7 @@ const Account = () => {
                 >
                   <h3 className="text-xl font-semibold text-gray-900 mb-6">Order History</h3>
                   
-                {orders.length === 0 ? (
-                    <div className="text-center py-12">
-                      <GiftIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
-                      <p className="text-gray-500 mb-6">Start shopping to place your first order.</p>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate('/shop')}
-                        className="px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors"
-                      >
-                        Browse Products
-                      </motion.button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {orders.map((order) => (
-                        <motion.div
-                          key={order._id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="p-4 bg-gray-50 rounded-xl border border-gray-200"
-                        >
-                          <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center space-x-4">
-                            <img
-                                src={config.fixImageUrl(order.product?.image)}
-                                alt={order.product?.name}
-                                className="h-16 w-16 object-cover rounded-lg"
-                            />
-                            <div>
-                                <h4 className="font-medium text-gray-900">{order.product?.name}</h4>
-                              <p className="text-sm text-gray-500">Order ID: {order._id}</p>
-                                <p className="text-sm text-gray-500">₹{order.total?.toFixed(2)}</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              {getStatusIcon(order.status)}
-                              <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
-                                {order.status}
-                              </span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  )}
+                  <OrdersTab />
                 </motion.div>
               )}
 
