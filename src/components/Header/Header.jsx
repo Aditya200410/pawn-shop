@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Menu, X, ChevronDown, Search, User, Heart, Home, ShoppingCart } from 'lucide-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
-import { categories } from '../../data/categories';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import logo from '/logo.png';
@@ -157,7 +156,7 @@ const Header = () => {
 
   const mobileMenuVariants = {
     closed: {
-      x: '100%',
+      x: '-100%',
       transition: {
         type: 'tween',
         duration: 0.3,
@@ -445,7 +444,7 @@ const Header = () => {
                 initial="closed"
                 animate="open"
                 exit="closed"
-                className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#772a4b] z-[20001] flex flex-col"
+                className="fixed top-0 left-0 h-full w-full max-w-sm bg-[#772a4b] z-[20001] flex flex-col"
               >
                 {/* Menu Header with Close Button */}
                 <div className="flex items-center justify-between p-4 border-b border-white/20">

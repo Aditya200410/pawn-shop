@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HeartIcon, ShoppingCartIcon, ShareIcon, StarIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { 
+  HeartIcon, ShoppingCartIcon, ShareIcon, StarIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon,
+  DocumentTextIcon, CogIcon, TruckIcon 
+} from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import MostLoved from '../components/Products/MostLoved';
 import WeeklyBestsellers from '../components/Products/WeeklyBestsellers';
@@ -41,6 +44,13 @@ const ProductView = () => {
   ]);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const tabs = [
+    { id: 'description', label: 'Description', icon: DocumentTextIcon },
+    { id: 'specifications', label: 'Specifications', icon: CogIcon },
+    { id: 'reviews', label: 'Reviews', icon: StarIcon },
+    { id: 'shipping', label: 'Shipping & Returns', icon: TruckIcon },
+  ];
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -450,12 +460,7 @@ const ProductView = () => {
         <div className="mt-16">
           <div className="border-b border-gray-200">
                 <nav className="flex space-x-8">
-              {[
-                { id: 'description', label: 'Description' },
-                { id: 'specifications', label: 'Specifications' },
-               
-                { id: 'shipping', label: 'Shipping & Returns' },
-              ].map((tab) => (
+              {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}

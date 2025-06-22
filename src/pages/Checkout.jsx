@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ArrowLeft, CreditCard, Lock, MapPin, Phone, User, Mail, Building, Truck } from 'lucide-react';
@@ -45,6 +45,83 @@ const Checkout = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  // Pre-fill form with user data if logged in
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        firstName: user.firstName || user.name?.split(' ')[0] || '',
+        lastName: user.lastName || user.name?.split(' ').slice(1).join(' ') || '',
+        email: user.email || '',
+        phone: user.phone || '',
+      }));
+    }
+  }, [user]);
+
+  // Copy shipping address to billing when checkbox is checked
+  useEffect(() => {
+    if (formData.billingSameAsShipping) {
+      setFormData(prev => ({
+        ...prev,
+        billingFirstName: prev.firstName,
+        billingLastName: prev.lastName,
+        billingEmail: prev.email,
+        billingPhone: prev.phone,
+        billingAddress: prev.address,
+        billingCity: prev.city,
+        billingState: prev.state,
+        billingZipCode: prev.zipCode,
+        billingCountry: prev.country,
+      }));
+    }
+  }, [formData.billingSameAsShipping, formData.firstName, formData.lastName, formData.email, formData.phone, formData.address, formData.city, formData.state, formData.zipCode, formData.country]);
+
+  const validateForm = () => {
+    const errors = {};
+    
+    // Shipping information validation
+    const shippingFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'state', 'zipCode'];
+    shippingFields.forEach(field => {
+      if (!formData[field] || formData[field].trim() === '') {
+        errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+      }
+    });
+
+    // Email validation
+    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    // Phone validation
+    if (formData.phone && !/^\d{10,}$/.test(formData.phone.replace(/\D/g, ''))) {
+      errors.phone = 'Please enter a valid phone number (at least 10 digits)';
+    }
+
+    // Payment method validation
+    if (formData.paymentMethod === 'credit') {
+      const paymentFields = ['cardNumber', 'cardName', 'cardExpiry', 'cardCVC'];
+      paymentFields.forEach(field => {
+        if (!formData[field] || formData[field].trim() === '') {
+          errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')} is required`;
+        }
+      });
+
+      // Card number validation
+      if (formData.cardNumber && !/^\d{13,19}$/.test(formData.cardNumber.replace(/\D/g, ''))) {
+        errors.cardNumber = 'Please enter a valid card number';
+      }
+
+      // CVC validation
+      if (formData.cardCVC && !/^\d{3,4}$/.test(formData.cardCVC)) {
+        errors.cardCVC = 'Please enter a valid CVC (3-4 digits)';
+      }
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -52,6 +129,14 @@ const Checkout = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -66,10 +151,23 @@ const Checkout = () => {
       return;
     }
 
+    // Validate form fields
+    if (!validateForm()) {
+      setError("Please fill in all required fields correctly.");
+      setLoading(false);
+      return;
+    }
+
     const orderData = {
-      userId: user ? user._id : null,
+      customerName: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
-      products: cartItems.map(item => ({
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      pincode: formData.zipCode,
+      country: formData.country,
+      items: cartItems.map(item => ({
         productId: item.product?._id || item.id,
         name: item.product?.name || item.name,
         quantity: item.quantity,
@@ -77,16 +175,8 @@ const Checkout = () => {
         image: getItemImage(item)
       })),
       totalAmount: getTotalPrice(),
-      shippingAddress: {
-        name: `${formData.firstName} ${formData.lastName}`,
-        address: formData.address,
-        city: formData.city,
-        postalCode: formData.zipCode,
-        country: formData.country,
-        phone: formData.phone,
-      },
       paymentMethod: formData.paymentMethod,
-      status: 'processing', // Initial order status
+      paymentStatus: formData.paymentMethod === 'cod' ? 'Pending' : 'Processing',
     };
     
     try {
@@ -160,6 +250,11 @@ const Checkout = () => {
         {/* Checkout Form */}
         <div className="w-full lg:w-2/3">
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 md:p-8">
+            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <span className="text-red-500 font-semibold">*</span> indicates required fields. Please ensure all required fields are filled before placing your order.
+              </p>
+            </div>
             <form onSubmit={handleSubmit}>
               {/* Shipping Information */}
               <div className="mb-6 sm:mb-8">
@@ -169,100 +264,160 @@ const Checkout = () => {
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">First Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      First Name <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.firstName ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     />
+                    {fieldErrors.firstName && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.firstName}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Last Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      Last Name <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.lastName ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     />
+                    {fieldErrors.lastName && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.lastName}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Email</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      Email <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.email ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     />
+                    {fieldErrors.email && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Phone</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      Phone <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.phone ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     />
+                    {fieldErrors.phone && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.phone}</p>
+                    )}
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Address</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      Address <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.address ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     />
+                    {fieldErrors.address && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.address}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">City</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      City <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.city ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     />
+                    {fieldErrors.city && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.city}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">State</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      State <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       name="state"
                       value={formData.state}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.state ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     />
+                    {fieldErrors.state && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.state}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">ZIP Code</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      ZIP Code <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       name="zipCode"
                       value={formData.zipCode}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.zipCode ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     />
+                    {fieldErrors.zipCode && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.zipCode}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Country</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      Country <span className="text-red-500">*</span>
+                    </label>
                     <select
                       name="country"
                       value={formData.country}
                       onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                      className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                        fieldErrors.country ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       required
                     >
                       <option value="India">India</option>
@@ -270,6 +425,9 @@ const Checkout = () => {
                       <option value="United Kingdom">United Kingdom</option>
                       <option value="Canada">Canada</option>
                     </select>
+                    {fieldErrors.country && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.country}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -440,50 +598,78 @@ const Checkout = () => {
                   {formData.paymentMethod === 'credit' && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div className="sm:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Card Number</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                          Card Number <span className="text-red-500">*</span>
+                        </label>
                         <input
                           type="text"
                           name="cardNumber"
                           value={formData.cardNumber}
                           onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                          className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                            fieldErrors.cardNumber ? 'border-red-500' : 'border-gray-300'
+                          }`}
                           required={formData.paymentMethod === 'credit'}
                         />
+                        {fieldErrors.cardNumber && (
+                          <p className="text-red-500 text-xs mt-1">{fieldErrors.cardNumber}</p>
+                        )}
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Cardholder Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                          Cardholder Name <span className="text-red-500">*</span>
+                        </label>
                         <input
                           type="text"
                           name="cardName"
                           value={formData.cardName}
                           onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                          className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                            fieldErrors.cardName ? 'border-red-500' : 'border-gray-300'
+                          }`}
                           required={formData.paymentMethod === 'credit'}
                         />
+                        {fieldErrors.cardName && (
+                          <p className="text-red-500 text-xs mt-1">{fieldErrors.cardName}</p>
+                        )}
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Expiry Date</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                            Expiry Date <span className="text-red-500">*</span>
+                          </label>
                           <input
                             type="text"
                             name="cardExpiry"
                             value={formData.cardExpiry}
                             onChange={handleInputChange}
                             placeholder="MM/YY"
-                            className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                            className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                              fieldErrors.cardExpiry ? 'border-red-500' : 'border-gray-300'
+                            }`}
                             required={formData.paymentMethod === 'credit'}
                           />
+                          {fieldErrors.cardExpiry && (
+                            <p className="text-red-500 text-xs mt-1">{fieldErrors.cardExpiry}</p>
+                          )}
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">CVC</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                            CVC <span className="text-red-500">*</span>
+                          </label>
                           <input
                             type="text"
                             name="cardCVC"
                             value={formData.cardCVC}
                             onChange={handleInputChange}
-                            className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base"
+                            className={`w-full px-3 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent text-sm sm:text-base ${
+                              fieldErrors.cardCVC ? 'border-red-500' : 'border-gray-300'
+                            }`}
                             required={formData.paymentMethod === 'credit'}
                           />
+                          {fieldErrors.cardCVC && (
+                            <p className="text-red-500 text-xs mt-1">{fieldErrors.cardCVC}</p>
+                          )}
                         </div>
                       </div>
                     </div>

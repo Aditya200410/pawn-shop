@@ -33,25 +33,22 @@ const config = {
   
   // Utility function to fix image URLs
   fixImageUrl: (imagePath) => {
-    if (!imagePath) {
-      return ''; // Return empty for invalid paths
-    }
-
+    if (!imagePath) return '';
+    
     // If it's already a full URL, return as is
-    if (imagePath.startsWith('http')) {
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return imagePath;
     }
-
-    // All other paths are assumed to be relative to the backend.
-    // This will handle images from 'Rikocraft.com' and videos correctly.
-    const cleanPath = imagePath.replace(/\\/g, '/').replace(/^\//, '');
-    const finalUrl = `${config.API_BASE_URL}/${cleanPath}`;
-
-    if (imagePath.endsWith('.mp4')) {
-      console.log(`Constructed video URL for '${imagePath}': ${finalUrl}`);
+    
+    // If it's a path to a backend data file (e.g., in Rikocraft.com or just a filename)
+    if (imagePath.includes('Rikocraft.com') || !imagePath.includes('/')) {
+      // It's a backend file, so prefix with the backend URL and data path
+      const basePath = imagePath.startsWith('/pawnbackend/data/') ? '' : '/pawnbackend/data/';
+      return `${config.API_BASE_URL}${basePath}${imagePath}`;
     }
-
-    return finalUrl;
+    
+    // By default, assume it's a frontend public asset
+    return imagePath;
   },
   
   // Environment settings
