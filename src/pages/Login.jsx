@@ -55,7 +55,7 @@ const Login = () => {
             </h2>
             <p className="mt-2 text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/signup" className="font-medium text-orange-600 hover:text-orange-500">
+              <Link to="/signup" className="font-medium text-primary hover:text-primary-dark">
                 Sign up
               </Link>
             </p>
@@ -85,7 +85,7 @@ const Login = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -107,7 +107,7 @@ const Login = () => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="Enter your password"
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -133,7 +133,7 @@ const Login = () => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-orange-600 focus:ring-orange-600 border-gray-300 rounded"
+                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   Remember me
@@ -141,7 +141,7 @@ const Login = () => {
               </div>
 
               <div className="text-sm">
-                <Link to="/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
+                <Link to="/forgot-password" className="font-medium text-primary hover:text-primary-dark">
                   Forgot your password?
                 </Link>
               </div>
@@ -151,10 +151,10 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <Lock className="h-5 w-5 text-orange-500 group-hover:text-orange-400" />
+                  <Lock className="h-5 w-5 text-primary-dark group-hover:text-primary" />
                 </span>
                 {isLoading ? (
                   <span className="flex items-center">
@@ -182,8 +182,8 @@ const Login = () => {
           </h3>
           <div className="grid grid-cols-2 gap-6">
             <div className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -191,8 +191,8 @@ const Login = () => {
               <p className="text-sm text-gray-600">Trusted service for years</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
@@ -200,8 +200,8 @@ const Login = () => {
               <p className="text-sm text-gray-600">Secure transactions</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
@@ -209,8 +209,8 @@ const Login = () => {
               <p className="text-sm text-gray-600">Variety of items</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
@@ -222,47 +222,38 @@ const Login = () => {
       </div>
 
       {/* Right Side - Image */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="hidden lg:block lg:w-1/2 relative"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-orange-800">
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="absolute inset-0 flex items-center justify-center p-12">
-            <div className="text-white text-center">
-              <h2 className="text-4xl font-light mb-6">
-                Your Trusted <span className="font-serif italic">Heritage </span> Partner
-              </h2>
-              <p className="text-lg text-gray-100 mb-8">
-                Access quick  and discover unique treasures
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Terracota Art</span>
+        <img src="/footer.png" alt="Login Banner" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className="text-white text-center">
+            <h2 className="text-4xl font-light mb-6">
+              Your Trusted <span className="font-serif italic">Heritage </span> Partner
+            </h2>
+            <p className="text-lg text-gray-100 mb-8">
+              Access quick and discover unique treasures
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Unique Item Collection</span>
+                <span>Terracotta Art</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Secure & Confidential</span>
-                </div>
+                <span>Dokra Craft</span>
               </div>
             </div>
           </div>

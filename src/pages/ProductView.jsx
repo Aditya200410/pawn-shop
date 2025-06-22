@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HeartIcon, ShoppingCartIcon, ShareIcon, StarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { HeartIcon, ShoppingCartIcon, ShareIcon, StarIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import MostLoved from '../components/Products/MostLoved';
 import WeeklyBestsellers from '../components/Products/WeeklyBestsellers';
 import { useCart } from '../context/CartContext';
 import config from '../config/config.js';
+import { toast } from 'react-hot-toast';
+import Loader from '../components/Loader';
 
 const ProductView = () => {
   const { id } = useParams();
@@ -19,6 +21,8 @@ const ProductView = () => {
   const [reviewText, setReviewText] = useState('');
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [modalSelectedImage, setModalSelectedImage] = useState(0);
   const [reviews, setReviews] = useState([
     {
       id: 1,
@@ -58,7 +62,7 @@ const ProductView = () => {
     fetchProduct();
   }, [id, navigate]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader />;
   if (!product) return null;
 
   // Use product.images array if available, otherwise fallback to single image
@@ -138,6 +142,44 @@ const ProductView = () => {
     addToCart({ ...product, quantity });
   };
 
+  const handleShare = async () => {
+    try {
+      const currentUrl = window.location.href;
+      await navigator.clipboard.writeText(currentUrl);
+      toast.success('Product link copied to clipboard! Ready to share.');
+    } catch (err) {
+      // Fallback for older browsers or when clipboard API is not available
+      const textArea = document.createElement('textarea');
+      textArea.value = window.location.href;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        toast.success('Product link copied to clipboard! Ready to share.');
+      } catch (fallbackErr) {
+        toast.error('Failed to copy link. Please copy manually.');
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
+  const handleImageClick = () => {
+    setModalSelectedImage(selectedImage);
+    setIsImageModalOpen(true);
+  };
+
+  const handleModalPreviousImage = () => {
+    setModalSelectedImage((prev) => (prev === 0 ? productImages.length - 1 : prev - 1));
+  };
+
+  const handleModalNextImage = () => {
+    setModalSelectedImage((prev) => (prev === productImages.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleModalClose = () => {
+    setIsImageModalOpen(false);
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -176,7 +218,8 @@ const ProductView = () => {
                   transition={{ duration: 0.3 }}
                   src={productImages[selectedImage]}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover cursor-pointer"
+                  onClick={handleImageClick}
                   onError={e => {
                     console.log('Image failed to load:', productImages[selectedImage]);
                     e.target.onerror = null;
@@ -372,7 +415,7 @@ const ProductView = () => {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleAddToCart}
                   disabled={product.outOfStock}
-                  className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all ${
+                  className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold transition-all ${
                     product.outOfStock
                       ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       : 'bg-amber-600 text-white hover:bg-amber-700 shadow-lg hover:shadow-xl'
@@ -385,7 +428,7 @@ const ProductView = () => {
                 <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="p-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="p-4 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
                 >
                   <HeartIcon className="h-5 w-5 text-gray-600" />
                 </motion.button>
@@ -393,7 +436,8 @@ const ProductView = () => {
                 <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="p-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="p-4 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+                  onClick={handleShare}
                 >
                   <ShareIcon className="h-5 w-5 text-gray-600" />
                 </motion.button>
@@ -709,6 +753,115 @@ const ProductView = () => {
           </div>
           </div>
       </div>
+
+      {/* Full Size Image Modal */}
+      <AnimatePresence>
+        {isImageModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={handleModalClose}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative max-w-7xl max-h-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={handleModalClose}
+                className="absolute top-4 right-4 z-10 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full transition-all duration-200"
+                aria-label="Close modal"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+
+              {/* Main Image */}
+              <div className="relative">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={modalSelectedImage}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                    src={productImages[modalSelectedImage]}
+                    alt={`${product.name} - Full size view`}
+                    className="max-w-full max-h-[90vh] object-contain rounded-lg"
+                    onError={e => {
+                      e.target.onerror = null;
+                      if (productImages[modalSelectedImage] !== config.fixImageUrl(product.image)) {
+                        e.target.src = config.fixImageUrl(product.image);
+                      } else {
+                        e.target.src = 'https://placehold.co/800x600/e2e8f0/475569?text=Product+Image';
+                      }
+                    }}
+                  />
+                </AnimatePresence>
+
+                {/* Navigation Arrows */}
+                {productImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={handleModalPreviousImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-4 rounded-full transition-all duration-200"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeftIcon className="h-8 w-8" />
+                    </button>
+                    <button
+                      onClick={handleModalNextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-4 rounded-full transition-all duration-200"
+                      aria-label="Next image"
+                    >
+                      <ChevronRightIcon className="h-8 w-8" />
+                    </button>
+                  </>
+                )}
+
+                {/* Image Counter */}
+                {productImages.length > 1 && (
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
+                    {modalSelectedImage + 1} / {productImages.length}
+                  </div>
+                )}
+              </div>
+
+              {/* Thumbnail Navigation */}
+              {productImages.length > 1 && (
+                <div className="mt-4 flex justify-center gap-2">
+                  {productImages.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setModalSelectedImage(index)}
+                      className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                        modalSelectedImage === index 
+                          ? 'border-white shadow-lg' 
+                          : 'border-white/30 hover:border-white/60'
+                      }`}
+                    >
+                      <img 
+                        src={image} 
+                        alt={`${product.name} - Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={e => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://placehold.co/64x64/e2e8f0/475569?text=Image';
+                        }}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

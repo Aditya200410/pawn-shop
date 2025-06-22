@@ -67,7 +67,7 @@ const Signup = () => {
             </h2>
             <p className="mt-2 text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/login" className="font-medium text-orange-600 hover:text-orange-500">
+              <Link to="/login" className="font-medium text-primary hover:text-primary-dark">
                 Sign in
               </Link>
             </p>
@@ -97,7 +97,7 @@ const Signup = () => {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -119,7 +119,7 @@ const Signup = () => {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -141,7 +141,7 @@ const Signup = () => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="Create a password"
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -175,7 +175,7 @@ const Signup = () => {
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="Confirm your password"
                   />
                 </div>
@@ -188,15 +188,15 @@ const Signup = () => {
                 name="terms"
                 type="checkbox"
                 required
-                className="h-4 w-4 text-orange-600 focus:ring-orange-600 border-gray-300 rounded"
+                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
               />
               <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
                 I agree to the{' '}
-                <Link to="/terms" className="font-medium text-orange-600 hover:text-orange-500">
+                <Link to="/terms" className="font-medium text-primary hover:text-primary-dark">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link to="/privacy" className="font-medium text-orange-600 hover:text-orange-500">
+                <Link to="/privacy" className="font-medium text-primary hover:text-primary-dark">
                   Privacy Policy
                 </Link>
               </label>
@@ -206,10 +206,10 @@ const Signup = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <ArrowRight className="h-5 w-5 text-orange-500 group-hover:text-orange-400" />
+                  <ArrowRight className="h-5 w-5 text-primary-dark group-hover:text-primary" />
                 </span>
                 {isLoading ? (
                   <span className="flex items-center">
@@ -236,8 +236,8 @@ const Signup = () => {
           </h3>
           <div className="grid grid-cols-2 gap-6">
             <div className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
               </div>
@@ -245,8 +245,8 @@ const Signup = () => {
               <p className="text-sm text-gray-600">Value for money</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -254,8 +254,8 @@ const Signup = () => {
               <p className="text-sm text-gray-600">Trusted service</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
@@ -263,8 +263,8 @@ const Signup = () => {
               <p className="text-sm text-gray-600">Safe transactions</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
@@ -282,41 +282,32 @@ const Signup = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="hidden lg:block lg:w-1/2 relative"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-orange-800">
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="absolute inset-0 flex items-center justify-center p-12">
-            <div className="text-white text-center">
-              <h2 className="text-4xl font-light mb-6">
-                Start Your <span className="font-serif italic">Heritage</span> Journey
-              </h2>
-              <p className="text-lg text-gray-100 mb-8">
-                Get quick cash loans and explore unique items
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span> Heritage Items</span>
+        <img src="/footer.png" alt="Signup Banner" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className="text-white text-center">
+            <h2 className="text-4xl font-light mb-6">
+              Unlock a World of <span className="font-serif italic">Unique Finds</span>
+            </h2>
+            <p className="text-lg text-gray-100 mb-8">
+              Join our community to buy, sell, and discover one-of-a-kind items.
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Valuable Item Marketplace</span>
+                <span>Curated collections from trusted sellers</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Professional quality</span>
-                </div>
+                <span>Secure transactions and buyer protection</span>
               </div>
             </div>
           </div>

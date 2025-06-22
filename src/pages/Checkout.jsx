@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ArrowLeft, CreditCard, Lock, MapPin, Phone, User, Mail, Building, Truck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
-import config from '../config/config';
+import orderService from '../services/orderService';
+import { toast } from 'react-hot-toast';
+import config from '../config/config.js';
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cartItems, getTotalPrice, clearCart } = useCart();
+  const { cartItems, getTotalPrice, clearCart, getItemImage } = useCart();
   const { user } = useAuth();
   const [activeStep, setActiveStep] = useState('shipping');
   const [formData, setFormData] = useState({
@@ -66,13 +67,14 @@ const Checkout = () => {
     }
 
     const orderData = {
-      userId: user ? user.id : null,
+      userId: user ? user._id : null,
+      email: formData.email,
       products: cartItems.map(item => ({
-        productId: item.id,
-        name: item.name,
+        productId: item.product?._id || item.id,
+        name: item.product?.name || item.name,
         quantity: item.quantity,
-        price: item.price,
-        image: item.image
+        price: item.product?.price || item.price,
+        image: getItemImage(item)
       })),
       totalAmount: getTotalPrice(),
       shippingAddress: {
@@ -83,21 +85,25 @@ const Checkout = () => {
         country: formData.country,
         phone: formData.phone,
       },
-      // ... include other fields as needed by your backend
+      paymentMethod: formData.paymentMethod,
+      status: 'processing', // Initial order status
     };
     
     try {
-      // Replace with your actual API endpoint for creating an order
-      const response = await axios.post(config.API_URLS.ORDERS, orderData);
+      const response = await orderService.createOrder(orderData);
 
-      if (response.data && response.data.orderId) {
+      if (response.success) {
+        toast.success('Order placed successfully!');
         clearCart(); // Clear cart on successful order
-        navigate(`/order-confirmation/${response.data.orderId}`);
+        navigate('/account?tab=orders');
       } else {
-        setError("Failed to create order. Please try again.");
+        setError(response.message || "Failed to create order. Please try again.");
+        toast.error(response.message || "Failed to create order.");
       }
     } catch (err) {
-      setError("An error occurred while placing your order. Please try again.");
+      const errorMessage = err.message || "An error occurred while placing your order. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error("Order submission error:", err);
     } finally {
       setLoading(false);
@@ -120,35 +126,40 @@ const Checkout = () => {
   }
 
   return (
-    <div className="container mx-15 px-4 py-4 sm:py-8 mt-20 sm:mt-24">
+    <div className="container mx-auto px-4 py-8 sm:py-12 mt-20 sm:mt-24">
       {/* Checkout Steps */}
-      <div className="flex items-center justify-center mb-8 sm:mb-12 overflow-x-auto  mx-15">
-        <div className="flex items-center min-w-max px-4">
+      <div className="flex flex-col sm:flex-row items-center justify-center mb-8 sm:mb-12">
+        <div className="flex items-center w-full max-w-2xl">
+          {/* Step 1: Shopping Cart */}
           <div className="flex items-center">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-600 text-white flex items-center justify-center text-sm sm:text-lg font-medium">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-600 text-white flex items-center justify-center text-sm sm:text-lg font-medium shrink-0">
               <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <div className="ml-2 sm:ml-3 text-sm sm:text-base text-green-600 font-medium">Shopping cart</div>
+            <div className="ml-2 sm:ml-3 text-xs sm:text-sm text-green-600 font-medium whitespace-nowrap">Shopping cart</div>
           </div>
-          <div className="w-16 sm:w-24 h-0.5 bg-gray-300 mx-2 sm:mx-4"></div>
+          <div className="flex-auto border-t-2 border-gray-300 mx-2 sm:mx-4"></div>
+          
+          {/* Step 2: Checkout */}
           <div className="flex items-center">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-orange-600 text-white flex items-center justify-center text-sm sm:text-lg font-medium">2</div>
-            <div className="ml-2 sm:ml-3 text-sm sm:text-base text-orange-600 font-medium">Checkout</div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-orange-600 text-white flex items-center justify-center text-sm sm:text-lg font-medium shrink-0">2</div>
+            <div className="ml-2 sm:ml-3 text-xs sm:text-sm text-orange-600 font-medium whitespace-nowrap">Checkout</div>
           </div>
-          <div className="w-16 sm:w-24 h-0.5 bg-gray-300 mx-2 sm:mx-4"></div>
+          <div className="flex-auto border-t-2 border-gray-300 mx-2 sm:mx-4"></div>
+          
+          {/* Step 3: Order Complete */}
           <div className="flex items-center">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm sm:text-lg font-medium">3</div>
-            <div className="ml-2 sm:ml-3 text-sm sm:text-base text-gray-600">Order complete</div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm sm:text-lg font-medium shrink-0">3</div>
+            <div className="ml-2 sm:ml-3 text-xs sm:text-sm text-gray-600 whitespace-nowrap">Order complete</div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+      <div className="flex flex-col lg:flex-row gap-8 sm:gap-12">
         {/* Checkout Form */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6">
+        <div className="w-full lg:w-2/3">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 md:p-8">
             <form onSubmit={handleSubmit}>
               {/* Shipping Information */}
               <div className="mb-6 sm:mb-8">
@@ -270,20 +281,23 @@ const Checkout = () => {
                     <Building className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-orange-600" />
                     Billing Information
                   </h3>
-                  <label className="flex items-center space-x-2">
+                  <div>
                     <input
                       type="checkbox"
+                      id="billingSameAsShipping"
                       name="billingSameAsShipping"
                       checked={formData.billingSameAsShipping}
                       onChange={handleInputChange}
-                      className="rounded text-orange-600 focus:ring-orange-600"
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
                     />
-                    <span className="text-sm text-gray-600">Same as shipping</span>
-                  </label>
+                    <label htmlFor="billingSameAsShipping" className="ml-2 block text-sm text-gray-900">
+                      Billing address is the same as shipping
+                    </label>
+                  </div>
                 </div>
 
                 {!formData.billingSameAsShipping && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">First Name</label>
                       <input
@@ -392,10 +406,10 @@ const Checkout = () => {
               </div>
 
               {/* Payment Information */}
-              <div className="mb-6 sm:mb-8">
+              <div>
                 <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 flex items-center">
-                  <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-orange-600" />
-                  Payment Information
+                  <Lock className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-orange-600" />
+                  Payment Details
                 </h3>
                 <div className="space-y-4 sm:space-y-6">
                   <div className="flex flex-col sm:flex-row gap-4">
@@ -499,41 +513,72 @@ const Checkout = () => {
         </div>
 
         {/* Order Summary */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Order Summary</h3>
+        <div className="w-full lg:w-1/3">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 sticky top-24">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 border-b pb-4">Order Summary</h3>
             <div className="space-y-4">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex items-center gap-4">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
+              {cartItems.map(item => (
+                <div key={item.id} className="flex items-center space-x-4">
+                  <div className="relative">
+                    <img 
+                      src={config.fixImageUrl(getItemImage(item))} 
+                      alt={item.product?.name || item.name} 
+                      className="w-16 h-16 rounded-lg object-cover" 
+                      onError={e => {
+                        e.target.onerror = null;
+                        // Try fallback images
+                        if (item.product?.images && item.product.images.length > 0) {
+                          const nextImage = item.product.images.find(img => img !== e.target.src);
+                          if (nextImage) {
+                            e.target.src = config.fixImageUrl(nextImage);
+                            return;
+                          }
+                        }
+                        // Final fallback
+                        e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Product';
+                      }}
                     />
+                    <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{item.quantity}</span>
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm sm:text-base font-medium text-gray-900">{item.name}</h4>
-                    <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
-                    <p className="text-sm sm:text-base font-medium text-orange-600">₹{item.price.toFixed(2)}</p>
+                    <h4 className="text-sm font-medium text-gray-900 line-clamp-2">{item.product?.name || item.name}</h4>
+                    <p className="text-sm text-gray-500">₹{(item.product?.price || item.price).toFixed(2)}</p>
                   </div>
+                  <p className="text-sm font-semibold">₹{((item.product?.price || item.price) * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
-            <div className="border-t border-gray-200 mt-4 sm:mt-6 pt-4 sm:pt-6 space-y-2">
-              <div className="flex justify-between text-sm sm:text-base">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">₹{getTotalPrice().toFixed(2)}</span>
+            <div className="border-t mt-4 pt-4 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Subtotal</span>
+                <span>₹{getTotalPrice().toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-sm sm:text-base">
-                <span className="text-gray-600">Shipping</span>
-                <span className="font-medium">Free</span>
+              <div className="flex justify-between text-sm">
+                <span>Shipping</span>
+                <span className="text-green-600">FREE</span>
               </div>
               <div className="flex justify-between text-base sm:text-lg font-semibold">
                 <span>Total</span>
-                <span className="text-orange-600">₹{getTotalPrice().toFixed(2)}</span>
+                <span>₹{getTotalPrice().toFixed(2)}</span>
               </div>
             </div>
+
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full mt-6 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {loading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              ) : (
+                <>
+                  <Truck className="w-5 h-5 mr-2" />
+                  Place Order
+                </>
+              )}
+            </button>
+            {error && <p className="text-red-600 text-sm mt-4 text-center">{error}</p>}
           </div>
         </div>
       </div>

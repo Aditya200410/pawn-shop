@@ -52,10 +52,12 @@ const Account = () => {
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState(query.get('tab') || 'overview');
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
-  const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice, loading: cartLoading } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice, loading: cartLoading, getItemImage } = useCart();
   const { user, logout, updateProfile, isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -90,13 +92,30 @@ const Account = () => {
     }
   }, [activeTab]);
 
+  useEffect(() => {
+    const tab = query.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [query]);
+
+  useEffect(() => {
+    if (filter === 'all') {
+      setFilteredOrders(orders);
+    } else {
+      setFilteredOrders(orders.filter(order => order.status === filter));
+    }
+  }, [filter, orders]);
+
   const fetchOrders = async () => {
     if (!user?.email) return;
     setLoading(true);
     try {
       const data = await orderService.getOrdersByEmail(user.email);
       if (data.success) {
-        setOrders(data.orders);
+        const sortedOrders = data.orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+        setOrders(sortedOrders);
+        setFilteredOrders(sortedOrders);
       } else {
         throw new Error(data.message);
       }
@@ -232,14 +251,14 @@ const Account = () => {
 
   if (loading || cartLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-50">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center space-y-4"
         >
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-amber-200 border-t-amber-600"></div>
-          <p className="text-amber-700 font-medium">Loading your account...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-primary-dark"></div>
+          <p className="text-primary-dark font-medium">Loading your account...</p>
         </motion.div>
       </div>
     );
@@ -254,47 +273,91 @@ const Account = () => {
   ];
 
   // JSX for the orders tab
-  const OrdersTab = () => (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <h2 className="text-2xl font-bold mb-4">My Orders</h2>
-      {loading ? (
-        <p>Loading orders...</p>
-      ) : orders.length > 0 ? (
-        <div className="space-y-6">
-          {orders.map(order => (
-            <div key={order._id} className="bg-white p-4 rounded-lg shadow-sm border">
-              <div className="flex justify-between items-center mb-2">
-                <div>
-                  <p className="font-bold">Order ID: #{order._id.substring(0, 8)}</p>
-                  <p className="text-sm text-gray-500">Date: {format(new Date(order.createdAt), 'PPpp')}</p>
-                </div>
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${order.orderStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
-                  {order.orderStatus}
-                </span>
-              </div>
-              <div className="border-t my-2"></div>
-              {order.items.map(item => (
-                <div key={item.productId} className="flex items-center my-2">
-                  <img src={config.fixImageUrl(item.image)} alt={item.name} className="w-16 h-16 object-cover rounded-md mr-4"/>
+  const OrdersTab = () => {
+    const orderStatuses = ['all', 'processing', 'confirmed', 'manufacturing', 'shipped', 'delivered'];
+
+    return (
+      <div>
+        <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
+          <h2 className="text-2xl font-bold text-gray-800">Your Orders</h2>
+          <div className="flex items-center space-x-2 bg-gray-100 p-1 rounded-lg">
+            {orderStatuses.map(status => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+                  filter === status
+                    ? 'bg-white text-primary-dark shadow'
+                    : 'text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {loading ? (
+          <p>Loading orders...</p>
+        ) : filteredOrders.length === 0 ? (
+          <div className="text-center py-12 px-6 bg-gray-50 rounded-lg">
+            <ShoppingCartIcon className="h-12 w-12 mx-auto text-gray-400" />
+            <h3 className="mt-4 text-lg font-medium text-gray-800">
+              {filter === 'all' ? 'You have no orders yet.' : `No orders with status "${filter}"`}
+            </h3>
+            <p className="mt-2 text-sm text-gray-500">
+              When you place an order, it will appear here.
+            </p>
+            <Link
+              to="/shop"
+              className="mt-6 inline-block bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-primary-dark transition-colors"
+            >
+              Start Shopping
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {filteredOrders.map(order => (
+              <motion.div
+                key={order._id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+              >
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={config.fixImageUrl(order.items[0].image)}
+                    alt={order.items[0].name}
+                    className="h-16 w-16 object-cover rounded-lg"
+                  />
                   <div>
-                    <p>{item.name}</p>
-                    <p className="text-sm text-gray-600">Qty: {item.quantity} - ₹{item.price}</p>
+                    <h4 className="font-medium text-gray-900">{order.items[0].name}</h4>
+                    <p className="text-sm text-gray-500">Order ID: #{order._id.substring(0, 8)}</p>
                   </div>
                 </div>
-              ))}
-              <div className="border-t my-2"></div>
-              <p className="text-right font-bold">Total: ₹{order.totalAmount}</p>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>You have no orders yet.</p>
-      )}
-    </motion.div>
-  );
+                <div className="flex items-center space-x-4">
+                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                    {order.status}
+                  </span>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => navigate(`/order/${order._id}`)}
+                    className="p-2 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+                  >
+                    View Details
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div
@@ -337,7 +400,7 @@ const Account = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                       activeTab === tab.id
-                        ? 'bg-amber-100 text-amber-700 border border-amber-200 shadow-sm'
+                        ? 'bg-primary text-primary-dark border border-primary shadow-sm'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >
@@ -371,8 +434,8 @@ const Account = () => {
                           <p className="text-sm font-medium text-gray-600">Total Orders</p>
                           <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
                         </div>
-                        <div className="p-3 bg-amber-100 rounded-xl">
-                          <GiftIcon className="h-6 w-6 text-amber-600" />
+                        <div className="p-3 bg-primary rounded-xl">
+                          <GiftIcon className="h-6 w-6 text-primary-dark" />
                         </div>
                       </div>
                     </motion.div>
@@ -386,8 +449,8 @@ const Account = () => {
                           <p className="text-sm font-medium text-gray-600">Cart Items</p>
                           <p className="text-2xl font-bold text-gray-900">{cartItems.length}</p>
                         </div>
-                        <div className="p-3 bg-blue-100 rounded-xl">
-                          <ShoppingCartIcon className="h-6 w-6 text-blue-600" />
+                        <div className="p-3 bg-primary rounded-xl">
+                          <ShoppingCartIcon className="h-6 w-6 text-primary-dark" />
                         </div>
                 </div>
                     </motion.div>
@@ -416,9 +479,9 @@ const Account = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setActiveTab('cart')}
-                        className="flex items-center space-x-3 p-4 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors"
+                        className="flex items-center space-x-3 p-4 bg-primary rounded-xl hover:bg-primary-dark hover:text-white transition-colors"
                       >
-                        <ShoppingCartIcon className="h-6 w-6 text-amber-600" />
+                        <ShoppingCartIcon className="h-6 w-6 text-primary-dark" />
                         <span className="font-medium text-gray-900">View Cart</span>
                       </motion.button>
                       
@@ -426,9 +489,9 @@ const Account = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setActiveTab('orders')}
-                        className="flex items-center space-x-3 p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors"
+                        className="flex items-center space-x-3 p-4 bg-secondary rounded-xl hover:bg-primary transition-colors"
                       >
-                        <GiftIcon className="h-6 w-6 text-blue-600" />
+                        <GiftIcon className="h-6 w-6 text-primary-dark" />
                         <span className="font-medium text-gray-900">View Orders</span>
                       </motion.button>
                       
@@ -436,9 +499,9 @@ const Account = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setActiveTab('profile')}
-                        className="flex items-center space-x-3 p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors"
+                        className="flex items-center space-x-3 p-4 bg-secondary rounded-xl hover:bg-primary transition-colors"
                       >
-                        <PencilSquareIcon className="h-6 w-6 text-green-600" />
+                        <PencilSquareIcon className="h-6 w-6 text-primary-dark" />
                         <span className="font-medium text-gray-900">Edit Profile</span>
                       </motion.button>
                       
@@ -452,8 +515,8 @@ const Account = () => {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
                   <div className="space-y-4">
                       <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl">
-                        <div className="p-2 bg-amber-100 rounded-lg">
-                          <UserCircleIcon className="h-4 w-4 text-amber-600" />
+                        <div className="p-2 bg-primary rounded-lg">
+                          <UserCircleIcon className="h-4 w-4 text-primary-dark" />
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">Account logged in</p>
@@ -463,8 +526,8 @@ const Account = () => {
                       
                       {cartItems.length > 0 && (
                         <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl">
-                          <div className="p-2 bg-blue-100 rounded-lg">
-                            <ShoppingCartIcon className="h-4 w-4 text-blue-600" />
+                          <div className="p-2 bg-primary rounded-lg">
+                            <ShoppingCartIcon className="h-4 w-4 text-primary-dark" />
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">{cartItems.length} items in cart</p>
@@ -491,7 +554,7 @@ const Account = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setIsEditing(!isEditing)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors"
+                      className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
                     >
                       <PencilSquareIcon className="h-4 w-4" />
                       <span>{isEditing ? 'Cancel' : 'Edit Profile'}</span>
@@ -508,7 +571,7 @@ const Account = () => {
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                             required
                           />
                         </div>
@@ -519,7 +582,7 @@ const Account = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                             required
                           />
                         </div>
@@ -530,7 +593,7 @@ const Account = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                           />
                         </div>
                         <div>
@@ -540,7 +603,7 @@ const Account = () => {
                             name="address"
                             value={formData.address}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                           />
                         </div>
                       </div>
@@ -555,7 +618,7 @@ const Account = () => {
                               name="currentPassword"
                               value={formData.currentPassword}
                               onChange={handleChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                             />
                           </div>
                           <div>
@@ -565,7 +628,7 @@ const Account = () => {
                               name="newPassword"
                               value={formData.newPassword}
                               onChange={handleChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                             />
                           </div>
                           <div>
@@ -575,7 +638,7 @@ const Account = () => {
                               name="confirmNewPassword"
                               value={formData.confirmNewPassword}
                               onChange={handleChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                             />
                           </div>
                         </div>
@@ -607,7 +670,7 @@ const Account = () => {
                           type="submit"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors"
+                          className="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
                         >
                           Save Changes
                         </motion.button>
@@ -669,7 +732,7 @@ const Account = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => navigate('/shop')}
-                        className="px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors"
+                        className="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
                       >
                         Browse Products
                       </motion.button>
@@ -678,14 +741,14 @@ const Account = () => {
                     <div className="space-y-6">
                       {cartItems.map((item) => (
                         <motion.div
-                          key={item.product?._id || item.id}
+                          key={item.productId || item.product?._id || item.id}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
                         >
                           <div className="flex items-center space-x-4">
                             <img
-                              src={config.fixImageUrl(item.product?.image || item.image)}
+                              src={config.fixImageUrl(getItemImage(item))}
                               alt={item.product?.name || item.name}
                               className="h-16 w-16 object-cover rounded-lg"
                             />
@@ -699,7 +762,7 @@ const Account = () => {
                               <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                              onClick={() => handleUpdateQuantity(item.product?._id || item.id, item.quantity - 1)}
+                              onClick={() => handleUpdateQuantity(item.productId || item.product?._id || item.id, item.quantity - 1)}
                               className="p-1 rounded-full hover:bg-gray-100"
                               disabled={item.quantity <= 1}
                             >
@@ -709,7 +772,7 @@ const Account = () => {
                               <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                              onClick={() => handleUpdateQuantity(item.product?._id || item.id, item.quantity + 1)}
+                              onClick={() => handleUpdateQuantity(item.productId || item.product?._id || item.id, item.quantity + 1)}
                               className="p-1 rounded-full hover:bg-gray-100"
                             >
                               <PlusIcon className="h-4 w-4" />
@@ -718,7 +781,7 @@ const Account = () => {
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
-                            onClick={() => handleRemoveFromCart(item.product?._id || item.id)}
+                            onClick={() => handleRemoveFromCart(item.productId || item.product?._id || item.id)}
                               className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           >
                             <TrashIcon className="h-5 w-5" />
@@ -754,7 +817,7 @@ const Account = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/checkout')}
-                            className="flex-1 px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors"
+                            className="flex-1 px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
                       >
                           Proceed to Checkout
                           </motion.button>

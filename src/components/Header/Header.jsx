@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Menu, X, ChevronDown, Search, User, Heart, Home, ShoppingCart } from 'lucide-react';
@@ -9,6 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import logo from '/logo.png';
 import config from '../../config/config.js';
 import axios from 'axios';
+import Loader from '../Loader';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -206,11 +207,7 @@ const Header = () => {
             <div className="w-full max-w-2xl mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
               {searchLoading && (
                 <div className="flex items-center justify-center py-6 text-orange-600">
-                  <svg className="w-6 h-6 animate-spin mr-2" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                  </svg>
-                  Loading...
+                  <Loader />
                 </div>
               )}
               {searchError && (
@@ -298,26 +295,30 @@ const Header = () => {
 
             {/* Logo Image - Centered (Mobile Only) */}
             <div className="absolute left-1/2 transform -translate-x-1/2 md:hidden">
+            <Link to="/" className="md:block">
+            
+            
               <img src={logo} alt="Riko Craft" className="h-16 w-auto" />
+              </Link>
             </div>
 
             {/* Desktop Search */}
             <div className="hidden md:block flex-1 max-w-2xl mx-8 relative" ref={desktopSearchRef}>
               <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
+              <input
+                type="text"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsDesktopSearchFocused(true)}
                   className="w-full pl-4 pr-12 py-2 border border-white/30 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent bg-[#8f3a61] text-white placeholder-white/70"
-                />
+              />
                 <button 
                   type="submit" 
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors"
                 >
                   <Search size={18} />
-                </button>
+              </button>
               </form>
               
               {/* Desktop Search Results Dropdown */}
@@ -325,11 +326,7 @@ const Header = () => {
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50">
                   {searchLoading && (
                     <div className="flex items-center justify-center py-6 text-[#772a4b]">
-                      <svg className="w-6 h-6 animate-spin mr-2" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                      </svg>
-                      Loading...
+                      <Loader />
                     </div>
                   )}
                   {searchError && (
@@ -362,7 +359,7 @@ const Header = () => {
                   )}
                 </div>
               )}
-            </div>
+        </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
@@ -383,17 +380,15 @@ const Header = () => {
             <div className="hidden md:flex items-center space-x-6">
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <div className="text-sm text-white/80">
-                    Welcome, {user.name}
-                  </div>
+                  
                   <Link to="/account" className="text-white/80 hover:text-white transition-colors">
                     <User size={20} />
                   </Link>
                 </div>
               ) : (
                 <Link to="/account" className="text-white/80 hover:text-white transition-colors">
-                  <User size={20} />
-                </Link>
+                <User size={20} />
+              </Link>
               )}
               <Link to="/cart" className="text-white/80 hover:text-white transition-colors relative">
                 <ShoppingCart size={20} />
@@ -411,12 +406,12 @@ const Header = () => {
                   My Account
                 </Link>
               ) : (
-                <Link 
-                  to="/login" 
+              <Link 
+                to="/login" 
                   className="flex items-center px-4 py-2 bg-white text-[#772a4b] text-sm font-medium rounded-full hover:bg-gray-100 transition-colors"
-                >
-                  Login / Register
-                </Link>
+              >
+                Login / Register
+              </Link>
               )}
             </div>
 
@@ -436,16 +431,16 @@ const Header = () => {
           {isMobileMenuOpen && (
             <>
               {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="fixed inset-0 bg-black/50 z-[20000]"
               />
               
               {/* Menu Panel */}
-              <motion.div
+            <motion.div
                 variants={mobileMenuVariants}
                 initial="closed"
                 animate="open"
@@ -458,8 +453,8 @@ const Header = () => {
                     <img src={logo} alt="Riko Craft" className="h-10 w-auto" />
                   </Link>
                   <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 text-white">
-                    <X size={24} />
-                  </button>
+                        <X size={24} />
+                </button>
                 </div>
 
                 {/* Tab Navigation */}
@@ -484,7 +479,7 @@ const Header = () => {
                   >
                     CATEGORIES
                   </button>
-                </div>
+              </div>
 
                 {/* Menu Content */}
                 <div className="flex-grow overflow-y-auto">
@@ -493,17 +488,17 @@ const Header = () => {
                     <div className="p-4 space-y-4">
                       {/* Search Bar */}
                       <form onSubmit={handleSearch} className="relative">
-                        <input
-                          type="text"
-                          placeholder="Search products..."
-                          value={searchQuery}
+                      <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
                           className="w-full pl-4 pr-10 py-2 border border-white/30 rounded-md bg-[#8f3a61] text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-                        />
+                      />
                          <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70">
                            <Search size={18}/>
-                         </button>
-                      </form>
+                      </button>
+                    </form>
                       {/* Navigation Links */}
                       <nav>
                         <ul className="space-y-1">
@@ -528,17 +523,17 @@ const Header = () => {
                                   setIsMobileMenuOpen(false);
                                 }}
                                 className="w-full text-left py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors"
-                              >
+                        >
                                 {category.name}
                               </button>
-                            </li>
+                      </li>
                           ))}
-                        </ul>
+                              </ul>
                      </div>
                   )}
                 </div>
 
-                {/* Menu Footer */}
+                  {/* Menu Footer */}
                 <div className="p-4 border-t border-white/20">
                   {user ? (
                     <Link to="/account" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-2 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">
@@ -547,12 +542,12 @@ const Header = () => {
                   ) : (
                     <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-2 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">
                       <User size={20} /> Login / Register
-                    </Link>
+                      </Link>
                   )}
-                </div>
-              </motion.div>
+              </div>
+            </motion.div>
             </>
-          )}
+        )}
         </AnimatePresence>
       </header>
 

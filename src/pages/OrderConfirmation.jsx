@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { CheckCircle, ShoppingBag, Truck, User } from 'lucide-react';
 import config from '../config/config';
+import Loader from '../components/Loader';
 
 const OrderConfirmation = () => {
   const { id } = useParams();
@@ -30,7 +31,7 @@ const OrderConfirmation = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        <Loader size="large" text="Loading order details..." />
       </div>
     );
   }
@@ -82,7 +83,15 @@ const OrderConfirmation = () => {
                 {order.products.map((item) => (
                   <div key={item.productId} className="flex items-center justify-between pb-4 border-b last:border-b-0">
                     <div className="flex items-center">
-                      <img src={config.fixImageUrl(item.image)} alt={item.name} className="w-16 h-16 rounded-lg object-cover mr-4" />
+                      <img 
+                        src={config.fixImageUrl(item.image)} 
+                        alt={item.name} 
+                        className="w-16 h-16 rounded-lg object-cover mr-4" 
+                        onError={e => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Product';
+                        }}
+                      />
                       <div>
                         <p className="font-semibold text-gray-800">{item.name}</p>
                         <p className="text-sm text-gray-500">Qty: {item.quantity}</p>

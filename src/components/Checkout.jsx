@@ -4,9 +4,10 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import orderService from '../services/orderService';
+import config from '../config/config.js';
 
 export default function Checkout() {
-  const { cartItems, clearCart, getTotalPrice } = useCart();
+  const { cartItems, clearCart, getTotalPrice, getItemImage } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -74,11 +75,11 @@ export default function Checkout() {
     const orderData = {
       ...formData,
       items: cartItems.map(item => ({
-        productId: item.id,
-        name: item.name,
-        price: item.price,
+        productId: item.product?._id || item.id,
+        name: item.product?.name || item.name,
+        price: item.product?.price || item.price,
         quantity: item.quantity,
-        image: item.image || (item.images && item.images[0]),
+        image: getItemImage(item),
       })),
       totalAmount: getTotalPrice(),
       paymentStatus: formData.paymentMethod === 'cod' ? 'Pending' : 'Paid',
@@ -168,15 +169,23 @@ export default function Checkout() {
               <h2 className="text-xl font-semibold mb-4 border-b pb-2">Order Summary</h2>
               <div className="space-y-4">
                 {cartItems.map(item => (
-                  <div key={item.id} className="flex items-center justify-between">
+                  <div key={item.product?._id || item.id} className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <img src={item.image || (item.images && item.images[0])} alt={item.name} className="w-16 h-16 object-cover rounded-md mr-4"/>
+                      <img 
+                        src={config.fixImageUrl(getItemImage(item))} 
+                        alt={item.product?.name || item.name} 
+                        className="w-16 h-16 object-cover rounded-md mr-4"
+                        onError={e => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Product';
+                        }}
+                      />
                       <div>
-                        <p className="font-semibold">{item.name}</p>
+                        <p className="font-semibold">{item.product?.name || item.name}</p>
                         <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                       </div>
                     </div>
-                    <p className="font-semibold">₹{item.price * item.quantity}</p>
+                    <p className="font-semibold">₹{(item.product?.price || item.price) * item.quantity}</p>
                   </div>
                 ))}
               </div>

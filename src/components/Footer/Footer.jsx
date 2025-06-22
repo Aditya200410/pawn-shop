@@ -41,7 +41,7 @@ export default function Footer() {
                   <img
                     src="/logo.png"
                     alt="Riko Craft"
-                    className="h-16 md:h-16 w-auto"
+                    className="h-14 md:h-16 w-auto"
                   />
                   <div className="flex-1">
                     <p className="text-gray-100 leading-relaxed text-sm">

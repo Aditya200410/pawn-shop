@@ -7,6 +7,7 @@ import { HeartIcon, ShoppingCartIcon, EyeIcon, FunnelIcon, XMarkIcon } from '@he
 // import { categories } from '../data/categories';
 import ProductCard from '../components/ProductCard/ProductCard.jsx';
 import config from '../config/config.js';
+import Loader from '../components/Loader';
 
 const Shop = () => {
   const location = useLocation();
@@ -143,6 +144,9 @@ const Shop = () => {
         break;
       case 'price-high':
         filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'alphabetical':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
       default:
         break;
@@ -355,6 +359,7 @@ const Shop = () => {
                 <option value="latest">Latest</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
+                <option value="alphabetical">Alphabetical</option>
               </select>
             </div>
 
@@ -539,6 +544,7 @@ const Shop = () => {
                         <option value="latest">Latest</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
+                        <option value="alphabetical">Alphabetical</option>
                       </select>
                     </div>
 
@@ -567,11 +573,7 @@ const Shop = () => {
           <div className="flex-1">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100">
-                <svg className="w-12 h-12 animate-spin text-amber-600 mb-4" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                </svg>
-                <span className="text-lg text-gray-700">Loading products...</span>
+                <Loader size="large" text="Loading products..." />
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100">

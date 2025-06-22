@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import config from '../config/config.js';
+import Loader from '../components/Loader';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -77,7 +78,7 @@ export default function Orders() {
       <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-center items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neon-pink"></div>
+            <Loader size="large" text="Loading orders..." />
           </div>
         </div>
       </div>

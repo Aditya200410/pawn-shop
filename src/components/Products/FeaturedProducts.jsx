@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import config from '../../config/config.js';
+import Loader from '../Loader';
+import ProductCard from '../ProductCard/ProductCard.jsx';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,6 +26,11 @@ const itemVariants = {
   },
 };
 
+// Cache for products data
+let productsCache = null;
+let cacheTimestamp = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 export default function FeaturedProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,11 +50,32 @@ export default function FeaturedProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        // Check cache first
+        if (productsCache && cacheTimestamp && (Date.now() - cacheTimestamp) < CACHE_DURATION) {
+          setProducts(productsCache);
+          setLoading(false);
+          return;
+        }
+
         setLoading(true);
         setError(null);
-        const res = await fetch(config.API_URLS.FEATURED_PRODUCTS);
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        const res = await fetch(config.API_URLS.FEATURED_PRODUCTS, {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
         if (!res.ok) throw new Error('Failed to fetch featured products');
         const data = await res.json();
+        
+        // Cache the data
+        productsCache = data;
+        cacheTimestamp = Date.now();
+        
         setProducts(data);
       } catch (err) {
         console.error('Error fetching featured products:', err);
@@ -62,8 +89,10 @@ export default function FeaturedProducts() {
     fetchProducts();
   }, []);
 
-  // Limit products on mobile devices
-  const displayedProducts = isMobile ? products.slice(0, 4) : products;
+  // Memoize displayed products to prevent unnecessary re-renders
+  const displayedProducts = useMemo(() => {
+    return isMobile ? products.slice(0, 4) : products;
+  }, [products, isMobile]);
 
   // If there are no products, don't render the section
   if (!loading && products.length === 0) {
@@ -72,9 +101,18 @@ export default function FeaturedProducts() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8 md:py-16">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
-      </div>
+      <section className="py-6 md:py-10 lg:py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-6 md:mb-8 lg:mb-10">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 mb-3 md:mb-4">
+              Featured <span className="font-serif italic">Products</span>
+            </h2>
+          </div>
+          <div className="flex items-center justify-center py-8 md:py-16">
+            <Loader size="large" text="Loading featured products..." />
+          </div>
+        </div>
+      </section>
     );
   }
 
@@ -85,7 +123,7 @@ export default function FeaturedProducts() {
 
   return (
     <section className="py-6 md:py-10 lg:py-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-2 sm:px-4 lg:px-6">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -105,91 +143,19 @@ export default function FeaturedProducts() {
         </motion.div>
 
         {/* Products Grid */}
-        <div className="flex justify-center">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-            className={`grid gap-3 md:gap-6 lg:gap-8 max-w-7xl ${
-              isMobile 
-                ? 'grid-cols-2 gap-3' 
-                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-            }`}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"
         >
             {displayedProducts.map((product) => (
-            <motion.div
-              key={product.id}
-              variants={itemVariants}
-                className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 ${
-                  isMobile ? 'w-full' : ''
-                }`}
-            >
-              <Link to={`/product/${product.id}`} className="block">
-                <div className="relative overflow-hidden">
-                    <div className={`overflow-hidden ${
-                      isMobile ? 'aspect-square' : 'aspect-[4/3]'
-                    }`}>
-                    <img
-                      src={config.fixImageUrl(product.image)}
-                      alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        onError={e => {
-                          e.target.onerror = null;
-                          e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image';
-                        }}
-                    />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                </div>
-                  
-                  <div className={`${isMobile ? 'p-4' : 'p-5 md:p-6'}`}>
-                    <div className="mb-3 md:mb-4">
-                      <p className={`text-gray-500 ${isMobile ? 'text-xs' : 'text-sm'} font-medium uppercase tracking-wide`}>
-                        {product.category}
-                      </p>
-                </div>
-                    
-                    <h3 className={`font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 ${
-                      isMobile ? 'text-sm md:text-base mb-3 leading-tight' : 'text-lg mb-4'
-                    }`}>
-                      {product.name}
-                    </h3>
-                    
-                    {!isMobile && (
-                      <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">{product.description}</p>
-                    )}
-                    
-                    <div className={`flex items-center justify-between pt-3 md:pt-4 border-t border-gray-100 ${
-                      isMobile ? 'flex-col items-start gap-2 md:gap-3' : ''
-                    }`}>
-                      <span className={`font-bold text-orange-600 ${
-                        isMobile ? 'text-base md:text-lg' : 'text-lg'
-                      }`}>
-                        ₹{product.price?.toFixed(2)}
-                      </span>
-                      
-                      {/* Add to Cart Button - Always Visible */}
-                      <button className={`bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl ${
-                        isMobile 
-                          ? 'w-full py-2.5 md:py-3 rounded-xl text-xs md:text-sm' 
-                          : 'px-6 py-2 rounded-xl text-sm'
-                      }`}>
-                        <div className="flex items-center justify-center gap-2">
-                          <ShoppingCartIcon className={isMobile ? "h-3 w-3 md:h-4 md:w-4" : "h-4 w-4"} />
-                          Add to Cart
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Hover Effect Border */}
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-2xl transition-colors duration-300 pointer-events-none" />
-              </Link>
-            </motion.div>
+              <motion.div key={product.id} variants={itemVariants}>
+                <ProductCard product={product} />
+              </motion.div>
           ))}
         </motion.div>
-        </div>
         
         {/* Show "View More" button on mobile if there are more products */}
         {isMobile && products.length > 4 && (
@@ -199,25 +165,12 @@ export default function FeaturedProducts() {
             viewport={{ once: true }}
             className="text-center mt-8 md:mt-12"
           >
-            <div className="max-w-md mx-auto">
-              <p className="text-gray-600 text-sm mb-4 md:mb-6">
-                Discover more featured products in our collection
-              </p>
-              <Link 
-                to="/shop" 
-                className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
-              >
-                View More Products
-                <svg 
-                  className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
+            <Link
+              to="/shop"
+              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              View More Products
+            </Link>
           </motion.div>
         )}
       </div>

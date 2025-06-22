@@ -28,10 +28,10 @@ export const CartProvider = ({ children }) => {
           setCartItems(cartData.items || []);
         } else {
           // Load from localStorage
-          const savedCart = localStorage.getItem('cart');
-          if (savedCart) {
-            setCartItems(JSON.parse(savedCart));
-          }
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
         }
       } catch (error) {
         console.error('Error loading cart:', error);
@@ -46,7 +46,7 @@ export const CartProvider = ({ children }) => {
   // Save cart to localStorage when not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      localStorage.setItem('cart', JSON.stringify(cartItems));
+    localStorage.setItem('cart', JSON.stringify(cartItems));
     }
   }, [cartItems, isAuthenticated]);
 
@@ -59,21 +59,21 @@ export const CartProvider = ({ children }) => {
         toast.success('Item added to cart');
       } else {
         // Add to local state
-        setCartItems((prevItems) => {
-          const existingItem = prevItems.find((item) => item.id === product.id);
-          if (existingItem) {
-            const updatedItems = prevItems.map((item) =>
-              item.id === product.id
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
-            );
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((item) => (item.productId || item.id) === product.id);
+      if (existingItem) {
+        const updatedItems = prevItems.map((item) =>
+          (item.productId || item.id) === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
             toast.success('Item quantity updated in cart');
-            return updatedItems;
-          } else {
+        return updatedItems;
+      } else {
             toast.success('Item added to cart');
-            return [...prevItems, { ...product, quantity: 1 }];
-          }
-        });
+        return [...prevItems, { ...product, quantity: 1 }];
+      }
+    });
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -90,11 +90,11 @@ export const CartProvider = ({ children }) => {
         toast.success('Item removed from cart');
       } else {
         // Remove from local state
-        setCartItems((prevItems) => {
-          const updatedItems = prevItems.filter((item) => item.id !== productId);
+    setCartItems((prevItems) => {
+      const updatedItems = prevItems.filter((item) => (item.productId || item.id) !== productId);
           toast.success('Item removed from cart');
-          return updatedItems;
-        });
+      return updatedItems;
+    });
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
@@ -112,13 +112,13 @@ export const CartProvider = ({ children }) => {
         toast.success('Cart updated');
       } else {
         // Update in local state
-        setCartItems((prevItems) => {
-          const updatedItems = prevItems.map((item) =>
-            item.id === productId ? { ...item, quantity } : item
-          );
+    setCartItems((prevItems) => {
+      const updatedItems = prevItems.map((item) =>
+        (item.productId || item.id) === productId ? { ...item, quantity } : item
+      );
           toast.success('Cart updated');
-          return updatedItems;
-        });
+      return updatedItems;
+    });
       }
     } catch (error) {
       console.error('Error updating cart:', error);
@@ -135,7 +135,7 @@ export const CartProvider = ({ children }) => {
         toast.success('Cart cleared');
       } else {
         // Clear in local state
-        setCartItems([]);
+    setCartItems([]);
         toast.success('Cart cleared');
       }
     } catch (error) {
@@ -145,11 +145,24 @@ export const CartProvider = ({ children }) => {
   };
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItems.reduce((total, item) => {
+      const price = item.product?.price || item.price;
+      return total + (price * item.quantity);
+    }, 0);
   };
 
   const getTotalItems = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  // Helper function to get the best available image for a cart item
+  const getItemImage = (item) => {
+    // If item has images array, use the first one
+    if (item.images && item.images.length > 0) {
+      return item.images[0];
+    }
+    // Otherwise use the single image field
+    return item.product?.image || item.image || item.product?.images?.[0];
   };
 
   // Sync local cart with backend when user logs in
@@ -188,7 +201,8 @@ export const CartProvider = ({ children }) => {
         clearCart,
         getTotalPrice,
         getTotalItems,
-        loading
+        loading,
+        getItemImage
       }}
     >
       {children}

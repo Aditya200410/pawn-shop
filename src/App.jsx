@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
+import Loader from './components/Loader';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
 import Categories from './components/Categories/Categories';
@@ -27,7 +28,7 @@ import MostLoved from './components/Products/MostLoved';
 import Cart from './components/Cart';
 import Checkout from './pages/Checkout';
 import Toast from './components/Toast/Toast';
-import ForgetPassword from './pages/ForgotPassword';
+import ForgotPassword from './pages/ForgotPassword';
 import AboutUs from './pages/AboutUs';
 import OrderConfirmation from './pages/OrderConfirmation';
 
@@ -36,7 +37,11 @@ const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <Loader size="md" text="Loading..." />
+            </div>
+        );
     }
 
     if (!isAuthenticated) {
@@ -86,23 +91,13 @@ class ErrorBoundary extends React.Component {
 function AppContent() {
   useScrollToTop();
   const { toast, setToast } = useCart();
-  const [isLoading, setIsLoading] = useState(true);
+  const { loading: authLoading } = useAuth();
 
-  useEffect(() => {
-    // Simulate initial loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
+  // Show loading only if auth is still loading
+  if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
+        <Loader size="md" text="Loading..." />
       </div>
     );
   }
@@ -139,7 +134,7 @@ function AppContent() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/story" element={<Story />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path="/contactPage" element={<ContactPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -147,9 +142,9 @@ function AppContent() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
         <Route path="/product/:id" element={<ProductView />} />
-        <Route path="/forgetpassword" element={<ForgetPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
       <Footer />
       <ScrollToTop />

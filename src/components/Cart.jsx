@@ -22,7 +22,7 @@ const staggerContainer = {
 };
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity, getTotalPrice, loading } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getTotalPrice, loading, getItemImage } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -121,25 +121,34 @@ const Cart = () => {
                 <tbody className="divide-y divide-gray-100">
                   {cartItems.map((item) => (
                     <motion.tr
-                      key={item.product?._id || item.id}
+                      key={item.productId || item.product?._id || item.id}
                       className="hover:bg-gray-50/50 transition-colors"
                       variants={fadeInUp}
                     >
                       <td className="px-4 md:px-6 py-4 md:py-6">
                         <div className="flex items-center space-x-3 md:space-x-4">
-                          <Link to={`/product/${item.product?._id || item.id}`} className="block w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                          <Link to={`/product/${item.productId || item.product?._id || item.id}`} className="block w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                             <img 
-                              src={config.fixImageUrl(item.product?.image || item.image)} 
+                              src={config.fixImageUrl(getItemImage(item))} 
                               alt={item.product?.name || item.name} 
                               className="w-full h-full object-cover"
                               onError={e => {
                                 e.target.onerror = null;
+                                // Try fallback images
+                                if (item.product?.images && item.product.images.length > 0) {
+                                  const nextImage = item.product.images.find(img => img !== e.target.src);
+                                  if (nextImage) {
+                                    e.target.src = config.fixImageUrl(nextImage);
+                                    return;
+                                  }
+                                }
+                                // Final fallback
                                 e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Product';
                               }}
                             />
                           </Link>
                           <div className="min-w-0 flex-1">
-                            <Link to={`/product/${item.product?._id || item.id}`} className="text-gray-900 hover:text-orange-600 font-medium text-sm md:text-base line-clamp-2">
+                            <Link to={`/product/${item.productId || item.product?._id || item.id}`} className="text-gray-900 hover:text-orange-600 font-medium text-sm md:text-base line-clamp-2">
                               {item.product?.name || item.name}
                             </Link>
                             <div className="text-sm text-gray-500 md:hidden mt-1">{item.product?.category || item.category}</div>
@@ -150,7 +159,7 @@ const Cart = () => {
                       <td className="px-4 md:px-6 py-4 md:py-6 text-center">
                         <div className="flex items-center justify-center space-x-2 md:space-x-3">
                           <button 
-                            onClick={() => updateQuantity(item.product?._id || item.id, item.quantity - 1)} 
+                            onClick={() => updateQuantity(item.productId || item.product?._id || item.id, item.quantity - 1)} 
                             className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-600 hover:text-orange-600 transition disabled:opacity-50" 
                             disabled={item.quantity <= 1}
                           >
@@ -158,7 +167,7 @@ const Cart = () => {
                           </button>
                           <span className="font-medium">{item.quantity}</span>
                           <button 
-                            onClick={() => updateQuantity(item.product?._id || item.id, item.quantity + 1)} 
+                            onClick={() => updateQuantity(item.productId || item.product?._id || item.id, item.quantity + 1)} 
                             className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-600 hover:text-orange-600 transition"
                           >
                             <Plus className="w-4 h-4" />
@@ -169,7 +178,7 @@ const Cart = () => {
                       <td className="px-4 md:px-6 py-4 md:py-6 text-right font-medium text-sm">₹{((item.product?.price || item.price) * item.quantity).toFixed(2)}</td>
                       <td className="px-4 md:px-6 py-4 md:py-6 text-right">
                         <button 
-                          onClick={() => removeFromCart(item.product?._id || item.id)} 
+                          onClick={() => removeFromCart(item.productId || item.product?._id || item.id)} 
                           className="text-gray-400 hover:text-red-600 transition p-1.5"
                         >
                           <X className="w-4 h-4" />

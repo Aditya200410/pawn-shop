@@ -9,19 +9,30 @@ export const AuthProvider = ({ children }) => {
         const stored = localStorage.getItem('user');
         return stored ? JSON.parse(stored) : null;
     });
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false); // Start with false since we have cached user
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const initAuth = async () => {
-            try {
-                const data = await authService.getCurrentUser();
-                setUser(data.user);
-                localStorage.setItem('user', JSON.stringify(data.user));
-            } catch (err) {
-                setUser(null);
-                localStorage.removeItem('user');
-            } finally {
+            // Only check auth if we have a token but no user, or if we want to refresh
+            const token = localStorage.getItem('token');
+            const storedUser = localStorage.getItem('user');
+            
+            if (token && !storedUser) {
+                setLoading(true);
+                try {
+                    const data = await authService.getCurrentUser();
+                    setUser(data.user);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                } catch (err) {
+                    setUser(null);
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('token');
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                // If we have cached user data, don't make API call
                 setLoading(false);
             }
         };
@@ -112,7 +123,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={value}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 };
