@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -43,9 +44,66 @@ const ProtectedRoute = ({ children }) => {
     return children;
 };
 
+// Simple Error Boundary
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center p-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h1>
+            <p className="text-gray-600 mb-4">Please try refreshing the page.</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors"
+            >
+              Refresh Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 function AppContent() {
   useScrollToTop();
   const { toast, setToast } = useCart();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -53,13 +111,27 @@ function AppContent() {
       <Routes>
         <Route path="/" element={
           <main>
-            <Hero />
-            <Categories/>
-            <FeaturedProducts />
-            <WeeklyBestsellers />
-            <MostLoved />
-            <Testimonials />
-            <MissionVision />
+            <ErrorBoundary>
+              <Hero />
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <Categories/>
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <FeaturedProducts />
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <WeeklyBestsellers />
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <MostLoved />
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <Testimonials />
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <MissionVision />
+            </ErrorBoundary>
           </main>
         } />
         <Route path="/faq" element={<FAQ />} />
@@ -93,13 +165,15 @@ function AppContent() {
 
 function App() {
   return (
-    <CartProvider>
-      <AuthProvider>
-        <Router>
-          <AppContent />
-        </Router>
-      </AuthProvider>
-    </CartProvider>
+    <ErrorBoundary>
+      <CartProvider>
+        <AuthProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </AuthProvider>
+      </CartProvider>
+    </ErrorBoundary>
   );
 }
 

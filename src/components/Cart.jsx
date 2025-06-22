@@ -1,20 +1,22 @@
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Plus, Minus, X, ArrowRight, Truck, Shield, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import config from '../config/config.js';
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
 };
 
 const staggerContainer = {
-  hidden: {},
+  hidden: { opacity: 0 },
   visible: {
+    opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.2
+      staggerChildren: 0.1
     }
   }
 };
@@ -126,7 +128,15 @@ const Cart = () => {
                       <td className="px-4 md:px-6 py-4 md:py-6">
                         <div className="flex items-center space-x-3 md:space-x-4">
                           <Link to={`/product/${item.product?._id || item.id}`} className="block w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                            <img src={item.product?.image || item.image} alt={item.product?.name || item.name} className="w-full h-full object-cover" />
+                            <img 
+                              src={config.fixImageUrl(item.product?.image || item.image)} 
+                              alt={item.product?.name || item.name} 
+                              className="w-full h-full object-cover"
+                              onError={e => {
+                                e.target.onerror = null;
+                                e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Product';
+                              }}
+                            />
                           </Link>
                           <div className="min-w-0 flex-1">
                             <Link to={`/product/${item.product?._id || item.id}`} className="text-gray-900 hover:text-orange-600 font-medium text-sm md:text-base line-clamp-2">

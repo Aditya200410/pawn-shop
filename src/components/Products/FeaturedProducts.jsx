@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import config from '../../config/config.js';
 
 const containerVariants = {
-  hidden: {},
+  hidden: { opacity: 0 },
   visible: {
+    opacity: 1,
     transition: {
       staggerChildren: 0.1,
     },
@@ -50,7 +51,10 @@ export default function FeaturedProducts() {
         const data = await res.json();
         setProducts(data);
       } catch (err) {
+        console.error('Error fetching featured products:', err);
         setError(err.message || 'Error fetching featured products');
+        // Set empty array to prevent crashes
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -61,39 +65,42 @@ export default function FeaturedProducts() {
   // Limit products on mobile devices
   const displayedProducts = isMobile ? products.slice(0, 4) : products;
 
+  // If there are no products, don't render the section
+  if (!loading && products.length === 0) {
+    return null;
+  }
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-16">
+      <div className="flex items-center justify-center py-8 md:py-16">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
       </div>
     );
   }
+
   if (error) {
-    return (
-      <div className="text-center py-16">
-        <div className="text-red-500 text-lg font-medium">{error}</div>
-      </div>
-    );
+    // Don't show error, just return null to not break the page
+    return null;
   }
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-8 md:py-16 lg:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-8 md:mb-12 lg:mb-16"
         >
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-gray-900 mb-6">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 mb-4 md:mb-6">
             Featured <span className="font-serif italic">Products</span>
           </h2>
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
+            <p className="text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-6 md:mb-8 max-w-2xl mx-auto">
               Discover our handpicked collection of exceptional handcrafted pieces, each telling a unique story of artistry and tradition
             </p>
-            <div className="w-20 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
+            <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
         </div>
         </motion.div>
 
@@ -104,9 +111,9 @@ export default function FeaturedProducts() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-            className={`grid gap-4 md:gap-8 max-w-7xl ${
+            className={`grid gap-3 md:gap-6 lg:gap-8 max-w-7xl ${
               isMobile 
-                ? 'grid-cols-2 gap-4' 
+                ? 'grid-cols-2 gap-3' 
                 : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
             }`}
         >
@@ -124,23 +131,27 @@ export default function FeaturedProducts() {
                       isMobile ? 'aspect-square' : 'aspect-[4/3]'
                     }`}>
                     <img
-                      src={product.image}
+                      src={config.fixImageUrl(product.image)}
                       alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={e => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image';
+                        }}
                     />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 </div>
                   
-                  <div className={`${isMobile ? 'p-5' : 'p-6'}`}>
-                    <div className="mb-4">
-                      <p className={`text-gray-500 ${isMobile ? 'text-sm' : 'text-sm'} font-medium uppercase tracking-wide`}>
+                  <div className={`${isMobile ? 'p-4' : 'p-5 md:p-6'}`}>
+                    <div className="mb-3 md:mb-4">
+                      <p className={`text-gray-500 ${isMobile ? 'text-xs' : 'text-sm'} font-medium uppercase tracking-wide`}>
                         {product.category}
                       </p>
                 </div>
                     
                     <h3 className={`font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 ${
-                      isMobile ? 'text-base mb-4 leading-tight' : 'text-lg mb-4'
+                      isMobile ? 'text-sm md:text-base mb-3 leading-tight' : 'text-lg mb-4'
                     }`}>
                       {product.name}
                     </h3>
@@ -149,11 +160,11 @@ export default function FeaturedProducts() {
                       <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">{product.description}</p>
                     )}
                     
-                    <div className={`flex items-center justify-between pt-4 border-t border-gray-100 ${
-                      isMobile ? 'flex-col items-start gap-3' : ''
+                    <div className={`flex items-center justify-between pt-3 md:pt-4 border-t border-gray-100 ${
+                      isMobile ? 'flex-col items-start gap-2 md:gap-3' : ''
                     }`}>
                       <span className={`font-bold text-orange-600 ${
-                        isMobile ? 'text-lg' : 'text-lg'
+                        isMobile ? 'text-base md:text-lg' : 'text-lg'
                       }`}>
                         ₹{product.price?.toFixed(2)}
                       </span>
@@ -161,11 +172,11 @@ export default function FeaturedProducts() {
                       {/* Add to Cart Button - Always Visible */}
                       <button className={`bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl ${
                         isMobile 
-                          ? 'w-full py-3 rounded-xl text-sm' 
+                          ? 'w-full py-2.5 md:py-3 rounded-xl text-xs md:text-sm' 
                           : 'px-6 py-2 rounded-xl text-sm'
                       }`}>
                         <div className="flex items-center justify-center gap-2">
-                          <ShoppingCartIcon className={isMobile ? "h-4 w-4" : "h-4 w-4"} />
+                          <ShoppingCartIcon className={isMobile ? "h-3 w-3 md:h-4 md:w-4" : "h-4 w-4"} />
                           Add to Cart
                         </div>
                       </button>
@@ -186,19 +197,19 @@ export default function FeaturedProducts() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mt-12"
+            className="text-center mt-8 md:mt-12"
           >
             <div className="max-w-md mx-auto">
-              <p className="text-gray-600 text-sm mb-6">
+              <p className="text-gray-600 text-sm mb-4 md:mb-6">
                 Discover more featured products in our collection
               </p>
               <Link 
                 to="/shop" 
-                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
+                className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl font-semibold hover:from-orange-700 hover:to-orange-800 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
               >
                 View More Products
                 <svg 
-                  className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" 
+                  className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"

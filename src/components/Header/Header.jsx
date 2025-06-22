@@ -361,10 +361,7 @@ const Header = () => {
             <ShoppingCart className="w-5 h-5" />
             <span className="text-xs mt-0.5">Shop</span>
           </Link>
-          <Link to="/account" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
-            <User className="w-5 h-5" />
-            <span className="text-xs mt-0.5">Account</span>
-          </Link>
+         
           <Link to="/cart" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors relative">
             <ShoppingBag className="w-5 h-5" />
             <span className="text-xs mt-0.5">Cart</span>
@@ -373,6 +370,10 @@ const Header = () => {
                 {cartItems.length}
               </span>
             )}
+          </Link>
+          <Link to="/account" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+            <User className="w-5 h-5" />
+            <span className="text-xs mt-0.5">Account</span>
           </Link>
           
           </nav>

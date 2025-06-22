@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingBag, Star, Eye } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useState, useEffect } from 'react';
+import config from '../../config/config.js';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -29,7 +30,7 @@ const ProductCard = ({ product }) => {
       <Link to={`/product/${product.id}`} className="block relative">
         <div className="aspect-square w-full overflow-hidden bg-gray-50">
           <img
-            src={product.image}
+            src={config.fixImageUrl(product.image)}
             alt={product.name}
             className="w-full h-full object-cover object-center transition-transform duration-400 ease-in-out group-hover:scale-110"
             onError={e => {

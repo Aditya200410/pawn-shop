@@ -4,7 +4,7 @@ import { Slider } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, EyeIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
 // import { products } from '../data/products';
-import { categories } from '../data/categories';
+// import { categories } from '../data/categories';
 import ProductCard from '../components/ProductCard/ProductCard.jsx';
 import config from '../config/config.js';
 
@@ -24,6 +24,7 @@ const Shop = () => {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [dynamicCategories, setDynamicCategories] = useState([]);
 
   // Fetch products from backend
   useEffect(() => {
@@ -36,6 +37,9 @@ const Shop = () => {
         const data = await res.json();
         console.log('Fetched products:', data);
         setProducts(data);
+        
+        // Generate dynamic categories from products data
+        generateDynamicCategories(data);
       } catch (err) {
         setError(err.message || 'Error fetching products');
       } finally {
@@ -44,6 +48,46 @@ const Shop = () => {
     };
     fetchProducts();
   }, []);
+
+  // Generate dynamic categories from products data
+  const generateDynamicCategories = (productsData) => {
+    const categoryMap = {};
+    
+    productsData.forEach(product => {
+      if (!categoryMap[product.category]) {
+        categoryMap[product.category] = {
+          name: product.category,
+          submenu: {}
+        };
+      }
+      
+      if (product.subcategory) {
+        if (!categoryMap[product.category].submenu[product.subcategory]) {
+          categoryMap[product.category].submenu[product.subcategory] = {
+            name: product.subcategory,
+            items: new Set()
+          };
+        }
+        
+        // If there's an item field, add it to the items set
+        if (product.item) {
+          categoryMap[product.category].submenu[product.subcategory].items.add(product.item);
+        }
+      }
+    });
+    
+    // Convert to the format expected by the UI
+    const categories = Object.values(categoryMap).map(category => ({
+      name: category.name,
+      submenu: Object.values(category.submenu).map(sub => ({
+        name: sub.name,
+        items: Array.from(sub.items).length > 0 ? Array.from(sub.items) : undefined
+      }))
+    }));
+    
+    console.log('Generated dynamic categories:', categories);
+    setDynamicCategories(categories);
+  };
 
   // Handle category selection from header dropdown
   useEffect(() => {
@@ -180,7 +224,7 @@ const Shop = () => {
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Categories</h3>
               <div className="space-y-2">
-                {categories.map((category) => (
+                {dynamicCategories.map((category) => (
                   <div key={category.name}>
                     <button
                       onClick={() => {
@@ -364,7 +408,7 @@ const Shop = () => {
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
                       <div className="space-y-2">
-                        {categories.map((category) => (
+                        {dynamicCategories.map((category) => (
                           <div key={category.name}>
                             <button
                               onClick={() => {

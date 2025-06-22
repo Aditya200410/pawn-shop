@@ -3,6 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import config from '../../config/config.js';
+import { categories as staticCategories } from '../../data/categories.js';
 
 const containerVariants = {
   hidden: {},
@@ -24,6 +25,14 @@ const itemVariants = {
   },
 };
 
+// Static category images mapping
+const categoryImages = {
+  "Wooden Craft": "/images/categories/wooden-craft.jpg",
+  "Terracotta Items": "/images/categories/terracotta.jpg", 
+  "Dokra Art": "/images/categories/dokra-art.jpg",
+  "Handmade Jewellery": "/images/categories/jewellery.jpg"
+};
+
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,18 +46,25 @@ const Categories = () => {
     try {
       const response = await axios.get(config.API_URLS.CATEGORIES);
       // The response data is in the format { categories: [...] }
-      setCategories(response.data.categories || []);
+      const apiCategories = response.data.categories || [];
+      setCategories(apiCategories);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching categories:', error);
-      setError('Failed to load categories');
+      // Fallback to static categories
+      const fallbackCategories = staticCategories.map(category => ({
+        id: category.name.toLowerCase().replace(/\s+/g, '-'),
+        name: category.name,
+        image: categoryImages[category.name] || '/images/categories/default.jpg'
+      }));
+      setCategories(fallbackCategories);
       setLoading(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-16">
+      <div className="flex items-center justify-center py-8 md:py-16">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
       </div>
     );
@@ -56,30 +72,30 @@ const Categories = () => {
 
   if (error) {
     return (
-      <div className="text-center py-16">
+      <div className="text-center py-8 md:py-16">
         <div className="text-red-500 text-lg font-medium">{error}</div>
       </div>
     );
   }
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-8 md:py-16 lg:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-8 md:mb-12 lg:mb-16"
         >
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-light tracking-tight text-gray-900 mb-6">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 mb-4 md:mb-6">
               <span className="font-serif italic">Our Categories</span>
             </h2>
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
+            <p className="text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-6 md:mb-8 max-w-2xl mx-auto">
               Discover our carefully curated collection of handcrafted treasures, each piece telling a unique story of craftsmanship and tradition
             </p>
-            <div className="w-20 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
+            <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
           </div>
         </motion.div>
 
@@ -89,11 +105,11 @@ const Categories = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto"
+          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8 max-w-6xl mx-auto"
         >
           {categories.map((category, index) => (
             <Link
-              key={category.id}
+              key={category.id || index}
               to="/shop"
               state={{ selectedCategory: { main: category.name } }}
               className="group"
@@ -119,6 +135,10 @@ const Categories = () => {
                     src={category.image}
                     alt={category.name}
                     className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500"
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=' + encodeURIComponent(category.name);
+                    }}
                   />
                   
                   {/* Overlay */}
@@ -154,15 +174,15 @@ const Categories = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-16 md:mt-20"
+          className="text-center mt-8 md:mt-12 lg:mt-16"
         >
           <div className="max-w-md mx-auto">
-            <p className="text-gray-600 text-sm md:text-base mb-6">
+            <p className="text-gray-600 text-sm md:text-base mb-4 md:mb-6">
               Ready to explore our complete collection?
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center px-8 py-4 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-all duration-300 group shadow-lg hover:shadow-xl"
+              className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-all duration-300 group shadow-lg hover:shadow-xl"
             >
               View All Products
               <svg 

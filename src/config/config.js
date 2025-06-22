@@ -31,6 +31,29 @@ const config = {
     };
   },
   
+  // Utility function to fix image URLs
+  fixImageUrl: (imagePath) => {
+    if (!imagePath) return '';
+    
+    // If it's already a full URL, return as is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    
+    // If it's a local path starting with /pawnbackend/data/, convert to backend URL
+    if (imagePath.startsWith('/pawnbackend/data/')) {
+      return `${config.API_BASE_URL}${imagePath}`;
+    }
+    
+    // If it's a relative path, assume it's from the backend
+    if (imagePath.startsWith('/')) {
+      return `${config.API_BASE_URL}${imagePath}`;
+    }
+    
+    // If it's just a filename, assume it's from the backend data directory
+    return `${config.API_BASE_URL}/pawnbackend/data/${imagePath}`;
+  },
+  
   // Environment settings
   ENVIRONMENT: {
     IS_PRODUCTION: process.env.NODE_ENV === 'production',

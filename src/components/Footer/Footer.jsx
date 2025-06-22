@@ -28,7 +28,7 @@ export default function Footer() {
       className="bg-cover bg-center text-white relative"
       style={{ backgroundImage: 'url(/footer.png)' }}
     >
-      <div className="absolute inset-0 bg-black/70" />
+      <div className="absolute inset-0 bg-black/30" />
       <div className="relative z-10">
         {/* Main Footer Content */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
@@ -44,7 +44,7 @@ export default function Footer() {
                     className="h-14 md:h-16 w-auto"
                   />
                   <div className="flex-1">
-                    <p className="text-gray-300 leading-relaxed text-sm">
+                    <p className="text-gray-100 leading-relaxed text-sm">
                       Riko Craft offers nature-powered handcrafted treasures crafted with pure artistry for timeless beauty in your home.
                     </p>
                   </div>
@@ -57,23 +57,23 @@ export default function Footer() {
                       <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <span className="text-sm text-gray-200">4.5/5</span>
-                  <span className="text-sm text-gray-400">Based on 374 reviews</span>
+                  <span className="text-sm text-gray-100">4.5/5</span>
+                  <span className="text-sm text-gray-200">Based on 374 reviews</span>
                 </div>
 
                 {/* Social Media Links - Mobile Only */}
                 <div className="flex items-center space-x-4 md:hidden">
-                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                    <FacebookIcon className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                    <FacebookIcon className="w-5 h-5 text-gray-100 group-hover:text-white" />
                   </a>
-                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                    <InstagramIcon className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                    <InstagramIcon className="w-5 h-5 text-gray-100 group-hover:text-white" />
                   </a>
-                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                    <TwitterIcon className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                    <TwitterIcon className="w-5 h-5 text-gray-100 group-hover:text-white" />
                   </a>
-                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                    <YoutubeIcon className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                    <YoutubeIcon className="w-5 h-5 text-gray-100 group-hover:text-white" />
                   </a>
                 </div>
               </div>
@@ -86,22 +86,22 @@ export default function Footer() {
                 <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
                 <ul className="space-y-3">
                   <li>
-                    <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       Wooden Craft
                     </Link>
                   </li>
                   <li>
-                    <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       Terracotta Items
                     </Link>
                   </li>
                   <li>
-                    <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       Dokra Art
                     </Link>
                   </li>
                   <li>
-                    <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       Handmade Jewellery
                     </Link>
                   </li>
@@ -113,27 +113,27 @@ export default function Footer() {
                 <h4 className="text-base font-semibold text-white mb-4">Useful Links</h4>
                 <ul className="space-y-3">
                   <li>
-                    <Link to="/" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       Home
                     </Link>
                   </li>
                   <li>
-                    <Link to="/about" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/about" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       About Us
                     </Link>
                   </li>
                   <li>
-                    <Link to="/blog" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/blog" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       Blog
                     </Link>
                   </li>
                   <li>
-                    <Link to="/contact" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/contact" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       Contact Us
                     </Link>
                   </li>
                   <li>
-                    <Link to="/faq" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/faq" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                       FAQ
                     </Link>
                   </li>
@@ -146,22 +146,22 @@ export default function Footer() {
               <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     Wooden Craft
                   </Link>
                 </li>
                 <li>
-                  <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     Terracotta Items
                   </Link>
                 </li>
                 <li>
-                  <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     Dokra Art
                   </Link>
                 </li>
                 <li>
-                  <Link to="/shop" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     Handmade Jewellery
                   </Link>
                 </li>
@@ -173,27 +173,27 @@ export default function Footer() {
               <h4 className="text-base font-semibold text-white mb-4">Useful Links</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link to="/" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     Home
                   </Link>
                 </li>
                 <li>
-                  <Link to="/about" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/about" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link to="/blog" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/blog" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     Blog
                   </Link>
                 </li>
                 <li>
-                  <Link to="/contact" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/contact" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     Contact Us
                   </Link>
                 </li>
                 <li>
-                  <Link to="/faq" className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/faq" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     FAQ
                   </Link>
                 </li>
@@ -202,24 +202,24 @@ export default function Footer() {
           </div>
 
           {/* Bottom Bar */}
-          <div className="border-t border-white/10 mt-6 pt-6">
+          <div className="border-t border-white/20 mt-6 pt-6">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <p className="text-sm text-gray-400 text-center md:text-left">
+              <p className="text-sm text-gray-200 text-center md:text-left">
                 © 2025 All Rights Reserved by Riko Craft.
               </p>
               {/* Social Media Links - Desktop Only */}
               <div className="hidden md:flex items-center space-x-3 md:space-x-4">
-                <a href="#" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                  <FacebookIcon className="w-4 h-4 text-gray-300 group-hover:text-white" />
+                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <FacebookIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
                 </a>
-                <a href="#" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                  <InstagramIcon className="w-4 h-4 text-gray-300 group-hover:text-white" />
+                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <InstagramIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
                 </a>
-                <a href="#" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                  <TwitterIcon className="w-4 h-4 text-gray-300 group-hover:text-white" />
+                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <TwitterIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
                 </a>
-                <a href="#" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                  <YoutubeIcon className="w-4 h-4 text-gray-300 group-hover:text-white" />
+                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <YoutubeIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
                 </a>
               </div>
             </div>
