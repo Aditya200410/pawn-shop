@@ -31,9 +31,24 @@ const ProductCard = ({ product }) => {
         return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
       })
     : [];
-  const mainImage = validImages.length > 0
-    ? config.fixImageUrl(validImages[0])
-    : config.fixImageUrl(product.image);
+  
+  const mainImage = (() => {
+    // If we have valid images from the images array, use the first one
+    if (validImages.length > 0) {
+      return config.fixImageUrl(validImages[0]);
+    }
+    
+    // Otherwise, use the single image field as fallback
+    return config.fixImageUrl(product.image);
+  })();
+
+  // Debug logging for problematic products
+  if (validImages.length === 0 && product.images && product.images.length > 0) {
+    console.log('ProductCard - Product with invalid images:', product.name);
+    console.log('Original images array:', product.images);
+    console.log('Valid images after filtering:', validImages);
+    console.log('Using fallback image:', product.image);
+  }
 
   return (
     <div className="group relative bg-white rounded-2xl  hover: transition-all d
@@ -46,8 +61,15 @@ const ProductCard = ({ product }) => {
             alt={product.name}
             className="w-full h-full object-cover object-center transition-transform duration-400 ease-in-out group-hover:scale-110"
             onError={e => {
+              console.log('ProductCard - Image failed to load:', mainImage);
               e.target.onerror = null;
-              e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image';
+              // Try fallback to product.image if different from current image
+              if (mainImage !== config.fixImageUrl(product.image)) {
+                e.target.src = config.fixImageUrl(product.image);
+              } else {
+                // Final fallback to placeholder
+                e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=Product+Image';
+              }
             }}
           />
 

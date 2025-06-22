@@ -22,16 +22,16 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     const loadCart = async () => {
       try {
-        if (isAuthenticated) {
-          // Load from backend
-          const cartData = await cartService.getCart();
+        if (isAuthenticated && user && user.email) {
+          // Load from backend by email
+          const cartData = await cartService.getCart(user.email);
           setCartItems(cartData.items || []);
         } else {
           // Load from localStorage
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
+          const savedCart = localStorage.getItem('cart');
+          if (savedCart) {
+            setCartItems(JSON.parse(savedCart));
+          }
         }
       } catch (error) {
         console.error('Error loading cart:', error);
@@ -40,41 +40,40 @@ export const CartProvider = ({ children }) => {
         setLoading(false);
       }
     };
-
     loadCart();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   // Save cart to localStorage when not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
+      localStorage.setItem('cart', JSON.stringify(cartItems));
     }
   }, [cartItems, isAuthenticated]);
 
   const addToCart = async (product) => {
     try {
-      if (isAuthenticated) {
-        // Add to backend - use product.id from shop.json
-        const updatedCart = await cartService.addToCart(product.id, 1);
+      if (isAuthenticated && user && user.email) {
+        // Add to backend by email
+        const updatedCart = await cartService.addToCart(product.id, 1, user.email);
         setCartItems(updatedCart.items);
         toast.success('Item added to cart');
       } else {
         // Add to local state
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id);
-      if (existingItem) {
-        const updatedItems = prevItems.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        setCartItems((prevItems) => {
+          const existingItem = prevItems.find((item) => item.id === product.id);
+          if (existingItem) {
+            const updatedItems = prevItems.map((item) =>
+              item.id === product.id
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
             toast.success('Item quantity updated in cart');
-        return updatedItems;
-      } else {
+            return updatedItems;
+          } else {
             toast.success('Item added to cart');
-        return [...prevItems, { ...product, quantity: 1 }];
-      }
-    });
+            return [...prevItems, { ...product, quantity: 1 }];
+          }
+        });
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -84,18 +83,18 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (productId) => {
     try {
-      if (isAuthenticated) {
-        // Remove from backend
-        const updatedCart = await cartService.removeFromCart(productId);
+      if (isAuthenticated && user && user.email) {
+        // Remove from backend by email
+        const updatedCart = await cartService.removeFromCart(productId, user.email);
         setCartItems(updatedCart.items);
         toast.success('Item removed from cart');
       } else {
         // Remove from local state
-    setCartItems((prevItems) => {
-      const updatedItems = prevItems.filter((item) => item.id !== productId);
+        setCartItems((prevItems) => {
+          const updatedItems = prevItems.filter((item) => item.id !== productId);
           toast.success('Item removed from cart');
-      return updatedItems;
-    });
+          return updatedItems;
+        });
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
@@ -105,22 +104,21 @@ export const CartProvider = ({ children }) => {
 
   const updateQuantity = async (productId, quantity) => {
     if (quantity < 1) return;
-    
     try {
-      if (isAuthenticated) {
-        // Update in backend
-        const updatedCart = await cartService.updateQuantity(productId, quantity);
+      if (isAuthenticated && user && user.email) {
+        // Update in backend by email
+        const updatedCart = await cartService.updateQuantity(productId, quantity, user.email);
         setCartItems(updatedCart.items);
         toast.success('Cart updated');
       } else {
         // Update in local state
-    setCartItems((prevItems) => {
-      const updatedItems = prevItems.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
-      );
+        setCartItems((prevItems) => {
+          const updatedItems = prevItems.map((item) =>
+            item.id === productId ? { ...item, quantity } : item
+          );
           toast.success('Cart updated');
-      return updatedItems;
-    });
+          return updatedItems;
+        });
       }
     } catch (error) {
       console.error('Error updating cart:', error);
@@ -130,14 +128,14 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = async () => {
     try {
-      if (isAuthenticated) {
-        // Clear in backend
-        await cartService.clearCart();
+      if (isAuthenticated && user && user.email) {
+        // Clear in backend by email
+        await cartService.clearCart(user.email);
         setCartItems([]);
         toast.success('Cart cleared');
       } else {
         // Clear in local state
-    setCartItems([]);
+        setCartItems([]);
         toast.success('Cart cleared');
       }
     } catch (error) {
@@ -157,18 +155,18 @@ export const CartProvider = ({ children }) => {
   // Sync local cart with backend when user logs in
   useEffect(() => {
     const syncCart = async () => {
-      if (isAuthenticated && user) {
+      if (isAuthenticated && user && user.email) {
         try {
           const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
           if (localCart.length > 0) {
             // Add each local item to backend cart
             for (const item of localCart) {
-              await cartService.addToCart(item.id, item.quantity);
+              await cartService.addToCart(item.id, item.quantity, user.email);
             }
             // Clear local cart
             localStorage.removeItem('cart');
             // Load updated cart from backend
-            const cartData = await cartService.getCart();
+            const cartData = await cartService.getCart(user.email);
             setCartItems(cartData.items || []);
           }
         } catch (error) {
@@ -177,7 +175,6 @@ export const CartProvider = ({ children }) => {
         }
       }
     };
-
     syncCart();
   }, [isAuthenticated, user]);
 

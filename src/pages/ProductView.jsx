@@ -72,9 +72,29 @@ const ProductView = () => {
           return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
         })
         .map(img => config.fixImageUrl(img));
-      return validImages.length > 0 ? validImages : [config.fixImageUrl(product.image)];
+      
+      // Debug logging
+      console.log('Product:', product.name);
+      console.log('Original images array:', product.images);
+      console.log('Valid images after filtering:', validImages);
+      console.log('Using images array:', validImages.length > 0);
+      console.log('Fallback image would be:', config.fixImageUrl(product.image));
+      
+      // If we have valid images, use them; otherwise fallback to single image
+      if (validImages.length > 0) {
+        console.log('✅ Using images array for:', product.name);
+        return validImages;
+      }
     }
-    return [config.fixImageUrl(product.image)];
+    
+    // Debug logging for fallback case
+    console.log('Product:', product.name);
+    console.log('No valid images array, using fallback image:', product.image);
+    console.log('❌ Using fallback image for:', product.name);
+    
+    // Use the single image field as fallback
+    const fallbackImage = config.fixImageUrl(product.image);
+    return [fallbackImage];
   })();
 
   // Debug logging to check images
@@ -158,8 +178,15 @@ const ProductView = () => {
                   alt={product.name}
                   className="w-full h-full object-cover"
                   onError={e => {
+                    console.log('Image failed to load:', productImages[selectedImage]);
                     e.target.onerror = null;
-                    e.target.src = 'https://placehold.co/600x600/e2e8f0/475569?text=Product+Image';
+                    // Try fallback to product.image if different from current image
+                    if (productImages[selectedImage] !== config.fixImageUrl(product.image)) {
+                      e.target.src = config.fixImageUrl(product.image);
+                    } else {
+                      // Final fallback to placeholder
+                      e.target.src = 'https://placehold.co/600x600/e2e8f0/475569?text=Product+Image';
+                    }
                   }}
                 />
               </AnimatePresence>
