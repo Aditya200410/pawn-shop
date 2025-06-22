@@ -40,18 +40,15 @@ const config = {
       return imagePath;
     }
     
-    // If it's a local path starting with /pawnbackend/data/, convert to backend URL
-    if (imagePath.startsWith('/pawnbackend/data/')) {
-      return `${config.API_BASE_URL}${imagePath}`;
+    // If it's a path to a backend data file (e.g., in Rikocraft.com or just a filename)
+    if (imagePath.includes('Rikocraft.com') || !imagePath.includes('/')) {
+      // It's a backend file, so prefix with the backend URL and data path
+      const basePath = imagePath.startsWith('/pawnbackend/data/') ? '' : '/pawnbackend/data/';
+      return `${config.API_BASE_URL}${basePath}${imagePath}`;
     }
     
-    // If it's a relative path, assume it's from the backend
-    if (imagePath.startsWith('/')) {
-      return `${config.API_BASE_URL}${imagePath}`;
-    }
-    
-    // If it's just a filename, assume it's from the backend data directory
-    return `${config.API_BASE_URL}/pawnbackend/data/${imagePath}`;
+    // By default, assume it's a frontend public asset
+    return imagePath;
   },
   
   // Environment settings
