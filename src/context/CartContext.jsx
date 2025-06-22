@@ -54,8 +54,8 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (product) => {
     try {
       if (isAuthenticated) {
-        // Add to backend
-        const updatedCart = await cartService.addToCart(product._id, 1);
+        // Add to backend - use product.id from shop.json
+        const updatedCart = await cartService.addToCart(product.id, 1);
         setCartItems(updatedCart.items);
         toast.success('Item added to cart');
       } else {

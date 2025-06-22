@@ -400,15 +400,8 @@ const Account = () => {
                         <span className="font-medium text-gray-900">Edit Profile</span>
                       </motion.button>
                       
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setActiveTab('security')}
-                        className="flex items-center space-x-3 p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors"
-                      >
-                        <ShieldCheckIcon className="h-6 w-6 text-purple-600" />
-                        <span className="font-medium text-gray-900">Security Settings</span>
-                      </motion.button>
+                     
+                       
                     </div>
                   </div>
 
