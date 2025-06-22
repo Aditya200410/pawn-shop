@@ -31,7 +31,7 @@ export default function ContactPage() {
         >
           <h2 className="text-2xl font-semibold text-[#8B4513] mb-4">Contact Info</h2>
           <p className="text-gray-700 mb-6 leading-relaxed">
-            Srejonee would like to thank you for showing your interest in us. Don’t hesitate to
+            Rikocraft would like to thank you for showing your interest in us. Don’t hesitate to
             contact us today if you have any questions. You can also get in touch to know about
             our services or to tell us about your needs. Drop an email or call us anytime you want
             our attention. We won’t keep you waiting long!
@@ -41,31 +41,27 @@ export default function ContactPage() {
             <div>
               <h3 className="font-semibold text-lg text-gray-800">Address:</h3>
               <p className="text-gray-700">
-                M/S Srejonee Art & Creations<br />
-                623 Active Business Park<br />
-                54/10 D C Dey Road<br />
-                Tangra, Kolkata – 700015<br />
-                West Bengal, India
+              Jamshedpur, Jharkhand-831004
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-lg text-gray-800">Email:</h3>
               <a
-                href="mailto:srejonee@gmail.com"
+                href="mailto:Info@Rikocraft.com"
                 className="text-[#8B4513] underline"
               >
-                srejonee@gmail.com
+               Info@Rikocraft.com
               </a>
             </div>
 
             <div>
               <h3 className="font-semibold text-lg text-gray-800">Phone no.:</h3>
               <a
-                href="tel:+917439906048"
+                href="tel:9183406246358"
                 className="text-[#8B4513] underline"
               >
-                +91 74399 06048
+                +91 +918340624635
               </a>
             </div>
           </div>

@@ -18,6 +18,24 @@ const orderService = {
   },
 
   /**
+   * Fetch a single order by its ID.
+   * @param {string} orderId - The ID of the order.
+   * @returns {Promise<object>} The server response containing the order.
+   */
+  getOrderById: async (orderId) => {
+    if (!orderId) {
+      throw new Error('Order ID is required to fetch an order.');
+    }
+    try {
+      const response = await axios.get(`${config.API_URLS.ORDERS}/${orderId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order by ID:', error.response?.data || error.message);
+      throw error.response?.data || new Error('Failed to fetch order');
+    }
+  },
+
+  /**
    * Fetch orders for a specific user by email.
    * @param {string} email - The user's email.
    * @returns {Promise<object>} The server response containing the orders.

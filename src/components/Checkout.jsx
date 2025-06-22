@@ -86,10 +86,10 @@ export default function Checkout() {
 
     try {
       const response = await orderService.createOrder(orderData);
-      if (response.success) {
+      if (response.success && response.order?._id) {
         toast.success('Order placed successfully!');
         await clearCart();
-        navigate('/account?tab=orders');
+        navigate(`/order-confirmation/${response.order._id}`);
       } else {
         throw new Error(response.message || 'Failed to place order.');
       }

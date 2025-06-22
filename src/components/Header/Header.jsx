@@ -8,6 +8,7 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import logo from '/logo.png';
 import config from '../../config/config.js';
+import axios from 'axios';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,6 +27,7 @@ const Header = () => {
   const location = useLocation();
   const { cartItems } = useCart();
   const { user } = useAuth();
+  const [dynamicCategories, setDynamicCategories] = useState([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,6 +96,17 @@ const Header = () => {
         setSearchLoading(false);
       });
   }, [searchQuery]);
+
+  // Fetch categories for mobile menu
+  useEffect(() => {
+    axios.get(config.API_URLS.CATEGORIES)
+      .then(response => {
+        setDynamicCategories(response.data.categories || []);
+      })
+      .catch(error => {
+        console.error("Failed to fetch categories for mobile menu:", error);
+      });
+  }, []);
 
   const handleCategoryClick = (category, subcategory = null, item = null) => {
     navigate('/shop', {
@@ -240,8 +253,8 @@ const Header = () => {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-10 text-sm">
               <div className="flex items-center space-x-6">
-                <a href="tel:+911234567890" className="text-gray-600 hover:text-orange-600">
-                  +91 1234567890
+                <a href="tel:+9183406246350" className="text-gray-600 hover:text-orange-600">
+                +918340624635
                 </a>
                 <a href="mailto:info@rikocraft.com" className="text-gray-600 hover:text-orange-600">
                   info@rikocraft.com
@@ -431,147 +444,91 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* New Mobile Menu Overlay */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <>
               {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="fixed inset-0 bg-black/50 md:hidden z-[100]"
+                className="fixed inset-0 bg-black/50 z-[20000]"
               />
               
               {/* Menu Panel */}
-            <motion.div
-                initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-                exit={{ x: '-100%' }}
-                transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-                className="fixed top-0 left-0 w-[85%] max-w-sm h-full bg-white shadow-xl md:hidden z-[100] overflow-y-auto"
+              <motion.div
+                variants={mobileMenuVariants}
+                initial="closed"
+                animate="open"
+                exit="closed"
+                className="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[20001] flex flex-col"
               >
-                <div className="flex flex-col h-full">
-                  {/* Menu Header */}
-                  <div className="p-6 border-b">
-                    <div className="flex items-center justify-between mb-6 relative">
-                <button
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-gray-600 hover:text-orange-600 transition-colors absolute right-0"
-                >
-                        <X size={24} />
-                </button>
-                      <Link to="/" className="mx-auto" onClick={() => setIsMobileMenuOpen(false)}>
-                        <img src={logo} alt="Riko Craft" className="h-12 w-auto" />
-                      </Link>
-              </div>
+                {/* Menu Header */}
+                <div className="flex items-center justify-between p-4 border-b">
+                  <span className="font-semibold">Menu</span>
+                  <button onClick={() => setIsMobileMenuOpen(false)} className="p-1">
+                    <X size={24} />
+                  </button>
+                </div>
 
-                    {/* Quick Actions */}
-                    <div className="space-y-4">
-                      {/* User Greeting */}
-                      {user ? (
-                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                          <div className="flex items-center space-x-3">
-                            <User size={24} className="text-orange-600" />
-                            <div>
-                              <p className="font-medium text-orange-800">Hi, {user.name}</p>
-                              <p className="text-sm text-orange-600">{user.email}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : null}
-                      
-                      <Link
-                        to="/cart"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                        <div className="flex items-center space-x-3">
-                          <ShoppingCart size={24} className="text-orange-600" />
-                          <span className="font-medium">Shopping Cart</span>
-                        </div>
-                        {cartItems.length > 0 && (
-                          <span className="bg-orange-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
-                            {cartItems.length}
-                          </span>
-                        )}
-                      </Link>
-                      {user ? (
-                        <Link
-                          to="/account"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center justify-center w-full px-4 py-3 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
-                        >
-                          My Account
-                        </Link>
-                      ) : (
-                        <Link
-                          to="/login"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center justify-center w-full px-4 py-3 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
-                        >
-                          Login / Register
-                        </Link>
-                      )}
-                    </div>
+                {/* Menu Content */}
+                <div className="flex-grow overflow-y-auto p-4">
+                  {/* Search Bar */}
+                  <form onSubmit={handleSearch} className="mb-4">
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                    />
+                  </form>
+
+                  {/* Categories Section */}
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-lg mb-2">Categories</h3>
+                    <ul className="space-y-2">
+                      {dynamicCategories.map(category => (
+                        <li key={category.id}>
+                          <button 
+                            onClick={() => handleCategoryClick(category.name)}
+                            className="w-full text-left text-gray-700 hover:text-orange-600"
+                          >
+                            {category.name}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  {/* Menu Items */}
-                  <nav className="flex-1 p-6">
-                    <ul className="space-y-6">
-                      <li>
-                        <Link
-                          to="/"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="block text-lg font-medium text-gray-600 hover:text-orange-600 transition-colors"
-                        >
-                          Home
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/shop"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="block text-lg font-medium text-gray-600 hover:text-orange-600 transition-colors"
-                        >
-                          Shop
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/story"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="block text-lg font-medium text-gray-600 hover:text-orange-600 transition-colors"
-                        >
-                          Story
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/contact"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="block text-lg font-medium text-gray-600 hover:text-orange-600 transition-colors"
-                        >
-                          Contact
-                        </Link>
-                                  </li>
-                              </ul>
-                  </nav>
-
-                  {/* Menu Footer */}
-                  <div className="p-6 border-t">
-                    <div className="flex items-center space-x-4">
-                      <Link to="/account" className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors">
-                        <User size={20} />
-                        <span>Account</span>
-                      </Link>
-                      </div>
+                  {/* Other Links */}
+                  <div className="border-t pt-4">
+                    <ul className="space-y-2">
+                      <li><Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-orange-600">Home</Link></li>
+                      <li><Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-orange-600">Shop</Link></li>
+                      <li><Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-orange-600">About Us</Link></li>
+                      <li><Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-orange-600">Contact Us</Link></li>
+                    </ul>
                   </div>
-              </div>
-            </motion.div>
+                </div>
+
+                {/* Menu Footer */}
+                <div className="p-4 border-t">
+                  {user ? (
+                    <Link to="/account" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-gray-700 hover:text-orange-600">
+                      <User size={20} /> My Account
+                    </Link>
+                  ) : (
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-gray-700 hover:text-orange-600">
+                      <User size={20} /> Login / Register
+                    </Link>
+                  )}
+                </div>
+              </motion.div>
             </>
-        )}
+          )}
         </AnimatePresence>
       </header>
 

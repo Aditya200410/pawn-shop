@@ -28,6 +28,8 @@ import Checkout from './pages/Checkout';
 import Toast from './components/Toast/Toast';
 import ForgetPassword from './pages/ForgotPassword';
 import AboutUs from './pages/AboutUs';
+import Contact from './pages/Contact';
+import OrderConfirmation from './pages/OrderConfirmation';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -137,7 +139,7 @@ function AppContent() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/story" element={<Story />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -145,9 +147,9 @@ function AppContent() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
         <Route path="/product/:id" element={<ProductView />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
-
       </Routes>
       <Footer />
       <ScrollToTop />
