@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Menu, X, ChevronDown, Search, User, Heart, Home, ShoppingCart } from 'lucide-react';
@@ -7,12 +7,19 @@ import { categories } from '../../data/categories';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import logo from '/logo.png';
+import config from '../../config/config.js';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
+  const searchInputRef = useRef(null);
+  const searchBarRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { cartItems } = useCart();
@@ -26,6 +33,60 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+    // Close on outside click
+    const handleClickOutside = (e) => {
+      if (isSearchOpen && searchBarRef.current && !searchBarRef.current.contains(e.target)) {
+        setIsSearchOpen(false);
+        setSearchResults([]);
+        setSearchQuery('');
+      }
+    };
+    // Close on Esc
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+        setSearchResults([]);
+        setSearchQuery('');
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEsc);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [isSearchOpen]);
+
+  // Search products as user types
+  useEffect(() => {
+    if (!isSearchOpen || !searchQuery.trim()) {
+      setSearchResults([]);
+      setSearchError(null);
+      return;
+    }
+    setSearchLoading(true);
+    setSearchError(null);
+    fetch(config.API_URLS.SHOP)
+      .then(res => res.json())
+      .then(data => {
+        const q = searchQuery.trim().toLowerCase();
+        const results = data.filter(p =>
+          (p.name && p.name.toLowerCase().includes(q)) ||
+          (p.description && p.description.toLowerCase().includes(q))
+        );
+        setSearchResults(results);
+        setSearchLoading(false);
+      })
+      .catch(err => {
+        setSearchError('Failed to fetch products');
+        setSearchLoading(false);
+      });
+  }, [searchQuery, isSearchOpen]);
 
   const handleCategoryClick = (category, subcategory = null, item = null) => {
     navigate('/shop', {
@@ -46,6 +107,20 @@ const Header = () => {
       navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setIsMobileMenuOpen(false);
     }
+  };
+
+  const handleSearchIconClick = () => {
+    setIsSearchOpen((prev) => !prev);
+    setSearchQuery('');
+    setSearchResults([]);
+    setSearchError(null);
+  };
+
+  const handleResultClick = (id) => {
+    setIsSearchOpen(false);
+    setSearchResults([]);
+    setSearchQuery('');
+    navigate(`/product/${id}`);
   };
 
   const isActive = (path) => location.pathname === path;
@@ -78,6 +153,77 @@ const Header = () => {
 
   return (
     <>
+      {/* Animated Search Bar Overlay */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial={{ y: -60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -60, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            className="fixed top-0 left-0 w-full z-[20000] bg-white shadow-lg border-b border-gray-200 px-4 py-3 flex flex-col items-center"
+            ref={searchBarRef}
+          >
+            <form onSubmit={handleSearch} className="w-full max-w-2xl relative flex">
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-4 pr-12 py-2 border border-gray-200 rounded-full text-base focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent shadow-sm"
+              />
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors"
+              >
+                <Search size={20} />
+              </button>
+            </form>
+            {/* Results Dropdown */}
+            <div className="w-full max-w-2xl mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+              {searchLoading && (
+                <div className="flex items-center justify-center py-6 text-orange-600">
+                  <svg className="w-6 h-6 animate-spin mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                  </svg>
+                  Loading...
+                </div>
+              )}
+              {searchError && (
+                <div className="py-6 text-center text-red-500">{searchError}</div>
+              )}
+              {!searchLoading && !searchError && searchResults.length > 0 && (
+                <ul>
+                  {searchResults.slice(0, 8).map(product => (
+                    <li
+                      key={product.id}
+                      className="flex items-center px-4 py-3 hover:bg-orange-50 cursor-pointer transition-colors border-b last:border-b-0"
+                      onClick={() => handleResultClick(product.id)}
+                    >
+                      <img
+                        src={config.fixImageUrl(product.image)}
+                        alt={product.name}
+                        className="w-12 h-12 object-cover rounded-lg mr-4 border"
+                      />
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">{product.name}</div>
+                        <div className="text-sm text-gray-500 truncate">{product.description}</div>
+                      </div>
+                      <div className="ml-4 text-orange-600 font-semibold whitespace-nowrap">₹{product.price}</div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {!searchLoading && !searchError && searchQuery && searchResults.length === 0 && (
+                <div className="py-6 text-center text-gray-500">No products found.</div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <header className={`w-full z-[10000] transition-all duration-300 ${
         isScrolled ? 'bg-white shadow-md' : 'bg-white shadow-md'
       }`}>
@@ -183,10 +329,10 @@ const Header = () => {
 
             {/* Desktop Icons */}
             <div className="hidden md:flex items-center space-x-6">
+              {/* Remove search icon from desktop */}
               {user ? (
                 <div className="flex items-center space-x-4">
                   <div className="text-sm text-gray-600">
-                    <span className="font-medium">Hi, {user.name}</span>
                   </div>
                   <Link to="/account" className="text-gray-600 hover:text-orange-600 transition-colors">
                     <User size={20} />
@@ -222,18 +368,14 @@ const Header = () => {
               )}
             </div>
 
-            {/* Mobile Cart Icon - Right */}
-            <Link 
-              to="/cart" 
-              className="md:hidden text-gray-600 hover:text-orange-600 transition-colors relative"
+            {/* Mobile Search Icon (Top Right) */}
+            <button
+              onClick={handleSearchIconClick}
+              className="md:hidden text-gray-600 hover:text-orange-600 transition-colors"
+              aria-label="Open search"
             >
-              <ShoppingCart size={24} />
-              {cartItems.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartItems.length}
-                </span>
-              )}
-            </Link>
+              <Search size={24} />
+            </button>
           </div>
         </div>
 

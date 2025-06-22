@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon, Star } from 'lucide-react';
+import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon, Star, Mail, MapPin } from 'lucide-react';
 
 const footerVariants = {
   hidden: {},
@@ -59,6 +59,35 @@ export default function Footer() {
                   </div>
                   <span className="text-sm text-gray-100">4.5/5</span>
                   <span className="text-sm text-gray-200">Based on 374 reviews</span>
+                </div>
+
+                {/* Contact Details */}
+                <div className="mb-4">
+                  <h4 className="text-base font-semibold text-white mb-3">Contact Details</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Mail className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                      <div className="text-sm text-gray-100">
+                        <a href="mailto:Info@Rikocraft.com" className="hover:text-amber-500 transition-colors duration-300">
+                          Info@Rikocraft.com
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Mail className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                      <div className="text-sm text-gray-100">
+                        <a href="mailto:Care@Rikocraft.com" className="hover:text-amber-500 transition-colors duration-300">
+                          Care@Rikocraft.com
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <MapPin className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm text-gray-100">
+                        Jamshedpur, Jharkhand - 831004
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Social Media Links - Mobile Only */}
@@ -228,4 +257,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-} 
+}

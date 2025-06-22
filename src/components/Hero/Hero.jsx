@@ -6,8 +6,8 @@ const slides = [
   {
     id: 1,
     image: '/image1.png',
-    title: 'Discover Handcrafted Treasures',
-    description: 'Explore our collection of authentic Bengali handicrafts, each piece telling a unique story of tradition and artistry.',
+    title: ' Support the rural artisans of India',
+    description: 'keeping alive 1000-year-old heritage art is not just our work, its our duty, let Rikocraft take the journey from village to city, delivering heritage to your home.',
     cta: 'Shop Collection'
   },
   {
@@ -40,7 +40,7 @@ export default function Hero() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 

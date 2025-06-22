@@ -37,8 +37,6 @@ const ProductView = () => {
   ]);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [productImages, setProductImages] = useState([]);
-  const [imagesLoading, setImagesLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -60,39 +58,16 @@ const ProductView = () => {
     fetchProduct();
   }, [id, navigate]);
 
-  useEffect(() => {
-    const fetchProductImages = async () => {
-      if (!product) return;
-      
-      try {
-        setImagesLoading(true);
-        const res = await fetch(`${config.API_URLS.SHOP}/${product.id}/images`);
-        if (!res.ok) throw new Error('Failed to fetch product images');
-        const data = await res.json();
-        
-        // Fix image URLs and add fallback to main product image
-        const fixedImages = data.images.map(img => config.fixImageUrl(img));
-        
-        // If no additional images found, use the main product image
-        if (fixedImages.length === 0) {
-          setProductImages([config.fixImageUrl(product.image)]);
-        } else {
-          setProductImages(fixedImages);
-        }
-      } catch (err) {
-        console.error('Error fetching product images:', err);
-        // Fallback to main product image
-        setProductImages([config.fixImageUrl(product.image)]);
-      } finally {
-        setImagesLoading(false);
-      }
-    };
-    
-    fetchProductImages();
-  }, [product]);
-
   if (loading) return <div>Loading...</div>;
   if (!product) return null;
+
+  // Generate multiple images for the product (in a real app, these would come from the backend)
+  const productImages = [
+    config.fixImageUrl(product.image),
+    config.fixImageUrl(product.image),
+    config.fixImageUrl(product.image),
+    config.fixImageUrl(product.image),
+  ];
 
   const handleQuantityChange = (value) => {
     if (value >= 1) {
@@ -159,11 +134,6 @@ const ProductView = () => {
             className="lg:col-span-5 space-y-6"
           >
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 group shadow-lg">
-              {imagesLoading ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-                </div>
-              ) : (
               <AnimatePresence mode="wait">
                 <motion.img
                   key={selectedImage}
@@ -174,13 +144,12 @@ const ProductView = () => {
                   src={productImages[selectedImage]}
                   alt={product.name}
                   className="w-full h-full object-cover"
-                    onError={e => {
-                      e.target.onerror = null;
-                      e.target.src = 'https://placehold.co/600x600/e2e8f0/475569?text=Product+Image';
-                    }}
+                  onError={e => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://placehold.co/600x600/e2e8f0/475569?text=Product+Image';
+                  }}
                 />
               </AnimatePresence>
-              )}
               {product.outOfStock && (
                 <motion.div 
                   initial={{ opacity: 0, y: -10 }}
@@ -191,9 +160,7 @@ const ProductView = () => {
                 </motion.div>
               )}
               
-              {/* Navigation Arrows - Only show if there are multiple images */}
-              {productImages.length > 1 && (
-                <>
+              {/* Navigation Arrows */}
               <motion.button
                 initial={{ opacity: 0, x: -10 }}
                 whileHover={{ x: -5 }}
@@ -221,12 +188,8 @@ const ProductView = () => {
               >
                 {selectedImage + 1} / {productImages.length}
               </motion.div>
-                </>
-              )}
             </div>
             
-            {/* Thumbnail Images - Only show if there are multiple images */}
-            {productImages.length > 1 && (
             <div className="grid grid-cols-4 gap-4">
               {productImages.map((image, index) => (
                 <motion.button
@@ -242,17 +205,16 @@ const ProductView = () => {
                 >
                   <img 
                     src={image} 
-                      alt={`${product.name} - Image ${index + 1}`}
+                    alt={`${product.name} - Image ${index + 1}`}
                     className="w-full h-full object-cover" 
-                      onError={e => {
-                        e.target.onerror = null;
-                        e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Image';
-                      }}
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Image';
+                    }}
                   />
                 </motion.button>
               ))}
             </div>
-            )}
           </motion.div>
 
           {/* Product Details - Right Side */}
@@ -603,7 +565,7 @@ const ProductView = () => {
         {/* Related Products */}
         <div className="mt-16">
           <h3 className="text-2xl font-bold text-gray-900 mb-8">You Might Also Like</h3>
-          <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <MostLoved />
           </div>
           </div>
