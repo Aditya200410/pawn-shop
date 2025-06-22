@@ -32,27 +32,22 @@ const testimonials = [
   },
 ];
 
+// Simplified animations for better performance
 const slideVariants = {
   hidden: (direction) => ({
     x: direction > 0 ? '100%' : '-100%',
     opacity: 0,
-    scale: 0.8,
-    rotateY: direction > 0 ? 15 : -15,
-    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
+    transition: { duration: 0.4, ease: 'easeInOut' }
   }),
   visible: {
     x: 0,
     opacity: 1,
-    scale: 1,
-    rotateY: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
+    transition: { duration: 0.4, ease: 'easeInOut' }
   },
   exit: (direction) => ({
     x: direction < 0 ? '100%' : '-100%',
     opacity: 0,
-    scale: 0.8,
-    rotateY: direction < 0 ? 15 : -15,
-    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
+    transition: { duration: 0.4, ease: 'easeInOut' }
   }),
 };
 
@@ -74,24 +69,22 @@ export default function Testimonials() {
 
   return (
     <section className="py-8 md:py-12 lg:py-16 relative overflow-hidden">
-      {/* Background Elements */}
+      {/* Simplified Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-amber-50/30 via-white to-rose-50/30"></div>
-      <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-amber-200/20 to-orange-200/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-rose-200/20 to-pink-200/20 rounded-full blur-3xl"></div>
       
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
           className="text-center mb-6 md:mb-8 lg:mb-10"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-2 rounded-full mb-3 md:mb-4"
           >
             <Sparkles className="w-4 h-4 text-amber-600" />
@@ -106,7 +99,8 @@ export default function Testimonials() {
           </p>
         </motion.div>
 
-        <div className="relative max-w-4xl mx-auto h-[300px] md:h-[350px] lg:h-[400px] flex items-center justify-center">
+        {/* Improved container with better spacing for arrows */}
+        <div className="relative max-w-4xl mx-auto h-[350px] md:h-[400px] lg:h-[450px] flex items-center justify-center px-12 md:px-16 lg:px-20">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={current}
@@ -115,25 +109,25 @@ export default function Testimonials() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="absolute w-full perspective-1000"
+              className="absolute w-full"
             >
               <div className="relative">
-                {/* Main Card */}
-                <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-3xl p-4 md:p-6 lg:p-8 shadow-2xl shadow-amber-500/10">
+                {/* Main Card with improved padding for mobile */}
+                <div className="bg-white/90 backdrop-blur-sm border border-white/40 rounded-2xl p-5 md:p-6 lg:p-8 shadow-lg">
                   {/* Quote Icon */}
-                  <div className="absolute -top-3 -left-3 w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Quote className="w-5 h-5 text-white" />
+                  <div className="absolute -top-2 -left-2 w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
+                    <Quote className="w-4 h-4 md:w-5 md:h-5 text-white" />
                   </div>
                   
                   {/* Category Badge */}
-                  <div className="absolute top-4 right-4">
-                    <span className="px-3 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 text-xs font-medium rounded-full">
+                  <div className="absolute top-3 right-3 md:top-4 md:right-4">
+                    <span className="px-2 py-1 md:px-3 md:py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 text-xs font-medium rounded-full">
                       {testimonial.category}
                     </span>
                   </div>
                   
-                  {/* Testimonial Text */}
-                  <blockquote className="text-gray-700 text-sm md:text-base lg:text-lg leading-relaxed mb-4 md:mb-6 mt-3 font-light italic">
+                  {/* Testimonial Text with better mobile spacing */}
+                  <blockquote className="text-gray-700 text-sm md:text-base lg:text-lg leading-relaxed mb-4 md:mb-6 mt-2 md:mt-3 font-light italic pr-2">
                     "{testimonial.text}"
                   </blockquote>
 
@@ -144,10 +138,10 @@ export default function Testimonials() {
                         <img 
                           src={testimonial.image} 
                           alt={testimonial.name}
-                          className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-2xl object-cover border-4 border-white shadow-lg"
+                          className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-xl object-cover border-2 border-white shadow-md"
                         />
-                        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                          <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-white rounded-full"></div>
                         </div>
                       </div>
                       <div className="ml-3">
@@ -168,36 +162,17 @@ export default function Testimonials() {
                     </div>
                   </div>
                 </div>
-
-                {/* Decorative Elements */}
-                <div className="absolute -bottom-3 -right-3 w-20 h-20 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-2xl blur-xl"></div>
-                <div className="absolute -top-3 -left-3 w-12 h-12 bg-gradient-to-br from-rose-200/30 to-pink-200/30 rounded-xl blur-lg"></div>
               </div>
             </motion.div>
           </AnimatePresence>
 
-          {/* Navigation Buttons */}
-          <motion.button 
-            whileHover={{ scale: 1.1, x: -5 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => paginate(-1)} 
-            className="absolute top-1/2 -translate-y-1/2 -left-4 z-10 p-3 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:bg-white group"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-700 group-hover:text-amber-600 transition-colors" />
-          </motion.button>
-          
-          <motion.button 
-            whileHover={{ scale: 1.1, x: 5 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => paginate(1)} 
-            className="absolute top-1/2 -translate-y-1/2 -right-4 z-10 p-3 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:bg-white group"
-          >
-            <ArrowRight className="w-5 h-5 text-gray-700 group-hover:text-amber-600 transition-colors" />
-          </motion.button>
+          {/* Navigation Buttons - positioned outside content area */}
+         
+         
         </div>
 
         {/* Enhanced Dots */}
-        <div className="flex justify-center items-center gap-3 mt-6 md:mt-8">
+        <div className="flex justify-center items-center gap-2 md:gap-3 mt-6 md:mt-8">
           {testimonials.map((_, index) => (
             <motion.button
               key={index}
@@ -205,20 +180,20 @@ export default function Testimonials() {
               className={`relative group ${
                 current === index ? 'scale-110' : 'scale-100'
               }`}
-              whileHover={{ scale: 1.2 }}
+              whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              <div className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
                 current === index 
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg' 
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 shadow-md' 
                   : 'bg-gray-300 group-hover:bg-gray-400'
               }`} />
               {current === index && (
                 <motion.div
                   layoutId="activeDot"
-                  className="absolute inset-0 w-3 h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
+                  className="absolute inset-0 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
                   initial={false}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 />
               )}
             </motion.button>
