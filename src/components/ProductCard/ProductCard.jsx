@@ -78,13 +78,13 @@ const ProductCard = ({ product }) => {
           {/* Price */}
           <div className="space-y-1">
             <span className={`font-bold text-gray-900 transition-colors duration-300 ease-in-out group-hover:text-amber-600 ${isMobile ? 'text-sm' : 'text-lg'}`}>₹{product.price.toFixed(2)}</span>
-            {product.originalPrice && product.originalPrice > product.price && (
+            {product.regularPrice && product.regularPrice > product.price && (
               <div className="flex items-center gap-2">
-                <span className={`text-gray-400 line-through ${isMobile ? 'text-xs' : 'text-sm'}`}>₹{product.originalPrice.toFixed(2)}</span>
+                <span className={`text-gray-400 line-through ${isMobile ? 'text-xs' : 'text-sm'}`}>₹{product.regularPrice.toFixed(2)}</span>
                 <span className={`bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium transform transition-transform duration-300 ease-in-out group-hover:scale-105 ${
                   isMobile ? 'text-xs px-1 py-0.5' : 'text-xs'
                 }`}>
-                  {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                  {Math.round(((product.regularPrice - product.price) / product.regularPrice) * 100)}% OFF
                 </span>
               </div>
             )}

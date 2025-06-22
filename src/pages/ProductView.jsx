@@ -251,9 +251,7 @@ const ProductView = () => {
                     }`}
                   />
                 ))}
-                  <span className="ml-2 text-sm text-gray-600">
-                    {averageRating.toFixed(1)} ({reviews.length} reviews)
-                  </span>
+                 
                 </div>
               </div>
             </div>
@@ -264,21 +262,21 @@ const ProductView = () => {
                 <span className="text-4xl font-bold text-gray-900">
                   ₹{product.price.toFixed(2)}
                 </span>
-                {product.originalPrice && product.originalPrice > product.price && (
+                {product.regularPrice && product.regularPrice > product.price && (
                   <>
                     <span className="text-2xl text-gray-400 line-through">
-                      ₹{product.originalPrice.toFixed(2)}
+                      ₹{product.regularPrice.toFixed(2)}
                     </span>
                     <span className="px-3 py-1 bg-red-100 text-red-600 text-sm font-medium rounded-full">
-                      {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                      {Math.round(((product.regularPrice - product.price) / product.regularPrice) * 100)}% OFF
                     </span>
                   </>
                 )}
               </div>
               
-              {product.originalPrice && product.originalPrice > product.price && (
+              {product.regularPrice && product.regularPrice > product.price && (
                 <p className="text-sm text-gray-600">
-                  You save ₹{(product.originalPrice - product.price).toFixed(2)}
+                  You save ₹{(product.regularPrice - product.price).toFixed(2)}
                 </p>
               )}
             </div>
@@ -299,12 +297,7 @@ const ProductView = () => {
                   <span className="text-sm text-gray-500">Size</span>
                   <p className="font-medium">{product.size}</p>
                 </div>
-                {product.font && (
-                  <div>
-                    <span className="text-sm text-gray-500">Font</span>
-                    <p className="font-medium">{product.font}</p>
-                  </div>
-                )}
+               
               </div>
             </div>
 
@@ -374,7 +367,8 @@ const ProductView = () => {
                 <nav className="flex space-x-8">
               {[
                 { id: 'description', label: 'Description' },
-                { id: 'reviews', label: `Reviews (${reviews.length})` },
+                { id: 'specifications', label: 'Specifications' },
+               
                 { id: 'shipping', label: 'Shipping & Returns' },
               ].map((tab) => (
                 <button
@@ -430,6 +424,110 @@ const ProductView = () => {
                   </div>
                 </motion.div>
                   )}
+
+              {activeTab === 'specifications' && (
+                <motion.div
+                  key="specifications"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-8"
+                >
+                  {/* Basic Information */}
+                  <div className="bg-gray-50 p-6 rounded-xl">
+                    <h4 className="font-semibold text-gray-900 mb-4">Basic Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     
+                      <div>
+                        <span className="text-sm text-gray-500">Product Name</span>
+                        <p className="font-medium text-gray-900">{product.name}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Category</span>
+                        <p className="font-medium text-gray-900">{product.category}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Subcategory</span>
+                        <p className="font-medium text-gray-900">{product.subcategory || 'N/A'}</p>
+                      </div>
+                     
+                    </div>
+                  </div>
+
+                  {/* Pricing Information */}
+                  <div className="bg-gray-50 p-6 rounded-xl">
+                    <h4 className="font-semibold text-gray-900 mb-4">Pricing Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <span className="text-sm text-gray-500">Current Price</span>
+                        <p className="font-bold text-2xl text-gray-900">₹{product.price?.toFixed(2) || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Regular Price</span>
+                        <p className="font-medium text-lg text-gray-600 line-through">₹{product.regularPrice?.toFixed(2) || 'N/A'}</p>
+                      </div>
+                      {product.regularPrice && product.regularPrice > product.price && (
+                        <div>
+                          <span className="text-sm text-gray-500">Discount</span>
+                          <p className="font-medium text-lg text-red-600">
+                            {Math.round(((product.regularPrice - product.price) / product.regularPrice) * 100)}% OFF
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Physical Specifications */}
+                  <div className="bg-gray-50 p-6 rounded-xl">
+                    <h4 className="font-semibold text-gray-900 mb-4">Physical Specifications</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-sm text-gray-500">Color</span>
+                        <p className="font-medium text-gray-900">{product.color || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Size</span>
+                        <p className="font-medium text-gray-900">{product.size || 'N/A'}</p>
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                 
+
+                  {/* Stock Information */}
+                  <div className="bg-gray-50 p-6 rounded-xl">
+                    <h4 className="font-semibold text-gray-900 mb-4">Stock Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-sm text-gray-500">Stock Status</span>
+                        <div className="flex items-center gap-2">
+                          {product.inStock ? (
+                            <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                              In Stock
+                            </span>
+                          ) : (
+                            <span className="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">
+                              Out of Stock
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                       </div>
+                    </div>
+                  </div>
+
+                  {/* Product Description */}
+                  <div className="bg-gray-50 p-6 rounded-xl">
+                    <h4 className="font-semibold text-gray-900 mb-4">Product Description</h4>
+                    <p className="text-gray-700 leading-relaxed">{product.description || 'No description available.'}</p>
+                  </div>
+
+                 
+                </motion.div>
+              )}
 
               {activeTab === 'reviews' && (
                           <motion.div 
@@ -565,7 +663,7 @@ const ProductView = () => {
         {/* Related Products */}
         <div className="mt-16">
           <h3 className="text-2xl font-bold text-gray-900 mb-8">You Might Also Like</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div>
             <MostLoved />
           </div>
           </div>
