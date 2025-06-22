@@ -61,13 +61,10 @@ const ProductView = () => {
   if (loading) return <div>Loading...</div>;
   if (!product) return null;
 
-  // Generate multiple images for the product (in a real app, these would come from the backend)
-  const productImages = [
-    config.fixImageUrl(product.image),
-    config.fixImageUrl(product.image),
-    config.fixImageUrl(product.image),
-    config.fixImageUrl(product.image),
-  ];
+  // Use product.images array if available, otherwise fallback to single image
+  const productImages = (product.images && product.images.length > 0)
+    ? product.images.map(img => config.fixImageUrl(img))
+    : [config.fixImageUrl(product.image)];
 
   const handleQuantityChange = (value) => {
     if (value >= 1) {
