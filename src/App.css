@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.logo-container {
+    padding: 10px; /* Add padding around the logo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logo {
+    max-width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    display: block;
+    max-height: 120px; /* Adjust max-height as needed */
+  }

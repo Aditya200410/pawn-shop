@@ -5,21 +5,21 @@ import { Link } from 'react-router-dom';
 const slides = [
   {
     id: 1,
-    image: '/image1.png',
+    image: 'https://t4.ftcdn.net/jpg/05/27/71/81/360_F_527718147_x7XDK929xZnZqjgh0oPYz7xK0EvtnlIF.jpg',
     title: ' Support the rural artisans of India',
     description: 'keeping alive 1000-year-old heritage art is not just our work, its our duty, let Rikocraft take the journey from village to city, delivering heritage to your home.',
     cta: 'Shop Collection'
   },
   {
     id: 2,
-    image: '/image.png',
+    image: 'https://mudkart.com/cdn/shop/files/1920X800_BANNER-05_1_7cf92773-da17-48be-8a66-f5fea894f5df.jpg?v=1721114175&width=3840',
     title: 'Artisanal Excellence',
     description: 'From terracotta to metalwork, experience the finest craftsmanship passed down through generations.',
     cta: 'View Gallery'
   },
   {
     id: 3,
-    image: '/image1.png',
+    image: 'https://theheritageartifacts.com/cdn/shop/collections/ebb34276e046f0459f7e237be00d42dc.jpg?v=1678684828',
     title: 'Heritage Meets Modern',
     description: 'Where traditional Bengali artistry meets contemporary design, creating timeless pieces for your home.',
     cta: 'Learn More'

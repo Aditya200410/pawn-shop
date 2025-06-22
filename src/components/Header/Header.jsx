@@ -28,6 +28,7 @@ const Header = () => {
   const { cartItems } = useCart();
   const { user } = useAuth();
   const [dynamicCategories, setDynamicCategories] = useState([]);
+  const [activeMobileTab, setActiveMobileTab] = useState('menu');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -245,48 +246,34 @@ const Header = () => {
         )}
       </AnimatePresence>
 
-      <header className={`w-full z-[10000] transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md' : 'bg-white shadow-md'
-      }`}>
+      <header 
+        className={`w-full z-[10000] transition-all duration-300`}
+        style={{ 
+          backgroundImage: "url('/footer.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
         {/* Top Bar - Desktop Only */}
-        <div className="hidden md:block border-b border-gray-100">
+        <div className="hidden md:block border-b border-white/20">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-10 text-sm">
               <div className="flex items-center space-x-6">
-                <a href="tel:+9183406246350" className="text-gray-600 hover:text-orange-600">
-                +918340624635
+                <a href="tel:+911234567890" className="text-white/80 hover:text-white">
+                  +91 1234567890
                 </a>
-                <a href="mailto:info@rikocraft.com" className="text-gray-600 hover:text-orange-600">
+                <a href="mailto:info@rikocraft.com" className="text-white/80 hover:text-white">
                   info@rikocraft.com
                 </a>
               </div>
               <div className="flex items-center space-x-6">
-               
-                <Link to="/faq" className="text-gray-600 hover:text-orange-600">
-                  FAQ
-                </Link>
-                <Link to="/about" className="text-gray-600 hover:text-orange-600">
-                  About us
-                </Link>
-                <Link to="/contact" className="text-gray-600 hover:text-orange-600">
-                  Contact us
-                </Link>
-                <div className="flex items-center space-x-4 pl-4 border-l border-gray-200">
-                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                    <FaFacebookF className="w-4 h-4" />
-                  </a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                    <FaTwitter className="w-4 h-4" />
-                  </a>
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                    <FaInstagram className="w-4 h-4" />
-                  </a>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                    <FaLinkedinIn className="w-4 h-4" />
-                  </a>
-                  <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-orange-600">
-                    <FaYoutube className="w-4 h-4" />
-                  </a>
+                <a href="/about" className="text-white/80 hover:text-white">Our Story</a>
+                <a href="/contact" className="text-white/80 hover:text-white">Contact</a>
+                <div className="flex items-center space-x-4 text-white">
+                  <a href="#" className="hover:opacity-80"><FaFacebookF /></a>
+                  <a href="#" className="hover:opacity-80"><FaTwitter /></a>
+                  <a href="#" className="hover:opacity-80"><FaInstagram /></a>
                 </div>
               </div>
             </div>
@@ -304,7 +291,7 @@ const Header = () => {
             {/* Mobile Hamburger Menu - Left */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-gray-600 hover:text-orange-600 transition-colors"
+              className="md:hidden text-white/80 hover:text-white transition-colors"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -323,11 +310,11 @@ const Header = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsDesktopSearchFocused(true)}
-                  className="w-full pl-4 pr-12 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
+                  className="w-full pl-4 pr-12 py-2 border border-white/30 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent bg-[#8f3a61] text-white placeholder-white/70"
                 />
                 <button 
                   type="submit" 
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors"
                 >
                   <Search size={18} />
                 </button>
@@ -337,7 +324,7 @@ const Header = () => {
               {(isDesktopSearchFocused && searchQuery.trim()) && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50">
                   {searchLoading && (
-                    <div className="flex items-center justify-center py-6 text-orange-600">
+                    <div className="flex items-center justify-center py-6 text-[#772a4b]">
                       <svg className="w-6 h-6 animate-spin mr-2" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
@@ -353,7 +340,7 @@ const Header = () => {
                       {searchResults.slice(0, 6).map(product => (
                         <li
                           key={product.id}
-                          className="flex items-center px-4 py-3 hover:bg-orange-50 cursor-pointer transition-colors border-b last:border-b-0"
+                          className="flex items-center px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors border-b last:border-b-0"
                           onClick={() => handleResultClick(product.id)}
                         >
                           <img
@@ -365,7 +352,7 @@ const Header = () => {
                             <div className="font-medium text-gray-900">{product.name}</div>
                             <div className="text-sm text-gray-500 truncate">{product.description}</div>
                           </div>
-                          <div className="ml-4 text-orange-600 font-semibold whitespace-nowrap">₹{product.price}</div>
+                          <div className="ml-4 text-[#772a4b] font-semibold whitespace-nowrap">₹{product.price}</div>
                         </li>
                       ))}
                     </ul>
@@ -384,7 +371,7 @@ const Header = () => {
                   key={item.path}
                   to={item.path}
                   className={`text-sm font-medium transition-colors duration-200 ${
-                    isActive(item.path) ? 'text-orange-600' : 'text-gray-600 hover:text-orange-600'
+                    isActive(item.path) ? 'text-white' : 'text-white/80 hover:text-white'
                   }`}
                 >
                   {item.name}
@@ -394,24 +381,24 @@ const Header = () => {
 
             {/* Desktop Icons */}
             <div className="hidden md:flex items-center space-x-6">
-              {/* Remove search icon from desktop */}
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-white/80">
+                    Welcome, {user.name}
                   </div>
-                  <Link to="/account" className="text-gray-600 hover:text-orange-600 transition-colors">
+                  <Link to="/account" className="text-white/80 hover:text-white transition-colors">
                     <User size={20} />
                   </Link>
                 </div>
               ) : (
-                <Link to="/account" className="text-gray-600 hover:text-orange-600 transition-colors">
+                <Link to="/account" className="text-white/80 hover:text-white transition-colors">
                   <User size={20} />
                 </Link>
               )}
-              <Link to="/cart" className="text-gray-600 hover:text-orange-600 transition-colors relative">
+              <Link to="/cart" className="text-white/80 hover:text-white transition-colors relative">
                 <ShoppingCart size={20} />
                 {cartItems.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-white text-[#772a4b] text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
                     {cartItems.length}
                   </span>
                 )}
@@ -419,14 +406,14 @@ const Header = () => {
               {user ? (
                 <Link 
                   to="/account" 
-                  className="flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+                  className="flex items-center px-4 py-2 bg-white text-[#772a4b] text-sm font-medium rounded-full hover:bg-gray-100 transition-colors"
                 >
                   My Account
                 </Link>
               ) : (
                 <Link 
                   to="/login" 
-                  className="flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-full hover:bg-orange-700 transition-colors"
+                  className="flex items-center px-4 py-2 bg-white text-[#772a4b] text-sm font-medium rounded-full hover:bg-gray-100 transition-colors"
                 >
                   Login / Register
                 </Link>
@@ -436,7 +423,7 @@ const Header = () => {
             {/* Mobile Search Icon (Top Right) */}
             <button
               onClick={handleSearchIconClick}
-              className="md:hidden text-gray-600 hover:text-orange-600 transition-colors"
+              className="md:hidden text-white/80 hover:text-white transition-colors"
               aria-label="Open search"
             >
               <Search size={24} />
@@ -463,65 +450,102 @@ const Header = () => {
                 initial="closed"
                 animate="open"
                 exit="closed"
-                className="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[20001] flex flex-col"
+                className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#772a4b] z-[20001] flex flex-col"
               >
-                {/* Menu Header */}
-                <div className="flex items-center justify-between p-4 border-b">
-                  <span className="font-semibold">Menu</span>
-                  <button onClick={() => setIsMobileMenuOpen(false)} className="p-1">
+                {/* Menu Header with Close Button */}
+                <div className="flex items-center justify-between p-4 border-b border-white/20">
+                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+                    <img src={logo} alt="Riko Craft" className="h-10 w-auto" />
+                  </Link>
+                  <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 text-white">
                     <X size={24} />
                   </button>
                 </div>
 
+                {/* Tab Navigation */}
+                <div className="flex border-b border-white/20">
+                  <button
+                    onClick={() => setActiveMobileTab('menu')}
+                    className={`flex-1 py-3 text-center text-sm font-medium transition-all duration-200 ${
+                      activeMobileTab === 'menu'
+                        ? 'text-white border-b-2 border-white'
+                        : 'text-white/60'
+                    }`}
+                  >
+                    MENU
+                  </button>
+                  <button
+                    onClick={() => setActiveMobileTab('categories')}
+                    className={`flex-1 py-3 text-center text-sm font-medium transition-all duration-200 ${
+                      activeMobileTab === 'categories'
+                        ? 'text-white border-b-2 border-white'
+                        : 'text-white/60'
+                    }`}
+                  >
+                    CATEGORIES
+                  </button>
+                </div>
+
                 {/* Menu Content */}
-                <div className="flex-grow overflow-y-auto p-4">
-                  {/* Search Bar */}
-                  <form onSubmit={handleSearch} className="mb-4">
-                    <input
-                      type="text"
-                      placeholder="Search products..."
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                    />
-                  </form>
+                <div className="flex-grow overflow-y-auto">
+                  {/* Menu Tab */}
+                  {activeMobileTab === 'menu' && (
+                    <div className="p-4 space-y-4">
+                      {/* Search Bar */}
+                      <form onSubmit={handleSearch} className="relative">
+                        <input
+                          type="text"
+                          placeholder="Search products..."
+                          value={searchQuery}
+                          onChange={e => setSearchQuery(e.target.value)}
+                          className="w-full pl-4 pr-10 py-2 border border-white/30 rounded-md bg-[#8f3a61] text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+                        />
+                         <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70">
+                           <Search size={18}/>
+                         </button>
+                      </form>
+                      {/* Navigation Links */}
+                      <nav>
+                        <ul className="space-y-1">
+                           <li><Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Home</Link></li>
+                           <li><Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Shop</Link></li>
+                           <li><Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">About Us</Link></li>
+                           <li><Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Contact Us</Link></li>
+                        </ul>
+                      </nav>
+                    </div>
+                  )}
 
-                  {/* Categories Section */}
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-lg mb-2">Categories</h3>
-                    <ul className="space-y-2">
-                      {dynamicCategories.map(category => (
-                        <li key={category.id}>
-                          <button 
-                            onClick={() => handleCategoryClick(category.name)}
-                            className="w-full text-left text-gray-700 hover:text-orange-600"
-                          >
-                            {category.name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Other Links */}
-                  <div className="border-t pt-4">
-                    <ul className="space-y-2">
-                      <li><Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-orange-600">Home</Link></li>
-                      <li><Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-orange-600">Shop</Link></li>
-                      <li><Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-orange-600">About Us</Link></li>
-                      <li><Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-orange-600">Contact Us</Link></li>
-                    </ul>
-                  </div>
+                  {/* Categories Tab */}
+                  {activeMobileTab === 'categories' && (
+                     <div className="p-4">
+                        <ul className="space-y-1">
+                          {dynamicCategories.map(category => (
+                            <li key={category.id}>
+                              <button 
+                                onClick={() => {
+                                  handleCategoryClick(category.name);
+                                  setIsMobileMenuOpen(false);
+                                }}
+                                className="w-full text-left py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors"
+                              >
+                                {category.name}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                     </div>
+                  )}
                 </div>
 
                 {/* Menu Footer */}
-                <div className="p-4 border-t">
+                <div className="p-4 border-t border-white/20">
                   {user ? (
-                    <Link to="/account" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-gray-700 hover:text-orange-600">
+                    <Link to="/account" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-2 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">
                       <User size={20} /> My Account
                     </Link>
                   ) : (
-                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-gray-700 hover:text-orange-600">
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-2 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">
                       <User size={20} /> Login / Register
                     </Link>
                   )}
@@ -533,27 +557,27 @@ const Header = () => {
       </header>
 
         {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-[10000]">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#772a4b] border-t border-white/20 z-[10000]">
         <nav className="flex justify-around items-center h-14">
-          <Link to="/" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+          <Link to="/" className="flex flex-col items-center justify-center text-white/80 hover:text-white transition-colors">
             <Home className="w-5 h-5" />
             <span className="text-xs mt-0.5">Home</span>
           </Link>
-          <Link to="/shop" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+          <Link to="/shop" className="flex flex-col items-center justify-center text-white/80 hover:text-white transition-colors">
             <ShoppingCart className="w-5 h-5" />
             <span className="text-xs mt-0.5">Shop</span>
           </Link>
          
-          <Link to="/cart" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors relative">
+          <Link to="/cart" className="flex flex-col items-center justify-center text-white/80 hover:text-white transition-colors relative">
             <ShoppingBag className="w-5 h-5" />
             <span className="text-xs mt-0.5">Cart</span>
             {cartItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-white text-[#772a4b] text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">
                 {cartItems.length}
               </span>
             )}
           </Link>
-          <Link to="/account" className="flex flex-col items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+          <Link to="/account" className="flex flex-col items-center justify-center text-white/80 hover:text-white transition-colors">
             <User className="w-5 h-5" />
             <span className="text-xs mt-0.5">Account</span>
           </Link>

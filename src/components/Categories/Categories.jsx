@@ -129,17 +129,33 @@ const Categories = () => {
                   </h3>
                 </div>
 
-                {/* Image Container */}
+                {/* Image/Video Container */}
                 <div className="relative w-full h-full overflow-hidden">
-                  <img
-                    src={config.fixImageUrl(category.image)}
-                    alt={category.name}
-                    className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500"
-                    onError={e => {
-                      e.target.onerror = null;
-                      e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=' + encodeURIComponent(category.name);
-                    }}
-                  />
+                  {category.image && category.image.toLowerCase().endsWith('.mp4') ? (
+                    <video
+                      src={config.fixImageUrl(category.image)}
+                      alt={category.name}
+                      className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      onError={e => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=' + encodeURIComponent(category.name);
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src={config.fixImageUrl(category.image)}
+                      alt={category.name}
+                      className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500"
+                      onError={e => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://placehold.co/400x400/e2e8f0/475569?text=' + encodeURIComponent(category.name);
+                      }}
+                    />
+                  )}
                   
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

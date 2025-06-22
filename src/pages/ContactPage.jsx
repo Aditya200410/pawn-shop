@@ -58,10 +58,10 @@ export default function ContactPage() {
             <div>
               <h3 className="font-semibold text-lg text-gray-800">Phone no.:</h3>
               <a
-                href="tel:9183406246358"
+                href="tel:83406246358"
                 className="text-[#8B4513] underline"
               >
-                +91 +918340624635
+                +918340624635
               </a>
             </div>
           </div>

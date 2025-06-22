@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ArrowLeft, CreditCard, Lock, MapPin, Phone, User, Mail, Building, Truck } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import config from '../config/config';
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cartItems, getTotalPrice } = useCart();
+  const { cartItems, getTotalPrice, clearCart } = useCart();
+  const { user } = useAuth();
   const [activeStep, setActiveStep] = useState('shipping');
   const [formData, setFormData] = useState({
     // Shipping Information
@@ -38,6 +42,8 @@ const Checkout = () => {
     cardExpiry: '',
     cardCVC: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -47,12 +53,55 @@ const Checkout = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
-    // Navigate to order confirmation
-    navigate('/order-confirmation');
+    setLoading(true);
+    setError(null);
+
+    // Basic validation
+    if (cartItems.length === 0) {
+      setError("Your cart is empty.");
+      setLoading(false);
+      return;
+    }
+
+    const orderData = {
+      userId: user ? user.id : null,
+      products: cartItems.map(item => ({
+        productId: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        image: item.image
+      })),
+      totalAmount: getTotalPrice(),
+      shippingAddress: {
+        name: `${formData.firstName} ${formData.lastName}`,
+        address: formData.address,
+        city: formData.city,
+        postalCode: formData.zipCode,
+        country: formData.country,
+        phone: formData.phone,
+      },
+      // ... include other fields as needed by your backend
+    };
+    
+    try {
+      // Replace with your actual API endpoint for creating an order
+      const response = await axios.post(config.API_URLS.ORDERS, orderData);
+
+      if (response.data && response.data.orderId) {
+        clearCart(); // Clear cart on successful order
+        navigate(`/order-confirmation/${response.data.orderId}`);
+      } else {
+        setError("Failed to create order. Please try again.");
+      }
+    } catch (err) {
+      setError("An error occurred while placing your order. Please try again.");
+      console.error("Order submission error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (cartItems.length === 0) {
