@@ -76,7 +76,7 @@ const ProductCard = ({ product }) => {
             {/* Rating */}
             <div className="flex items-center gap-1">
               <Star className={`${isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} fill-yellow-400 text-yellow-400`} />
-              <span className={`text-gray-600 transition-colors duration-300 ease-in-out group-hover:text-gray-800 ${isMobile ? 'text-xs' : 'text-xs'}`}>{product.rating || 4.5}</span>
+              <span className={`text-gray-600 transition-colors duration-300 ease-in-out group-hover:text-gray-800 ${isMobile ? 'text-xs' : 'text-xs'}`}>{Number(product.rating).toFixed(1)}</span>
             </div>
           </div>
 

@@ -264,8 +264,9 @@ const ProductView = () => {
                     }`}
                   />
                 ))}
-                 
                 </div>
+                {/* Show average rating as a number with one decimal */}
+                <span className="text-gray-700 font-medium text-lg">{Number(averageRating).toFixed(1)}</span>
               </div>
             </div>
 
