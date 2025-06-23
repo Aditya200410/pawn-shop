@@ -15,46 +15,23 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log('API Request:', config.method?.toUpperCase(), config.url);
     return config;
   },
   (error) => {
-    console.error('Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
 
 // Add a response interceptor to handle errors
 api.interceptors.response.use(
-  (response) => {
-    console.log('API Response:', response.status, response.config.url);
-    return response;
-  },
+  (response) => response,
   (error) => {
-    console.error('API Error:', error);
-    console.error('Request URL:', error.config?.url);
-    console.error('Request Method:', error.config?.method);
-    console.error('Request Data:', error.config?.data);
-    console.error('Response Status:', error.response?.status);
-    console.error('Response Data:', error.response?.data);
-    console.error('Error Message:', error.message);
-    
-    // Handle network errors
-    if (!error.response) {
-      console.error('Network error - no response received');
-      console.error('This could be due to:');
-      console.error('- Backend server is down');
-      console.error('- CORS issues');
-      console.error('- Network connectivity problems');
-    }
-    
-    // Handle authentication errors
     if (error.response?.status === 401) {
+      // Handle unauthorized access
       localStorage.removeItem('token');
-      localStorage.removeItem('user_logged_in');
+      localStorage.removeItem('user');
       window.location.href = '/login';
     }
-    
     return Promise.reject(error);
   }
 );
