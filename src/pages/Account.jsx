@@ -113,15 +113,17 @@ const Account = () => {
     try {
       const data = await orderService.getOrdersByEmail(user.email);
       if (data.success) {
-        const sortedOrders = data.orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+        const sortedOrders = data.orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setOrders(sortedOrders);
         setFilteredOrders(sortedOrders);
       } else {
-        throw new Error(data.message);
+        throw new Error(data.message || 'No success field in response');
       }
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      toast.error(error.message || 'Failed to fetch orders');
+      console.error('Error fetching orders:', error, error?.response);
+      let errorMsg = error?.message || 'Failed to fetch orders';
+      if (error?.response?.data?.message) errorMsg = error.response.data.message;
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
