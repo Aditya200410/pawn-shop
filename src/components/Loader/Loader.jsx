@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false }) => {
+const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false, showLogo = false }) => {
   const sizeClasses = {
     small: 'w-8 h-8',
     medium: 'w-16 h-16',
@@ -18,45 +18,51 @@ const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false }) =>
 
   const LoaderContent = () => (
     <div className="flex flex-col items-center justify-center space-y-4">
-      <motion.div
-        animate={{ 
-          rotate: 360,
-          scale: [1, 1.1, 1]
-        }}
-        transition={{ 
-          rotate: { 
-            duration: 2, 
-            repeat: Infinity, 
-            ease: "linear" 
-          },
-          scale: { 
-            duration: 1.5, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }
-        }}
-        className={`${sizeClasses[size]} relative`}
-      >
-        <img 
-          src="/logo.png" 
-          alt="Logo" 
-          className="w-full h-full object-contain"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = 'https://placehold.co/200x200/e2e8f0/475569?text=Logo';
-          }}
-        />
+      {showLogo && (
         <motion.div
-          className="absolute inset-0 border-4 border-amber-600 border-t-transparent rounded-full"
-          animate={{ rotate: 360 }}
-          transition={{ 
-            duration: 1.5, 
-            repeat: Infinity, 
-            ease: "linear" 
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.1, 1]
           }}
+          transition={{ 
+            rotate: { 
+              duration: 2, 
+              repeat: Infinity, 
+              ease: "linear" 
+            },
+            scale: { 
+              duration: 1.5, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }
+          }}
+          className={`${sizeClasses[size]} relative`}
+        >
+          <img 
+            src="/logo.png" 
+            alt="Logo" 
+            className="w-full h-full object-contain"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://placehold.co/200x200/e2e8f0/475569?text=Logo';
+            }}
+          />
+          <motion.div
+            className="absolute inset-0 border-4 border-amber-600 border-t-transparent rounded-full"
+            animate={{ rotate: 360 }}
+            transition={{ 
+              duration: 1.5, 
+              repeat: Infinity, 
+              ease: "linear" 
+            }}
+          />
+        </motion.div>
+      )}
+      {!showLogo && (
+        <motion.div
+          className={`${sizeClasses[size]} border-4 border-amber-600 border-t-transparent rounded-full animate-spin`}
         />
-      </motion.div>
-      
+      )}
       {text && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -67,7 +73,6 @@ const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false }) =>
           {text}
         </motion.div>
       )}
-      
       {/* Loading dots */}
       <motion.div 
         className="flex space-x-1"
