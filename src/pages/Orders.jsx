@@ -7,6 +7,14 @@ import { useAuth } from '../context/AuthContext';
 import config from '../config/config.js';
 import Loader from '../components/Loader';
 
+function toIST(dateString) {
+  const date = new Date(dateString);
+  // Convert to IST (UTC+5:30)
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istDate = new Date(date.getTime() + istOffset);
+  return istDate.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+}
+
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +130,7 @@ export default function Orders() {
                           Order #{order._id.slice(-6).toUpperCase()}
                         </h2>
                         <p className="text-sm text-gray-400 mt-1">
-                          Placed on {format(new Date(order.createdAt), 'PPP')}
+                          Placed on {toIST(order.createdAt)}
                         </p>
                       </div>
                       <div className="flex space-x-3">

@@ -5,6 +5,14 @@ import { CheckCircle, ShoppingBag, Truck, User } from 'lucide-react';
 import config from '../config/config';
 import Loader from '../components/Loader';
 
+function toIST(dateString) {
+  const date = new Date(dateString);
+  // Convert to IST (UTC+5:30)
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istDate = new Date(date.getTime() + istOffset);
+  return istDate.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+}
+
 const OrderConfirmation = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
@@ -69,7 +77,7 @@ const OrderConfirmation = () => {
 
           <div className="bg-gray-50 rounded-lg p-4 mb-6 text-center">
             <p className="text-gray-600">Order ID: <span className="font-semibold text-gray-800">{order.orderId}</span></p>
-            <p className="text-gray-600 text-sm">Placed on: {new Date(order.createdAt).toLocaleDateString()}</p>
+            <p className="text-gray-600 text-sm">Placed on: {toIST(order.createdAt)}</p>
           </div>
           
           {/* Order Summary */}
