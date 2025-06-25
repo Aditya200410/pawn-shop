@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useSeller } from '../context/SellerContext';
+import { toast } from 'react-hot-toast';
+import Loader from '../components/Loader';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -8,28 +11,58 @@ const fadeIn = {
 };
 
 export default function SellerAuth() {
+  const { seller, login, register, loading } = useSeller();
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     businessName: '',
     phone: '',
-    address: ''
+    address: '',
+    businessType: ''
   });
-  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    // Redirect if already logged in
+    if (seller) {
+      navigate('/seller/profile');
+    }
+  }, [seller, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement authentication logic
-    console.log('Form submitted:', formData);
+    try {
+      if (isLogin) {
+        await login(formData.email, formData.password);
+      } else {
+        if (!formData.businessName || !formData.phone || !formData.address || !formData.businessType) {
+          toast.error('Please fill in all fields');
+          return;
+        }
+        await register(formData);
+      }
+      toast.success(isLogin ? 'Login successful!' : 'Registration successful!');
+      navigate('/seller/profile');
+    } catch (err) {
+      toast.error(err.message || 'Authentication failed');
+    }
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full mx-auto space-y-8">
         <motion.div
           initial="hidden"
@@ -97,6 +130,26 @@ export default function SellerAuth() {
                     onChange={handleChange}
                     value={formData.businessName}
                   />
+                </div>
+
+                <div>
+                  <label htmlFor="businessType" className="block text-sm font-medium text-gray-700">
+                    Business Type
+                  </label>
+                  <select
+                    name="businessType"
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    onChange={handleChange}
+                    value={formData.businessType}
+                  >
+                    <option value="">Select a business type</option>
+                    <option value="retail">Retail</option>
+                    <option value="wholesale">Wholesale</option>
+                    <option value="manufacturer">Manufacturer</option>
+                    <option value="artisan">Artisan/Craftsperson</option>
+                    <option value="reseller">Reseller</option>
+                  </select>
                 </div>
 
                 <div>
