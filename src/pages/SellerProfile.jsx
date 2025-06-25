@@ -140,6 +140,11 @@ const SellerProfile = () => {
                       <p className="text-sm text-gray-500">Phone</p>
                       <p className="text-lg font-medium text-gray-900">{seller.phone}</p>
                     </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-500">Coupon Code</p>
+                      <p className="text-lg font-medium text-amber-600">{seller.couponToken}</p>
+                      <p className="text-xs text-gray-500 mt-1">Share this code with your customers for discounts</p>
+                    </div>
                   </div>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="text-sm text-gray-500">Address</p>
