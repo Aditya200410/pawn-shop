@@ -45,5 +45,10 @@ export const authAPI = {
   updateProfile: (data) => api.put('/auth/update-profile', data),
 };
 
+// Hero Carousel API endpoints
+export const heroCarouselAPI = {
+  getActiveItems: () => api.get('/hero-carousel/active'),
+};
+
 // Default export for general API usage
 export default api; 

@@ -1,97 +1,79 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-
-const slides = [
-  {
-    id: 1,
-    image: 'https://t4.ftcdn.net/jpg/05/27/71/81/360_F_527718147_x7XDK929xZnZqjgh0oPYz7xK0EvtnlIF.jpg',
-    title: ' Support the rural artisans of India',
-    description: 'keeping alive 1000-year-old heritage art is not just our work, its our duty, let Rikocraft take the journey from village to city, delivering heritage to your home.',
-    cta: 'Shop Collection'
-  },
-  {
-    id: 2,
-    image: 'https://mudkart.com/cdn/shop/files/1920X800_BANNER-05_1_7cf92773-da17-48be-8a66-f5fea894f5df.jpg?v=1721114175&width=3840',
-    title: 'Artisanal Excellence',
-    description: 'From terracotta to metalwork, experience the finest craftsmanship passed down through generations.',
-    cta: 'View Gallery'
-  },
-  {
-    id: 3,
-    image: 'https://theheritageartifacts.com/cdn/shop/collections/ebb34276e046f0459f7e237be00d42dc.jpg?v=1678684828',
-    title: 'Heritage Meets Modern',
-    description: 'Where traditional Bengali artistry meets contemporary design, creating timeless pieces for your home.',
-    cta: 'Learn More'
-  },
-];
+import { heroCarouselAPI } from '../../services/api';
+import config from '../../config/config';
+import Loader from '../Loader/Loader';
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(timer);
+    const fetchCarouselData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await heroCarouselAPI.getActiveItems();
+        if (!response.data || response.data.length === 0) {
+          setError('No active carousel items found.');
+          return;
+        }
+        setSlides(response.data.map(item => ({
+          id: item._id,
+          image: item.image.startsWith('http') ? item.image : `${config.API_BASE_URL}${item.image}`,
+          title: item.title,
+          subtitle: item.subtitle,
+          description: item.description,
+          buttonText: item.buttonText || 'Shop Now',
+          buttonLink: item.buttonLink || '/shop'
+        })));
+      } catch (error) {
+        console.error('Error fetching carousel data:', error);
+        setError('Failed to load carousel items. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCarouselData();
   }, []);
 
-  return (
-    <div className="relative h-[500px] md:h-[600px] overflow-hidden z-[1]">
-      {/* Navigation Buttons */}
-      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 md:px-4 z-[1]">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        onClick={prevSlide}
-          className="p-1.5 md:p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
-      >
-        <svg
-            className="w-5 h-5 md:w-6 md:h-6 text-gray-700"
-          fill="none"
-            stroke="currentColor"
-          viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        onClick={nextSlide}
-          className="p-1.5 md:p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
-      >
-        <svg
-            className="w-5 h-5 md:w-6 md:h-6 text-gray-700"
-          fill="none"
-            stroke="currentColor"
-          viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-        </motion.button>
-      </div>
+  useEffect(() => {
+    if (slides.length === 0) return;
+    
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
 
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  if (loading) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center bg-gray-100">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (error || slides.length === 0) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">{error || 'No carousel items available.'}</p>
+          <Link to="/shop" className="bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition-colors">
+            Browse Shop
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full h-[600px] overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
@@ -99,77 +81,69 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="absolute inset-0 z-0"
+          className="absolute inset-0"
         >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
-          >
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-          
-          <div className="relative h-full flex items-center">
-            <div className="container mx-auto px-4">
-              <div className="max-w-2xl mx-auto text-center">
-              <motion.h1
-                  initial={{ y: -50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                  transition={{ 
-                    delay: 0.2, 
-                    duration: 0.8, 
-                    ease: [0.22, 1, 0.36, 1],
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4 px-4"
-              >
-                {slides[currentSlide].title}
-              </motion.h1>
-              <motion.p
-                  initial={{ y: -50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                  transition={{ 
-                    delay: 0.4, 
-                    duration: 0.8, 
-                    ease: [0.22, 1, 0.36, 1],
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  className="text-sm sm:text-base md:text-xl text-white/90 mb-6 md:mb-8 px-4"
-              >
-                {slides[currentSlide].description}
-              </motion.p>
-              <motion.button
-                  initial={{ y: -50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                  transition={{ 
-                    delay: 0.6, 
-                    duration: 0.8, 
-                    ease: [0.22, 1, 0.36, 1],
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-amber-800 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors text-sm md:text-base"
-              >
-                  {slides[currentSlide].cta}
-              </motion.button>
+          <div className="relative w-full h-full">
+            <img
+              src={slides[currentSlide].image}
+              alt={slides[currentSlide].title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-40" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center text-white px-4">
+                <motion.h1
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-4xl md:text-5xl font-bold mb-4"
+                >
+                  {slides[currentSlide].title}
+                </motion.h1>
+                <motion.p
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-xl md:text-2xl mb-4"
+                >
+                  {slides[currentSlide].subtitle}
+                </motion.p>
+                <motion.p
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-lg mb-8 max-w-2xl mx-auto"
+                >
+                  {slides[currentSlide].description}
+                </motion.p>
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <Link
+                    to={slides[currentSlide].buttonLink}
+                    className="bg-amber-600 text-white px-8 py-3 rounded-lg hover:bg-amber-700 transition-colors text-lg"
+                  >
+                    {slides[currentSlide].buttonText}
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
         </motion.div>
       </AnimatePresence>
-
-      {/* Slide indicators */}
-      <div className="absolute bottom-4 md:bottom-8 left-0 right-0 flex justify-center gap-2 z-[1]">
+      
+      {/* Slide Indicators */}
+      <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`h-1.5 md:h-2 w-1.5 md:w-2 rounded-full transition-all duration-300 ${
-              currentSlide === index ? 'w-6 md:w-8 bg-white' : 'bg-white/50'
+            className={`w-3 h-3 rounded-full transition-colors ${
+              index === currentSlide ? 'bg-amber-600' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
             }`}
+            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
