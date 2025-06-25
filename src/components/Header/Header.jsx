@@ -151,8 +151,6 @@ const Header = () => {
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
     
-   
-  
   ];
 
   const mobileMenuVariants = {
@@ -364,13 +362,15 @@ const Header = () => {
         </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-8 ">
               {menuItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
                   className={`text-sm font-medium transition-colors duration-200 ${
-                    isActive(item.path) ? 'text-white' : 'text-white/80 hover:text-white'
+                    isActive(item.path)
+                      ? 'text-orange-600'
+                      : 'text-white hover:text-orange-600'
                   }`}
                 >
                   {item.name}
@@ -481,7 +481,7 @@ const Header = () => {
                   >
                     CATEGORIES
                   </button>
-              </div>
+                </div>
 
                 {/* Menu Content */}
                 <div className="flex-grow overflow-y-auto">
@@ -490,25 +490,31 @@ const Header = () => {
                     <div className="p-4 space-y-4">
                       {/* Search Bar */}
                       <form onSubmit={handleSearch} className="relative">
-                      <input
-                        type="text"
-                        placeholder="Search products..."
-                        value={searchQuery}
+                        <input
+                          type="text"
+                          placeholder="Search products..."
+                          value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
                           className="w-full pl-4 pr-10 py-2 border border-white/30 rounded-md bg-[#8f3a61] text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-                      />
-                         <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70">
-                           <Search size={18}/>
-                      </button>
-                    </form>
+                        />
+                        <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70">
+                          <Search size={18}/>
+                        </button>
+                      </form>
                       {/* Navigation Links */}
                       <nav>
                         <ul className="space-y-1">
-                           <li><Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Home</Link></li>
-                           <li><Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Shop</Link></li>
-                           <li><Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">About Us</Link></li>
-                           <li><Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Contact Us</Link></li>
-                           <li><Link to="/seller" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Become a seller</Link></li>
+                          {menuItems.map((item) => (
+                            <li key={item.path}>
+                              <Link
+                                to={item.path}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors"
+                              >
+                                {item.name}
+                              </Link>
+                            </li>
+                          ))}
                         </ul>
                       </nav>
                     </div>
@@ -516,45 +522,53 @@ const Header = () => {
 
                   {/* Categories Tab */}
                   {activeMobileTab === 'categories' && (
-                     <div className="p-4">
-                        <ul className="space-y-1">
-                          {dynamicCategories.map(category => (
-                            <li key={category.id}>
-                              <button 
-                                onClick={() => {
-                                  handleCategoryClick(category.name);
-                                  setIsMobileMenuOpen(false);
-                                }}
-                                className="w-full text-left py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors"
-                        >
-                                {category.name}
-                              </button>
-                      </li>
-                          ))}
-                              </ul>
-                     </div>
+                    <div className="p-4">
+                      <ul className="space-y-1">
+                        {dynamicCategories.map(category => (
+                          <li key={category.id}>
+                            <button 
+                              onClick={() => {
+                                handleCategoryClick(category.name);
+                                setIsMobileMenuOpen(false);
+                              }}
+                              className="w-full text-left py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors"
+                            >
+                              {category.name}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
                 </div>
 
-                  {/* Menu Footer */}
+                {/* Menu Footer */}
                 <div className="p-4 border-t border-white/20">
                   {user ? (
-                    <Link to="/account" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-2 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">
+                    <Link
+                      to="/account"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 py-2 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors"
+                    >
                       <User size={20} /> My Account
                     </Link>
                   ) : (
-                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-2 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 py-2 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors"
+                    >
                       <User size={20} /> Login / Register
-                      </Link>
+                    </Link>
                   )}
-              </div>
-            </motion.div>
+                </div>
+              </motion.div>
             </>
-        )}
+          )}
         </AnimatePresence>
       </header>
 
-        {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#772a4b] border-t border-white/20 z-[10000]">
         <nav className="flex justify-around items-center h-14">
           <Link to="/" className="flex flex-col items-center justify-center text-white/80 hover:text-white transition-colors">
@@ -565,7 +579,6 @@ const Header = () => {
             <ShoppingCart className="w-5 h-5" />
             <span className="text-xs mt-0.5">Shop</span>
           </Link>
-         
           <Link to="/cart" className="flex flex-col items-center justify-center text-white/80 hover:text-white transition-colors relative">
             <ShoppingBag className="w-5 h-5" />
             <span className="text-xs mt-0.5">Cart</span>
@@ -579,11 +592,10 @@ const Header = () => {
             <User className="w-5 h-5" />
             <span className="text-xs mt-0.5">Account</span>
           </Link>
-          
-          </nav>
-        </div>
+        </nav>
+      </div>
     </>
   );
 };
 
-export default Header; 
+export default Header;

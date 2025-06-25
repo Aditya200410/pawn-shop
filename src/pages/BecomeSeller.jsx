@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -7,6 +8,12 @@ const fadeInUp = {
 };
 
 export default function BecomeSeller() {
+  const navigate = useNavigate();
+
+  const handleStartSelling = () => {
+    navigate('/seller/auth');
+  };
+
   return (
     <div className="bg-gray-50 text-black-800 ">
       {/* Hero Section */}
@@ -40,6 +47,7 @@ export default function BecomeSeller() {
     <motion.button
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
+      onClick={handleStartSelling}
       className="mt-8 px-8 py-3 text-white bg-green-600 rounded-full font-semibold hover:bg-green-700 transition shadow-lg"
     >
       Start Selling Now
@@ -156,7 +164,10 @@ export default function BecomeSeller() {
       <section className="py-20 bg-amber-600 text-white text-center px-4">
         <h2 className="text-4xl font-bold mb-4">Ready to Start Selling?</h2>
         <p className="text-lg mb-6">Sign up now and list your first item in under 5 minutes.</p>
-        <button className="bg-white text-green-700 font-semibold px-6 py-3 rounded-full hover:bg-gray-100 transition">
+        <button 
+          onClick={handleStartSelling}
+          className="bg-white text-green-700 font-semibold px-6 py-3 rounded-full hover:bg-gray-100 transition"
+        >
           Join Now
         </button>
       </section>

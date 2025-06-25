@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
+import { SellerProvider } from './context/SellerContext';
 import Loader from './components/Loader';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
@@ -32,6 +33,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import AboutUs from './pages/AboutUs';
 import OrderConfirmation from './pages/OrderConfirmation';
 import BecomeSeller from './pages/BecomeSeller';
+import SellerAuth from './pages/SellerAuth';
+import SellerProfile from './pages/SellerProfile';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -141,7 +144,9 @@ function AppContent() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path='/seller'  element={<BecomeSeller/>}/>
+        <Route path='/seller' element={<BecomeSeller/>}/>
+        <Route path='/seller/auth' element={<SellerAuth/>}/>
+        <Route path='/seller/profile' element={<SellerProfile/>}/>
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
@@ -167,9 +172,11 @@ function App() {
     <ErrorBoundary>
       <CartProvider>
         <AuthProvider>
-          <Router>
-            <AppContent />
-          </Router>
+          <SellerProvider>
+            <Router>
+              <AppContent />
+            </Router>
+          </SellerProvider>
         </AuthProvider>
       </CartProvider>
     </ErrorBoundary>
