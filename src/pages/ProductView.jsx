@@ -48,7 +48,7 @@ const ProductView = () => {
   const tabs = [
     { id: 'description', label: 'Description', icon: DocumentTextIcon },
     { id: 'specifications', label: 'Specifications', icon: CogIcon },
-    { id: 'reviews', label: 'Reviews', icon: StarIcon },
+  
     { id: 'shipping', label: 'Shipping & Returns', icon: TruckIcon },
   ];
 
@@ -495,21 +495,18 @@ const ProductView = () => {
                     <div className="bg-gray-50 p-6 rounded-xl">
                       <h4 className="font-semibold text-gray-900 mb-3">Features</h4>
                       <ul className="space-y-2 text-gray-700">
-                        <li>• Handcrafted with premium materials</li>
+                        <li>• Material: {product.material || 'N/A'}</li>
+                        <li>• Weight: {product.weight || 'N/A'}</li>
+                        <li>• Utility: {product.utility || 'N/A'}</li>
                         <li>• Traditional Indian craftsmanship</li>
-                        <li>• Unique design elements</li>
-                        <li>• Perfect for home decoration</li>
                       </ul>
                     </div>
                     
                     <div className="bg-gray-50 p-6 rounded-xl">
                       <h4 className="font-semibold text-gray-900 mb-3">Care Instructions</h4>
-                      <ul className="space-y-2 text-gray-700">
-                        <li>• Dust regularly with a soft cloth</li>
-                        <li>• Keep away from direct sunlight</li>
-                        <li>• Avoid exposure to moisture</li>
-                        <li>• Handle with care</li>
-                      </ul>
+                      <p className="text-gray-700 whitespace-pre-line">
+                        {product.care || 'Care instructions not available'}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -538,8 +535,7 @@ const ProductView = () => {
                         <p className="font-medium text-gray-900">{product.category}</p>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-500">Subcategory</span>
-                        <p className="font-medium text-gray-900">{product.subcategory || 'N/A'}</p>
+                        
                       </div>
                      
                     </div>
@@ -573,18 +569,38 @@ const ProductView = () => {
                     <h4 className="font-semibold text-gray-900 mb-4">Physical Specifications</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <span className="text-sm text-gray-500">Color</span>
-                        <p className="font-medium text-gray-900">{product.color || 'N/A'}</p>
+                        <span className="text-sm text-gray-500">Material</span>
+                        <p className="font-medium text-gray-900">{product.material || 'N/A'}</p>
                       </div>
                       <div>
                         <span className="text-sm text-gray-500">Size</span>
                         <p className="font-medium text-gray-900">{product.size || 'N/A'}</p>
                       </div>
-                      
+                      <div>
+                        <span className="text-sm text-gray-500">Colour</span>
+                        <p className="font-medium text-gray-900">{product.colour || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Weight</span>
+                        <p className="font-medium text-gray-900">{product.weight || 'N/A'}</p>
+                      </div>
                     </div>
                   </div>
 
-                 
+                  {/* Additional Information */}
+                  <div className="bg-gray-50 p-6 rounded-xl">
+                    <h4 className="font-semibold text-gray-900 mb-4">Additional Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-sm text-gray-500">Utility</span>
+                        <p className="font-medium text-gray-900">{product.utility || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Care Instructions</span>
+                        <p className="font-medium text-gray-900">{product.care || 'N/A'}</p>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* Stock Information */}
                   <div className="bg-gray-50 p-6 rounded-xl">
@@ -619,101 +635,7 @@ const ProductView = () => {
                 </motion.div>
               )}
 
-              {activeTab === 'reviews' && (
-                          <motion.div 
-                  key="reviews"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-8"
-                >
-                  {/* Review Form */}
-                  <div className="bg-gray-50 p-6 rounded-xl">
-                    <h4 className="font-semibold text-gray-900 mb-4">Write a Review</h4>
-                    <form onSubmit={handleReviewSubmit} className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input
-                          type="text"
-                          placeholder="Your Name"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
-                          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                          required
-                        />
-                        <input
-                          type="email"
-                          placeholder="Your Email"
-                          value={userEmail}
-                          onChange={(e) => setUserEmail(e.target.value)}
-                          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                          required
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                        <div className="flex gap-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              type="button"
-                              onClick={() => setUserRating(star)}
-                              className="text-2xl"
-                            >
-                              <StarIconSolid
-                                className={`h-6 w-6 ${
-                                  star <= userRating ? 'text-yellow-400' : 'text-gray-300'
-                                }`}
-                              />
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <textarea
-                        placeholder="Write your review..."
-                        value={reviewText}
-                        onChange={(e) => setReviewText(e.target.value)}
-                        rows={4}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                        required
-                      />
-                      
-                      <button
-                        type="submit"
-                        className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
-                      >
-                        Submit Review
-                      </button>
-                    </form>
-                  </div>
-
-                  {/* Reviews List */}
-                  <div className="space-y-6">
-                    {reviews.map((review) => (
-                      <div key={review.id} className="border-b border-gray-200 pb-6">
-                        <div className="flex items-center justify-between mb-2">
-                          <h5 className="font-semibold text-gray-900">{review.name}</h5>
-                          <span className="text-sm text-gray-500">{review.date}</span>
-                        </div>
-                        <div className="flex items-center gap-1 mb-3">
-                          {[...Array(5)].map((_, i) => (
-                            <StarIconSolid
-                              key={i}
-                              className={`h-4 w-4 ${
-                                i < review.rating ? 'text-yellow-400' : 'text-gray-300'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <p className="text-gray-700">{review.text}</p>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
+            
               {activeTab === 'shipping' && (
                 <motion.div
                   key="shipping"
