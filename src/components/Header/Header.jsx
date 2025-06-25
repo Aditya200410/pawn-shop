@@ -156,7 +156,7 @@ const Header = () => {
   const MmenuItems = [
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
-    { name: 'Become a Seller', path: '/seller' },
+    { name: 'Seller Program', path: '/seller' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ];
@@ -275,7 +275,7 @@ const Header = () => {
                 <a href="/about" className="text-white/80 hover:text-white">Our Story</a>
                 <a href="/contact" className="text-white/80 hover:text-white">Contact</a>
                 <a href="/FAQ" className="text-white/80 hover:text-white">FAQ</a>
-                <a href="/seller" className="text-white/80 hover:text-white">Become our seller</a>
+                <a href="/seller" className="text-white/80 hover:text-white">seller Program</a>
                 <div className="flex items-center space-x-4 text-white">
                   <a href="#" className="hover:opacity-80"><FaFacebookF /></a>
                   <a href="#" className="hover:opacity-80"><FaTwitter /></a>
