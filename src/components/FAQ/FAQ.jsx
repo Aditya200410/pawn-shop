@@ -13,7 +13,7 @@ const faqCategories = [
      
       {
         q: 'Where Can I Buy Riko Craft Products In India?',
-        a: '• You can buy RIKO CRAFT products directly from our Stores: "Riko Craft Gallery" at Kolkata.\n• **Alternatively** you can also buy our products **online** from our website: **rikocraft.com**'
+        a: '• You can buy RIKO CRAFT products directly from our Stores: "Riko Craft Gallery" at Jamshedpur,jharkhand.\n• **Alternatively** you can also buy our products **online** from our website: **rikocraft.com**'
       },
       {
         q: 'Are Riko Craft Products Available Internationally?',
