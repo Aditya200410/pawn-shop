@@ -34,15 +34,26 @@ export const SellerProvider = ({ children }) => {
         }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch seller profile');
-      }
-
       const data = await response.json();
-      if (!data.success) {
+
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to fetch seller profile');
       }
-      setSeller(data.seller);
+
+      // Ensure all required fields are present
+      const sellerData = {
+        id: data.seller.id,
+        businessName: data.seller.businessName,
+        email: data.seller.email,
+        phone: data.seller.phone || '',
+        address: data.seller.address || '',
+        status: data.seller.status,
+        verified: data.seller.verified,
+        businessType: data.seller.businessType,
+        createdAt: data.seller.createdAt
+      };
+
+      setSeller(sellerData);
     } catch (err) {
       setError(err.message);
       localStorage.removeItem('seller_token');
@@ -69,8 +80,21 @@ export const SellerProvider = ({ children }) => {
         throw new Error(data.message || 'Login failed');
       }
 
+      // Ensure all required fields are present
+      const sellerData = {
+        id: data.seller.id,
+        businessName: data.seller.businessName,
+        email: data.seller.email,
+        phone: data.seller.phone || '',
+        address: data.seller.address || '',
+        status: data.seller.status,
+        verified: data.seller.verified,
+        businessType: data.seller.businessType,
+        createdAt: data.seller.createdAt
+      };
+
       localStorage.setItem('seller_token', data.token);
-      setSeller(data.seller);
+      setSeller(sellerData);
       toast.success('Login successful!');
       return data;
     } catch (err) {
@@ -99,8 +123,21 @@ export const SellerProvider = ({ children }) => {
         throw new Error(data.message || 'Registration failed');
       }
 
+      // Ensure all required fields are present
+      const newSellerData = {
+        id: data.seller.id,
+        businessName: data.seller.businessName,
+        email: data.seller.email,
+        phone: data.seller.phone || '',
+        address: data.seller.address || '',
+        status: data.seller.status,
+        verified: data.seller.verified,
+        businessType: data.seller.businessType,
+        createdAt: data.seller.createdAt
+      };
+
       localStorage.setItem('seller_token', data.token);
-      setSeller(data.seller);
+      setSeller(newSellerData);
       toast.success('Registration successful!');
       return data;
     } catch (err) {
@@ -137,7 +174,20 @@ export const SellerProvider = ({ children }) => {
         throw new Error(data.message || 'Failed to update profile');
       }
 
-      setSeller(data.seller);
+      // Ensure all required fields are present
+      const updatedSellerData = {
+        id: data.seller.id,
+        businessName: data.seller.businessName,
+        email: data.seller.email,
+        phone: data.seller.phone || '',
+        address: data.seller.address || '',
+        status: data.seller.status,
+        verified: data.seller.verified,
+        businessType: data.seller.businessType,
+        createdAt: data.seller.createdAt
+      };
+
+      setSeller(updatedSellerData);
       toast.success('Profile updated successfully');
       return data;
     } catch (err) {
