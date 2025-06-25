@@ -4,44 +4,44 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 const faqCategories = [
   {
-    title: 'About SREJONEE',
+    title: 'About RIKO CRAFT',
     questions: [
       {
-        q: 'Is Srejonee An Indian Company?',
-        a: 'Yes, SREJONEE is a registered proprietorship start-up company in India. Full name of the company is **Srejonee Art & Creations.**'
+        q: 'Is Riko Craft An Indian Company?',
+        a: 'Yes, RIKO CRAFT is a registered proprietorship start-up company in India. Full name of the company is **Riko Craft Art & Creations.**'
       },
       {
-        q: 'Where Is Srejonee\'s Head Office Located?',
-        a: '• Srejonee Art & Creations\' Head Office is located in KOLKATA, India. Our address is: 623 Active Business Park, 54/10 D C Dey Road, Tangra, Kolkata – 700015.\n• Our only physical Store till now, we call it \'Srejonee Gallery\', is also co-located at the same address.'
+        q: 'Where Is Riko Craft\'s Head Office Located?',
+        a: '• Riko Craft Art & Creations\' Head Office is located in KOLKATA, India. Our address is: 623 Active Business Park, 54/10 D C Dey Road, Tangra, Kolkata – 700015.\n• Our only physical Store till now, we call it \'Riko Craft Gallery\', is also co-located at the same address.'
       },
       {
-        q: 'Where Can I Buy Srejonee Products In India?',
-        a: '• You can buy SREJONEE products directly from our Stores: "Srejonee Gallery" at Kolkata.\n• **Alternatively** you can also buy our products **online** from our website: **srejonee.com**'
+        q: 'Where Can I Buy Riko Craft Products In India?',
+        a: '• You can buy RIKO CRAFT products directly from our Stores: "Riko Craft Gallery" at Kolkata.\n• **Alternatively** you can also buy our products **online** from our website: **rikocraft.com**'
       },
       {
-        q: 'Are Srejonee Products Available Internationally?',
+        q: 'Are Riko Craft Products Available Internationally?',
         a: 'Yes, we export our products directly to our customers in Europe, USA, Canada, Middle East, Australia and many more other countries.'
       },
       {
-        q: 'Are Gift Vouchers / Discount Coupons Available At Srejonee Gallery / Online?',
-        a: '• Yes, walk-in customers normally enjoy a Gift Voucher at our Stores.\n• Registered Customers of SREJONEE enjoy 10% Discount on MRP while buying from our website **srejonee.com**\n• Furthermore, we run different promotion Schemes / Festive Sale for our registered customers or general public time to time.'
+        q: 'Are Gift Vouchers / Discount Coupons Available At Riko Craft Gallery / Online?',
+        a: '• Yes, walk-in customers normally enjoy a Gift Voucher at our Stores.\n• Registered Customers of RIKO CRAFT enjoy 10% Discount on MRP while buying from our website **rikocraft.com**\n• Furthermore, we run different promotion Schemes / Festive Sale for our registered customers or general public time to time.'
       }
     ]
   },
   {
-    title: 'About SREJONEE Products',
+    title: 'About RIKO CRAFT Products',
     questions: [
       {
         q: 'Where Are Your Manufacturing Facilities Located?',
-        a: 'Srejonee does have a small production unit in Bhadreswar, Dist Hooghly, West Bengal where few of our products are manufactured but majority of our products are created by village-based artisans across West Bengal. We identify, develop and nurture age old traditional skills of talented artisans across Bengal and work in close association with them to preserve the Art Form to prevent it from extinction. This commitment has helped preserve many traditional crafts of India and created employment opportunities in deep rural areas.'
+        a: 'Riko Craft does have a small production unit in Bhadreswar, Dist Hooghly, West Bengal where few of our products are manufactured but majority of our products are created by village-based artisans across West Bengal. We identify, develop and nurture age old traditional skills of talented artisans across Bengal and work in close association with them to preserve the Art Form to prevent it from extinction. This commitment has helped preserve many traditional crafts of India and created employment opportunities in deep rural areas.'
       },
       {
-        q: 'Are All SREJONEE Products Handmade?',
-        a: 'YES almost all of Srejonee products are purely handmade using age old traditional skills. In some products such as appeal etc, if the cloth is from power loom, the final product is made using hand stitch, hand-woven, hand block-print etc process using vegetable dyes or natural colours as far as possible.'
+        q: 'Are All RIKO CRAFT Products Handmade?',
+        a: 'YES almost all of Riko Craft products are purely handmade using age old traditional skills. In some products such as appeal etc, if the cloth is from power loom, the final product is made using hand stitch, hand-woven, hand block-print etc process using vegetable dyes or natural colours as far as possible.'
       },
       {
-        q: 'Do SREJONEE Sizes Conform To International Norms?',
-        a: 'There are no true international norms for clothing and every company tends to have its own sizing standards. You can refer to our Size Guide where we have suggested basic guidelines of how SREJONEE sizing compares to other international sizing. The best approach is to take your own measurements and compare these to our measurement charts.'
+        q: 'Do RIKO CRAFT Sizes Conform To International Norms?',
+        a: 'There are no true international norms for clothing and every company tends to have its own sizing standards. You can refer to our Size Guide where we have suggested basic guidelines of how RIKO CRAFT sizing compares to other international sizing. The best approach is to take your own measurements and compare these to our measurement charts.'
       }
     ]
   },
@@ -54,10 +54,10 @@ const faqCategories = [
       },
       {
         q: 'How Will I Know If You Have Received My Order?',
-        a: 'During the payment process you will be given a confirmation that your credit /debit card has been successfully processed. **You get a on-screen notification \'Successfully Placed Order\'.** You will also be given an order confirmation number through an email / SMS from Srejonee.'
+        a: 'During the payment process you will be given a confirmation that your credit /debit card has been successfully processed. **You get a on-screen notification \'Successfully Placed Order\'.** You will also be given an order confirmation number through an email / SMS from Riko Craft.'
       },
       {
-        q: 'Is It Safe To Use My Credit Card Online At srejonee.com?',
+        q: 'Is It Safe To Use My Credit Card Online At rikocraft.com?',
         a: 'We do not store credit card information on our website. Your credit card information is safe with our international payment solution providers – Razorpay and PayPal.'
       }
     ]
@@ -80,14 +80,14 @@ const faqCategories = [
     questions: [
       {
         q: 'What Is Your Return Policy?',
-        a: '• At Srejonee, we stand behind the quality of our products and we assure each and every product passes through a strict quality checking process.\n• Please bear in mind that all handmade items are bound to have minor defects in them and any two item of same product will never be exactly same. These inherent quality of handicraft make them unique and add value of it being a genuine and authentic handmade product. These are not acceptable valid reasons for return.\n• However we will provide a full refund for the cost of the product if the product is found faulty or defective or not the one that you selected in your order.\n• Return request must be made on a valid reason within 48 hours of receiving the goods in writing to [email protected] with clearly stating reasons for return.\n• Shipping charges will not be refunded and customers are required to pay for the return shipping costs of the goods.'
+        a: '• At Riko Craft, we stand behind the quality of our products and we assure each and every product passes through a strict quality checking process.\n• Please bear in mind that all handmade items are bound to have minor defects in them and any two item of same product will never be exactly same. These inherent quality of handicraft make them unique and add value of it being a genuine and authentic handmade product. These are not acceptable valid reasons for return.\n• However we will provide a full refund for the cost of the product if the product is found faulty or defective or not the one that you selected in your order.\n• Return request must be made on a valid reason within 48 hours of receiving the goods in writing to [email protected] with clearly stating reasons for return.\n• Shipping charges will not be refunded and customers are required to pay for the return shipping costs of the goods.'
       }
     ]
   }
 ];
 
 export default function FAQ() {
-  const [activeCategory, setActiveCategory] = useState('About SREJONEE');
+  const [activeCategory, setActiveCategory] = useState('About RIKO CRAFT');
   const [activeQuestion, setActiveQuestion] = useState(null);
 
   return (

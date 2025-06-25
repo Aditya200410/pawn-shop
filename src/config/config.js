@@ -40,8 +40,8 @@ const config = {
       return imagePath;
     }
     
-    // Remove any leading slashes
-    const cleanPath = imagePath.replace(/^\/+/, '');
+    // Remove any leading slashes and clean the path
+    const cleanPath = imagePath.replace(/^\/+/, '').replace(/\/+/g, '/');
     
     // If it's a path to a backend data file
     if (cleanPath.includes('Rikocraft.com') || !cleanPath.includes('/')) {

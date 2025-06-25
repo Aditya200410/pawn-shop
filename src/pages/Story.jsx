@@ -28,8 +28,8 @@ export default function Story() {
           transition={{ duration: 1 }}
         >
           <img
-            src="https://srejonee.com/wp-content/uploads/2022/08/indian-art-and-craft.jpg"
-            alt="Srejonee Handicrafts"
+            src="/images/indian-art-and-craft.jpg"
+            alt="Riko Craft Handicrafts"
             className="w-full h-[400px] object-cover"
           />
         </motion.div>
@@ -43,7 +43,7 @@ export default function Story() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          Srejonee: Bangla beyond Bengal
+          Riko Craft: Bangla beyond Bengal
         </motion.h1>
         <motion.p
           className="mt-4 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto"
@@ -51,7 +51,7 @@ export default function Story() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          Discover the unseen stories behind Bengal’s handmade marvels.
+          Discover the unseen stories behind Bengal's handmade marvels.
         </motion.p>
       </div>
 
@@ -73,26 +73,28 @@ export default function Story() {
         <motion.p variants={item} className="text-lg text-gray-700 leading-relaxed">
           Are you looking for a unique collection of handicrafts that showcase the rich cultural
           heritage of ancient Bengal? Look no further than{" "}
-          <span className="text-[#8B4513] font-semibold">Srejonee Art & Creations</span>! Our
+          <span className="text-[#8B4513] font-semibold">Riko Craft Art & Creations</span>! Our
           collection features an exquisite array of handicrafts that range from traditional
           pottery and textiles to modern home decor items. Each piece is carefully crafted by
           skilled artisans using age-old techniques that have been passed down through generations.
         </motion.p>
 
         <motion.p variants={item} className="text-lg text-gray-700 leading-relaxed">
-          With Srejonee, you can bring the beauty and elegance of Bengal’s handicrafts into your
-          home or workspace. Don’t settle for mass-produced decor items when you can have
+          With Riko Craft, you can bring the beauty and elegance of Bengal's handicrafts into your
+          home or workspace. Don't settle for mass-produced decor items when you can have
           something truly special and one-of-a-kind.{" "}
-          <span className="text-[#8B4513]font-semibold">Shop with Srejonee Art & Creations today!</span>
+          <span className="text-[#8B4513] font-semibold">Shop with Riko Craft Art & Creations today!</span>
         </motion.p>
 
         <motion.p variants={item} className="text-lg text-gray-700 leading-relaxed">
           Your online shopping experience is always protected by our support team 24×7 by mail
           and phone. Please register yourself at{" "}
-         
+          <a href="https://rikocraft.com" className="underline text-[#8B4513]">
+            rikocraft.com
+          </a>{" "}
           for product updates and promotions or write to us at{" "}
-          <a href="mailto:srejonee@gmail.com" className="underline text-[#8B4513]">
-            srejonee@gmail.com
+          <a href="mailto:support@rikocraft.com" className="underline text-[#8B4513]">
+            support@rikocraft.com
           </a>{" "}
           and let us know your feedback, suggestions and concerns.
         </motion.p>
