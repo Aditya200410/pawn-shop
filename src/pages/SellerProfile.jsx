@@ -140,10 +140,6 @@ const SellerProfile = () => {
                       <p className="text-sm text-gray-500">Phone</p>
                       <p className="text-lg font-medium text-gray-900">{seller.phone}</p>
                     </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500">Status</p>
-                      <p className="text-lg font-medium text-gray-900 capitalize">{seller.status}</p>
-                    </div>
                   </div>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="text-sm text-gray-500">Address</p>

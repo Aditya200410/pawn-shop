@@ -67,7 +67,7 @@ const BecomeSeller = () => {
     try {
       const { confirmPassword, ...registerData } = formData;
       await register(registerData);
-      toast.success('Registration successful! Please wait for approval.');
+      toast.success('Registration successful!');
       navigate('/seller/auth');
     } catch (error) {
       toast.error(error.message || 'An error occurred during registration');
