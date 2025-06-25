@@ -145,6 +145,34 @@ const SellerProfile = () => {
                       <p className="text-lg font-medium text-amber-600">{seller.couponToken}</p>
                       <p className="text-xs text-gray-500 mt-1">Share this code with your customers for discounts</p>
                     </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-500">Your Shop Link</p>
+                      <a 
+                        href={seller.websiteLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-lg font-medium text-blue-600 hover:underline break-all"
+                      >
+                        {seller.websiteLink}
+                      </a>
+                      <p className="text-xs text-gray-500 mt-1">Share this link with your customers</p>
+                    </div>
+                    {seller.qrCode && (
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <p className="text-sm text-gray-500 mb-2">Shop QR Code</p>
+                        <div className="flex flex-col items-center">
+                          <img src={seller.qrCode} alt="Shop QR Code" className="w-40 h-40" />
+                          <p className="text-xs text-gray-500 mt-2">Scan to visit your shop</p>
+                          <a
+                            href={seller.qrCode}
+                            download="shop-qr-code.png"
+                            className="mt-2 text-sm text-blue-600 hover:underline"
+                          >
+                            Download QR Code
+                          </a>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="text-sm text-gray-500">Address</p>
