@@ -277,7 +277,7 @@ const ProductView = () => {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full text-sm font-medium shadow-lg"
+                className="absolute bottom-4 left-0 right-0 mx-auto w-fit bg-white/90 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full text-sm font-medium shadow-lg"
               >
                 {selectedImage + 1} / {productImages.length}
               </motion.div>

@@ -29,9 +29,15 @@ export default function AuthForm({ onSubmit, title, buttonText, formData, setFor
         />
         <button
           type="submit"
-          className="w-full bg-lime-500 hover:bg-lime-600 text-white p-2 rounded"
+          className="w-full p-2 rounded relative overflow-hidden group"
+          style={{ 
+            backgroundImage: 'url(/footer.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
         >
-          {buttonText}
+          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
+          <span className="relative z-10 text-white font-medium">{buttonText}</span>
         </button>
       </form>
     </motion.div>
