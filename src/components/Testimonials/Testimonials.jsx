@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import './Testimonials.css';
+
 
 const testimonials = [
   {
