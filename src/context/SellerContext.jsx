@@ -48,7 +48,8 @@ export const SellerProvider = ({ children }) => {
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         status: data.seller.status,
-        createdAt: data.seller.createdAt
+        createdAt: data.seller.createdAt,
+        couponToken: data.seller.couponToken
       };
 
       setSeller(sellerData);
@@ -86,7 +87,8 @@ export const SellerProvider = ({ children }) => {
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         status: data.seller.status,
-        createdAt: data.seller.createdAt
+        createdAt: data.seller.createdAt,
+        couponToken: data.seller.couponToken
       };
 
       localStorage.setItem('seller_token', data.token);
@@ -127,7 +129,8 @@ export const SellerProvider = ({ children }) => {
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         status: data.seller.status,
-        createdAt: data.seller.createdAt
+        createdAt: data.seller.createdAt,
+        couponToken: data.seller.couponToken
       };
 
       localStorage.setItem('seller_token', data.token);
@@ -176,7 +179,8 @@ export const SellerProvider = ({ children }) => {
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         status: data.seller.status,
-        createdAt: data.seller.createdAt
+        createdAt: data.seller.createdAt,
+        couponToken: data.seller.couponToken
       };
 
       setSeller(updatedSellerData);
