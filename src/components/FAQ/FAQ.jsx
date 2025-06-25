@@ -10,10 +10,7 @@ const faqCategories = [
         q: 'Is Riko Craft An Indian Company?',
         a: 'Yes, RIKO CRAFT is a registered proprietorship start-up company in India. Full name of the company is **Riko Craft Art & Creations.**'
       },
-      {
-        q: 'Where Is Riko Craft\'s Head Office Located?',
-        a: '• Riko Craft Art & Creations\' Head Office is located in KOLKATA, India. Our address is: 623 Active Business Park, 54/10 D C Dey Road, Tangra, Kolkata – 700015.\n• Our only physical Store till now, we call it \'Riko Craft Gallery\', is also co-located at the same address.'
-      },
+     
       {
         q: 'Where Can I Buy Riko Craft Products In India?',
         a: '• You can buy RIKO CRAFT products directly from our Stores: "Riko Craft Gallery" at Kolkata.\n• **Alternatively** you can also buy our products **online** from our website: **rikocraft.com**'
