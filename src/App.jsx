@@ -31,6 +31,7 @@ import Toast from './components/Toast/Toast';
 import ForgotPassword from './pages/ForgotPassword';
 import AboutUs from './pages/AboutUs';
 import OrderConfirmation from './pages/OrderConfirmation';
+import BecomeSeller from './pages/BecomeSeller';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -140,6 +141,7 @@ function AppContent() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path='/seller'  element={<BecomeSeller/>}/>
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />

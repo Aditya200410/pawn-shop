@@ -30,7 +30,7 @@ const faqCategories = [
     questions: [
       {
         q: 'Where Are Your Manufacturing Facilities Located?',
-        a: 'Riko Craft does have a small production unit in Bhadreswar, Dist Hooghly, West Bengal where few of our products are manufactured but majority of our products are created by village-based artisans across West Bengal. We identify, develop and nurture age old traditional skills of talented artisans across Bengal and work in close association with them to preserve the Art Form to prevent it from extinction. This commitment has helped preserve many traditional crafts of India and created employment opportunities in deep rural areas.'
+        a: 'Riko Craft does have a small production unit in Jamshedpur, Jharkhand where few of our products are manufactured but majority of our products are created by village-based artisans across Jharkhand. We identify, develop and nurture age old traditional skills of talented artisans across Bengal and work in close association with them to preserve the Art Form to prevent it from extinction. This commitment has helped preserve many traditional crafts of India and created employment opportunities in deep rural areas.'
       },
       {
         q: 'Are All RIKO CRAFT Products Handmade?',

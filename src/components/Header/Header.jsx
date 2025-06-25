@@ -150,6 +150,7 @@ const Header = () => {
   const menuItems = [
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
+    
    
   
   ];
@@ -266,6 +267,8 @@ const Header = () => {
               <div className="flex items-center space-x-6">
                 <a href="/about" className="text-white/80 hover:text-white">Our Story</a>
                 <a href="/contact" className="text-white/80 hover:text-white">Contact</a>
+                <a href="/FAQ" className="text-white/80 hover:text-white">FAQ</a>
+                <a href="/seller" className="text-white/80 hover:text-white">Become our seller</a>
                 <div className="flex items-center space-x-4 text-white">
                   <a href="#" className="hover:opacity-80"><FaFacebookF /></a>
                   <a href="#" className="hover:opacity-80"><FaTwitter /></a>
@@ -505,6 +508,7 @@ const Header = () => {
                            <li><Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Shop</Link></li>
                            <li><Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">About Us</Link></li>
                            <li><Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Contact Us</Link></li>
+                           <li><Link to="/seller" onClick={() => setIsMobileMenuOpen(false)} className="block py-3 px-4 rounded-md text-white/80 hover:bg-[#8f3a61] hover:text-white transition-colors">Become a seller</Link></li>
                         </ul>
                       </nav>
                     </div>
