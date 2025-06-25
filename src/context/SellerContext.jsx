@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import config from '../config/config';
+import { toast } from 'react-hot-toast';
 
 const SellerContext = createContext();
 
@@ -27,7 +28,7 @@ export const SellerProvider = ({ children }) => {
 
   const fetchSellerProfile = async (token) => {
     try {
-      const response = await fetch(`${config.API_URLS.BASE}/seller/profile`, {
+      const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -38,10 +39,14 @@ export const SellerProvider = ({ children }) => {
       }
 
       const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to fetch seller profile');
+      }
       setSeller(data.seller);
     } catch (err) {
       setError(err.message);
       localStorage.removeItem('seller_token');
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -49,7 +54,8 @@ export const SellerProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch(`${config.API_URLS.BASE}/seller/login`, {
+      setLoading(true);
+      const response = await fetch(`${config.API_URLS.SELLER}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -59,22 +65,27 @@ export const SellerProvider = ({ children }) => {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Login failed');
       }
 
       localStorage.setItem('seller_token', data.token);
       setSeller(data.seller);
+      toast.success('Login successful!');
       return data;
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
   const register = async (sellerData) => {
     try {
-      const response = await fetch(`${config.API_URLS.BASE}/seller/register`, {
+      setLoading(true);
+      const response = await fetch(`${config.API_URLS.SELLER}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -84,28 +95,34 @@ export const SellerProvider = ({ children }) => {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Registration failed');
       }
 
       localStorage.setItem('seller_token', data.token);
       setSeller(data.seller);
+      toast.success('Registration successful!');
       return data;
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = () => {
     localStorage.removeItem('seller_token');
     setSeller(null);
+    toast.success('Logged out successfully');
   };
 
   const updateProfile = async (updates) => {
     try {
+      setLoading(true);
       const token = localStorage.getItem('seller_token');
-      const response = await fetch(`${config.API_URLS.BASE}/seller/profile`, {
+      const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -116,15 +133,19 @@ export const SellerProvider = ({ children }) => {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update profile');
       }
 
       setSeller(data.seller);
+      toast.success('Profile updated successfully');
       return data;
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 

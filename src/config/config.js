@@ -15,6 +15,7 @@ const config = {
     FEATURED_PRODUCTS: '/api/featured-products',
     BESTSELLER: '/api/bestseller',
     LOVED: '/api/loved',
+    SELLER: '/api/seller',
   },
   
   // Full API URLs (constructed from base URL and endpoints)
@@ -28,6 +29,7 @@ const config = {
       FEATURED_PRODUCTS: `${this.API_BASE_URL}${this.API_ENDPOINTS.FEATURED_PRODUCTS}`,
       BESTSELLER: `${this.API_BASE_URL}${this.API_ENDPOINTS.BESTSELLER}`,
       LOVED: `${this.API_BASE_URL}${this.API_ENDPOINTS.LOVED}`,
+      SELLER: `${this.API_BASE_URL}${this.API_ENDPOINTS.SELLER}`,
     };
   },
   
