@@ -324,7 +324,8 @@ const Account = () => {
                 key={order._id}
                 className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex flex-wrap justify-between items-start gap-4">
+                {/* Order Header */}
+                <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                   <div>
                     <p className="text-sm text-gray-500">Order ID</p>
                     <p className="font-mono text-sm">{order._id}</p>
@@ -337,21 +338,71 @@ const Account = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center gap-4">
-                  <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
-                    {getStatusIcon(order.status)}
-                    <span>{order.status?.charAt(0).toUpperCase() + order.status?.slice(1)}</span>
+                {/* Order Items Preview */}
+                <div className="mt-4 space-y-3">
+                  {order.items.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                      <div className="flex items-center space-x-4">
+                        <img
+                          src={config.fixImageUrl(item.image)}
+                          alt={item.name}
+                          className="h-16 w-16 object-cover rounded-lg"
+                          onError={(e) => {
+                            e.target.src = '/placeholder.png';
+                            e.target.onerror = null;
+                          }}
+                        />
+                        <div>
+                          <h4 className="font-medium text-gray-900">{item.name}</h4>
+                          <p className="text-sm text-gray-500">
+                            Quantity: {item.quantity} × ₹{item.price.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="font-medium text-gray-900">
+                        ₹{(item.quantity * item.price).toFixed(2)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Order Summary */}
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex flex-wrap gap-3">
+                      <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.orderStatus)}`}>
+                        {getStatusIcon(order.orderStatus)}
+                        <span>{order.orderStatus?.charAt(0).toUpperCase() + order.orderStatus?.slice(1)}</span>
+                      </div>
+                      <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${
+                        order.paymentStatus === 'completed' 
+                          ? 'bg-green-50 text-green-700 border-green-200'
+                          : order.paymentStatus === 'failed'
+                          ? 'bg-red-50 text-red-700 border-red-200'
+                          : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                      }`}>
+                        <CreditCardIcon className="h-4 w-4" />
+                        <span>Payment: {order.paymentStatus?.charAt(0).toUpperCase() + order.paymentStatus?.slice(1)}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">Total Amount</p>
+                        <p className="text-lg font-semibold text-gray-900">₹{order.totalAmount.toFixed(2)}</p>
+                      </div>
+                      <button
+                        onClick={() => setSelectedOrderId(order._id)}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                      >
+                        <EyeIcon className="h-4 w-4" />
+                        View Details
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex-1"></div>
-                  <div className="flex items-center gap-4">
-                    <p className="text-gray-900 font-medium">₹{order.totalAmount.toFixed(2)}</p>
-                    <button
-                      onClick={() => setSelectedOrderId(order._id)}
-                      className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
-                    >
-                      <EyeIcon className="h-4 w-4" />
-                      View Details
-                    </button>
+
+                  {/* Shipping Address Preview */}
+                  <div className="mt-4 text-sm text-gray-500">
+                    <p>Shipping to: {order.address.street}, {order.address.city}, {order.address.state} {order.address.pincode}</p>
                   </div>
                 </div>
               </div>
