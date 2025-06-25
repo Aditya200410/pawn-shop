@@ -14,9 +14,7 @@ export default function Hero() {
 
   const getMediaUrl = (path) => {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
-    if (path.startsWith('/')) return `${config.API_BASE_URL}${path}`;
-    return `${config.API_BASE_URL}/pawnbackend/data/${path}`;
+    return config.fixImageUrl(path);
   };
 
   const isVideo = (path) => {
@@ -41,7 +39,7 @@ export default function Hero() {
         
         const processedSlides = response.data.map(item => {
           const mediaUrl = getMediaUrl(item.image);
-          console.log('Processing slide media:', { id: item.id, mediaUrl });
+          console.log('Processing slide media:', { id: item.id, mediaUrl, originalPath: item.image });
           return {
             id: item._id || item.id,
             image: mediaUrl,
@@ -118,7 +116,10 @@ export default function Hero() {
           playsInline
           onError={() => handleMediaError(slide.id)}
           style={{ display: mediaErrors[slide.id] ? 'none' : 'block' }}
-        />
+        >
+          <source src={slide.image} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       );
     }
     return (

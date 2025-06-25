@@ -40,15 +40,18 @@ const config = {
       return imagePath;
     }
     
-    // If it's a path to a backend data file (e.g., in Rikocraft.com or just a filename)
-    if (imagePath.includes('Rikocraft.com') || !imagePath.includes('/')) {
-      // It's a backend file, so prefix with the backend URL and data path
-      const basePath = imagePath.startsWith('/pawnbackend/data/') ? '' : '/pawnbackend/data/';
-      return `${config.API_BASE_URL}${basePath}${imagePath}`;
+    // Remove any leading slashes
+    const cleanPath = imagePath.replace(/^\/+/, '');
+    
+    // If it's a path to a backend data file
+    if (cleanPath.includes('Rikocraft.com') || !cleanPath.includes('/')) {
+      // Always use /pawnbackend/data/ prefix for backend files
+      const basePath = cleanPath.startsWith('pawnbackend/data/') ? '' : 'pawnbackend/data/';
+      return `${config.API_BASE_URL}/${basePath}${cleanPath}`;
     }
     
     // By default, assume it's a frontend public asset
-    return imagePath;
+    return `/${cleanPath}`;
   },
   
   // Environment settings
