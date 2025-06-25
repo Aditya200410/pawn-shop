@@ -35,6 +35,7 @@ export const SellerProvider = ({ children }) => {
       });
 
       const data = await response.json();
+      console.log('Profile data:', data); // Debug log
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to fetch seller profile');
@@ -49,7 +50,9 @@ export const SellerProvider = ({ children }) => {
         address: data.seller.address || '',
         status: data.seller.status,
         createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken
+        couponToken: data.seller.couponToken,
+        websiteLink: data.seller.websiteLink,
+        qrCode: data.seller.qrCode
       };
 
       setSeller(sellerData);
@@ -74,6 +77,7 @@ export const SellerProvider = ({ children }) => {
       });
 
       const data = await response.json();
+      console.log('Login data:', data); // Debug log
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Login failed');
@@ -88,7 +92,9 @@ export const SellerProvider = ({ children }) => {
         address: data.seller.address || '',
         status: data.seller.status,
         createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken
+        couponToken: data.seller.couponToken,
+        websiteLink: data.seller.websiteLink,
+        qrCode: data.seller.qrCode
       };
 
       localStorage.setItem('seller_token', data.token);
@@ -116,6 +122,7 @@ export const SellerProvider = ({ children }) => {
       });
 
       const data = await response.json();
+      console.log('Register data:', data); // Debug log
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Registration failed');
@@ -130,7 +137,9 @@ export const SellerProvider = ({ children }) => {
         address: data.seller.address || '',
         status: data.seller.status,
         createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken
+        couponToken: data.seller.couponToken,
+        websiteLink: data.seller.websiteLink,
+        qrCode: data.seller.qrCode
       };
 
       localStorage.setItem('seller_token', data.token);
@@ -166,6 +175,7 @@ export const SellerProvider = ({ children }) => {
       });
 
       const data = await response.json();
+      console.log('Update profile data:', data); // Debug log
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update profile');
@@ -180,7 +190,9 @@ export const SellerProvider = ({ children }) => {
         address: data.seller.address || '',
         status: data.seller.status,
         createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken
+        couponToken: data.seller.couponToken,
+        websiteLink: data.seller.websiteLink,
+        qrCode: data.seller.qrCode
       };
 
       setSeller(updatedSellerData);
