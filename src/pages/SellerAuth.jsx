@@ -19,8 +19,7 @@ export default function SellerAuth() {
     password: '',
     businessName: '',
     phone: '',
-    address: '',
-    businessType: ''
+    address: ''
   });
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export default function SellerAuth() {
       if (isLogin) {
         await login(formData.email, formData.password);
       } else {
-        if (!formData.businessName || !formData.phone || !formData.address || !formData.businessType) {
+        if (!formData.businessName || !formData.phone || !formData.address) {
           toast.error('Please fill in all fields');
           return;
         }
@@ -62,7 +61,7 @@ export default function SellerAuth() {
   }
 
   return (
-    <div className="min-h-screen  py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full mx-auto space-y-8">
         <motion.div
           initial="hidden"
@@ -125,31 +124,10 @@ export default function SellerAuth() {
                   <input
                     type="text"
                     name="businessName"
-                    required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                     onChange={handleChange}
                     value={formData.businessName}
                   />
-                </div>
-
-                <div>
-                  <label htmlFor="businessType" className="block text-sm font-medium text-gray-700">
-                    Business Type
-                  </label>
-                  <select
-                    name="businessType"
-                    required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                    onChange={handleChange}
-                    value={formData.businessType}
-                  >
-                    <option value="">Select a business type</option>
-                    <option value="retail">Retail</option>
-                    <option value="wholesale">Wholesale</option>
-                    <option value="manufacturer">Manufacturer</option>
-                    <option value="artisan">Artisan/Craftsperson</option>
-                    <option value="reseller">Reseller</option>
-                  </select>
                 </div>
 
                 <div>
@@ -159,7 +137,6 @@ export default function SellerAuth() {
                   <input
                     type="tel"
                     name="phone"
-                    required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                     onChange={handleChange}
                     value={formData.phone}
@@ -170,10 +147,9 @@ export default function SellerAuth() {
                   <label htmlFor="address" className="block text-sm font-medium text-gray-700">
                     Business Address
                   </label>
-                  <textarea
+                  <input
+                    type="text"
                     name="address"
-                    rows="3"
-                    required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                     onChange={handleChange}
                     value={formData.address}
@@ -183,14 +159,12 @@ export default function SellerAuth() {
             )}
 
             <div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
               >
-                {isLogin ? 'Sign In' : 'Create Account'}
-              </motion.button>
+                {isLogin ? 'Sign In' : 'Register'}
+              </button>
             </div>
           </form>
 
@@ -199,9 +173,7 @@ export default function SellerAuth() {
               onClick={() => setIsLogin(!isLogin)}
               className="w-full text-center text-sm text-amber-600 hover:text-amber-500"
             >
-              {isLogin
-                ? "Don't have a seller account? Register now"
-                : 'Already have an account? Sign in'}
+              {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </button>
           </div>
         </motion.div>

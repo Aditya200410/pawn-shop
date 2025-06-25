@@ -150,8 +150,17 @@ const Header = () => {
   const menuItems = [
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
-    
+   
   ];
+
+  const MmenuItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Shop', path: '/shop' },
+    { name: 'Become a Seller', path: '/seller' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' }
+  ];
+
 
   const mobileMenuVariants = {
     closed: {
@@ -362,7 +371,7 @@ const Header = () => {
         </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8 ">
+            <nav className="hidden lg:flex items-center space-x-8">
               {menuItems.map((item) => (
                 <Link
                   key={item.path}
@@ -504,7 +513,7 @@ const Header = () => {
                       {/* Navigation Links */}
                       <nav>
                         <ul className="space-y-1">
-                          {menuItems.map((item) => (
+                          {MmenuItems.map((item) => (
                             <li key={item.path}>
                               <Link
                                 to={item.path}

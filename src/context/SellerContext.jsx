@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import config from '../config/config';
 import { toast } from 'react-hot-toast';
 
-const SellerContext = createContext();
+export const SellerContext = createContext();
 
 export const useSeller = () => {
   const context = useContext(SellerContext);
@@ -48,8 +48,6 @@ export const SellerProvider = ({ children }) => {
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         status: data.seller.status,
-        verified: data.seller.verified,
-        businessType: data.seller.businessType,
         createdAt: data.seller.createdAt
       };
 
@@ -88,8 +86,6 @@ export const SellerProvider = ({ children }) => {
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         status: data.seller.status,
-        verified: data.seller.verified,
-        businessType: data.seller.businessType,
         createdAt: data.seller.createdAt
       };
 
@@ -131,8 +127,6 @@ export const SellerProvider = ({ children }) => {
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         status: data.seller.status,
-        verified: data.seller.verified,
-        businessType: data.seller.businessType,
         createdAt: data.seller.createdAt
       };
 
@@ -182,8 +176,6 @@ export const SellerProvider = ({ children }) => {
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         status: data.seller.status,
-        verified: data.seller.verified,
-        businessType: data.seller.businessType,
         createdAt: data.seller.createdAt
       };
 

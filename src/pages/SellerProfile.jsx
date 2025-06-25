@@ -12,8 +12,7 @@ const SellerProfile = () => {
   const [formData, setFormData] = useState({
     businessName: seller?.businessName || '',
     phone: seller?.phone || '',
-    address: seller?.address || '',
-    businessType: seller?.businessType || ''
+    address: seller?.address || ''
   });
 
   if (loading) {
@@ -53,7 +52,7 @@ const SellerProfile = () => {
   };
 
   return (
-    <div className="min-h-screen  py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -72,17 +71,6 @@ const SellerProfile = () => {
               </button>
             </div>
             <p className="mt-2 text-amber-100">Welcome back, {seller.businessName}!</p>
-          </div>
-
-          {/* Status Banner */}
-          <div className={`px-6 py-3 ${
-            seller.status === 'approved' ? 'bg-green-100 text-green-700' :
-            seller.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-            'bg-red-100 text-red-700'
-          }`}>
-            <p className="text-sm font-medium">
-              Account Status: <span className="capitalize">{seller.status}</span>
-            </p>
           </div>
 
           {/* Profile Content */}
@@ -121,16 +109,6 @@ const SellerProfile = () => {
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Business Type</label>
-                    <input
-                      type="text"
-                      name="businessType"
-                      value={formData.businessType}
-                      onChange={handleChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                    />
-                  </div>
                   <div className="flex justify-end space-x-3">
                     <button
                       type="button"
@@ -163,8 +141,8 @@ const SellerProfile = () => {
                       <p className="text-lg font-medium text-gray-900">{seller.phone}</p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500">Business Type</p>
-                      <p className="text-lg font-medium text-gray-900">{seller.businessType}</p>
+                      <p className="text-sm text-gray-500">Status</p>
+                      <p className="text-lg font-medium text-gray-900 capitalize">{seller.status}</p>
                     </div>
                   </div>
                   <div className="bg-gray-50 p-4 rounded-lg">
