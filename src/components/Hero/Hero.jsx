@@ -38,11 +38,11 @@ const Hero = () => {
   };
 
   const renderCarouselItem = (item) => {
-    const mediaUrl = config.fixImageUrl(item.image); // Changed from mediaUrl to image
+    const mediaUrl = config.fixImageUrl(item.image);
     const isVideo = mediaUrl.toLowerCase().endsWith('.mp4');
 
     return (
-      <div key={item.id} className="carousel-item"> {/* Changed from _id to id */}
+      <div key={item._id} className="carousel-item">
         {isVideo ? (
           <video
             className="carousel-media"
