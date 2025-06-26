@@ -1,18 +1,19 @@
 .hero-section {
-  position: relative;
   width: 100%;
-  height: 600px;
-  overflow: hidden;
+  position: relative;
+  margin-bottom: 2rem;
 }
 
-.main-carousel {
+.hero-carousel {
+  width: 100%;
   height: 100%;
 }
 
 .carousel-item {
   position: relative;
+  width: 100%;
   height: 600px;
-  background-color: #000;
+  overflow: hidden;
 }
 
 .carousel-media {
@@ -23,75 +24,81 @@
 
 .carousel-content {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 2rem;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-  color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 800px;
 }
 
-.carousel-content h2 {
+.carousel-title {
   font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.carousel-content h3 {
-  font-size: 1.75rem;
-  font-weight: 500;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.carousel-content p {
-  font-size: 1.25rem;
-  max-width: 800px;
-  margin: 0 auto 1.5rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+.carousel-subtitle {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-description {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
 }
 
 .carousel-button {
   display: inline-block;
-  padding: 0.75rem 2rem;
-  background-color: #d97706;
-  color: white;
+  padding: 0.8rem 2rem;
+  background-color: #007bff;
+  color: #fff;
   text-decoration: none;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  font-size: 1.125rem;
-  transition: background-color 0.2s ease;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 .carousel-button:hover {
-  background-color: #b45309;
+  background-color: #0056b3;
 }
 
-.carousel-loading {
+.hero-loading {
   width: 100%;
-  height: 600px;
+  height: 400px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background-color: #f3f4f6;
-  color: #6b7280;
-  font-size: 1.25rem;
+  align-items: center;
+  background-color: #f8f9fa;
 }
 
-.carousel-error {
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.hero-error,
+.hero-empty {
   width: 100%;
-  height: 600px;
+  height: 400px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background-color: #f3f4f6;
-  color: #ef4444;
-  font-size: 1.25rem;
-  padding: 2rem;
-  text-align: center;
+  align-items: center;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  font-size: 1.2rem;
 }
 
 .media-error {
@@ -99,58 +106,71 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
+  color: #dc3545;
+  font-size: 1.2rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 1rem;
+  border-radius: 4px;
 }
 
-/* Responsive adjustments */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive styles */
 @media (max-width: 768px) {
-  .hero-section,
   .carousel-item {
     height: 400px;
   }
 
-  .carousel-content h2 {
-    font-size: 1.75rem;
+  .carousel-content {
+    width: 90%;
+    padding: 1.5rem;
   }
 
-  .carousel-content h3 {
-    font-size: 1.25rem;
+  .carousel-title {
+    font-size: 2rem;
   }
 
-  .carousel-content p {
+  .carousel-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .carousel-description {
     font-size: 1rem;
   }
 
   .carousel-button {
-    padding: 0.5rem 1.5rem;
+    padding: 0.6rem 1.5rem;
     font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .hero-section,
   .carousel-item {
     height: 300px;
   }
 
-  .carousel-content h2 {
+  .carousel-content {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .carousel-title {
     font-size: 1.5rem;
   }
 
-  .carousel-content h3 {
-    font-size: 1.125rem;
+  .carousel-subtitle {
+    font-size: 1.2rem;
   }
 
-  .carousel-content p {
-    font-size: 0.875rem;
+  .carousel-description {
+    font-size: 0.9rem;
   }
 
   .carousel-button {
-    padding: 0.375rem 1.25rem;
-    font-size: 0.875rem;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
   }
 } 

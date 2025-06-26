@@ -18,7 +18,7 @@ const Hero = () => {
       const response = await fetch(`${config.API_BASE_URL}/api/hero-carousel/active`);
       if (!response.ok) throw new Error('Failed to fetch carousel data');
       const data = await response.json();
-      console.log('Carousel data received:', data); // Debug log
+      console.log('Carousel data received:', data);
       setCarouselData(data);
     } catch (err) {
       console.error('Error fetching carousel data:', err);
@@ -37,73 +37,79 @@ const Hero = () => {
     e.target.parentNode.appendChild(fallbackText);
   };
 
-  const renderCarouselItem = (item) => {
-    const mediaUrl = config.fixImageUrl(item.image);
-    const isVideo = mediaUrl.toLowerCase().endsWith('.mp4');
-
+  if (loading) {
     return (
-      <div key={item._id} className="carousel-item">
-        {isVideo ? (
-          <video
-            className="carousel-media"
-            autoPlay
-            loop
-            muted
-            playsInline
-            onError={handleMediaError}
-          >
-            <source src={mediaUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <img
-            src={mediaUrl}
-            alt={item.title || 'Carousel item'}
-            className="carousel-media"
-            onError={handleMediaError}
-          />
-        )}
-        <div className="carousel-content">
-          <h2>{item.title}</h2>
-          {item.subtitle && <h3>{item.subtitle}</h3>}
-          {item.description && <p>{item.description}</p>}
-          {item.buttonText && (
-            <a href={item.buttonLink || '/shop'} className="carousel-button">
-              {item.buttonText}
-            </a>
-          )}
-        </div>
+      <div className="hero-loading">
+        <div className="loading-spinner"></div>
       </div>
     );
-  };
-
-  if (loading) {
-    return <div className="carousel-loading">Loading...</div>;
   }
 
   if (error) {
-    return <div className="carousel-error">{error}</div>;
+    return (
+      <div className="hero-error">
+        <p>{error}</p>
+      </div>
+    );
   }
 
-  if (!carouselData.length) {
-    return null;
+  if (!carouselData || carouselData.length === 0) {
+    return (
+      <div className="hero-empty">
+        <p>No carousel items available</p>
+      </div>
+    );
   }
 
   return (
     <div className="hero-section">
       <Carousel
-        showArrows={true}
+        autoPlay
+        infiniteLoop
+        showStatus={false}
         showThumbs={false}
-        infiniteLoop={true}
-        autoPlay={true}
         interval={5000}
+        transitionTime={500}
         stopOnHover={true}
-        swipeable={true}
-        emulateTouch={true}
         dynamicHeight={false}
-        className="main-carousel"
+        className="hero-carousel"
       >
-        {carouselData.map(renderCarouselItem)}
+        {carouselData.map((item) => (
+          <div key={item._id} className="carousel-item">
+            {item.image.endsWith('.mp4') ? (
+              <video
+                className="carousel-media"
+                autoPlay
+                loop
+                muted
+                playsInline
+                onError={handleMediaError}
+              >
+                <source src={item.image} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img
+                src={item.image}
+                alt={item.title}
+                className="carousel-media"
+                onError={handleMediaError}
+              />
+            )}
+            <div className="carousel-content">
+              <h2 className="carousel-title">{item.title}</h2>
+              {item.subtitle && (
+                <h3 className="carousel-subtitle">{item.subtitle}</h3>
+              )}
+              {item.description && (
+                <p className="carousel-description">{item.description}</p>
+              )}
+              <a href={item.buttonLink} className="carousel-button">
+                {item.buttonText}
+              </a>
+            </div>
+          </div>
+        ))}
       </Carousel>
     </div>
   );
