@@ -73,10 +73,10 @@ export default function MostLoved() {
         const data = await res.json();
         
         // Cache the data
-        lovedProductsCache = data;
+        lovedProductsCache = Array.isArray(data) ? data : data.products || [];
         lovedCacheTimestamp = Date.now();
         
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : data.products || []);
       } catch (err) {
         console.error('Error fetching most loved products:', err);
         setError(err.message || 'Error fetching most loved products');

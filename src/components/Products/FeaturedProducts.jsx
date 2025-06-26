@@ -73,10 +73,10 @@ export default function FeaturedProducts() {
         const data = await res.json();
         
         // Cache the data
-        productsCache = data;
+        productsCache = Array.isArray(data) ? data : data.products || [];
         cacheTimestamp = Date.now();
         
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : data.products || []);
       } catch (err) {
         console.error('Error fetching featured products:', err);
         setError(err.message || 'Error fetching featured products');
