@@ -59,28 +59,50 @@ export const CartProvider = ({ children }) => {
         setCartItems(updatedCart.items);
         toast.success('Item added to cart');
       } else {
-        // For local storage, we need to fetch the product details first
-        const response = await fetch(`${config.API_URLS.SHOP}/${productId}`);
-        if (!response.ok) throw new Error('Failed to fetch product details');
-        const product = await response.json();
+        // Try fetching product from all collections
+        const endpoints = [
+          `${config.API_URLS.SHOP}/${productId}`,
+          `${config.API_URLS.LOVED}/${productId}`,
+          `${config.API_URLS.BESTSELLER}/${productId}`,
+          `${config.API_URLS.FEATURED_PRODUCTS}/${productId}`
+        ];
+
+        let product = null;
+        for (const endpoint of endpoints) {
+          try {
+            const response = await fetch(endpoint);
+            if (response.ok) {
+              const data = await response.json();
+              product = data.product || data; // Handle both response formats
+              break;
+            }
+          } catch (error) {
+            console.log(`Product not found in collection: ${endpoint}`);
+          }
+        }
+
+        if (!product) {
+          throw new Error('Product not found');
+        }
         
-    setCartItems((prevItems) => {
+        setCartItems((prevItems) => {
           const existingItem = prevItems.find((item) => 
-            item.productId === productId
+            (item.productId === productId) || (item.id === productId)
           );
           
-      if (existingItem) {
-        const updatedItems = prevItems.map((item) =>
-              item.productId === productId
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+          if (existingItem) {
+            const updatedItems = prevItems.map((item) =>
+              (item.productId === productId) || (item.id === productId)
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
             toast.success('Item quantity updated in cart');
-        return updatedItems;
-      } else {
+            return updatedItems;
+          } else {
             toast.success('Item added to cart');
             return [...prevItems, {
-              productId,
+              productId: productId,
+              id: productId, // Store both for compatibility
               quantity: 1,
               price: product.price,
               name: product.name,
@@ -88,8 +110,8 @@ export const CartProvider = ({ children }) => {
               images: product.images || [],
               category: product.category
             }];
-      }
-    });
+          }
+        });
       }
     } catch (error) {
       console.error('Error adding to cart:', error);

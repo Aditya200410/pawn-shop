@@ -56,24 +56,46 @@ const ProductView = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${config.API_URLS.SHOP}/${id}`);
-        if (!res.ok) throw new Error('Failed to fetch product');
-        const product = await res.json();
-        if (!product) {
-          console.error('Product not found');
-          navigate('/shop');
-          return;
+        
+        // Try fetching from each collection until we find the product
+        const endpoints = [
+          `${config.API_URLS.PRODUCTS}/${id}`,
+          `${config.API_URLS.LOVED}/${id}`,
+          `${config.API_URLS.BESTSELLER}/${id}`,
+          `${config.API_URLS.FEATURED}/${id}`
+        ];
+
+        let foundProduct = null;
+        for (const endpoint of endpoints) {
+          try {
+            const response = await fetch(endpoint);
+            if (response.ok) {
+              const data = await response.json();
+              foundProduct = data.product || data; // Handle both response formats
+              break;
+            }
+          } catch (error) {
+            console.log(`Product not found in collection: ${endpoint}`);
+          }
         }
-        setProduct(product);
-      } catch (err) {
-        console.error('Error fetching product:', err);
-        setProduct(null);
-        navigate('/shop');
+
+        if (!foundProduct) {
+          throw new Error('Product not found');
+        }
+
+        setProduct(foundProduct);
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        toast.error('Failed to load product details');
+        navigate('/'); // Redirect to home on error
       } finally {
         setLoading(false);
       }
     };
-    fetchProduct();
+
+    if (id) {
+      fetchProduct();
+    }
   }, [id, navigate]);
 
   if (loading) return <Loader />;
