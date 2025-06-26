@@ -30,6 +30,7 @@ const config = {
       BESTSELLER: `${this.API_BASE_URL}${this.API_ENDPOINTS.BESTSELLER}`,
       LOVED: `${this.API_BASE_URL}${this.API_ENDPOINTS.LOVED}`,
       SELLER: `${this.API_BASE_URL}${this.API_ENDPOINTS.SELLER}`,
+      PRODUCTS: `${this.API_BASE_URL}${this.API_ENDPOINTS.SHOP}`,
     };
   },
   

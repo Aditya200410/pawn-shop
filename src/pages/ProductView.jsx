@@ -62,7 +62,7 @@ const ProductView = () => {
           `${config.API_URLS.PRODUCTS}/${id}`,
           `${config.API_URLS.LOVED}/${id}`,
           `${config.API_URLS.BESTSELLER}/${id}`,
-          `${config.API_URLS.FEATURED}/${id}`
+          `${config.API_URLS.FEATURED_PRODUCTS}/${id}`
         ];
 
         let foundProduct = null;
@@ -70,12 +70,31 @@ const ProductView = () => {
 
         for (const endpoint of endpoints) {
           try {
+            console.log('Trying endpoint:', endpoint);
             const response = await fetch(endpoint);
             const data = await response.json();
             
-            if (response.ok && data.product) {
-              foundProduct = data.product;
-              break;
+            // Check for both the new MongoDB format and old format
+            if (response.ok) {
+              // Try to get the product from the response
+              foundProduct = data.product || // New MongoDB format
+                           (Array.isArray(data.products) ? data.products[0] : null) || // Array format
+                           (data._id ? data : null); // Direct object format
+              
+              if (foundProduct) {
+                // Ensure consistent ID field
+                foundProduct = {
+                  ...foundProduct,
+                  id: foundProduct._id || foundProduct.id,
+                  // Ensure price and regularPrice are numbers
+                  price: parseFloat(foundProduct.price) || 0,
+                  regularPrice: parseFloat(foundProduct.regularPrice) || 0,
+                  // Ensure images array exists
+                  images: foundProduct.images || [foundProduct.image],
+                };
+                console.log('Found product:', foundProduct);
+                break;
+              }
             }
           } catch (error) {
             fetchError = error;
