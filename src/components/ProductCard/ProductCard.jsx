@@ -9,7 +9,12 @@ const ProductCard = ({ product }) => {
   
   const handleAddToCart = (e) => {
     e.preventDefault();
-    addToCart(product);
+    const productToAdd = {
+      ...product,
+      id: product._id,
+      productId: product._id
+    };
+    addToCart(productToAdd);
   };
 
   const hasOptions = product.attributes && product.attributes.length > 0;

@@ -21,7 +21,11 @@ const cartService = {
         try {
             const response = await axios.post(
                 `${config.API_URLS.CART}/add`,
-                { productId, quantity, email },
+                { 
+                    productId: productId._id || productId.id || productId, 
+                    quantity, 
+                    email 
+                },
                 { withCredentials: config.CORS.WITH_CREDENTIALS }
             );
             return response.data;

@@ -54,26 +54,30 @@ export const CartProvider = ({ children }) => {
     try {
       if (isAuthenticated && user && user.email) {
         // Add to backend by email
-        const updatedCart = await cartService.addToCart(product.id, 1, user.email);
+        const productId = product._id || product.id;
+        const updatedCart = await cartService.addToCart(productId, 1, user.email);
         setCartItems(updatedCart.items);
         toast.success('Item added to cart');
       } else {
         // Add to local state
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => (item.productId || item.id) === product.id);
-      if (existingItem) {
-        const updatedItems = prevItems.map((item) =>
-          (item.productId || item.id) === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        setCartItems((prevItems) => {
+          const productId = product._id || product.id;
+          const existingItem = prevItems.find((item) => 
+            (item.productId || item._id || item.id) === productId
+          );
+          if (existingItem) {
+            const updatedItems = prevItems.map((item) =>
+              (item.productId || item._id || item.id) === productId
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
             toast.success('Item quantity updated in cart');
-        return updatedItems;
-      } else {
+            return updatedItems;
+          } else {
             toast.success('Item added to cart');
-        return [...prevItems, { ...product, quantity: 1 }];
-      }
-    });
+            return [...prevItems, { ...product, productId, quantity: 1 }];
+          }
+        });
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
