@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import cartService from '../services/cartService';
 import { toast } from 'react-hot-toast';
+import config from '../config';
 
 const CartContext = createContext();
 
@@ -50,24 +51,27 @@ export const CartProvider = ({ children }) => {
     }
   }, [cartItems, isAuthenticated]);
 
-  const addToCart = async (product) => {
+  const addToCart = async (productId) => {
     try {
       if (isAuthenticated && user && user.email) {
         // Add to backend by email
-        const productId = product._id || product.id;
         const updatedCart = await cartService.addToCart(productId, 1, user.email);
         setCartItems(updatedCart.items);
         toast.success('Item added to cart');
       } else {
-        // Add to local state
+        // For local storage, we need to fetch the product details first
+        const response = await fetch(`${config.API_URLS.SHOP}/${productId}`);
+        if (!response.ok) throw new Error('Failed to fetch product details');
+        const product = await response.json();
+        
         setCartItems((prevItems) => {
-          const productId = product._id || product.id;
           const existingItem = prevItems.find((item) => 
-            (item.productId || item._id || item.id) === productId
+            item.productId === productId
           );
+          
           if (existingItem) {
             const updatedItems = prevItems.map((item) =>
-              (item.productId || item._id || item.id) === productId
+              item.productId === productId
                 ? { ...item, quantity: item.quantity + 1 }
                 : item
             );
@@ -75,7 +79,15 @@ export const CartProvider = ({ children }) => {
             return updatedItems;
           } else {
             toast.success('Item added to cart');
-            return [...prevItems, { ...product, productId, quantity: 1 }];
+            return [...prevItems, {
+              productId,
+              quantity: 1,
+              price: product.price,
+              name: product.name,
+              image: product.image,
+              images: product.images || [],
+              category: product.category
+            }];
           }
         });
       }

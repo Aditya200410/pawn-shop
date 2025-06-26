@@ -3,18 +3,26 @@ import { ShoppingBag } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useState, useEffect } from 'react';
 import config from '../../config/config.js';
+import { toast } from 'react-hot-toast';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.preventDefault();
-    const productToAdd = {
-      ...product,
-      id: product._id,
-      productId: product._id
-    };
-    addToCart(productToAdd);
+    e.stopPropagation();
+    try {
+      const productId = product._id;
+      if (!productId) {
+        console.error('Product ID is missing');
+        toast.error('Failed to add item to cart');
+        return;
+      }
+      await addToCart(productId);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add item to cart');
+    }
   };
 
   const hasOptions = product.attributes && product.attributes.length > 0;
