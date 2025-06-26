@@ -152,8 +152,8 @@ export default function Footer() {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/blog" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                      Blog
+                    <Link to="/seller" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Seller
                     </Link>
                   </li>
                   <li>
