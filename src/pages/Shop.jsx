@@ -37,7 +37,7 @@ const Shop = () => {
         if (!res.ok) throw new Error('Failed to fetch products');
         const data = await res.json();
         console.log('Fetched products:', data);
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : data.products || []);
         
         // Generate dynamic categories from products data
         generateDynamicCategories(data);

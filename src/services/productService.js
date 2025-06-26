@@ -3,7 +3,7 @@ import config from '../config/config';
 class ProductService {
   async getAllProducts() {
     try {
-      const response = await fetch(`${config.apiUrl}/api/shop`);
+      const response = await fetch(`${config.API_BASE_URL}/api/shop`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -14,7 +14,7 @@ class ProductService {
 
   async getProduct(id) {
     try {
-      const response = await fetch(`${config.apiUrl}/api/shop/${id}`);
+      const response = await fetch(`${config.API_BASE_URL}/api/shop/${id}`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -25,7 +25,7 @@ class ProductService {
 
   async createProduct(formData) {
     try {
-      const response = await fetch(`${config.apiUrl}/api/shop`, {
+      const response = await fetch(`${config.API_BASE_URL}/api/shop`, {
         method: 'POST',
         body: formData, // FormData for multipart/form-data
       });
@@ -39,7 +39,7 @@ class ProductService {
 
   async updateProduct(id, formData) {
     try {
-      const response = await fetch(`${config.apiUrl}/api/shop/${id}`, {
+      const response = await fetch(`${config.API_BASE_URL}/api/shop/${id}`, {
         method: 'PUT',
         body: formData, // FormData for multipart/form-data
       });
@@ -53,7 +53,7 @@ class ProductService {
 
   async deleteProduct(id) {
     try {
-      const response = await fetch(`${config.apiUrl}/api/shop/${id}`, {
+      const response = await fetch(`${config.API_BASE_URL}/api/shop/${id}`, {
         method: 'DELETE',
       });
       const data = await response.json();
