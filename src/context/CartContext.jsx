@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import cartService from '../services/cartService';
 import { toast } from 'react-hot-toast';
-import config from '../config';
+import config from '../config/config';
 
 const CartContext = createContext();
 
