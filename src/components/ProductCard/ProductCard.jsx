@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1">
-      <Link to={`/product/${product.id}`} className="block">
+      <Link to={`/product/${product._id}`} className="block">
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-50">
           <img
             src={mainImage}
@@ -66,7 +66,7 @@ const ProductCard = ({ product }) => {
       <div className="px-4 pb-4">
         {hasOptions ? (
           <Link
-            to={`/product/${product.id}`}
+            to={`/product/${product._id}`}
             className="w-full bg-orange-500 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-orange-600 transition-all duration-300 ease-in-out"
           >
             Select options

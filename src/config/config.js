@@ -9,7 +9,7 @@ const config = {
   API_ENDPOINTS: {
     AUTH: '/api/auth',
     CART: '/api/cart',
-    SHOP: '/api/shop',
+    SHOP: '/api/products',
     ORDERS: '/api/orders',
     CATEGORIES: '/api/categories',
     FEATURED_PRODUCTS: '/api/featured-products',
