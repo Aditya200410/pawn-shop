@@ -10,6 +10,8 @@ export default function Checkout() {
   const { cartItems, clearCart, getTotalPrice, getItemImage } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
 
   const [formData, setFormData] = useState({
     customerName: '',
@@ -36,6 +38,16 @@ export default function Checkout() {
       }));
     }
   }, [user]);
+
+  useEffect(() => {
+    // Get applied coupon from localStorage if exists
+    const savedCoupon = localStorage.getItem('appliedCoupon');
+    const savedDiscount = localStorage.getItem('discountAmount');
+    if (savedCoupon && savedDiscount) {
+      setAppliedCoupon(JSON.parse(savedCoupon));
+      setDiscountAmount(parseFloat(savedDiscount));
+    }
+  }, []);
 
   useEffect(() => {
     if (cartItems.length === 0 && !isSubmitting) {
@@ -65,6 +77,11 @@ export default function Checkout() {
     return true;
   };
 
+  const getFinalPrice = () => {
+    const subtotal = getTotalPrice();
+    return subtotal - discountAmount;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -81,13 +98,20 @@ export default function Checkout() {
         quantity: item.quantity,
         image: getItemImage(item),
       })),
-      totalAmount: getTotalPrice(),
+      totalAmount: getFinalPrice(),
+      subtotal: getTotalPrice(),
+      discount: discountAmount,
+      coupon: appliedCoupon ? appliedCoupon.code : null,
       paymentStatus: formData.paymentMethod === 'cod' ? 'Pending' : 'Paid',
     };
 
     try {
       const response = await orderService.createOrder(orderData);
       if (response.success && response.order?._id) {
+        // Clear applied coupon from localStorage
+        localStorage.removeItem('appliedCoupon');
+        localStorage.removeItem('discountAmount');
+        
         toast.success('Order placed successfully!');
         await clearCart();
         navigate(`/order-confirmation/${response.order._id}`);
@@ -158,7 +182,7 @@ export default function Checkout() {
               </div>
 
               <button type="submit" disabled={isSubmitting} className="w-full bg-orange-600 text-white py-3 px-4 rounded-md hover:bg-orange-700 disabled:bg-gray-400">
-                {isSubmitting ? 'Placing Order...' : `Place Order (₹${getTotalPrice()})`}
+                {isSubmitting ? 'Placing Order...' : `Place Order (₹${getFinalPrice().toFixed(2)})`}
               </button>
             </form>
           </div>
@@ -167,6 +191,25 @@ export default function Checkout() {
           <div className="md:col-span-1">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4 border-b pb-2">Order Summary</h2>
+              
+              {/* Applied Coupon */}
+              {appliedCoupon && (
+                <div className="mb-4">
+                  <div className="bg-green-50 p-3 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-green-800 font-medium">{appliedCoupon.code}</span>
+                        <p className="text-green-600 text-sm">
+                          {appliedCoupon.discountType === 'percentage' 
+                            ? `${appliedCoupon.discountValue}% off`
+                            : `₹${appliedCoupon.discountValue} off`}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-4">
                 {cartItems.map(item => (
                   <div key={item.product?._id || item.id} className="flex items-center justify-between">
@@ -185,14 +228,31 @@ export default function Checkout() {
                         <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                       </div>
                     </div>
-                    <p className="font-semibold">₹{(item.product?.price || item.price) * item.quantity}</p>
+                    <p className="font-semibold">₹{((item.product?.price || item.price) * item.quantity).toFixed(2)}</p>
                   </div>
                 ))}
               </div>
-              <div className="mt-6 pt-4 border-t">
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
-                  <span>₹{getTotalPrice()}</span>
+
+              <div className="mt-6 pt-4 border-t space-y-3">
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal</span>
+                  <span>₹{getTotalPrice().toFixed(2)}</span>
+                </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Discount</span>
+                    <span>-₹{discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span className="text-green-600">Free</span>
+                </div>
+                <div className="pt-3 border-t">
+                  <div className="flex justify-between font-bold text-lg">
+                    <span>Total</span>
+                    <span>₹{getFinalPrice().toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
             </div>
