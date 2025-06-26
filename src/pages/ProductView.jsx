@@ -66,28 +66,32 @@ const ProductView = () => {
         ];
 
         let foundProduct = null;
+        let fetchError = null;
+
         for (const endpoint of endpoints) {
           try {
             const response = await fetch(endpoint);
-            if (response.ok) {
-              const data = await response.json();
-              foundProduct = data.product || data; // Handle both response formats
+            const data = await response.json();
+            
+            if (response.ok && data.product) {
+              foundProduct = data.product;
               break;
             }
           } catch (error) {
-            console.log(`Product not found in collection: ${endpoint}`);
+            fetchError = error;
+            console.log(`Error fetching from ${endpoint}:`, error);
           }
         }
 
         if (!foundProduct) {
-          throw new Error('Product not found');
+          throw new Error(fetchError || 'Product not found in any collection');
         }
 
         setProduct(foundProduct);
       } catch (error) {
         console.error('Error fetching product:', error);
         toast.error('Failed to load product details');
-        navigate('/'); // Redirect to home on error
+        // Don't navigate away, let user try again or navigate manually
       } finally {
         setLoading(false);
       }
@@ -96,7 +100,7 @@ const ProductView = () => {
     if (id) {
       fetchProduct();
     }
-  }, [id, navigate]);
+  }, [id]);
 
   if (loading) return <Loader />;
   if (!product) return null;
