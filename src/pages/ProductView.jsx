@@ -56,13 +56,17 @@ const ProductView = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch(config.API_URLS.SHOP);
-        if (!res.ok) throw new Error('Failed to fetch products');
-        const data = await res.json();
-        const found = data.find(p => String(p.id) === String(id));
-        setProduct(found);
-        if (!found) navigate('/shop');
+        const res = await fetch(`${config.API_URLS.SHOP}/${id}`);
+        if (!res.ok) throw new Error('Failed to fetch product');
+        const product = await res.json();
+        if (!product) {
+          console.error('Product not found');
+          navigate('/shop');
+          return;
+        }
+        setProduct(product);
       } catch (err) {
+        console.error('Error fetching product:', err);
         setProduct(null);
         navigate('/shop');
       } finally {
