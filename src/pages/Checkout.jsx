@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import orderService from '../services/orderService';
 import { toast } from 'react-hot-toast';
 import config from '../config/config.js';
+import apiService from '../services/api';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -46,6 +47,9 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [couponCode, setCouponCode] = useState('');
+  const [couponError, setCouponError] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
 
   // Pre-fill form with user data if logged in
   useEffect(() => {
@@ -198,6 +202,48 @@ const Checkout = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const subtotal = cartItems.reduce((total, item) => total + (item.product?.price || item.price) * item.quantity, 0);
+  const discount = appliedCoupon ? (subtotal * appliedCoupon.discountPercentage) / 100 : 0;
+  const total = subtotal - discount;
+
+  const handleCouponSubmit = async (e) => {
+    e.preventDefault();
+    if (!couponCode.trim()) return;
+
+    setLoading(true);
+    setCouponError('');
+
+    try {
+      const response = await apiService.validateCoupon({
+        code: couponCode,
+        orderAmount: subtotal
+      });
+
+      if (response.data.valid) {
+        setAppliedCoupon({
+          code: couponCode,
+          discountPercentage: response.data.discountPercentage,
+          discountAmount: response.data.discountAmount
+        });
+        setCouponError('');
+        toast.success('Coupon applied successfully!');
+      }
+    } catch (error) {
+      setCouponError(error.response?.data?.message || 'Invalid coupon code');
+      setAppliedCoupon(null);
+      toast.error(error.response?.data?.message || 'Invalid coupon code');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError('');
+    toast.success('Coupon removed');
   };
 
   if (cartItems.length === 0) {
@@ -677,22 +723,44 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <button
-                  type="button"
-                  onClick={() => navigate('/cart')}
-                  className="w-full sm:w-auto flex items-center justify-center px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm sm:text-base"
-                >
-                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Back to Cart
-                </button>
-                <button
-                  type="submit"
-                  className="w-full sm:w-auto flex items-center justify-center px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm sm:text-base"
-                >
-                  <Lock className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Place Order
-                </button>
+              {/* Coupon Section */}
+              <div className="border-t border-gray-200 mt-4 pt-4">
+                <h3 className="font-medium mb-2">Apply Coupon</h3>
+                {!appliedCoupon ? (
+                  <form onSubmit={handleCouponSubmit} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Enter coupon code"
+                      className="flex-1 p-2 border rounded"
+                      disabled={loading}
+                    />
+                    <button
+                      type="submit"
+                      className="bg-blue-500 text-white px-4 py-2 rounded"
+                      disabled={loading}
+                    >
+                      {loading ? 'Applying...' : 'Apply'}
+                    </button>
+                  </form>
+                ) : (
+                  <div className="flex justify-between items-center bg-green-50 p-2 rounded">
+                    <div>
+                      <p className="text-green-700 font-medium">{appliedCoupon.code}</p>
+                      <p className="text-sm text-green-600">{appliedCoupon.discountPercentage}% off</p>
+                    </div>
+                    <button
+                      onClick={removeCoupon}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+                {couponError && (
+                  <p className="text-red-500 text-sm mt-1">{couponError}</p>
+                )}
               </div>
             </form>
           </div>

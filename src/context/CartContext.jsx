@@ -64,20 +64,20 @@ export const CartProvider = ({ children }) => {
         if (!response.ok) throw new Error('Failed to fetch product details');
         const product = await response.json();
         
-        setCartItems((prevItems) => {
+    setCartItems((prevItems) => {
           const existingItem = prevItems.find((item) => 
             item.productId === productId
           );
           
-          if (existingItem) {
-            const updatedItems = prevItems.map((item) =>
+      if (existingItem) {
+        const updatedItems = prevItems.map((item) =>
               item.productId === productId
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
-            );
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
             toast.success('Item quantity updated in cart');
-            return updatedItems;
-          } else {
+        return updatedItems;
+      } else {
             toast.success('Item added to cart');
             return [...prevItems, {
               productId,
@@ -88,8 +88,8 @@ export const CartProvider = ({ children }) => {
               images: product.images || [],
               category: product.category
             }];
-          }
-        });
+      }
+    });
       }
     } catch (error) {
       console.error('Error adding to cart:', error);

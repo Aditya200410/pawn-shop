@@ -57,5 +57,14 @@ export const orderAPI = {
   createOrder: (orderData) => api.post('/orders', orderData),
 };
 
+// Coupon endpoints
+const validateCoupon = (data) => {
+  return axios.post(`${config.API_BASE_URL}/api/coupons/validate`, data);
+};
+
+const applyCoupon = (data) => {
+  return axios.post(`${config.API_BASE_URL}/api/coupons/apply`, data);
+};
+
 // Default export for general API usage
 export default api; 
