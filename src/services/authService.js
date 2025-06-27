@@ -10,14 +10,17 @@ export const authService = {
                 body: JSON.stringify(userData),
             });
             
+            const data = await response.json();
+            
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Registration failed');
+                throw new Error(data.message || 'Registration failed');
             }
             
-            return response.json();
+            return data;
         } catch (error) {
-            console.error('Registration error:', error);
+            if (error.response) {
+                throw error.response;
+            }
             throw error;
         }
     },
@@ -31,14 +34,17 @@ export const authService = {
                 body: JSON.stringify({ email, otp }),
             });
             
+            const data = await response.json();
+            
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'OTP verification failed');
+                throw new Error(data.message || 'OTP verification failed');
             }
             
-            return response.json();
+            return data;
         } catch (error) {
-            console.error('OTP verification error:', error);
+            if (error.response) {
+                throw error.response;
+            }
             throw error;
         }
     },
@@ -52,14 +58,17 @@ export const authService = {
                 body: JSON.stringify({ email }),
             });
             
+            const data = await response.json();
+            
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Failed to resend OTP');
+                throw new Error(data.message || 'Failed to resend OTP');
             }
             
-            return response.json();
+            return data;
         } catch (error) {
-            console.error('Resend OTP error:', error);
+            if (error.response) {
+                throw error.response;
+            }
             throw error;
         }
     },

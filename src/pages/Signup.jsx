@@ -44,15 +44,21 @@ const Signup = () => {
           replace: true
         });
       } else {
-        throw new Error('Registration failed. Please try again.');
+        throw new Error(response.message || 'Registration failed. Please try again.');
       }
     } catch (err) {
-      setError(err.message || contextError || 'Failed to create account');
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to create account';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
       setIsLoading(false);
     }
   };
 
   const handleChange = (e) => {
+    if (error) {
+      setError('');
+    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -228,17 +234,42 @@ const Signup = () => {
       </motion.div>
 
       {/* Right Side - Image */}
+      {/* Right Side - Image */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="hidden lg:block lg:w-1/2 relative"
       >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: 'url(/footer.png)' }}
-        >
-          <div className="absolute inset-0 bg-black opacity-10"></div>
+        <img src="/footer.png" alt="Login Banner" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className="text-white text-center">
+            <h2 className="text-4xl font-light mb-6">
+              Your Trusted <span className="font-serif italic">Heritage </span> Partner
+            </h2>
+            <p className="text-lg text-gray-100 mb-8">
+              Access quick and discover unique treasures
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span>Terracotta Art</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span>Dokra Craft</span>
+              </div>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>
