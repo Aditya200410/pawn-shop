@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { motion } from 'framer-motion';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';s
 import toast from 'react-hot-toast';
 
 const OTPVerification = () => {
@@ -150,4 +150,4 @@ const OTPVerification = () => {
   );
 };
 
-export default OTPVerification; 
+export default OTPVerification;

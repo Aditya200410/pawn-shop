@@ -21,6 +21,7 @@
     "framer-motion": "^12.18.1",
     "lucide-react": "^0.514.0",
     "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^7.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.5.2",
