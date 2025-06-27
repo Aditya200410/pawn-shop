@@ -15,7 +15,7 @@ const Policies = () => {
 
   const fetchPolicies = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/data-page`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://pawnbackend-xmqa.onrender.com/api'}/data-page`);
       if (response.ok) {
         const data = await response.json();
         const policiesMap = {};
