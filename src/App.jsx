@@ -36,6 +36,7 @@ import BecomeSeller from './pages/BecomeSeller';
 import SellerAuth from './pages/SellerAuth';
 import SellerProfile from './pages/SellerProfile';
 import VerifyOTP from './pages/OTPVerification';
+import Policies from './pages/Policies';
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, loading } = useAuth();
@@ -153,6 +154,7 @@ function AppContent() {
         <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
         <Route path="/product/:id" element={<ProductView />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/policies" element={<Policies />} />
       </Routes>
       <Footer />
       <ScrollToTop />

@@ -166,6 +166,11 @@ export default function Footer() {
                       FAQ
                     </Link>
                   </li>
+                  <li>
+                    <Link to="/policies" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                      Policies
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -224,6 +229,11 @@ export default function Footer() {
                 <li>
                   <Link to="/faq" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
                     FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/policies" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    Policies
                   </Link>
                 </li>
               </ul>

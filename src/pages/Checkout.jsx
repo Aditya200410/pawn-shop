@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ArrowLeft, CreditCard, Lock, MapPin, Phone, User, Mail, Building, Truck } from 'lucide-react';
@@ -50,6 +50,9 @@ const Checkout = () => {
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
+
+  // Razorpay handler
+  const razorpayRef = useRef();
 
   // Pre-fill form with user data if logged in
   useEffect(() => {
@@ -246,6 +249,44 @@ const Checkout = () => {
     toast.success('Coupon removed');
   };
 
+  // Razorpay handler
+  const handleRazorpayPayment = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Create order on backend to get Razorpay order_id (optional, for real integration)
+      // For demo, use dummy data
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEY || 'rzp_test_1DP5mmOlF5G5ag', // Replace with your Razorpay key
+        amount: Math.round(total * 100), // in paise
+        currency: 'INR',
+        name: 'Riko Craft',
+        description: 'Order Payment',
+        handler: function (response) {
+          // On payment success
+          toast.success('Payment successful!');
+          handleSubmit(); // Place order
+        },
+        prefill: {
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        theme: {
+          color: '#ff6600',
+        },
+      };
+      const rzp = new window.Razorpay(options);
+      razorpayRef.current = rzp;
+      rzp.open();
+    } catch (err) {
+      setError('Failed to initiate payment.');
+      toast.error('Failed to initiate payment.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (cartItems.length === 0) {
     return (
       <div className="container px-4 py-16 text-center mt-15">
@@ -301,7 +342,7 @@ const Checkout = () => {
                 <span className="text-red-500 font-semibold">*</span> indicates required fields. Please ensure all required fields are filled before placing your order.
               </p>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={formData.paymentMethod === 'upi' ? (e) => { e.preventDefault(); handleRazorpayPayment(); } : handleSubmit}>
               {/* Shipping Information */}
               <div className="mb-6 sm:mb-8">
                 <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 flex items-center">
@@ -639,6 +680,17 @@ const Checkout = () => {
                       />
                       <span className="text-sm sm:text-base">Cash on Delivery</span>
                     </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="upi"
+                        checked={formData.paymentMethod === 'upi'}
+                        onChange={handleInputChange}
+                        className="text-orange-600 focus:ring-orange-600"
+                      />
+                      <span className="text-sm sm:text-base">UPI (Razorpay)</span>
+                    </label>
                   </div>
 
                   {formData.paymentMethod === 'credit' && (
@@ -819,7 +871,7 @@ const Checkout = () => {
 
             <button
               type="submit"
-              onClick={handleSubmit}
+              onClick={formData.paymentMethod === 'upi' ? (e) => { e.preventDefault(); handleRazorpayPayment(); } : handleSubmit}
               disabled={loading}
               className="w-full mt-6 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
             >
