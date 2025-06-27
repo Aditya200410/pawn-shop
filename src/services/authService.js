@@ -3,21 +3,63 @@ import config from '../config/config.js';
 export const authService = {
     async register(userData) {
         try {
-        const response = await fetch(`${config.API_URLS.AUTH}/register`, {
-            method: 'POST',
-            headers: config.CORS.HEADERS,
+            const response = await fetch(`${config.API_URLS.AUTH}/register`, {
+                method: 'POST',
+                headers: config.CORS.HEADERS,
                 credentials: 'include',
-            body: JSON.stringify(userData),
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Registration failed');
-        }
-        
-        return response.json();
+                body: JSON.stringify(userData),
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Registration failed');
+            }
+            
+            return response.json();
         } catch (error) {
             console.error('Registration error:', error);
+            throw error;
+        }
+    },
+
+    async verifyOTP(email, otp) {
+        try {
+            const response = await fetch(`${config.API_URLS.AUTH}/verify-otp`, {
+                method: 'POST',
+                headers: config.CORS.HEADERS,
+                credentials: 'include',
+                body: JSON.stringify({ email, otp }),
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'OTP verification failed');
+            }
+            
+            return response.json();
+        } catch (error) {
+            console.error('OTP verification error:', error);
+            throw error;
+        }
+    },
+
+    async resendOTP(email) {
+        try {
+            const response = await fetch(`${config.API_URLS.AUTH}/resend-otp`, {
+                method: 'POST',
+                headers: config.CORS.HEADERS,
+                credentials: 'include',
+                body: JSON.stringify({ email }),
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to resend OTP');
+            }
+            
+            return response.json();
+        } catch (error) {
+            console.error('Resend OTP error:', error);
             throw error;
         }
     },
