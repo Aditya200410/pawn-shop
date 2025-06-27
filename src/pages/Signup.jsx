@@ -38,7 +38,7 @@ const Signup = () => {
       });
 
       if (response.email) {
-        toast.success('OTP sent to your email!');
+        toast.success('Please check your email for OTP verification');
         navigate('/verify-otp', { 
           state: { email: response.email },
           replace: true
@@ -236,7 +236,7 @@ const Signup = () => {
       >
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: 'url(/image.png)' }}
+          style={{ backgroundImage: 'url(/footer.png)' }}
         >
           <div className="absolute inset-0 bg-black opacity-10"></div>
         </div>

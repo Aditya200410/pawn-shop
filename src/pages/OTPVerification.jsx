@@ -22,11 +22,15 @@ export default function OTPVerification() {
       if (response.success) {
         toast.success('Account verified successfully! Please login to continue.');
         navigate('/login', { 
-          replace: true,
-          state: { email: email }  // Pass email to login page to auto-fill
+          state: { 
+            email,
+            verified: true,
+            message: 'Account verified successfully! Please login to continue.'
+          },
+          replace: true
         });
       } else {
-        throw new Error('Invalid verification response');
+        throw new Error('Verification failed. Please try again.');
       }
     } catch (error) {
       toast.error(error.message || 'Verification failed');
@@ -37,7 +41,7 @@ export default function OTPVerification() {
   const handleResend = async () => {
     try {
       await authService.resendOTP(email);
-      toast.success('OTP resent successfully');
+      toast.success('New OTP has been sent to your email');
     } catch (error) {
       toast.error(error.message || 'Failed to resend OTP');
       throw error;
@@ -50,11 +54,23 @@ export default function OTPVerification() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <OTPVerificationComponent
-        email={email}
-        onVerify={handleVerify}
-        onResend={handleResend}
-      />
+      <div className="max-w-md w-full mx-auto space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Verify Your Email
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            We've sent a verification code to<br/>
+            <span className="font-medium text-indigo-600">{email}</span>
+          </p>
+        </div>
+
+        <OTPVerificationComponent
+          email={email}
+          onVerify={handleVerify}
+          onResend={handleResend}
+        />
+      </div>
     </div>
   );
 } 

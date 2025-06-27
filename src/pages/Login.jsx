@@ -17,13 +17,19 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Auto-fill email if coming from OTP verification
+  // Handle email and success message from OTP verification
   useEffect(() => {
     if (location.state?.email) {
       setFormData(prev => ({
         ...prev,
         email: location.state.email
       }));
+
+      if (location.state?.verified && location.state?.message) {
+        toast.success(location.state.message);
+        // Clear the state to prevent showing the message again on refresh
+        window.history.replaceState({}, document.title);
+      }
     }
   }, [location.state]);
 
