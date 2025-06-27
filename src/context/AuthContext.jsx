@@ -6,8 +6,14 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
-        const stored = localStorage.getItem('user');
-        return stored ? JSON.parse(stored) : null;
+        try {
+            const stored = localStorage.getItem('user');
+            return stored ? JSON.parse(stored) : null;
+        } catch (error) {
+            console.error('Error parsing user from localStorage:', error);
+            localStorage.removeItem('user'); // Clear invalid data
+            return null;
+        }
     });
     const [loading, setLoading] = useState(false); // Start with false since we have cached user
     const [error, setError] = useState(null);
@@ -16,7 +22,14 @@ export const AuthProvider = ({ children }) => {
         const initAuth = async () => {
             // Only check auth if we have a token but no user, or if we want to refresh
             const token = localStorage.getItem('token');
-            const storedUser = localStorage.getItem('user');
+            let storedUser = null;
+            try {
+                const stored = localStorage.getItem('user');
+                storedUser = stored ? JSON.parse(stored) : null;
+            } catch (error) {
+                console.error('Error parsing stored user:', error);
+                localStorage.removeItem('user');
+            }
             
             if (token && !storedUser) {
                 setLoading(true);
