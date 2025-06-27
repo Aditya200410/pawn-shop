@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Carousel } from 'react-responsive-carousel';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 import config from '../../config/config';
 
 const Hero = () => {
@@ -14,6 +11,15 @@ const Hero = () => {
   useEffect(() => {
     fetchCarouselData();
   }, []);
+
+  useEffect(() => {
+    if (carouselData.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % carouselData.length);
+      }, 5000);
+      return () => clearInterval(timer);
+    }
+  }, [carouselData]);
 
   const fetchCarouselData = async () => {
     try {
@@ -29,6 +35,14 @@ const Hero = () => {
     }
   };
 
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % carouselData.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + carouselData.length) % carouselData.length);
+  };
+
   const handleMediaError = (e) => {
     console.error('Media loading error:', e);
     e.target.style.display = 'none';
@@ -38,36 +52,9 @@ const Hero = () => {
     e.target.parentNode.appendChild(fallbackText);
   };
 
-  const CustomArrow = ({ direction, onClick }) => (
-    <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      onClick={onClick}
-      className={`absolute top-1/2 -translate-y-1/2 ${direction === 'prev' ? 'left-6 lg:left-10' : 'right-6 lg:right-10'} 
-        w-14 h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-full 
-        bg-black/30 backdrop-blur-xl border border-white/20 
-        hover:bg-black/40 hover:border-white/30 transition-all duration-300 z-20
-        group shadow-[0_0_20px_rgba(0,0,0,0.2)] hover:shadow-[0_0_30px_rgba(0,0,0,0.3)]`}
-      aria-label={`${direction} slide`}
-    >
-      <motion.div
-        className="text-white/90 group-hover:text-white drop-shadow-lg"
-        initial={{ x: 0 }}
-        animate={{ x: direction === 'prev' ? [-4, 0, -4] : [4, 0, 4] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-      >
-        {direction === 'prev' ? (
-          <ChevronLeft className="w-8 h-8 lg:w-10 lg:h-10 stroke-[1.5]" />
-        ) : (
-          <ChevronRight className="w-8 h-8 lg:w-10 lg:h-10 stroke-[1.5]" />
-        )}
-      </motion.div>
-    </motion.button>
-  );
-
   if (loading || error || !carouselData?.length) {
     return (
-      <div className="w-full h-[85vh] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="w-full h-[600px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         {loading ? (
           <div className="w-12 h-12 border-4 border-blue-100 border-l-blue-500 rounded-full animate-spin" />
         ) : (
@@ -78,128 +65,152 @@ const Hero = () => {
   }
 
   return (
-    <div className="relative w-full overflow-hidden group">
-      <Carousel
-        autoPlay
-        infiniteLoop
-        showStatus={false}
-        showThumbs={false}
-        interval={6000}
-        transitionTime={1000}
-        stopOnHover={true}
-        dynamicHeight={false}
-        className="w-full"
-        renderArrowPrev={(onClickHandler, hasPrev) =>
-          hasPrev && <CustomArrow direction="prev" onClick={onClickHandler} />
-        }
-        renderArrowNext={(onClickHandler, hasNext) =>
-          hasNext && <CustomArrow direction="next" onClick={onClickHandler} />
-        }
-        onChange={(index) => setCurrentSlide(index)}
-        selectedItem={currentSlide}
-        showIndicators={false}
-      >
-        {carouselData.map((item, index) => (
-          <motion.div
-            key={item._id}
-            className="relative w-full h-[85vh] overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
+    <div className="relative h-[600px] overflow-hidden z-[1]">
+      {/* Navigation Buttons */}
+      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 z-[1]">
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={prevSlide}
+          className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
+        >
+          <svg
+            className="w-6 h-6 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <motion.div
-              className="absolute inset-0 w-full h-full"
-              initial={{ scale: 1.2 }}
-              animate={{ 
-                scale: currentSlide === index ? 1 : 1.2,
-                transition: { duration: 6, ease: "easeOut" }
-              }}
-            >
-              {item.image.endsWith('.mp4') ? (
-                <video
-                  className="absolute inset-0 w-full h-full object-cover"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  onError={handleMediaError}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={nextSlide}
+          className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
+        >
+          <svg
+            className="w-6 h-6 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </motion.button>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0 z-0"
+        >
+          <div className="absolute inset-0">
+            {carouselData[currentSlide].image.endsWith('.mp4') ? (
+              <video
+                className="absolute inset-0 w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                onError={handleMediaError}
+              >
+                <source src={carouselData[currentSlide].image} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img
+                src={carouselData[currentSlide].image}
+                alt={carouselData[currentSlide].title}
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={handleMediaError}
+              />
+            )}
+            <div className="absolute inset-0 bg-black/30" />
+          </div>
+          
+          <div className="relative h-full flex items-center">
+            <div className="container mx-auto px-4">
+              <div className="max-w-2xl md:ml-0 mx-auto md:mx-0 text-center md:text-left">
+                <motion.h1
+                  initial={{ y: -50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ 
+                    delay: 0.2, 
+                    duration: 0.8, 
+                    ease: [0.22, 1, 0.36, 1],
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
                 >
-                  <source src={item.image} type="video/mp4" />
-                </video>
-              ) : (
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  onError={handleMediaError}
-                />
-              )}
-            </motion.div>
-            <div className="absolute inset-0 bg-black/40" />
-            <motion.div
-              className="absolute inset-0 flex flex-col items-center justify-center px-4"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ 
-                opacity: currentSlide === index ? 1 : 0,
-                y: currentSlide === index ? 0 : 30
-              }}
-              transition={{ duration: 1, delay: 0.5 }}
-            >
-              <div className="max-w-[1200px] text-center">
-                <motion.h2
-                  className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 
-                    text-white tracking-tight leading-tight
-                    font-serif max-w-[900px] mx-auto"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.7 }}
+                  {carouselData[currentSlide].title}
+                </motion.h1>
+                <motion.p
+                  initial={{ y: -50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ 
+                    delay: 0.4, 
+                    duration: 0.8, 
+                    ease: [0.22, 1, 0.36, 1],
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="text-lg md:text-xl text-white/90 mb-8"
                 >
-                  {item.title}
-                </motion.h2>
-                {item.subtitle && (
-                  <motion.h3
-                    className="text-xl md:text-2xl lg:text-3xl font-medium mb-8
-                      text-white/90 tracking-wide font-serif"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.9 }}
-                  >
-                    {item.subtitle}
-                  </motion.h3>
-                )}
-                {item.description && (
-                  <motion.p
-                    className="text-lg md:text-xl mb-10 text-white/80
-                      leading-relaxed max-w-[800px] mx-auto font-light"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 1.1 }}
-                  >
-                    {item.description}
-                  </motion.p>
-                )}
+                  {carouselData[currentSlide].description}
+                </motion.p>
                 <motion.a
-                  href={item.buttonLink}
-                  className="inline-block px-12 py-5 text-lg font-semibold
-                    text-white bg-black/20 backdrop-blur-sm
-                    rounded-full border-2 border-white/30
-                    hover:bg-white hover:text-black
-                    transition-all duration-300 ease-out
-                    hover:scale-105 transform"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 1.3 }}
-                  whileHover={{ y: -5 }}
+                  href={carouselData[currentSlide].buttonLink}
+                  initial={{ y: -50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ 
+                    delay: 0.6, 
+                    duration: 0.8, 
+                    ease: [0.22, 1, 0.36, 1],
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  className="inline-block bg-amber-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors"
                 >
-                  {item.buttonText}
+                  {carouselData[currentSlide].buttonText}
                 </motion.a>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Slide indicators */}
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2 z-[1]">
+        {carouselData.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`h-2 w-2 rounded-full transition-all duration-300 ${
+              currentSlide === index ? 'w-8 bg-white' : 'bg-white/50'
+            }`}
+          />
         ))}
-      </Carousel>
+      </div>
     </div>
   );
 };
