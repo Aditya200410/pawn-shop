@@ -16,54 +16,36 @@ const Policies = () => {
   const fetchPolicies = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://pawnbackend-xmqa.onrender.com/api'}/data-page`);
+      console.log('API Response status:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
-        const policiesMap = {};
-        data.forEach(policy => {
-          policiesMap[policy.type] = policy;
-        });
-        setPolicies(policiesMap);
+        console.log('API Response data:', data);
+        
+        // Check if data is an array and has the expected structure
+        if (Array.isArray(data) && data.length > 0) {
+          const policiesMap = {};
+          data.forEach(policy => {
+            if (policy.type && policy.heading && policy.content) {
+              policiesMap[policy.type] = policy;
+            }
+          });
+          console.log('Processed policies map:', policiesMap);
+          setPolicies(policiesMap);
+        } else {
+          console.log('No valid policy data found');
+          setPolicies({});
+          toast.error('No policy data available');
+        }
       } else {
-        // If no data from backend, use default content
-        setPolicies({
-          terms: {
-            type: 'terms',
-            heading: 'Terms and Conditions',
-            content: defaultTermsContent
-          },
-          refund: {
-            type: 'refund',
-            heading: 'Refund Policy',
-            content: defaultRefundContent
-          },
-          privacy: {
-            type: 'privacy',
-            heading: 'Privacy Policy',
-            content: defaultPrivacyContent
-          }
-        });
+        console.log('API response not ok');
+        setPolicies({});
+        toast.error('Failed to load policies from server');
       }
     } catch (error) {
       console.error('Error fetching policies:', error);
-      toast.error('Failed to load policies');
-      // Use default content on error
-      setPolicies({
-        terms: {
-          type: 'terms',
-          heading: 'Terms and Conditions',
-          content: defaultTermsContent
-        },
-        refund: {
-          type: 'refund',
-          heading: 'Refund Policy',
-          content: defaultRefundContent
-        },
-        privacy: {
-          type: 'privacy',
-          heading: 'Privacy Policy',
-          content: defaultPrivacyContent
-        }
-      });
+      toast.error('Failed to load policies from server');
+      setPolicies({});
     } finally {
       setLoading(false);
     }
@@ -141,12 +123,15 @@ const Policies = () => {
       <div className="min-h-screen bg-gradient-to-br from-pink-100 via-white to-rose-100 flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           className="w-16 h-16 border-4 border-pink-200 border-t-rose-400 rounded-full"
         />
       </div>
     );
   }
+
+  // Check if any policies exist
+  const hasPolicies = Object.keys(policies).length > 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-white to-rose-100">
@@ -196,161 +181,113 @@ const Policies = () => {
 
       {/* Content Section */}
       <div className="container mx-auto px-4 py-16">
-        {/* Tab Navigation */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
-        >
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`
-                flex items-center gap-3 px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105
-                ${activeTab === tab.id
-                  ? 'bg-gradient-to-r from-pink-500 to-rose-400 text-white shadow-lg border border-rose-200'
-                  : 'bg-white text-rose-700 hover:bg-pink-50 border border-pink-100'
-                }
-              `}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </motion.div>
-
-        {/* Tab Content */}
-        <AnimatePresence mode="wait">
+        {!hasPolicies ? (
+          // No policies available
           <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
           >
-            {policies[activeTab] && (
-              <div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-center mb-12"
-                >
-                  <h2 className="text-3xl font-bold text-rose-900 mb-4">
-                    {policies[activeTab].heading}
-                  </h2>
-                  <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-rose-400 mx-auto rounded-full"></div>
-                </motion.div>
-                
-                <div className="bg-white rounded-2xl shadow-xl p-8 border border-pink-100">
-                  {renderContent(policies[activeTab].content)}
-                </div>
+            <div className="bg-white rounded-2xl shadow-xl p-12 border border-pink-100">
+              <div className="w-24 h-24 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <FileText size={48} className="text-pink-400" />
               </div>
-            )}
+              <h2 className="text-2xl font-bold text-rose-900 mb-4">
+                No Policies Available
+              </h2>
+              <p className="text-rose-700 mb-6 max-w-md mx-auto">
+                Policy content has not been set up yet. Please contact the administrator to add the required policy information.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                {tabs.map((tab) => (
+                  <div
+                    key={tab.id}
+                    className="flex items-center gap-3 px-6 py-4 rounded-xl bg-pink-50 border border-pink-200 text-pink-600"
+                  >
+                    {tab.icon}
+                    <span className="font-medium">{tab.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </motion.div>
-        </AnimatePresence>
+        ) : (
+          // Policies available
+          <>
+            {/* Tab Navigation */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-wrap justify-center gap-4 mb-12"
+            >
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`
+                    flex items-center gap-3 px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105
+                    ${activeTab === tab.id
+                      ? 'bg-gradient-to-r from-pink-500 to-rose-400 text-white shadow-lg border border-rose-200'
+                      : 'bg-white text-rose-700 hover:bg-pink-50 border border-pink-100'
+                    }
+                  `}
+                >
+                  {tab.icon}
+                  {tab.label}
+                </button>
+              ))}
+            </motion.div>
+
+            {/* Tab Content */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="max-w-4xl mx-auto"
+              >
+                {policies[activeTab] ? (
+                  <div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-center mb-12"
+                    >
+                      <h2 className="text-3xl font-bold text-rose-900 mb-4">
+                        {policies[activeTab].heading}
+                      </h2>
+                      <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-rose-400 mx-auto rounded-full"></div>
+                    </motion.div>
+                    
+                    <div className="bg-white rounded-2xl shadow-xl p-8 border border-pink-100">
+                      {renderContent(policies[activeTab].content)}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <div className="bg-white rounded-2xl shadow-xl p-12 border border-pink-100">
+                      <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileText size={32} className="text-pink-400" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-rose-900 mb-2">
+                        {tabs.find(tab => tab.id === activeTab)?.label}
+                      </h3>
+                      <p className="text-rose-700">
+                        This policy content has not been set up yet.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </>
+        )}
       </div>
     </div>
   );
 };
-
-// Default content if backend data is not available
-const defaultTermsContent = `Terms and Conditions:
-Welcome to RikoCraft. By accessing our website, you agree to these terms and conditions.
-
-Acceptance of Terms:
-By using our services, you acknowledge that you have read, understood, and agree to be bound by these terms.
-
-User Accounts:
-You are responsible for maintaining the confidentiality of your account information and for all activities under your account.
-
-Product Information:
-We strive to provide accurate product descriptions, but we do not warrant that product descriptions are accurate, complete, or current.
-
-Pricing and Payment:
-All prices are subject to change without notice. Payment must be made at the time of order placement.
-
-Shipping and Delivery:
-Delivery times are estimates only. We are not responsible for delays beyond our control.
-
-Returns and Refunds:
-Please refer to our Refund Policy for detailed information about returns and refunds.
-
-Intellectual Property:
-All content on this website is protected by copyright and other intellectual property laws.
-
-Limitation of Liability:
-We shall not be liable for any indirect, incidental, or consequential damages.
-
-Governing Law:
-These terms are governed by the laws of India.`;
-
-const defaultRefundContent = `Refund Policy:
-We want you to be completely satisfied with your purchase from RikoCraft.
-
-Eligibility for Refunds:
-Items must be returned within 30 days of delivery in their original condition.
-
-Return Process:
-Contact our customer service team to initiate a return. Provide your order number and reason for return.
-
-Return Shipping:
-Customers are responsible for return shipping costs unless the item is defective or incorrect.
-
-Refund Timeline:
-Refunds are processed within 5-7 business days after we receive your return.
-
-Non-Refundable Items:
-Custom or personalized items cannot be returned unless defective.
-
-Damaged Items:
-If you receive a damaged item, contact us immediately with photos for replacement or refund.
-
-Quality Issues:
-We stand behind the quality of our products. Contact us for any quality concerns.
-
-Refund Methods:
-Refunds are issued to the original payment method used for the purchase.
-
-International Returns:
-International customers may be subject to additional shipping and customs fees.
-
-Contact Information:
-For return inquiries, email us at support@rikocraft.com or call our customer service.`;
-
-const defaultPrivacyContent = `Privacy Policy:
-Your privacy is important to us. This policy explains how we collect, use, and protect your information.
-
-Information We Collect:
-We collect information you provide directly to us, such as name, email, address, and payment information.
-
-How We Use Information:
-We use your information to process orders, communicate with you, and improve our services.
-
-Information Sharing:
-We do not sell, trade, or rent your personal information to third parties.
-
-Data Security:
-We implement appropriate security measures to protect your personal information.
-
-Cookies and Tracking:
-We use cookies to enhance your browsing experience and analyze website traffic.
-
-Third-Party Services:
-We may use third-party services for payment processing and analytics.
-
-Data Retention:
-We retain your information as long as necessary to provide our services and comply with legal obligations.
-
-Your Rights:
-You have the right to access, update, or delete your personal information.
-
-Children's Privacy:
-Our services are not intended for children under 13 years of age.
-
-Changes to Policy:
-We may update this privacy policy from time to time.`;
 
 export default Policies; 
