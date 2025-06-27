@@ -21,11 +21,16 @@ export default function OTPVerification() {
   const handleVerify = async (otp) => {
     try {
       const response = await authService.verifyOTP(email, otp);
-      if (response.token) {
-        // Log the user in
-        await login(response.token);
+      if (response.token && response.user) {
+        // Log the user in with the response data
+        await login({
+          token: response.token,
+          user: response.user
+        });
         toast.success('Account verified successfully!');
         navigate('/', { replace: true });
+      } else {
+        throw new Error('Invalid verification response');
       }
     } catch (error) {
       toast.error(error.message || 'Verification failed');

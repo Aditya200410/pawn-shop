@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const initAuth = async () => {
-            // Only check auth if we have a token but no user, or if we want to refresh
             const token = localStorage.getItem('token');
             const storedUser = localStorage.getItem('user');
             
@@ -32,7 +31,6 @@ export const AuthProvider = ({ children }) => {
                     setLoading(false);
                 }
             } else {
-                // If we have cached user data, don't make API call
                 setLoading(false);
             }
         };
@@ -42,14 +40,25 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             setError(null);
-            const data = await authService.login(credentials);
-            setUser(data.user);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            // Store the token in localStorage
-            if (data.token) {
-                localStorage.setItem('token', data.token);
+            let data;
+            
+            // Check if this is a direct login or post-OTP verification
+            if (credentials.token && credentials.user) {
+                // Post-OTP verification login
+                data = credentials;
+            } else {
+                // Regular login
+                data = await authService.login(credentials);
             }
-            return data;
+
+            if (data.user && data.token) {
+                setUser(data.user);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('token', data.token);
+                return data;
+            } else {
+                throw new Error('Invalid login response');
+            }
         } catch (err) {
             setError(err.message);
             throw err;

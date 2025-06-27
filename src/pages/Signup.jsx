@@ -39,15 +39,15 @@ const Signup = () => {
 
       if (response.email) {
         toast.success('OTP sent to your email!');
-        // Navigate to OTP verification page with email in state
         navigate('/verify-otp', { 
-          state: { email: formData.email },
+          state: { email: response.email },
           replace: true
         });
+      } else {
+        throw new Error('Registration failed. Please try again.');
       }
     } catch (err) {
       setError(err.message || contextError || 'Failed to create account');
-    } finally {
       setIsLoading(false);
     }
   };
