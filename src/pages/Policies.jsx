@@ -7,7 +7,6 @@ const Policies = () => {
   const [activeTab, setActiveTab] = useState('terms');
   const [policies, setPolicies] = useState({});
   const [loading, setLoading] = useState(true);
-  const [expandedSections, setExpandedSections] = useState({});
 
   useEffect(() => {
     fetchPolicies();
@@ -21,11 +20,21 @@ const Policies = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('API Response data:', data);
+        console.log('Data type:', typeof data);
+        console.log('Is array:', Array.isArray(data));
+        console.log('Data length:', data.length);
         
         // Check if data is an array and has the expected structure
         if (Array.isArray(data) && data.length > 0) {
           const policiesMap = {};
-          data.forEach(policy => {
+          data.forEach((policy, index) => {
+            console.log(`Policy ${index}:`, policy);
+            console.log(`Policy ${index} type:`, policy.type);
+            console.log(`Policy ${index} heading:`, policy.heading);
+            console.log(`Policy ${index} content:`, policy.content);
+            console.log(`Policy ${index} content type:`, typeof policy.content);
+            console.log(`Policy ${index} content length:`, policy.content?.length);
+            
             if (policy.type && policy.heading && policy.content) {
               policiesMap[policy.type] = policy;
             }
@@ -51,13 +60,6 @@ const Policies = () => {
     }
   };
 
-  const toggleSection = (sectionId) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [sectionId]: !prev[sectionId]
-    }));
-  };
-
   const tabs = [
     { id: 'terms', label: 'Terms & Conditions', icon: <FileText size={20} /> },
     { id: 'refund', label: 'Refund Policy', icon: <RefreshCw size={20} /> },
@@ -65,57 +67,37 @@ const Policies = () => {
   ];
 
   const renderContent = (content) => {
-    if (!content) return null;
+    if (!content) {
+      console.log('No content provided to renderContent');
+      return null;
+    }
     
-    // Split content into sections based on headers
-    const sections = content.split(/(?=^[A-Z][^:]*:)/m).filter(Boolean);
+    console.log('Rendering content:', content);
+    console.log('Content type:', typeof content);
+    console.log('Content length:', content.length);
     
-    return sections.map((section, index) => {
-      const lines = section.trim().split('\n');
-      const header = lines[0];
-      const body = lines.slice(1).join('\n').trim();
-      const sectionId = `${activeTab}-${index}`;
-      const isExpanded = expandedSections[sectionId];
-
-      return (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-          className="mb-6"
-        >
-          <button
-            onClick={() => toggleSection(sectionId)}
-            className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-pink-50 to-rose-100 rounded-xl hover:from-pink-100 hover:to-rose-200 transition-all duration-300 border border-pink-100"
-          >
-            <h3 className="text-lg font-semibold text-rose-900">{header}</h3>
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          </button>
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
-                <div className="p-6 bg-white border border-t-0 border-pink-100 rounded-b-xl">
-                  <div className="prose prose-pink max-w-none">
-                    {body.split('\n').map((line, lineIndex) => (
-                      <p key={lineIndex} className="text-rose-800 leading-relaxed mb-3">
-                        {line}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      );
-    });
+    // Simple content rendering - just split by lines and render as paragraphs
+    const lines = content.split('\n').filter(line => line.trim() !== '');
+    console.log('Lines found:', lines.length);
+    
+    return (
+      <div className="prose prose-pink max-w-none">
+        {lines.map((line, lineIndex) => {
+          // Check if this line looks like a header (ends with colon and is short)
+          const isHeader = line.trim().endsWith(':') && line.trim().length < 100;
+          
+          return (
+            <div key={lineIndex} className="mb-4">
+              {isHeader ? (
+                <h3 className="text-xl font-semibold text-rose-900 mb-2">{line.trim()}</h3>
+              ) : (
+                <p className="text-rose-800 leading-relaxed">{line}</p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   if (loading) {
@@ -263,7 +245,12 @@ const Policies = () => {
                     </motion.div>
                     
                     <div className="bg-white rounded-2xl shadow-xl p-8 border border-pink-100">
-                      {renderContent(policies[activeTab].content)}
+                      {(() => {
+                        console.log('Rendering policy for tab:', activeTab);
+                        console.log('Policy data:', policies[activeTab]);
+                        console.log('Policy content:', policies[activeTab].content);
+                        return renderContent(policies[activeTab].content);
+                      })()}
                     </div>
                   </div>
                 ) : (
