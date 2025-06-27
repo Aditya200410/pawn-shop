@@ -3,7 +3,7 @@ import config from '../config/config.js';
 export const authService = {
     async register(userData) {
         try {
-            const response = await fetch(`${config.API_URLS.AUTH}/signup`, {
+            const response = await fetch(`${config.API_URLS.AUTH}/register`, {
                 method: 'POST',
                 headers: config.CORS.HEADERS,
                 credentials: 'include',

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -10,6 +10,7 @@ const Login = () => {
   const { login, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
     password: '',
   });
@@ -70,6 +71,26 @@ const Login = () => {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                  Username (or Email)
+                </label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <User className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    autoComplete="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your username (or leave blank to use email)"
+                  />
+                </div>
+              </div>
+              <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Email address
                 </label>
@@ -82,15 +103,13 @@ const Login = () => {
                     name="email"
                     type="email"
                     autoComplete="email"
-                    required
                     value={formData.email}
                     onChange={handleChange}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                    placeholder="Enter your email"
+                    placeholder="Enter your email (or leave blank to use username)"
                   />
                 </div>
               </div>
-
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
