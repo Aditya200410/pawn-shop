@@ -36,11 +36,7 @@ export const authService = {
                 throw new Error(error.message || 'OTP verification failed');
             }
             
-            const data = await response.json();
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-            }
-            return data;
+            return response.json();
         } catch (error) {
             console.error('OTP verification error:', error);
             throw error;
@@ -49,19 +45,28 @@ export const authService = {
 
     async login(credentials) {
         try {
-        const response = await fetch(`${config.API_URLS.AUTH}/login`, {
-            method: 'POST',
-            headers: config.CORS.HEADERS,
+            // Send both username and email, backend will use whichever is filled
+            const response = await fetch(`${config.API_URLS.AUTH}/login`, {
+                method: 'POST',
+                headers: config.CORS.HEADERS,
                 credentials: 'include',
-            body: JSON.stringify({ username: credentials.email, password: credentials.password }),
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Login failed');
-        }
-        
-        return response.json();
+                body: JSON.stringify({
+                    username: credentials.username,
+                    email: credentials.email,
+                    password: credentials.password
+                }),
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Login failed');
+            }
+            
+            const data = await response.json();
+            if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+            }
+            return data;
         } catch (error) {
             console.error('Login error:', error);
             throw error;
@@ -70,26 +75,20 @@ export const authService = {
 
     async getCurrentUser() {
         try {
-            const token = localStorage.getItem('token');
-            const headers = {
-                ...config.CORS.HEADERS,
-            };
-            
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                return { user: JSON.parse(storedUser) };
             }
-            
-        const response = await fetch(`${config.API_URLS.AUTH}/me`, {
-                headers,
+            // fallback: fetch from backend if needed
+            const response = await fetch(`${config.API_URLS.AUTH}/me`, {
+                headers: config.CORS.HEADERS,
                 credentials: 'include',
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to get user data');
-        }
-        
-        return response.json();
+            });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to get user data');
+            }
+            return response.json();
         } catch (error) {
             console.error('Get current user error:', error);
             throw error;
@@ -98,17 +97,16 @@ export const authService = {
 
     async logout() {
         try {
-        const response = await fetch(`${config.API_URLS.AUTH}/logout`, {
-            method: 'POST',
+            const response = await fetch(`${config.API_URLS.AUTH}/logout`, {
+                method: 'POST',
                 credentials: 'include',
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to logout');
-        }
-        
-        return response.json();
+            });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to logout');
+            }
+            localStorage.removeItem('user');
+            return response.json();
         } catch (error) {
             console.error('Logout error:', error);
             throw error;
@@ -117,27 +115,16 @@ export const authService = {
 
     async updateProfile(userData) {
         try {
-            const token = localStorage.getItem('token');
-            const headers = {
-                ...config.CORS.HEADERS,
-            };
-            
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-            
             const response = await fetch(`${config.API_URLS.AUTH}/update-profile`, {
                 method: 'PUT',
-                headers,
+                headers: config.CORS.HEADERS,
                 credentials: 'include',
                 body: JSON.stringify(userData),
             });
-            
             if (!response.ok) {
                 const error = await response.json();
                 throw new Error(error.message || 'Failed to update profile');
             }
-            
             return response.json();
         } catch (error) {
             console.error('Update profile error:', error);
@@ -153,12 +140,10 @@ export const authService = {
                 credentials: 'include',
                 body: JSON.stringify({ email }),
             });
-            
             if (!response.ok) {
                 const error = await response.json();
                 throw new Error(error.message || 'Failed to send reset link');
             }
-            
             return response.json();
         } catch (error) {
             console.error('Forgot password error:', error);
@@ -167,7 +152,7 @@ export const authService = {
     },
 
     isAuthenticated() {
-        const token = localStorage.getItem('token');
-        return !!token;
+        const storedUser = localStorage.getItem('user');
+        return !!storedUser;
     }
 }; 

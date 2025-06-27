@@ -35,7 +35,10 @@ const Signup = () => {
         email: formData.email.trim(),
         password: formData.password
       };
-      await register(registrationData);
+      const data = await register(registrationData);
+      if (data && data.token) {
+        localStorage.setItem('token', data.token);
+      }
       toast.success('Please verify your email with OTP');
       navigate('/verify-otp', { state: { email: formData.email } });
     } catch (err) {
