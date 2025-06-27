@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const initAuth = async () => {
+            // Only check auth if we have a token but no user, or if we want to refresh
             const token = localStorage.getItem('token');
             const storedUser = localStorage.getItem('user');
             
@@ -31,6 +32,7 @@ export const AuthProvider = ({ children }) => {
                     setLoading(false);
                 }
             } else {
+                // If we have cached user data, don't make API call
                 setLoading(false);
             }
         };
@@ -40,49 +42,10 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             setError(null);
-            let data;
-            
-            // Check if this is a direct login or post-OTP verification
-            if (credentials.token && credentials.user) {
-                // Post-OTP verification login
-                data = credentials;
-            } else {
-                // Regular login
-                data = await authService.login(credentials);
-            }
-
-            if (data.user && data.token) {
-                setUser(data.user);
-                localStorage.setItem('user', JSON.stringify(data.user));
-                localStorage.setItem('token', data.token);
-                return data;
-            } else {
-                throw new Error('Invalid login response');
-            }
-        } catch (err) {
-            setError(err.message);
-            throw err;
-        }
-    };
-
-    const register = async (userData) => {
-        try {
-            setError(null);
-            const data = await authService.register(userData);
-            // Don't set user or token yet - wait for OTP verification
-            return data;
-        } catch (err) {
-            setError(err.message);
-            throw err;
-        }
-    };
-
-    const verifyOTP = async (email, otp) => {
-        try {
-            setError(null);
-            const data = await authService.verifyOTP(email, otp);
+            const data = await authService.login(credentials);
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
+            // Store the token in localStorage
             if (data.token) {
                 localStorage.setItem('token', data.token);
             }
@@ -93,10 +56,17 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const resendOTP = async (email) => {
+    const register = async (userData) => {
         try {
             setError(null);
-            return await authService.resendOTP(email);
+            const data = await authService.register(userData);
+            setUser(data.user);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            // Store the token in localStorage
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+            }
+            return data;
         } catch (err) {
             setError(err.message);
             throw err;
@@ -145,8 +115,6 @@ export const AuthProvider = ({ children }) => {
         error,
         login,
         register,
-        verifyOTP,
-        resendOTP,
         logout,
         updateProfile,
         forgotPassword,

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { login, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -16,22 +15,6 @@ const Login = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
-  // Handle email and success message from OTP verification
-  useEffect(() => {
-    if (location.state?.email) {
-      setFormData(prev => ({
-        ...prev,
-        email: location.state.email
-      }));
-
-      if (location.state?.verified && location.state?.message) {
-        toast.success(location.state.message);
-        // Clear the state to prevent showing the message again on refresh
-        window.history.replaceState({}, document.title);
-      }
-    }
-  }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

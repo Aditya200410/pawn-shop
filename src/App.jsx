@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
@@ -51,18 +51,6 @@ const ProtectedRoute = ({ children }) => {
 
     if (!isAuthenticated) {
         return <Navigate to="/login" />;
-    }
-
-    return children;
-};
-
-// OTP Protected Route component
-const OTPProtectedRoute = ({ children }) => {
-    const location = useLocation();
-    const email = location.state?.email;
-
-    if (!email) {
-        return <Navigate to="/signup" />;
     }
 
     return children;
@@ -155,11 +143,7 @@ function AppContent() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/verify-otp" element={
-          <OTPProtectedRoute>
-            <OTPVerification />
-          </OTPProtectedRoute>
-        } />
+        <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path='/seller' element={<BecomeSeller/>}/>
