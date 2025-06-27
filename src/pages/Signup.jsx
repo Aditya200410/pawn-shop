@@ -35,8 +35,8 @@ const Signup = () => {
         email: formData.email,
         password: formData.password
       });
-      toast.success('Account created successfully! Please sign in.');
-      navigate('/login');
+      toast.success('OTP sent! Please check your email/console.');
+      navigate('/otp-verification', { state: { email: formData.email } });
     } catch (err) {
       setError(err.message || contextError || 'Failed to create account');
     } finally {

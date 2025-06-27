@@ -60,12 +60,7 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const data = await authService.register(userData);
-            setUser(data.user);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            // Store the token in localStorage
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-            }
+            // Do NOT set user or token here; wait for OTP verification
             return data;
         } catch (err) {
             setError(err.message);
