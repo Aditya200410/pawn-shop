@@ -28,7 +28,7 @@ export const authService = {
             method: 'POST',
             headers: config.CORS.HEADERS,
                 credentials: 'include',
-            body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+            body: JSON.stringify({ username: credentials.email, password: credentials.password }),
         });
         
         if (!response.ok) {
