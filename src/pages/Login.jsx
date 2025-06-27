@@ -1,27 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, User } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, error: contextError, user } = useAuth();
+  const { login, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (user) {
-      navigate('/account');
-    }
-  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,16 +22,9 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      const data = await login(formData);
-      if (data && data.user) {
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-        }
-        toast.success('Welcome back!');
-      } else {
-        setError('Login failed: No user returned.');
-        console.log('Login response:', data);
-      }
+      await login(formData);
+      toast.success('Welcome back!');
+      navigate('/account');
     } catch (err) {
       setError(err.message || contextError || 'Failed to login');
     } finally {
@@ -83,7 +69,6 @@ const Login = () => {
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
-           
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Email address
@@ -97,13 +82,15 @@ const Login = () => {
                     name="email"
                     type="email"
                     autoComplete="email"
+                    required
                     value={formData.email}
                     onChange={handleChange}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                    placeholder="Enter your email (or leave blank to use username)"
+                    placeholder="Enter your email"
                   />
                 </div>
               </div>
+
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password

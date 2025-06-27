@@ -10,7 +10,7 @@ const Signup = () => {
   const { register, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -30,17 +30,13 @@ const Signup = () => {
     }
 
     try {
-      const registrationData = {
-        username: formData.username.trim(),
-        email: formData.email.trim(),
+      await register({
+        name: formData.name,
+        email: formData.email,
         password: formData.password
-      };
-      const data = await register(registrationData);
-      if (data && data.token) {
-        localStorage.setItem('token', data.token);
-      }
-      toast.success('Please verify your email with OTP');
-      navigate('/verify-otp', { state: { email: formData.email } });
+      });
+      toast.success('Account created successfully! Please sign in.');
+      navigate('/login');
     } catch (err) {
       setError(err.message || contextError || 'Failed to create account');
     } finally {
@@ -87,22 +83,22 @@ const Signup = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Username
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    Full Name
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <User className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
-                      id="username"
-                      name="username"
+                      id="name"
+                      name="name"
                       type="text"
                       required
-                      value={formData.username}
+                      value={formData.name}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                      placeholder="Enter your username"
+                      placeholder="Enter your full name"
                     />
                   </div>
                 </div>

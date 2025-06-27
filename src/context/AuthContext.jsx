@@ -39,50 +39,37 @@ export const AuthProvider = ({ children }) => {
         initAuth();
     }, []);
 
-    const register = async (userData) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await authService.register(userData);
-            return response;
-        } catch (err) {
-            setError(err.message);
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const verifyOTP = async (verificationData) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await authService.verifyOTP(verificationData);
-            return response;
-        } catch (err) {
-            setError(err.message);
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const login = async (credentials) => {
-        setLoading(true);
-        setError(null);
         try {
+            setError(null);
             const data = await authService.login(credentials);
+            setUser(data.user);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            // Store the token in localStorage
             if (data.token) {
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
-                setUser(data.user);
             }
             return data;
         } catch (err) {
             setError(err.message);
             throw err;
-        } finally {
-            setLoading(false);
+        }
+    };
+
+    const register = async (userData) => {
+        try {
+            setError(null);
+            const data = await authService.register(userData);
+            setUser(data.user);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            // Store the token in localStorage
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+            }
+            return data;
+        } catch (err) {
+            setError(err.message);
+            throw err;
         }
     };
 
@@ -90,12 +77,11 @@ export const AuthProvider = ({ children }) => {
         try {
             await authService.logout();
         } catch (err) {
-            console.error('Logout error:', err);
-        } finally {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            setUser(null);
+            // Optionally handle logout error
         }
+        setUser(null);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
     };
 
     const updateProfile = async (userData) => {
@@ -127,9 +113,8 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         error,
-        register,
-        verifyOTP,
         login,
+        register,
         logout,
         updateProfile,
         forgotPassword,

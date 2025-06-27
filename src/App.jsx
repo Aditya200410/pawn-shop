@@ -35,7 +35,6 @@ import OrderConfirmation from './pages/OrderConfirmation';
 import BecomeSeller from './pages/BecomeSeller';
 import SellerAuth from './pages/SellerAuth';
 import SellerProfile from './pages/SellerProfile';
-import OTPVerification from './pages/OTPVerification';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -143,7 +142,6 @@ function AppContent() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path='/seller' element={<BecomeSeller/>}/>
