@@ -141,25 +141,6 @@ export const authService = {
         }
     },
 
-    async verifyOTP({ email, otp }) {
-        try {
-            const response = await fetch(`${config.API_URLS.AUTH}/verify-otp`, {
-                method: 'POST',
-                headers: config.CORS.HEADERS,
-                credentials: 'include',
-                body: JSON.stringify({ email, otp }),
-            });
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'OTP verification failed');
-            }
-            return response.json();
-        } catch (error) {
-            console.error('OTP verification error:', error);
-            throw error;
-        }
-    },
-
     isAuthenticated() {
         const token = localStorage.getItem('token');
         return !!token;
