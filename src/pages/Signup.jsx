@@ -31,8 +31,8 @@ const Signup = () => {
 
     try {
       await register({
-        username: formData.name,
-        email: formData.email,
+        username: formData.name.trim(),
+        email: formData.email.trim(),
         password: formData.password
       });
       toast.success('Please verify your email with OTP');
