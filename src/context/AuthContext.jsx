@@ -60,13 +60,34 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const data = await authService.register(userData);
+            // Don't set user or token yet - wait for OTP verification
+            return data;
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        }
+    };
+
+    const verifyOTP = async (email, otp) => {
+        try {
+            setError(null);
+            const data = await authService.verifyOTP(email, otp);
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
-            // Store the token in localStorage
             if (data.token) {
                 localStorage.setItem('token', data.token);
             }
             return data;
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        }
+    };
+
+    const resendOTP = async (email) => {
+        try {
+            setError(null);
+            return await authService.resendOTP(email);
         } catch (err) {
             setError(err.message);
             throw err;
@@ -115,6 +136,8 @@ export const AuthProvider = ({ children }) => {
         error,
         login,
         register,
+        verifyOTP,
+        resendOTP,
         logout,
         updateProfile,
         forgotPassword,
