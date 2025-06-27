@@ -2,13 +2,11 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import OTPVerificationComponent from '../components/OTPVerification';
 import { authService } from '../services/authService';
-import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 export default function OTPVerification() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
   const email = location.state?.email;
 
   useEffect(() => {
@@ -21,14 +19,12 @@ export default function OTPVerification() {
   const handleVerify = async (otp) => {
     try {
       const response = await authService.verifyOTP(email, otp);
-      if (response.token && response.user) {
-        // Log the user in with the response data
-        await login({
-          token: response.token,
-          user: response.user
+      if (response.success) {
+        toast.success('Account verified successfully! Please login to continue.');
+        navigate('/login', { 
+          replace: true,
+          state: { email: email }  // Pass email to login page to auto-fill
         });
-        toast.success('Account verified successfully!');
-        navigate('/', { replace: true });
       } else {
         throw new Error('Invalid verification response');
       }
