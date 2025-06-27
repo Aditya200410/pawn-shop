@@ -196,7 +196,7 @@ const Signup = () => {
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link to="/privacy" className="font-medium text-primary hover:text-primary-dark">
+                <Link to="/policies" className="font-medium text-primary hover:text-primary-dark">
                   Privacy Policy
                 </Link>
               </label>
