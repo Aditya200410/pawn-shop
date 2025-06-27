@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import config from '../config/config';
+import { authService } from '../services/authService';
 
 const OTPVerification = () => {
   const [otp, setOtp] = useState('');
@@ -9,9 +8,6 @@ const OTPVerification = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
-
-  // Get email from location state
   const email = location.state?.email;
 
   if (!email) {
@@ -25,25 +21,10 @@ const OTPVerification = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${config.API_BASE_URL}/api/auth/verify-otp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, otp }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Verification failed');
-      }
-
-      // Login the user with the received token
-      await login(data.token, data.user);
-      navigate('/');
+      await authService.verifyOTP({ email, otp });
+      navigate('/login', { state: { message: 'Registration successful! Please login.' } });
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Verification failed');
     } finally {
       setLoading(false);
     }
@@ -54,21 +35,16 @@ const OTPVerification = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Verify your email
+            Verify Your Email
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Please enter the OTP sent to {email}
           </p>
-          <p className="text-center text-xs text-gray-500 mt-1">
-            Check the console for the OTP
+          <p className="mt-2 text-center text-xs text-gray-500">
+            Check the console for the OTP (testing purposes only)
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-              <span className="block sm:inline">{error}</span>
-            </div>
-          )}
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="otp" className="sr-only">
@@ -87,6 +63,12 @@ const OTPVerification = () => {
               />
             </div>
           </div>
+
+          {error && (
+            <div className="text-red-500 text-sm text-center">
+              {error}
+            </div>
+          )}
 
           <div>
             <button

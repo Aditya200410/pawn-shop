@@ -31,12 +31,12 @@ const Signup = () => {
 
     try {
       await register({
-        name: formData.name,
+        username: formData.name,
         email: formData.email,
         password: formData.password
       });
-      toast.success('Account created successfully! Please sign in.');
-      navigate('/login');
+      toast.success('Please verify your email with OTP');
+      navigate('/verify-otp', { state: { email: formData.email } });
     } catch (err) {
       setError(err.message || contextError || 'Failed to create account');
     } finally {
