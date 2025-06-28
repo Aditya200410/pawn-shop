@@ -50,6 +50,7 @@ export const SellerProvider = ({ children }) => {
         address: data.seller.address || '',
         sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
+        qrCode: data.seller.qrCode,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
         createdAt: data.seller.createdAt
@@ -92,6 +93,7 @@ export const SellerProvider = ({ children }) => {
         address: data.seller.address || '',
         sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
+        qrCode: data.seller.qrCode,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
         createdAt: data.seller.createdAt
@@ -137,6 +139,7 @@ export const SellerProvider = ({ children }) => {
         address: data.seller.address || '',
         sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
+        qrCode: data.seller.qrCode,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
         createdAt: data.seller.createdAt
@@ -190,6 +193,7 @@ export const SellerProvider = ({ children }) => {
         address: data.seller.address || '',
         sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
+        qrCode: data.seller.qrCode,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
         createdAt: data.seller.createdAt

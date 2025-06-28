@@ -4,7 +4,7 @@ import { useSeller } from '../context/SellerContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import Loader from '../components/Loader';
-import { FiDollarSign, FiShoppingCart, FiLink, FiTag } from 'react-icons/fi';
+import { FiDollarSign, FiShoppingCart, FiLink, FiTag, FiDownload, FiQrCode } from 'react-icons/fi';
 
 const SellerProfile = () => {
   const { seller, loading, error, updateProfile, logout } = useSeller();
@@ -50,6 +50,27 @@ const SellerProfile = () => {
   const handleLogout = () => {
     logout();
     navigate('/seller/auth');
+  };
+
+  const downloadQRCode = () => {
+    if (!seller.qrCode) {
+      toast.error('QR code not available');
+      return;
+    }
+
+    try {
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = seller.qrCode;
+      link.download = `${seller.businessName}-shop-qr-code.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success('QR code downloaded successfully!');
+    } catch (error) {
+      console.error('Error downloading QR code:', error);
+      toast.error('Failed to download QR code');
+    }
   };
 
   return (
@@ -181,6 +202,37 @@ const SellerProfile = () => {
                       <p className="text-xs text-gray-500 mt-1">10% commission from orders</p>
                     </div>
                   </div>
+                  
+                  {/* QR Code Section */}
+                  {seller.qrCode && (
+                    <div className="bg-gray-50 p-6 rounded-lg">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center">
+                          <FiQrCode className="w-6 h-6 text-amber-600 mr-2" />
+                          <h3 className="text-lg font-medium text-gray-900">Shop QR Code</h3>
+                        </div>
+                        <button
+                          onClick={downloadQRCode}
+                          className="flex items-center px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors"
+                        >
+                          <FiDownload className="w-4 h-4 mr-2" />
+                          Download QR Code
+                        </button>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <img 
+                          src={seller.qrCode} 
+                          alt="Shop QR Code" 
+                          className="w-48 h-48 border-4 border-white shadow-lg rounded-lg"
+                        />
+                        <p className="text-sm text-gray-500 mt-3 text-center">
+                          Scan this QR code to visit your shop<br />
+                          Customers can scan this to access your products
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="text-sm text-gray-500">Address</p>
                     <p className="text-lg font-medium text-gray-900">{seller.address}</p>
