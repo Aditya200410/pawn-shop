@@ -232,6 +232,20 @@ const Signup = () => {
                 </span>
               </button>
             </div>
+
+            {/* Seller Signup Link */}
+            <div className="text-center pt-4 border-t border-gray-200">
+              <p className="text-sm text-gray-600 mb-2">
+                Want to sell your products?
+              </p>
+              <Link 
+                to="/seller" 
+                className="inline-flex items-center text-amber-600 hover:text-amber-700 font-medium text-sm transition-colors"
+              >
+                Become a Seller
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Link>
+            </div>
           </form>
         </div>
       </motion.div>

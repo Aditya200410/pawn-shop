@@ -162,6 +162,7 @@ export const SellerProvider = ({ children }) => {
     localStorage.removeItem('seller_token');
     setSeller(null);
     toast.success('Logged out successfully');
+    window.location.href = '/'; // Redirect to home page
   };
 
   const updateProfile = async (updates) => {
