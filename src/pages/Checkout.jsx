@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { 
   ArrowLeft, 
@@ -25,23 +25,29 @@ import { toast } from 'react-hot-toast';
 import config from '../config/config.js';
 import apiService from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
+import Loader from '../components/Loader';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, getTotalPrice, clearCart, getItemImage } = useCart();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  
+  // Get seller token from URL parameters
+  const sellerToken = searchParams.get('seller');
+  
   const [activeStep, setActiveStep] = useState('shipping');
   const [formData, setFormData] = useState({
     // Shipping Information
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'India',
+    firstName: user?.name?.split(' ')[0] || '',
+    lastName: user?.name?.split(' ').slice(1).join(' ') || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    address: user?.address || '',
+    city: user?.city || '',
+    state: user?.state || '',
+    zipCode: user?.zipCode || '',
+    country: user?.country || 'India',
     
     // Billing Information
     billingSameAsShipping: true,
@@ -56,7 +62,7 @@ const Checkout = () => {
     billingCountry: 'India',
     
     // Payment Information
-    paymentMethod: 'razorpay',
+    paymentMethod: 'cod'
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -97,25 +103,32 @@ const Checkout = () => {
     }
   }, [formData.billingSameAsShipping, formData.firstName, formData.lastName, formData.email, formData.phone, formData.address, formData.city, formData.state, formData.zipCode, formData.country]);
 
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      navigate('/cart');
+    }
+  }, [cartItems, navigate]);
+
   const validateForm = () => {
     const errors = {};
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'state', 'zipCode'];
     
-    // Shipping information validation
-    const shippingFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'state', 'zipCode'];
-    shippingFields.forEach(field => {
+    requiredFields.forEach(field => {
       if (!formData[field] || formData[field].trim() === '') {
         errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
       }
     });
 
     // Email validation
-    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Please enter a valid email address';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      errors.email = 'Invalid email format';
     }
 
     // Phone validation
-    if (formData.phone && !/^\d{10,}$/.test(formData.phone.replace(/\D/g, ''))) {
-      errors.phone = 'Please enter a valid phone number (at least 10 digits)';
+    const phoneRegex = /^[\d\s-+()]{10,}$/;
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      errors.phone = 'Invalid phone number';
     }
 
     setFieldErrors(errors);
@@ -175,7 +188,8 @@ const Checkout = () => {
       })),
       totalAmount: getTotalPrice(),
       paymentMethod: formData.paymentMethod,
-      paymentStatus: formData.paymentMethod === 'cod' ? 'Pending' : 'Processing',
+      paymentStatus: formData.paymentMethod === 'cod' ? 'pending' : 'processing',
+      sellerToken: sellerToken // Include seller token if present
     };
     
     try {
@@ -183,6 +197,9 @@ const Checkout = () => {
 
       if (response.success) {
         toast.success('Order placed successfully!');
+        if (sellerToken) {
+          toast.success('Seller commission has been tracked!');
+        }
         clearCart(); // Clear cart on successful order
         navigate('/account?tab=orders');
       } else {

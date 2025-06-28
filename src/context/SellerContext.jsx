@@ -48,11 +48,11 @@ export const SellerProvider = ({ children }) => {
         email: data.seller.email,
         phone: data.seller.phone || '',
         address: data.seller.address || '',
-        status: data.seller.status,
-        createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken,
+        sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode
+        totalOrders: data.seller.totalOrders || 0,
+        totalCommission: data.seller.totalCommission || 0,
+        createdAt: data.seller.createdAt
       };
 
       setSeller(sellerData);
@@ -90,11 +90,11 @@ export const SellerProvider = ({ children }) => {
         email: data.seller.email,
         phone: data.seller.phone || '',
         address: data.seller.address || '',
-        status: data.seller.status,
-        createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken,
+        sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode
+        totalOrders: data.seller.totalOrders || 0,
+        totalCommission: data.seller.totalCommission || 0,
+        createdAt: data.seller.createdAt
       };
 
       localStorage.setItem('seller_token', data.token);
@@ -135,11 +135,11 @@ export const SellerProvider = ({ children }) => {
         email: data.seller.email,
         phone: data.seller.phone || '',
         address: data.seller.address || '',
-        status: data.seller.status,
-        createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken,
+        sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode
+        totalOrders: data.seller.totalOrders || 0,
+        totalCommission: data.seller.totalCommission || 0,
+        createdAt: data.seller.createdAt
       };
 
       localStorage.setItem('seller_token', data.token);
@@ -188,11 +188,11 @@ export const SellerProvider = ({ children }) => {
         email: data.seller.email,
         phone: data.seller.phone || '',
         address: data.seller.address || '',
-        status: data.seller.status,
-        createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken,
+        sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode
+        totalOrders: data.seller.totalOrders || 0,
+        totalCommission: data.seller.totalCommission || 0,
+        createdAt: data.seller.createdAt
       };
 
       setSeller(updatedSellerData);

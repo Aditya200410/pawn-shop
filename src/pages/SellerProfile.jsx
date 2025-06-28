@@ -4,6 +4,7 @@ import { useSeller } from '../context/SellerContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import Loader from '../components/Loader';
+import { FiDollarSign, FiShoppingCart, FiLink, FiTag } from 'react-icons/fi';
 
 const SellerProfile = () => {
   const { seller, loading, error, updateProfile, logout } = useSeller();
@@ -141,38 +142,44 @@ const SellerProfile = () => {
                       <p className="text-lg font-medium text-gray-900">{seller.phone}</p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500">Coupon Code</p>
-                      <p className="text-lg font-medium text-amber-600">{seller.couponToken}</p>
-                      <p className="text-xs text-gray-500 mt-1">Share this code with your customers for discounts</p>
+                      <p className="text-sm text-gray-500">Seller Token</p>
+                      <div className="flex items-center">
+                        <FiTag className="w-5 h-5 text-amber-600 mr-2" />
+                        <span className="text-lg font-medium text-amber-600">{seller.sellerToken}</span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">Your unique identifier for tracking orders</p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm text-gray-500">Your Shop Link</p>
-                      <a 
-                        href={seller.websiteLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-lg font-medium text-blue-600 hover:underline break-all"
-                      >
-                        {seller.websiteLink}
-                      </a>
+                      <div className="flex items-center">
+                        <FiLink className="w-5 h-5 text-blue-600 mr-2" />
+                        <a 
+                          href={seller.websiteLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-lg font-medium text-blue-600 hover:underline break-all"
+                        >
+                          View Shop
+                        </a>
+                      </div>
                       <p className="text-xs text-gray-500 mt-1">Share this link with your customers</p>
                     </div>
-                    {seller.qrCode && (
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm text-gray-500 mb-2">Shop QR Code</p>
-                        <div className="flex flex-col items-center">
-                          <img src={seller.qrCode} alt="Shop QR Code" className="w-40 h-40" />
-                          <p className="text-xs text-gray-500 mt-2">Scan to visit your shop</p>
-                          <a
-                            href={seller.qrCode}
-                            download="shop-qr-code.png"
-                            className="mt-2 text-sm text-blue-600 hover:underline"
-                          >
-                            Download QR Code
-                          </a>
-                        </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-500">Total Orders</p>
+                      <div className="flex items-center">
+                        <FiShoppingCart className="w-5 h-5 text-green-600 mr-2" />
+                        <span className="text-lg font-medium text-green-600">{seller.totalOrders || 0}</span>
                       </div>
-                    )}
+                      <p className="text-xs text-gray-500 mt-1">Orders through your link</p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-500">Total Commission</p>
+                      <div className="flex items-center">
+                        <FiDollarSign className="w-5 h-5 text-green-600 mr-2" />
+                        <span className="text-lg font-medium text-green-600">₹{seller.totalCommission || 0}</span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">10% commission from orders</p>
+                    </div>
                   </div>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="text-sm text-gray-500">Address</p>
