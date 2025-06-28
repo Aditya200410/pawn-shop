@@ -4,7 +4,7 @@ import { useSeller } from '../context/SellerContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import Loader from '../components/Loader';
-import { FiDollarSign, FiShoppingCart, FiLink, FiTag, FiDownload, FiQrCode } from 'react-icons/fi';
+import { FiDollarSign, FiShoppingCart, FiLink, FiTag, FiDownload, FiSmartphone } from 'react-icons/fi';
 
 const SellerProfile = () => {
   const { seller, loading, error, updateProfile, logout } = useSeller();
@@ -208,7 +208,7 @@ const SellerProfile = () => {
                     <div className="bg-gray-50 p-6 rounded-lg">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center">
-                          <FiQrCode className="w-6 h-6 text-amber-600 mr-2" />
+                          <FiSmartphone className="w-6 h-6 text-amber-600 mr-2" />
                           <h3 className="text-lg font-medium text-gray-900">Shop QR Code</h3>
                         </div>
                         <button
