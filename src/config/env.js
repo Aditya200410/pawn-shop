@@ -23,7 +23,7 @@ const env = {
   
   // App Configuration
   APP: {
-    NAME: import.meta.env.VITE_APP_NAME || 'RIKO CARFT,
+    NAME: import.meta.env.VITE_APP_NAME || 'RIKO CARFT',
     DESCRIPTION: import.meta.env.VITE_APP_DESCRIPTION || 'Your one-stop shop for unique items',
     CONTACT_EMAIL: import.meta.env.VITE_CONTACT_EMAIL || 'support@pawnshop.com',
     SUPPORT_PHONE: import.meta.env.VITE_SUPPORT_PHONE || '+1234567890',
