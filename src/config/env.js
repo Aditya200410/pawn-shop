@@ -14,7 +14,7 @@ const env = {
   
   // Payment Gateway
   RAZORPAY: {
-    KEY_ID: import.meta.env.VITE_RAZORPAY_KEY_ID || '',
+    KEY_ID: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_1DP5mmOlF5G5ag',
     KEY_SECRET: import.meta.env.VITE_RAZORPAY_KEY_SECRET || '',
   },
   
@@ -23,10 +23,10 @@ const env = {
   
   // App Configuration
   APP: {
-    NAME: import.meta.env.VITE_APP_NAME || 'RIKO CARFT',
-    DESCRIPTION: import.meta.env.VITE_APP_DESCRIPTION || 'Your one-stop shop for unique items',
-    CONTACT_EMAIL: import.meta.env.VITE_CONTACT_EMAIL || 'support@pawnshop.com',
-    SUPPORT_PHONE: import.meta.env.VITE_SUPPORT_PHONE || '+1234567890',
+    NAME: import.meta.env.VITE_APP_NAME || 'RIKO CRAFT',
+    DESCRIPTION: import.meta.env.VITE_APP_DESCRIPTION || 'Your one-stop shop for unique handcrafted items',
+    CONTACT_EMAIL: import.meta.env.VITE_CONTACT_EMAIL || 'support@rikocraft.com',
+    SUPPORT_PHONE: import.meta.env.VITE_SUPPORT_PHONE || '+91 98765 43210',
   },
   
   // Social Media Links
@@ -84,6 +84,34 @@ const env = {
     
     // By default, assume it's a frontend public asset
     return `/${cleanPath}`;
+  },
+  
+  // Development helpers
+  get isDev() {
+    return this.IS_DEVELOPMENT;
+  },
+  
+  get isProd() {
+    return this.IS_PRODUCTION;
+  },
+  
+  // API URL builder
+  getApiUrl: (endpoint) => {
+    return `${env.API_BASE_URL}${endpoint}`;
+  },
+  
+  // Log helper for development
+  log: (...args) => {
+    if (env.IS_DEVELOPMENT && env.ENABLE_LOGGING) {
+      console.log('[ENV]', ...args);
+    }
+  },
+  
+  // Error helper for development
+  logError: (...args) => {
+    if (env.IS_DEVELOPMENT && env.ENABLE_LOGGING) {
+      console.error('[ENV ERROR]', ...args);
+    }
   },
 };
 

@@ -22,23 +22,17 @@ const config = {
     LOVED: '/api/loved',
     SELLER: '/api/seller',
     COUPONS: '/api/coupons',
+    PRODUCTS: '/api/products',
+    HERO_CAROUSEL: '/api/hero-carousel',
   },
   
   // Full API URLs (constructed from base URL and endpoints)
   get API_URLS() {
-    return {
-      AUTH: `${this.API_BASE_URL}${this.API_ENDPOINTS.AUTH}`,
-      CART: `${this.API_BASE_URL}${this.API_ENDPOINTS.CART}`,
-      SHOP: `${this.API_BASE_URL}${this.API_ENDPOINTS.SHOP}`,
-      ORDERS: `${this.API_BASE_URL}${this.API_ENDPOINTS.ORDERS}`,
-      CATEGORIES: `${this.API_BASE_URL}${this.API_ENDPOINTS.CATEGORIES}`,
-      FEATURED_PRODUCTS: `${this.API_BASE_URL}${this.API_ENDPOINTS.FEATURED_PRODUCTS}`,
-      BESTSELLER: `${this.API_BASE_URL}${this.API_ENDPOINTS.BESTSELLER}`,
-      LOVED: `${this.API_BASE_URL}${this.API_ENDPOINTS.LOVED}`,
-      SELLER: `${this.API_BASE_URL}${this.API_ENDPOINTS.SELLER}`,
-      COUPONS: `${this.API_BASE_URL}${this.API_ENDPOINTS.COUPONS}`,
-      PRODUCTS: `${this.API_BASE_URL}${this.API_ENDPOINTS.SHOP}`,
-    };
+    const urls = {};
+    Object.keys(this.API_ENDPOINTS).forEach(key => {
+      urls[key] = `${this.API_BASE_URL}${this.API_ENDPOINTS[key]}`;
+    });
+    return urls;
   },
   
   // Utility function to fix image URLs
@@ -78,6 +72,44 @@ const config = {
       'Accept': 'application/json',
     },
   },
+  
+  // Development configuration
+  get DEV_CONFIG() {
+    return {
+      API_BASE_URL: 'http://localhost:5000',
+      ENABLE_LOGGING: true,
+      ENABLE_ANALYTICS: false,
+    };
+  },
+  
+  // Production configuration
+  get PROD_CONFIG() {
+    return {
+      API_BASE_URL: 'https://pawnbackend-xmqa.onrender.com',
+      ENABLE_LOGGING: false,
+      ENABLE_ANALYTICS: true,
+    };
+  },
+  
+  // Get current environment config
+  getCurrentConfig: () => {
+    if (env.IS_DEVELOPMENT) {
+      return config.DEV_CONFIG;
+    }
+    return config.PROD_CONFIG;
+  },
+  
+  // Initialize configuration
+  init: () => {
+    if (env.IS_DEVELOPMENT) {
+      env.log('Initializing development configuration');
+      env.log('API Base URL:', config.API_BASE_URL);
+      env.log('App Name:', config.APP.NAME);
+    }
+  },
 };
+
+// Initialize configuration on import
+config.init();
 
 export default config; 
