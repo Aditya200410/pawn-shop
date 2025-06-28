@@ -19,6 +19,7 @@
     "cloudinary": "^1.41.3",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.18.1",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.514.0",
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^7.0.3",
