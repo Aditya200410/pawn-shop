@@ -53,6 +53,9 @@ export const SellerProvider = ({ children }) => {
         qrCode: data.seller.qrCode,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
+        availableCommission: data.seller.availableCommission || 0,
+        bankDetails: data.seller.bankDetails || {},
+        withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt
       };
 
@@ -96,6 +99,9 @@ export const SellerProvider = ({ children }) => {
         qrCode: data.seller.qrCode,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
+        availableCommission: data.seller.availableCommission || 0,
+        bankDetails: data.seller.bankDetails || {},
+        withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt
       };
 
@@ -142,6 +148,9 @@ export const SellerProvider = ({ children }) => {
         qrCode: data.seller.qrCode,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
+        availableCommission: data.seller.availableCommission || 0,
+        bankDetails: data.seller.bankDetails || {},
+        withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt
       };
 
@@ -197,6 +206,9 @@ export const SellerProvider = ({ children }) => {
         qrCode: data.seller.qrCode,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
+        availableCommission: data.seller.availableCommission || 0,
+        bankDetails: data.seller.bankDetails || {},
+        withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt
       };
 
