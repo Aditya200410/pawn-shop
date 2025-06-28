@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useSeller } from '../context/SellerContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import Loader from '../components/Loader';
 import { FiDollarSign, FiShoppingCart, FiLink, FiTag, FiDownload, FiSmartphone } from 'react-icons/fi';
+import RikoCraftPoster from '../components/RikoCraftPoster';
+import html2canvas from 'html2canvas';
 
 const SellerProfile = () => {
   const { seller, loading, error, updateProfile, logout } = useSeller();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const posterRef = useRef();
   const [formData, setFormData] = useState({
     businessName: seller?.businessName || '',
     phone: seller?.phone || '',
@@ -52,29 +55,37 @@ const SellerProfile = () => {
     navigate('/seller/auth');
   };
 
-  const downloadQRCode = () => {
+  const downloadQRCode = async () => {
     if (!seller.qrCode) {
       toast.error('QR code not available');
       return;
     }
-
     try {
-      // Create a temporary link element
+      // Render the poster in a hidden div and use html2canvas to capture it
+      const posterNode = posterRef.current;
+      const canvas = await html2canvas(posterNode, { backgroundColor: null, useCORS: true });
+      const url = canvas.toDataURL('image/png');
       const link = document.createElement('a');
-      link.href = seller.qrCode;
-      link.download = `${seller.businessName}-shop-qr-code.png`;
+      link.href = url;
+      link.download = `${seller.businessName}-poster.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      toast.success('QR code downloaded successfully!');
+      toast.success('Poster downloaded successfully!');
     } catch (error) {
-      console.error('Error downloading QR code:', error);
-      toast.error('Failed to download QR code');
+      console.error('Error downloading poster:', error);
+      toast.error('Failed to download poster');
     }
   };
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      {/* Hidden poster for download */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+        <div ref={posterRef}>
+          <RikoCraftPoster qrSrc={seller.qrCode} />
+        </div>
+      </div>
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
