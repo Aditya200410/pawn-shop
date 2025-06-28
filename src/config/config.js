@@ -1,7 +1,12 @@
+import env from './env';
+
 // Configuration file for API endpoints and environment settings
 // Change this single URL to update all API calls across the application
 
 const config = {
+  // Environment variables
+  ...env,
+  
   // Backend API URL - Change this to switch between environments
   API_BASE_URL: 'https://pawnbackend-xmqa.onrender.com',
   
@@ -16,6 +21,7 @@ const config = {
     BESTSELLER: '/api/bestseller',
     LOVED: '/api/loved',
     SELLER: '/api/seller',
+    COUPONS: '/api/coupons',
   },
   
   // Full API URLs (constructed from base URL and endpoints)
@@ -30,6 +36,7 @@ const config = {
       BESTSELLER: `${this.API_BASE_URL}${this.API_ENDPOINTS.BESTSELLER}`,
       LOVED: `${this.API_BASE_URL}${this.API_ENDPOINTS.LOVED}`,
       SELLER: `${this.API_BASE_URL}${this.API_ENDPOINTS.SELLER}`,
+      COUPONS: `${this.API_BASE_URL}${this.API_ENDPOINTS.COUPONS}`,
       PRODUCTS: `${this.API_BASE_URL}${this.API_ENDPOINTS.SHOP}`,
     };
   },
