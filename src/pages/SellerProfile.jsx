@@ -87,14 +87,12 @@ const SellerProfile = () => {
     }
   };
 
-  // Calculate available commission for withdrawal (simulate with seller.availableCommission if backend provides, else fallback)
+  // Calculate available commission for withdrawal (use seller.availableCommission from backend)
   React.useEffect(() => {
-    // If backend provides availableCommission, use it
     if (seller.availableCommission !== undefined) {
       setAvailableToWithdraw(Math.round(seller.availableCommission));
     } else {
-      // Fallback: allow full commission (for demo)
-      setAvailableToWithdraw(Math.round(seller.totalCommission || 0));
+      setAvailableToWithdraw(0);
     }
   }, [seller]);
 
