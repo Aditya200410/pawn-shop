@@ -29,12 +29,19 @@ import Loader from '../components/Loader';
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cartItems, getTotalPrice, clearCart, getItemImage } = useCart();
+  const { cartItems, getTotalPrice, clearCart, getItemImage, sellerToken, setSellerTokenFromURL, clearSellerToken } = useCart();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   
-  // Get seller token from URL parameters
-  const sellerToken = searchParams.get('seller');
+  // Get seller token from URL parameters and set it in context
+  const urlSellerToken = searchParams.get('seller');
+  
+  // Set seller token from URL if present
+  useEffect(() => {
+    if (urlSellerToken) {
+      setSellerTokenFromURL(urlSellerToken);
+    }
+  }, [urlSellerToken, setSellerTokenFromURL]);
   
   const [activeStep, setActiveStep] = useState('shipping');
   const [formData, setFormData] = useState({
@@ -201,6 +208,7 @@ const Checkout = () => {
           toast.success('Seller commission has been tracked!');
         }
         clearCart(); // Clear cart on successful order
+        clearSellerToken();
         navigate('/account?tab=orders');
       } else {
         setError(response.message || "Failed to create order. Please try again.");
@@ -273,6 +281,7 @@ const Checkout = () => {
         if (orderResponse.success) {
           toast.success('Payment successful! Order placed successfully!');
           clearCart();
+          clearSellerToken();
           navigate('/account?tab=orders');
         } else {
           setError("Payment successful but order creation failed. Please contact support.");

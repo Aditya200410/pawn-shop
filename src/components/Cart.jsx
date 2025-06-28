@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ShoppingBag, Plus, Minus, X, ArrowRight, Truck, Shield, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
@@ -23,14 +23,23 @@ const staggerContainer = {
 };
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity, getTotalPrice, loading, getItemImage } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getTotalPrice, loading, getItemImage, sellerToken, setSellerTokenFromURL } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [couponCode, setCouponCode] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponError, setCouponError] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [discountAmount, setDiscountAmount] = useState(0);
+
+  // Handle seller token from URL
+  React.useEffect(() => {
+    const urlSellerToken = searchParams.get('seller');
+    if (urlSellerToken) {
+      setSellerTokenFromURL(urlSellerToken);
+    }
+  }, [searchParams, setSellerTokenFromURL]);
 
   const handleCouponSubmit = async (e) => {
     e.preventDefault();
@@ -335,7 +344,10 @@ const Cart = () => {
             </div>
 
             <button
-              onClick={() => navigate('/checkout')}
+              onClick={() => {
+                const checkoutUrl = sellerToken ? `/checkout?seller=${sellerToken}` : '/checkout';
+                navigate(checkoutUrl);
+              }}
               className="w-full bg-orange-600 text-white py-3 rounded-xl mt-5 hover:bg-orange-700 transition-colors flex items-center justify-center space-x-2 text-base font-medium"
             >
               <span>Proceed to Checkout</span>

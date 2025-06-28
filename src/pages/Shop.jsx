@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useSearchParams } from 'react-router-dom';
 import { Slider } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HeartIcon, ShoppingCartIcon, EyeIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -8,9 +8,12 @@ import { HeartIcon, ShoppingCartIcon, EyeIcon, FunnelIcon, XMarkIcon } from '@he
 import ProductCard from '../components/ProductCard/ProductCard.jsx';
 import config from '../config/config.js';
 import Loader from '../components/Loader';
+import { useCart } from '../context/CartContext';
 
 const Shop = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const { setSellerTokenFromURL } = useCart();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100000]);
@@ -26,6 +29,14 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [dynamicCategories, setDynamicCategories] = useState([]);
+
+  // Handle seller token from URL
+  useEffect(() => {
+    const sellerToken = searchParams.get('seller');
+    if (sellerToken) {
+      setSellerTokenFromURL(sellerToken);
+    }
+  }, [searchParams, setSellerTokenFromURL]);
 
   // Fetch products from backend
   useEffect(() => {

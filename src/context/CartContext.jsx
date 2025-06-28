@@ -17,6 +17,7 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sellerToken, setSellerToken] = useState(null);
   const { isAuthenticated, user } = useAuth();
 
   // Load cart from backend or localStorage
@@ -44,12 +45,41 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, [isAuthenticated, user]);
 
+  // Load seller token from localStorage on mount
+  useEffect(() => {
+    const savedSellerToken = localStorage.getItem('sellerToken');
+    if (savedSellerToken) {
+      setSellerToken(savedSellerToken);
+    }
+  }, []);
+
   // Save cart to localStorage when not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
     localStorage.setItem('cart', JSON.stringify(cartItems));
     }
   }, [cartItems, isAuthenticated]);
+
+  // Save seller token to localStorage
+  useEffect(() => {
+    if (sellerToken) {
+      localStorage.setItem('sellerToken', sellerToken);
+    } else {
+      localStorage.removeItem('sellerToken');
+    }
+  }, [sellerToken]);
+
+  // Function to set seller token
+  const setSellerTokenFromURL = (token) => {
+    if (token) {
+      setSellerToken(token);
+    }
+  };
+
+  // Function to clear seller token
+  const clearSellerToken = () => {
+    setSellerToken(null);
+  };
 
   const addToCart = async (productId) => {
     try {
@@ -240,7 +270,10 @@ export const CartProvider = ({ children }) => {
         getTotalPrice,
         getTotalItems,
         loading,
-        getItemImage
+        getItemImage,
+        sellerToken,
+        setSellerTokenFromURL,
+        clearSellerToken
       }}
     >
       {children}
