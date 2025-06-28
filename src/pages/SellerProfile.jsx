@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSeller } from '../context/SellerContext';
 import { useNavigate } from 'react-router-dom';
@@ -28,6 +28,20 @@ const SellerProfile = () => {
   const [withdrawing, setWithdrawing] = useState(false);
   const [availableToWithdraw, setAvailableToWithdraw] = useState(0);
 
+  useEffect(() => {
+    if (!loading && !seller) {
+      navigate('/seller');
+    }
+  }, [loading, seller, navigate]);
+
+  useEffect(() => {
+    if (seller && seller.availableCommission !== undefined) {
+      setAvailableToWithdraw(Math.round(seller.availableCommission));
+    } else {
+      setAvailableToWithdraw(0);
+    }
+  }, [seller]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -36,8 +50,19 @@ const SellerProfile = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-red-600">Something went wrong</h2>
+          <p className="text-gray-700 mb-4">{error}</p>
+          <button onClick={() => navigate('/seller')} className="px-4 py-2 bg-amber-600 text-white rounded-lg">Go to Seller Login</button>
+        </div>
+      </div>
+    );
+  }
+
   if (!seller) {
-    navigate('/seller/auth');
     return null;
   }
 
@@ -86,15 +111,6 @@ const SellerProfile = () => {
       toast.error('Failed to download poster');
     }
   };
-
-  // Calculate available commission for withdrawal (use seller.availableCommission from backend)
-  React.useEffect(() => {
-    if (seller.availableCommission !== undefined) {
-      setAvailableToWithdraw(Math.round(seller.availableCommission));
-    } else {
-      setAvailableToWithdraw(0);
-    }
-  }, [seller]);
 
   const handleWithdraw = async (e) => {
     e.preventDefault();
