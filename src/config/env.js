@@ -23,7 +23,7 @@ const env = {
   
   // App Configuration
   APP: {
-    NAME: import.meta.env.VITE_APP_NAME || 'Pawn Shop',
+    NAME: import.meta.env.VITE_APP_NAME || 'RIKO CARFT,
     DESCRIPTION: import.meta.env.VITE_APP_DESCRIPTION || 'Your one-stop shop for unique items',
     CONTACT_EMAIL: import.meta.env.VITE_CONTACT_EMAIL || 'support@pawnshop.com',
     SUPPORT_PHONE: import.meta.env.VITE_SUPPORT_PHONE || '+1234567890',
@@ -31,9 +31,9 @@ const env = {
   
   // Social Media Links
   SOCIAL: {
-    FACEBOOK: import.meta.env.VITE_FACEBOOK_URL || 'https://facebook.com/pawnshop',
-    INSTAGRAM: import.meta.env.VITE_INSTAGRAM_URL || 'https://instagram.com/pawnshop',
-    TWITTER: import.meta.env.VITE_TWITTER_URL || 'https://twitter.com/pawnshop',
+    FACEBOOK: import.meta.env.VITE_FACEBOOK_URL || '',
+    INSTAGRAM: import.meta.env.VITE_INSTAGRAM_URL || '',
+    TWITTER: import.meta.env.VITE_TWITTER_URL || '',
   },
   
   // Security
