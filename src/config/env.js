@@ -6,7 +6,7 @@
 
 const env = {
   // API Configuration
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000',
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://pawnbackend-xmqa.onrender.com',
   
   // Feature Flags
   ENABLE_ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS === 'true',
@@ -19,7 +19,7 @@ const env = {
   },
   
   // Image CDN
-  IMAGE_CDN_URL: import.meta.env.VITE_IMAGE_CDN_URL || 'http://localhost:5000',
+  IMAGE_CDN_URL: import.meta.env.VITE_IMAGE_CDN_URL || 'https://pawnbackend-xmqa.onrender.com',
   
   // App Configuration
   APP: {
