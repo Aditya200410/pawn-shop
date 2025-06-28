@@ -178,8 +178,8 @@ const Hero = () => {
                 </motion.p>
                 <motion.a
                   href={carouselData[currentSlide].buttonLink}
-                  initial={{ y: -50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
+                  initial={{ x: 100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
                   transition={{ 
                     delay: 0.6, 
                     duration: 0.8, 
@@ -188,10 +188,31 @@ const Hero = () => {
                     stiffness: 100
                   }}
                   whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-block bg-amber-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors"
+                  whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center bg-amber-800 text-white px-7 py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors text-lg md:text-xl lg:text-2xl shadow-lg"
+                  style={{ gap: '0.75rem' }}
                 >
-                  {carouselData[currentSlide].buttonText}
+                  <span className="mr-2 md:mr-4">{carouselData[currentSlide].buttonText}</span>
+                  <motion.span
+                    whileHover={{ x: 8, scale: 1.15 }}
+                    transition={{ type: 'spring', stiffness: 300 }}
+                    className="flex items-center ml-2 md:ml-4"
+                  >
+                    <svg
+                      className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </motion.span>
                 </motion.a>
               </div>
             </div>
