@@ -18,6 +18,15 @@ const SellerProfile = () => {
     phone: seller?.phone || '',
     address: seller?.address || ''
   });
+  const [showWithdrawForm, setShowWithdrawForm] = useState(false);
+  const [bankDetails, setBankDetails] = useState(seller?.bankDetails || {
+    accountName: '',
+    accountNumber: '',
+    ifsc: '',
+    bankName: ''
+  });
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [availableToWithdraw, setAvailableToWithdraw] = useState(0);
 
   if (loading) {
     return (
@@ -75,6 +84,44 @@ const SellerProfile = () => {
     } catch (error) {
       console.error('Error downloading poster:', error);
       toast.error('Failed to download poster');
+    }
+  };
+
+  // Calculate available commission for withdrawal (simulate with seller.availableCommission if backend provides, else fallback)
+  React.useEffect(() => {
+    // If backend provides availableCommission, use it
+    if (seller.availableCommission !== undefined) {
+      setAvailableToWithdraw(Math.round(seller.availableCommission));
+    } else {
+      // Fallback: allow full commission (for demo)
+      setAvailableToWithdraw(Math.round(seller.totalCommission || 0));
+    }
+  }, [seller]);
+
+  const handleWithdraw = async (e) => {
+    e.preventDefault();
+    setWithdrawing(true);
+    try {
+      // Call backend to update bank details and request withdrawal
+      const res = await fetch(`/api/seller/withdraw`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('seller_token')}` },
+        body: JSON.stringify({
+          bankDetails,
+          amount: availableToWithdraw
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success('Withdrawal request submitted!');
+        setShowWithdrawForm(false);
+      } else {
+        toast.error(data.message || 'Failed to request withdrawal');
+      }
+    } catch (err) {
+      toast.error('Failed to request withdrawal');
+    } finally {
+      setWithdrawing(false);
     }
   };
 
@@ -259,6 +306,85 @@ const SellerProfile = () => {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Withdraw Section */}
+          <div className="p-6 border-t border-gray-200 mt-6">
+            <h2 className="text-xl font-semibold mb-2 text-gray-900 flex items-center">
+              <FiDollarSign className="w-6 h-6 text-green-600 mr-2" /> Withdraw Earnings
+            </h2>
+            <div className="mb-2 text-gray-700">
+              <span className="font-medium">Available to withdraw:</span> ₹{availableToWithdraw}
+            </div>
+            {seller.bankDetails && (
+              <div className="mb-2 text-gray-600 text-sm">
+                <span className="font-medium">Bank Details:</span> {seller.bankDetails.accountName} / {seller.bankDetails.accountNumber} / {seller.bankDetails.ifsc} / {seller.bankDetails.bankName}
+              </div>
+            )}
+            <button
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mt-2"
+              onClick={() => setShowWithdrawForm(true)}
+              disabled={availableToWithdraw <= 0}
+            >
+              Withdraw
+            </button>
+
+            {/* Withdraw Form Modal */}
+            {showWithdrawForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+                  <h3 className="text-lg font-semibold mb-4">Withdraw to Bank</h3>
+                  <form onSubmit={handleWithdraw} className="space-y-3">
+                    <input
+                      type="text"
+                      placeholder="Account Holder Name"
+                      className="w-full border px-3 py-2 rounded"
+                      value={bankDetails.accountName}
+                      onChange={e => setBankDetails({ ...bankDetails, accountName: e.target.value })}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="Account Number"
+                      className="w-full border px-3 py-2 rounded"
+                      value={bankDetails.accountNumber}
+                      onChange={e => setBankDetails({ ...bankDetails, accountNumber: e.target.value })}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="IFSC Code"
+                      className="w-full border px-3 py-2 rounded"
+                      value={bankDetails.ifsc}
+                      onChange={e => setBankDetails({ ...bankDetails, ifsc: e.target.value })}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="Bank Name"
+                      className="w-full border px-3 py-2 rounded"
+                      value={bankDetails.bankName}
+                      onChange={e => setBankDetails({ ...bankDetails, bankName: e.target.value })}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                      disabled={withdrawing}
+                    >
+                      {withdrawing ? 'Processing...' : `Withdraw ₹${availableToWithdraw}`}
+                    </button>
+                    <button
+                      type="button"
+                      className="w-full mt-2 bg-gray-200 text-gray-700 py-2 rounded hover:bg-gray-300"
+                      onClick={() => setShowWithdrawForm(false)}
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
       </div>
