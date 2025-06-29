@@ -56,28 +56,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="bg-amber-100 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                  <stat.icon className="w-6 h-6 md:w-8 md:h-8 text-amber-600" />
-                </div>
-                <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">{stat.number}</div>
-                <div className="text-sm md:text-base text-gray-600">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+     
 
       {/* Story Section */}
       <section className="py-12 md:py-20">
@@ -93,7 +72,7 @@ const AboutUs = () => {
                 Our Journey Begins
               </h2>
               <p className="text-base md:text-lg text-gray-600 mb-4 md:mb-6 leading-relaxed">
-                Founded in 2022, Riko Craft emerged from a passion to showcase the incredible 
+                   Riko Craft enterprises emerged from a passion to showcase the incredible 
                 artistic heritage of Jharkhand and Eastern India. What began as a small initiative 
                 to support local artisans has blossomed into a growing platform for traditional crafts.
               </p>
