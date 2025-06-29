@@ -43,9 +43,9 @@ export const SellerProvider = ({ children }) => {
 
       // Ensure all required fields are present
       const sellerData = {
-        id: data.seller.id,
-        businessName: data.seller.businessName,
-        email: data.seller.email,
+        id: data.seller.id || data.seller._id || '',
+        businessName: data.seller.businessName || '',
+        email: data.seller.email || '',
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         businessType: data.seller.businessType || '',
@@ -53,9 +53,9 @@ export const SellerProvider = ({ children }) => {
         bankAccountNumber: data.seller.bankAccountNumber || '',
         ifscCode: data.seller.ifscCode || '',
         bankName: data.seller.bankName || '',
-        sellerToken: data.seller.sellerToken,
-        websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode,
+        sellerToken: data.seller.sellerToken || '',
+        websiteLink: data.seller.websiteLink || '',
+        qrCode: data.seller.qrCode || '',
         images: data.seller.images || [],
         profileImage: data.seller.profileImage || null,
         totalOrders: data.seller.totalOrders || 0,
@@ -63,7 +63,7 @@ export const SellerProvider = ({ children }) => {
         availableCommission: data.seller.availableCommission || 0,
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
-        createdAt: data.seller.createdAt
+        createdAt: data.seller.createdAt || new Date().toISOString()
       };
 
       setSeller(sellerData);
@@ -103,7 +103,7 @@ export const SellerProvider = ({ children }) => {
 
       // Ensure all required fields are present with fallbacks
       const sellerData = {
-        id: data.seller.id || data.seller._id,
+        id: data.seller.id || data.seller._id || '',
         businessName: data.seller.businessName || '',
         email: data.seller.email || '',
         phone: data.seller.phone || '',
@@ -174,7 +174,7 @@ export const SellerProvider = ({ children }) => {
 
       // Ensure all required fields are present with fallbacks
       const newSellerData = {
-        id: data.seller.id || data.seller._id,
+        id: data.seller.id || data.seller._id || '',
         businessName: data.seller.businessName || '',
         email: data.seller.email || '',
         phone: data.seller.phone || '',
@@ -239,9 +239,9 @@ export const SellerProvider = ({ children }) => {
 
       // Ensure all required fields are present
       const updatedSellerData = {
-        id: data.seller.id,
-        businessName: data.seller.businessName,
-        email: data.seller.email,
+        id: data.seller.id || data.seller._id || '',
+        businessName: data.seller.businessName || '',
+        email: data.seller.email || '',
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         businessType: data.seller.businessType || '',
@@ -249,9 +249,9 @@ export const SellerProvider = ({ children }) => {
         bankAccountNumber: data.seller.bankAccountNumber || '',
         ifscCode: data.seller.ifscCode || '',
         bankName: data.seller.bankName || '',
-        sellerToken: data.seller.sellerToken,
-        websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode,
+        sellerToken: data.seller.sellerToken || '',
+        websiteLink: data.seller.websiteLink || '',
+        qrCode: data.seller.qrCode || '',
         images: data.seller.images || [],
         profileImage: data.seller.profileImage || null,
         totalOrders: data.seller.totalOrders || 0,
@@ -259,7 +259,7 @@ export const SellerProvider = ({ children }) => {
         availableCommission: data.seller.availableCommission || 0,
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
-        createdAt: data.seller.createdAt
+        createdAt: data.seller.createdAt || new Date().toISOString()
       };
 
       setSeller(updatedSellerData);
