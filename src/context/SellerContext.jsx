@@ -90,15 +90,22 @@ export const SellerProvider = ({ children }) => {
       const data = await response.json();
       console.log('Login data:', data); // Debug log
 
-      if (!response.ok || !data.success) {
+      if (!response.ok) {
+        if (response.status === 500) {
+          throw new Error('Server error. Please try again later.');
+        }
         throw new Error(data.message || 'Login failed');
       }
 
-      // Ensure all required fields are present
+      if (!data.success) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Ensure all required fields are present with fallbacks
       const sellerData = {
-        id: data.seller.id,
-        businessName: data.seller.businessName,
-        email: data.seller.email,
+        id: data.seller.id || data.seller._id,
+        businessName: data.seller.businessName || '',
+        email: data.seller.email || '',
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         businessType: data.seller.businessType || '',
@@ -106,9 +113,9 @@ export const SellerProvider = ({ children }) => {
         bankAccountNumber: data.seller.bankAccountNumber || '',
         ifscCode: data.seller.ifscCode || '',
         bankName: data.seller.bankName || '',
-        sellerToken: data.seller.sellerToken,
-        websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode,
+        sellerToken: data.seller.sellerToken || '',
+        websiteLink: data.seller.websiteLink || '',
+        qrCode: data.seller.qrCode || '',
         images: data.seller.images || [],
         profileImage: data.seller.profileImage || null,
         totalOrders: data.seller.totalOrders || 0,
@@ -116,7 +123,7 @@ export const SellerProvider = ({ children }) => {
         availableCommission: data.seller.availableCommission || 0,
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
-        createdAt: data.seller.createdAt
+        createdAt: data.seller.createdAt || new Date().toISOString()
       };
 
       localStorage.setItem('seller_token', data.token);
@@ -150,7 +157,14 @@ export const SellerProvider = ({ children }) => {
       const data = await response.json();
       console.log('Register data:', data); // Debug log
 
-      if (!response.ok || !data.success) {
+      if (!response.ok) {
+        if (response.status === 500) {
+          throw new Error('Server error. Please try again later.');
+        }
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      if (!data.success) {
         let msg = data.message || 'Registration failed';
         if (msg.toLowerCase().includes('email already registered')) {
           msg = 'This email is already registered. Please sign in or use a different email.';
@@ -158,11 +172,11 @@ export const SellerProvider = ({ children }) => {
         throw new Error(msg);
       }
 
-      // Ensure all required fields are present
+      // Ensure all required fields are present with fallbacks
       const newSellerData = {
-        id: data.seller.id,
-        businessName: data.seller.businessName,
-        email: data.seller.email,
+        id: data.seller.id || data.seller._id,
+        businessName: data.seller.businessName || '',
+        email: data.seller.email || '',
         phone: data.seller.phone || '',
         address: data.seller.address || '',
         businessType: data.seller.businessType || '',
@@ -170,9 +184,9 @@ export const SellerProvider = ({ children }) => {
         bankAccountNumber: data.seller.bankAccountNumber || '',
         ifscCode: data.seller.ifscCode || '',
         bankName: data.seller.bankName || '',
-        sellerToken: data.seller.sellerToken,
-        websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode,
+        sellerToken: data.seller.sellerToken || '',
+        websiteLink: data.seller.websiteLink || '',
+        qrCode: data.seller.qrCode || '',
         images: data.seller.images || [],
         profileImage: data.seller.profileImage || null,
         totalOrders: data.seller.totalOrders || 0,
@@ -180,7 +194,7 @@ export const SellerProvider = ({ children }) => {
         availableCommission: data.seller.availableCommission || 0,
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
-        createdAt: data.seller.createdAt
+        createdAt: data.seller.createdAt || new Date().toISOString()
       };
 
       localStorage.setItem('seller_token', data.token);

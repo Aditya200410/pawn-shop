@@ -93,7 +93,7 @@ export default function ContactPage() {
             className="text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            Riko Craft enterprises
+            Riko enterprises
             </h1>
             <p className="text-xl md:text-2xl text-orange-100 max-w-3xl mx-auto">
               Connecting you with the finest Indian handicrafts and authentic cultural heritage
