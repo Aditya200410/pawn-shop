@@ -25,6 +25,7 @@ const Login = () => {
       await login(formData);
       toast.success('Welcome back!');
       navigate('/account');
+      window.location.reload();
     } catch (err) {
       setError(err.message || contextError || 'Failed to login');
     } finally {

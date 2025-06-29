@@ -43,6 +43,7 @@ export default function SellerAuth() {
       }
       toast.success(isLogin ? 'Login successful!' : 'Registration successful!');
       navigate('/seller/profile');
+      window.location.reload();
     } catch (err) {
       toast.error(err.message || 'Authentication failed');
     }

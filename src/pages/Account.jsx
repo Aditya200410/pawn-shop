@@ -246,7 +246,8 @@ const Account = () => {
       setIsLoggingOut(true);
       await logout();
       toast.success('Logged out successfully');
-    navigate('/login');
+      navigate('/login');
+      window.location.reload();
     } catch (error) {
       toast.error('Failed to logout. Please try again.');
     } finally {

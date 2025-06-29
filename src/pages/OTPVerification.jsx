@@ -26,6 +26,7 @@ const OTPVerification = () => {
       await authService.verifyOTP({ email, otp });
       toast.success('OTP verified! Registration complete. Please login.');
       navigate('/login', { state: { message: 'Registration successful! Please login.' } });
+      window.location.reload();
     } catch (err) {
       setError(err.message || 'Verification failed');
       toast.error(err.message || 'OTP verification failed');
