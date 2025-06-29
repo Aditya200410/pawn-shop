@@ -22,7 +22,8 @@ import {
   FiTrendingUp,
   FiUsers,
   FiPackage,
-  FiStar
+  FiStar,
+  FiImage
 } from 'react-icons/fi';
 import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
@@ -36,7 +37,12 @@ const SellerProfile = () => {
   const [formData, setFormData] = useState({
     businessName: seller?.businessName || '',
     phone: seller?.phone || '',
-    address: seller?.address || ''
+    address: seller?.address || '',
+    businessType: seller?.businessType || '',
+    accountHolderName: seller?.accountHolderName || '',
+    bankAccountNumber: seller?.bankAccountNumber || '',
+    ifscCode: seller?.ifscCode || '',
+    bankName: seller?.bankName || ''
   });
   const [showWithdrawForm, setShowWithdrawForm] = useState(false);
   const [bankDetails, setBankDetails] = useState(seller?.bankDetails || {
@@ -447,6 +453,67 @@ const SellerProfile = () => {
                     )}
                   </div>
 
+                  {/* Profile Image */}
+                  {seller.profileImage && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-2xl border border-blue-200"
+                    >
+                      <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 flex items-center">
+                        <FiUser className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mr-2" />
+                        Profile Image
+                      </h3>
+                      <div className="flex justify-center">
+                        <img
+                          src={seller.profileImage.url}
+                          alt={seller.profileImage.alt || 'Profile image'}
+                          className="w-32 h-32 sm:w-48 sm:h-48 object-cover rounded-2xl shadow-lg"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Business Images Gallery */}
+                  {seller.images && seller.images.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 rounded-2xl border border-gray-200"
+                    >
+                      <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 flex items-center">
+                        <FiImage className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mr-2" />
+                        Business Images ({seller.images.length})
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                        {seller.images.map((image, index) => (
+                          <motion.div
+                            key={image._id || index}
+                            whileHover={{ scale: 1.05 }}
+                            className="relative group"
+                          >
+                            <img
+                              src={image.url}
+                              alt={image.alt || `Business image ${index + 1}`}
+                              className="w-full h-24 sm:h-32 object-cover rounded-xl shadow-md"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-xl flex items-center justify-center">
+                              <button
+                                onClick={() => {
+                                  // Open image in full screen or modal
+                                  window.open(image.url, '_blank');
+                                }}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity bg-white bg-opacity-80 p-2 rounded-full"
+                              >
+                                <FiUser className="w-4 h-4 text-gray-700" />
+                              </button>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+
                   {isEditing ? (
                     <motion.form
                       initial={{ opacity: 0, y: 20 }}
@@ -466,11 +533,61 @@ const SellerProfile = () => {
                           />
                         </div>
                         <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">Business Type</label>
+                          <input
+                            type="text"
+                            name="businessType"
+                            value={formData.businessType}
+                            onChange={handleChange}
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                          />
+                        </div>
+                        <div>
                           <label className="block text-sm font-semibold text-gray-700 mb-2">Phone</label>
                           <input
                             type="tel"
                             name="phone"
                             value={formData.phone}
+                            onChange={handleChange}
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">Account Holder Name</label>
+                          <input
+                            type="text"
+                            name="accountHolderName"
+                            value={formData.accountHolderName}
+                            onChange={handleChange}
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">Bank Account Number</label>
+                          <input
+                            type="text"
+                            name="bankAccountNumber"
+                            value={formData.bankAccountNumber}
+                            onChange={handleChange}
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">IFSC Code</label>
+                          <input
+                            type="text"
+                            name="ifscCode"
+                            value={formData.ifscCode}
+                            onChange={handleChange}
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">Bank Name</label>
+                          <input
+                            type="text"
+                            name="bankName"
+                            value={formData.bankName}
                             onChange={handleChange}
                             className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
@@ -535,8 +652,43 @@ const SellerProfile = () => {
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
+                        <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Business Type</h3>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.businessType}</p>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ y: -2 }}
+                        className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 sm:p-6 rounded-2xl border border-indigo-200"
+                      >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Address</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.address}</p>
+                        <p className="text-base sm:text-lg text-indigo-600 break-words">{seller.address}</p>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ y: -2 }}
+                        className="bg-gradient-to-br from-teal-50 to-teal-100 p-4 sm:p-6 rounded-2xl border border-teal-200"
+                      >
+                        <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Account Holder</h3>
+                        <p className="text-base sm:text-lg text-teal-600 break-words">{seller.accountHolderName}</p>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ y: -2 }}
+                        className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 sm:p-6 rounded-2xl border border-orange-200"
+                      >
+                        <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Bank Account</h3>
+                        <p className="text-base sm:text-lg text-orange-600 break-words">{seller.bankAccountNumber}</p>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ y: -2 }}
+                        className="bg-gradient-to-br from-red-50 to-red-100 p-4 sm:p-6 rounded-2xl border border-red-200"
+                      >
+                        <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">IFSC Code</h3>
+                        <p className="text-base sm:text-lg text-red-600 break-words">{seller.ifscCode}</p>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ y: -2 }}
+                        className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 sm:p-6 rounded-2xl border border-yellow-200"
+                      >
+                        <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Bank Name</h3>
+                        <p className="text-base sm:text-lg text-yellow-600 break-words">{seller.bankName}</p>
                       </motion.div>
                     </div>
                   )}
@@ -611,36 +763,34 @@ const SellerProfile = () => {
                   </div>
 
                   {/* Bank Details */}
-                  {seller.bankDetails && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 rounded-2xl border border-gray-200"
-                    >
-                      <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 flex items-center">
-                        <FiCreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mr-2" />
-                        Bank Details
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                        <div>
-                          <p className="text-xs sm:text-sm text-gray-600">Account Holder</p>
-                          <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.bankDetails.accountName}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs sm:text-sm text-gray-600">Account Number</p>
-                          <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.bankDetails.accountNumber}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs sm:text-sm text-gray-600">IFSC Code</p>
-                          <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.bankDetails.ifsc}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs sm:text-sm text-gray-600">Bank Name</p>
-                          <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.bankDetails.bankName}</p>
-                        </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 rounded-2xl border border-gray-200"
+                  >
+                    <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 flex items-center">
+                      <FiCreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mr-2" />
+                      Bank Details
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                      <div>
+                        <p className="text-xs sm:text-sm text-gray-600">Account Holder</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.accountHolderName}</p>
                       </div>
-                    </motion.div>
-                  )}
+                      <div>
+                        <p className="text-xs sm:text-sm text-gray-600">Account Number</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.bankAccountNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs sm:text-sm text-gray-600">IFSC Code</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.ifscCode}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs sm:text-sm text-gray-600">Bank Name</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.bankName}</p>
+                      </div>
+                    </div>
+                  </motion.div>
                 </motion.div>
               )}
 

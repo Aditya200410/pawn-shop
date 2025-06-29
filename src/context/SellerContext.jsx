@@ -48,9 +48,16 @@ export const SellerProvider = ({ children }) => {
         email: data.seller.email,
         phone: data.seller.phone || '',
         address: data.seller.address || '',
+        businessType: data.seller.businessType || '',
+        accountHolderName: data.seller.accountHolderName || '',
+        bankAccountNumber: data.seller.bankAccountNumber || '',
+        ifscCode: data.seller.ifscCode || '',
+        bankName: data.seller.bankName || '',
         sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
         qrCode: data.seller.qrCode,
+        images: data.seller.images || [],
+        profileImage: data.seller.profileImage || null,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
         availableCommission: data.seller.availableCommission || 0,
@@ -94,9 +101,16 @@ export const SellerProvider = ({ children }) => {
         email: data.seller.email,
         phone: data.seller.phone || '',
         address: data.seller.address || '',
+        businessType: data.seller.businessType || '',
+        accountHolderName: data.seller.accountHolderName || '',
+        bankAccountNumber: data.seller.bankAccountNumber || '',
+        ifscCode: data.seller.ifscCode || '',
+        bankName: data.seller.bankName || '',
         sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
         qrCode: data.seller.qrCode,
+        images: data.seller.images || [],
+        profileImage: data.seller.profileImage || null,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
         availableCommission: data.seller.availableCommission || 0,
@@ -121,12 +135,16 @@ export const SellerProvider = ({ children }) => {
   const register = async (sellerData) => {
     try {
       setLoading(true);
+      
+      // Check if sellerData is FormData (for image uploads) or regular object
+      const isFormData = sellerData instanceof FormData;
+      
       const response = await fetch(`${config.API_URLS.SELLER}/register`, {
         method: 'POST',
-        headers: {
+        headers: isFormData ? {} : {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(sellerData)
+        body: isFormData ? sellerData : JSON.stringify(sellerData)
       });
 
       const data = await response.json();
@@ -147,9 +165,16 @@ export const SellerProvider = ({ children }) => {
         email: data.seller.email,
         phone: data.seller.phone || '',
         address: data.seller.address || '',
+        businessType: data.seller.businessType || '',
+        accountHolderName: data.seller.accountHolderName || '',
+        bankAccountNumber: data.seller.bankAccountNumber || '',
+        ifscCode: data.seller.ifscCode || '',
+        bankName: data.seller.bankName || '',
         sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
         qrCode: data.seller.qrCode,
+        images: data.seller.images || [],
+        profileImage: data.seller.profileImage || null,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
         availableCommission: data.seller.availableCommission || 0,
@@ -205,9 +230,16 @@ export const SellerProvider = ({ children }) => {
         email: data.seller.email,
         phone: data.seller.phone || '',
         address: data.seller.address || '',
+        businessType: data.seller.businessType || '',
+        accountHolderName: data.seller.accountHolderName || '',
+        bankAccountNumber: data.seller.bankAccountNumber || '',
+        ifscCode: data.seller.ifscCode || '',
+        bankName: data.seller.bankName || '',
         sellerToken: data.seller.sellerToken,
         websiteLink: data.seller.websiteLink,
         qrCode: data.seller.qrCode,
+        images: data.seller.images || [],
+        profileImage: data.seller.profileImage || null,
         totalOrders: data.seller.totalOrders || 0,
         totalCommission: data.seller.totalCommission || 0,
         availableCommission: data.seller.availableCommission || 0,

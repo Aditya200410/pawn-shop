@@ -1,0 +1,283 @@
+{
+  "info": {
+    "name": "Seller Authentication API",
+    "description": "Complete Postman collection for Riko Craft Seller Authentication endpoints with image upload support",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "seller_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{seller_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Seller Registration",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "businessName",
+              "value": "Riko Craft Store",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "value": "seller@rikocraft.com",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "password123",
+              "type": "text"
+            },
+            {
+              "key": "phone",
+              "value": "+91 9876543210",
+              "type": "text"
+            },
+            {
+              "key": "address",
+              "value": "123 Craft Street, Mumbai, Maharashtra 400001",
+              "type": "text"
+            },
+            {
+              "key": "businessType",
+              "value": "Handicrafts",
+              "type": "text"
+            },
+            {
+              "key": "accountHolderName",
+              "value": "Priya Sharma",
+              "type": "text"
+            },
+            {
+              "key": "bankAccountNumber",
+              "value": "1234567890123456",
+              "type": "text"
+            },
+            {
+              "key": "ifscCode",
+              "value": "SBIN0001234",
+              "type": "text"
+            },
+            {
+              "key": "bankName",
+              "value": "State Bank of India",
+              "type": "text"
+            },
+            {
+              "key": "images",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/seller/register",
+          "host": ["{{base_url}}"],
+          "path": ["api", "seller", "register"]
+        },
+        "description": "Register a new seller account with optional images"
+      },
+      "response": []
+    },
+    {
+      "name": "Seller Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"seller@rikocraft.com\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/seller/login",
+          "host": ["{{base_url}}"],
+          "path": ["api", "seller", "login"]
+        },
+        "description": "Login with seller credentials"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Seller Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{seller_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/seller/profile",
+          "host": ["{{base_url}}"],
+          "path": ["api", "seller", "profile"]
+        },
+        "description": "Get seller profile information (requires authentication)"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Seller Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{seller_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"businessName\": \"Updated Riko Craft Store\",\n  \"phone\": \"+91 9876543211\",\n  \"address\": \"456 Updated Street, Mumbai, Maharashtra 400002\",\n  \"businessType\": \"Traditional Handicrafts\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/seller/profile",
+          "host": ["{{base_url}}"],
+          "path": ["api", "seller", "profile"]
+        },
+        "description": "Update seller profile information (requires authentication)"
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Multiple Images",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{seller_token}}"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "images",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/seller/upload-images",
+          "host": ["{{base_url}}"],
+          "path": ["api", "seller", "upload-images"]
+        },
+        "description": "Upload multiple images for seller (requires authentication)"
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Profile Image",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{seller_token}}"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "profileImage",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/seller/upload-profile-image",
+          "host": ["{{base_url}}"],
+          "path": ["api", "seller", "upload-profile-image"]
+        },
+        "description": "Upload profile image for seller (requires authentication)"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Image",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{seller_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/seller/delete-image/{{image_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "seller", "delete-image", "{{image_id}}"]
+        },
+        "description": "Delete a specific image (requires authentication)"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "// Auto-extract token from login response",
+          "if (pm.info.requestName === \"Seller Login\" && pm.response.code === 200) {",
+          "    const responseJson = pm.response.json();",
+          "    if (responseJson.success && responseJson.token) {",
+          "        pm.collectionVariables.set(\"seller_token\", responseJson.token);",
+          "        console.log(\"Token extracted and set: \" + responseJson.token);",
+          "    }",
+          "}",
+          "",
+          "// Test for successful responses",
+          "pm.test(\"Status code is 200 or 201\", function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+          "});",
+          "",
+          "pm.test(\"Response has success property\", function () {",
+          "    const responseJson = pm.response.json();",
+          "    pm.expect(responseJson).to.have.property('success');",
+          "});",
+          "",
+          "pm.test(\"Response time is less than 2000ms\", function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+          "});"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ]
+} 
