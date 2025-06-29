@@ -264,8 +264,8 @@ const Header = () => {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-10 text-sm">
               <div className="flex items-center space-x-6">
-                <a href="tel:+911234567890" className="text-white/80 hover:text-white">
-                  +91 1234567890
+                <a href="tel:+9183406246358" className="text-white/80 hover:text-white">
+                  +91 83406246358
                 </a>
                 <a href="mailto:info@rikocraft.com" className="text-white/80 hover:text-white">
                   info@rikocraft.com
