@@ -133,7 +133,11 @@ export const SellerProvider = ({ children }) => {
       console.log('Register data:', data); // Debug log
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Registration failed');
+        let msg = data.message || 'Registration failed';
+        if (msg.toLowerCase().includes('email already registered')) {
+          msg = 'This email is already registered. Please sign in or use a different email.';
+        }
+        throw new Error(msg);
       }
 
       // Ensure all required fields are present

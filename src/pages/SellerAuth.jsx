@@ -96,7 +96,7 @@ export default function SellerAuth() {
                 type="email"
                 name="email"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
                 onChange={handleChange}
                 value={formData.email}
               />
@@ -110,7 +110,7 @@ export default function SellerAuth() {
                 type="password"
                 name="password"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
                 onChange={handleChange}
                 value={formData.password}
               />
@@ -125,7 +125,7 @@ export default function SellerAuth() {
                   <input
                     type="text"
                     name="businessName"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
                     onChange={handleChange}
                     value={formData.businessName}
                   />
@@ -138,7 +138,7 @@ export default function SellerAuth() {
                   <input
                     type="tel"
                     name="phone"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
                     onChange={handleChange}
                     value={formData.phone}
                   />
@@ -151,7 +151,7 @@ export default function SellerAuth() {
                   <input
                     type="text"
                     name="address"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
                     onChange={handleChange}
                     value={formData.address}
                   />
@@ -162,7 +162,7 @@ export default function SellerAuth() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
               >
                 {isLogin ? 'Sign In' : 'Register'}
               </button>
@@ -172,7 +172,7 @@ export default function SellerAuth() {
           <div className="mt-6">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="w-full text-center text-sm text-amber-600 hover:text-amber-500"
+              className="w-full text-center text-sm text-pink-600 hover:text-pink-500"
             >
               {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </button>

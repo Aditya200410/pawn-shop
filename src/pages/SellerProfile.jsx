@@ -72,7 +72,7 @@ const SellerProfile = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-white to-orange-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-white to-pink-50">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -82,7 +82,7 @@ const SellerProfile = () => {
           <p className="text-gray-700 mb-6">{error}</p>
           <button 
             onClick={() => navigate('/seller')} 
-            className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="px-6 py-3 bg-gradient-to-r from-pink-500 to-pink-500 text-white rounded-xl hover:from-pink-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Go to Seller Login
           </button>
@@ -259,19 +259,19 @@ const SellerProfile = () => {
           className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
         >
           {/* Header */}
-          <div className="relative bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 px-4 sm:px-8 py-8 sm:py-12 text-white overflow-hidden">
+          <div className="relative bg-gradient-to-r from-pink-500 via-pink-500 to-pink-600 px-4 sm:px-8 py-8 sm:py-12 text-white overflow-hidden">
             <div className="absolute inset-0 bg-black opacity-10"></div>
             <div className="relative z-10">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
                   <h1 className="text-2xl sm:text-4xl font-bold mb-2">Seller Dashboard</h1>
-                  <p className="text-amber-100 text-base sm:text-lg">Welcome back, {seller.businessName}!</p>
+                  <p className="text-pink-100 text-base sm:text-lg">Welcome back, {seller.businessName}!</p>
                 </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLogout}
-                  className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white bg-opacity-20 backdrop-blur-sm text-white rounded-xl hover:bg-white hover:text-amber-600 transition-all duration-300 border border-white border-opacity-30 text-sm sm:text-base"
+                  className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white bg-opacity-20 backdrop-blur-sm text-white rounded-xl hover:bg-white hover:text-pink-600 transition-all duration-300 border border-white border-opacity-30 text-sm sm:text-base"
                 >
                   <FiLogOut className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Logout
@@ -290,7 +290,7 @@ const SellerProfile = () => {
                   >
                     <div className="flex items-center justify-between">
                       <div className="min-w-0 flex-1">
-                        <p className="text-amber-100 text-xs sm:text-sm truncate">{stat.title}</p>
+                        <p className="text-pink-100 text-xs sm:text-sm truncate">{stat.title}</p>
                         <p className="text-lg sm:text-2xl font-bold truncate">{stat.value}</p>
                       </div>
                       <div className={`p-2 sm:p-3 rounded-lg ${stat.bgColor} flex-shrink-0 ml-2`}>{stat.svg}</div>
@@ -312,8 +312,8 @@ const SellerProfile = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 text-sm sm:text-base ${
                     activeTab === tab.id
-                      ? 'bg-white text-amber-600 shadow-lg border border-amber-200'
-                      : 'text-gray-600 hover:text-amber-600 hover:bg-white'
+                      ? 'bg-white text-pink-600 shadow-lg border border-pink-200'
+                      : 'text-gray-600 hover:text-pink-600 hover:bg-white'
                   }`}
                 >
                   <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
@@ -439,7 +439,7 @@ const SellerProfile = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsEditing(true)}
-                        className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-300 shadow-lg text-sm sm:text-base"
+                        className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-pink-500 to-pink-500 text-white rounded-xl hover:from-pink-600 hover:to-pink-600 transition-all duration-300 shadow-lg text-sm sm:text-base"
                       >
                         <FiEdit3 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                         Edit Profile
@@ -462,7 +462,7 @@ const SellerProfile = () => {
                             name="businessName"
                             value={formData.businessName}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                         <div>
@@ -472,7 +472,7 @@ const SellerProfile = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                       </div>
@@ -483,7 +483,7 @@ const SellerProfile = () => {
                           value={formData.address}
                           onChange={handleChange}
                           rows="4"
-                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                         />
                       </div>
                       <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4">
@@ -533,10 +533,10 @@ const SellerProfile = () => {
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 sm:p-6 rounded-2xl border border-orange-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Address</h3>
-                        <p className="text-base sm:text-lg text-orange-600 break-words">{seller.address}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.address}</p>
                       </motion.div>
                     </div>
                   )}
@@ -729,7 +729,7 @@ const SellerProfile = () => {
                   <input
                     type="text"
                     placeholder="Enter account holder name"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
                     value={bankDetails.accountName}
                     onChange={e => setBankDetails({ ...bankDetails, accountName: e.target.value })}
                     required
@@ -740,7 +740,7 @@ const SellerProfile = () => {
                   <input
                     type="text"
                     placeholder="Enter account number"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
                     value={bankDetails.accountNumber}
                     onChange={e => setBankDetails({ ...bankDetails, accountNumber: e.target.value })}
                     required
@@ -751,7 +751,7 @@ const SellerProfile = () => {
                   <input
                     type="text"
                     placeholder="Enter IFSC code"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
                     value={bankDetails.ifsc}
                     onChange={e => setBankDetails({ ...bankDetails, ifsc: e.target.value })}
                     required
@@ -762,7 +762,7 @@ const SellerProfile = () => {
                   <input
                     type="text"
                     placeholder="Enter bank name"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
                     value={bankDetails.bankName}
                     onChange={e => setBankDetails({ ...bankDetails, bankName: e.target.value })}
                     required
