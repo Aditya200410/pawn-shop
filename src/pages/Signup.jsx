@@ -192,7 +192,7 @@ const Signup = () => {
               />
               <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
                 I agree to the{' '}
-                <Link to="/terms" className="font-medium text-primary hover:text-primary-dark">
+                <Link to="/policies" className="font-medium text-primary hover:text-primary-dark">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
