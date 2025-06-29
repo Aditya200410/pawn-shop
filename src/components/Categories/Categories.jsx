@@ -47,7 +47,22 @@ const Categories = () => {
       const response = await axios.get(config.API_URLS.CATEGORIES);
       // The response data is in the format { categories: [...] }
       const apiCategories = response.data.categories || [];
-      setCategories(apiCategories);
+      
+      // Process categories to handle both image and video fields
+      const processedCategories = apiCategories.map(category => ({
+        id: category._id || category.id,
+        name: category.name,
+        description: category.description,
+        // Prioritize video over image, fallback to static images
+        image: category.video || category.image || categoryImages[category.name] || '/images/categories/default.jpg',
+        isVideo: !!category.video,
+        sortOrder: category.sortOrder || 0
+      }));
+      
+      // Sort by sortOrder if available
+      processedCategories.sort((a, b) => a.sortOrder - b.sortOrder);
+      
+      setCategories(processedCategories);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -55,7 +70,8 @@ const Categories = () => {
       const fallbackCategories = staticCategories.map(category => ({
         id: category.name.toLowerCase().replace(/\s+/g, '-'),
         name: category.name,
-        image: categoryImages[category.name] || '/images/categories/default.jpg'
+        image: categoryImages[category.name] || '/images/categories/default.jpg',
+        isVideo: false
       }));
       setCategories(fallbackCategories);
       setLoading(false);
@@ -131,7 +147,7 @@ const Categories = () => {
 
                 {/* Image/Video Container */}
                 <div className="relative w-full h-full overflow-hidden">
-                  {category.image && category.image.toLowerCase().endsWith('.mp4') ? (
+                  {category.isVideo ? (
                     <video
                       src={config.fixImageUrl(category.image)}
                       alt={category.name}
