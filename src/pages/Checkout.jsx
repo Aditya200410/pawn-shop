@@ -16,7 +16,8 @@ import {
   AlertCircle,
   Sparkles,
   Gift,
-  Clock
+  Clock,
+  RefreshCw
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import orderService from '../services/orderService';
@@ -939,6 +940,30 @@ const Checkout = () => {
                 <div className="flex items-center space-x-2 text-sm text-orange-700">
                   <Shield size={16} />
                   <span>Your payment is secured with SSL encryption</span>
+                </div>
+              </div>
+
+              {/* Timeframes Section */}
+              <div className="mt-4 p-3 bg-orange-50 rounded-xl">
+                <div className="space-y-2 text-sm text-orange-700">
+                  <div className="flex items-start gap-2">
+                    <Clock size={16} className="mt-0.5" />
+                    <div>
+                      <span className="font-medium">Delivery:</span> Products will be delivered within 5-7 days
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <RefreshCw size={16} className="mt-0.5" />
+                    <div>
+                      <span className="font-medium">Refunds:</span> Will be credited into original payment method within 5-7 business days
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Truck size={16} className="mt-0.5" />
+                    <div>
+                      <span className="font-medium">Replacements:</span> Will be delivered within 5-7 days
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>

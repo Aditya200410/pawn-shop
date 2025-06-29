@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { ShoppingBag, Plus, Minus, X, ArrowRight, Truck, Shield, RefreshCw } from 'lucide-react';
+import { ShoppingBag, Plus, Minus, X, ArrowRight, Truck, Shield, RefreshCw, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -252,6 +252,28 @@ const Cart = () => {
               <div className="flex items-start gap-2"><Truck className="w-4 h-4" /> Free Shipping</div>
               <div className="flex items-start gap-2"><Shield className="w-4 h-4" /> Secure Payment</div>
               <div className="flex items-start gap-2"><RefreshCw className="w-4 h-4" /> Easy Returns</div>
+              
+              {/* Timeframes Section */}
+              <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+                <div className="flex items-start gap-2">
+                  <Clock className="w-4 h-4 mt-0.5" />
+                  <div>
+                    <span className="font-medium">Delivery:</span> Products will be delivered within 5-7 days
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <RefreshCw className="w-4 h-4 mt-0.5" />
+                  <div>
+                    <span className="font-medium">Refunds:</span> Will be credited into original payment method within 5-7 business days
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Truck className="w-4 h-4 mt-0.5" />
+                  <div>
+                    <span className="font-medium">Replacements:</span> Will be delivered within 5-7 days
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </motion.div>
