@@ -197,8 +197,19 @@ const ProductView = () => {
     setSelectedImage((prev) => (prev === productImages.length - 1 ? 0 : prev + 1));
   };
 
-  const handleAddToCart = () => {
-    addToCart({ ...product, quantity });
+  const handleAddToCart = async () => {
+    try {
+      const productId = product._id || product.id;
+      if (!productId) {
+        console.error('Product ID is missing');
+        toast.error('Failed to add item to cart');
+        return;
+      }
+      await addToCart(productId, quantity);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add item to cart');
+    }
   };
 
   const handleShare = async () => {

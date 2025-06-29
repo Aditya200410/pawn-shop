@@ -81,11 +81,11 @@ export const CartProvider = ({ children }) => {
     setSellerToken(null);
   };
 
-  const addToCart = async (productId) => {
+  const addToCart = async (productId, quantity = 1) => {
     try {
       if (isAuthenticated && user && user.email) {
         // Add to backend by email
-        const updatedCart = await cartService.addToCart(productId, 1, user.email);
+        const updatedCart = await cartService.addToCart(productId, quantity, user.email);
         setCartItems(updatedCart.items);
         toast.success('Item added to cart');
       } else {
@@ -123,7 +123,7 @@ export const CartProvider = ({ children }) => {
           if (existingItem) {
             const updatedItems = prevItems.map((item) =>
               (item.productId === productId) || (item.id === productId)
-                ? { ...item, quantity: item.quantity + 1 }
+                ? { ...item, quantity: item.quantity + quantity }
                 : item
             );
             toast.success('Item quantity updated in cart');
@@ -133,7 +133,7 @@ export const CartProvider = ({ children }) => {
             return [...prevItems, {
               productId: productId,
               id: productId, // Store both for compatibility
-              quantity: 1,
+              quantity: quantity,
               price: product.price,
               name: product.name,
               image: product.image,
