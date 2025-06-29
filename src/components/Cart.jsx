@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import config from '../config/config.js';
 import { toast } from 'react-hot-toast';
+import AuthPrompt from './AuthPrompt';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -40,6 +41,19 @@ const Cart = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
+
+  // Show authentication prompt if user is not signed in
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-8 mt-16 md:mt-20">
+        <AuthPrompt 
+          title="Sign In to View Cart"
+          message="Please sign in to view and manage your shopping cart. Your cart items will be saved and you can continue shopping from where you left off."
+          action="cart"
+        />
       </div>
     );
   }

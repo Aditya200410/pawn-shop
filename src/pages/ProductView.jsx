@@ -59,7 +59,8 @@ const ProductView = () => {
         
         // Try fetching from each collection until we find the product
         const endpoints = [
-          `${config.API_URLS.PRODUCTS}/${id}`,
+          `${config.API_URLS.SHOP}/${id}`, // Try shop first (most reliable)
+          `${config.API_URLS.PRODUCTS}/${id}`, // Then products endpoint
           `${config.API_URLS.LOVED}/${id}`,
           `${config.API_URLS.BESTSELLER}/${id}`,
           `${config.API_URLS.FEATURED_PRODUCTS}/${id}`
@@ -72,29 +73,32 @@ const ProductView = () => {
           try {
             console.log('Trying endpoint:', endpoint);
             const response = await fetch(endpoint);
+            
+            if (!response.ok) {
+              console.log(`Endpoint ${endpoint} returned status: ${response.status}`);
+              continue;
+            }
+            
             const data = await response.json();
             
             // Check for both the new MongoDB format and old format
-            if (response.ok) {
-              // Try to get the product from the response
-              foundProduct = data.product || // New MongoDB format
-                           (Array.isArray(data.products) ? data.products[0] : null) || // Array format
-                           (data._id ? data : null); // Direct object format
-              
-              if (foundProduct) {
-                // Ensure consistent ID field
-                foundProduct = {
-                  ...foundProduct,
-                  id: foundProduct._id || foundProduct.id,
-                  // Ensure price and regularPrice are numbers
-                  price: parseFloat(foundProduct.price) || 0,
-                  regularPrice: parseFloat(foundProduct.regularPrice) || 0,
-                  // Ensure images array exists
-                  images: foundProduct.images || [foundProduct.image],
-                };
-                console.log('Found product:', foundProduct);
-                break;
-              }
+            foundProduct = data.product || // New MongoDB format
+                         (Array.isArray(data.products) ? data.products[0] : null) || // Array format
+                         (data._id ? data : null); // Direct object format
+            
+            if (foundProduct) {
+              // Ensure consistent ID field
+              foundProduct = {
+                ...foundProduct,
+                id: foundProduct._id || foundProduct.id,
+                // Ensure price and regularPrice are numbers
+                price: parseFloat(foundProduct.price) || 0,
+                regularPrice: parseFloat(foundProduct.regularPrice) || 0,
+                // Ensure images array exists
+                images: foundProduct.images || [foundProduct.image],
+              };
+              console.log('Found product:', foundProduct);
+              break;
             }
           } catch (error) {
             fetchError = error;

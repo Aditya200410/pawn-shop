@@ -26,11 +26,12 @@ import config from '../config/config.js';
 import apiService from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import Loader from '../components/Loader';
+import AuthPrompt from '../components/AuthPrompt';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, getTotalPrice, clearCart, getItemImage, sellerToken, setSellerTokenFromURL, clearSellerToken } = useCart();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   
   // Get seller token from URL parameters and set it in context
@@ -377,6 +378,21 @@ const Checkout = () => {
     setCouponError('');
     toast.success('Coupon removed successfully');
   };
+
+  // Show authentication prompt if user is not signed in
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-500 via-white to-orange-100">
+        <div className="container mx-auto px-4 py-8">
+          <AuthPrompt 
+            title="Sign In to Checkout"
+            message="Please sign in to complete your purchase. This ensures your order is properly tracked and you can access your order history."
+            action="checkout"
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
