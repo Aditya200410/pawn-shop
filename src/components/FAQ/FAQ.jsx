@@ -8,7 +8,7 @@ const faqCategories = [
     questions: [
       {
         q: 'Is Riko Craft An Indian Company?',
-        a: 'Yes, RIKO CRAFT is a registered proprietorship start-up company in India. Full name of the company is **Riko Craft Art & Creations.**'
+        a: 'Yes, RIKO CRAFT is a registered proprietorship start-up company in India. Full name of the company is **Riko Craft Enterprises.**'
       },
      
       {
@@ -114,7 +114,7 @@ export default function FAQ() {
                     onClick={() => setActiveCategory(category.title)}
                     className={`w-full text-left px-4 py-2 rounded-md transition-colors ${
                       activeCategory === category.title
-                        ? 'bg-[#8B4513] text-white'
+                        ? 'bg-pink-500 text-white'
                         : 'hover:bg-gray-100'
                     }`}
                   >

@@ -33,10 +33,10 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="w-full bg-gradient-to-br from-amber-50 via-white to-amber-50">
+    <div className="w-full">
       {/* Hero Section */}
       <section className="relative py-12 md:py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-600/10 to-orange-600/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-600/10 to-pink-600/10"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -51,7 +51,7 @@ const AboutUs = () => {
               A young startup from Jharkhand dedicated to bringing the exquisite handcrafted treasures 
               of Eastern India to homes worldwide, while empowering local artisans.
             </p>
-            <div className="w-16 md:w-24 h-1 bg-amber-600 mx-auto rounded-full"></div>
+            <div className="w-16 md:w-24 h-1 bg-pink-600 mx-auto rounded-full"></div>
           </motion.div>
         </div>
       </section>
@@ -93,8 +93,8 @@ const AboutUs = () => {
               transition={{ duration: 0.8 }}
               className="relative order-1 md:order-2"
             >
-              <div className="bg-amber-600 w-full h-64 md:h-96 rounded-2xl shadow-2xl"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-600/80 to-orange-600/80 rounded-2xl flex items-center justify-center">
+              <div className="bg-pink-600 w-full h-64 md:h-96 rounded-2xl shadow-2xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-600/80 to-pink-600/80 rounded-2xl flex items-center justify-center">
                 <div className="text-center text-white">
                   <div className="text-4xl md:text-6xl mb-3 md:mb-4">🎨</div>
                   <div className="text-lg md:text-2xl font-semibold">Eastern Heritage</div>
@@ -128,7 +128,7 @@ const AboutUs = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center p-4 md:p-6 rounded-2xl hover:bg-amber-50 transition-colors duration-300"
+                className="text-center p-4 md:p-6 rounded-2xl hover:bg-pink-50 transition-colors duration-300"
               >
                 <div className="text-3xl md:text-4xl mb-3 md:mb-4">{value.icon}</div>
                 <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">{value.title}</h3>
@@ -161,9 +161,9 @@ const AboutUs = () => {
               transition={{ duration: 0.8 }}
               className="space-y-4 md:space-y-6"
             >
-              <div className="bg-amber-50 p-4 md:p-6 rounded-2xl">
+              <div className="bg-pink-50 p-4 md:p-6 rounded-2xl">
                 <div className="flex items-start space-x-3 md:space-x-4">
-                  <MapPin className="w-5 h-5 md:w-6 md:h-6 text-amber-600 mt-1 flex-shrink-0" />
+                  <MapPin className="w-5 h-5 md:w-6 md:h-6 text-pink-600 mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">Address</h3>
                     <p className="text-gray-600 text-sm md:text-base">
@@ -173,9 +173,9 @@ const AboutUs = () => {
                 </div>
               </div>
               
-              <div className="bg-amber-50 p-4 md:p-6 rounded-2xl">
+              <div className="bg-pink-50 p-4 md:p-6 rounded-2xl">
                 <div className="flex items-start space-x-3 md:space-x-4">
-                  <Phone className="w-5 h-5 md:w-6 md:h-6 text-amber-600 mt-1 flex-shrink-0" />
+                  <Phone className="w-5 h-5 md:w-6 md:h-6 text-pink-600 mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">Phone</h3>
                     <p className="text-gray-600 text-sm md:text-base">+918340624635</p>
@@ -183,9 +183,9 @@ const AboutUs = () => {
                 </div>
               </div>
               
-              <div className="bg-amber-50 p-4 md:p-6 rounded-2xl">
+              <div className="bg-pink-50 p-4 md:p-6 rounded-2xl">
                 <div className="flex items-start space-x-3 md:space-x-4">
-                  <Mail className="w-5 h-5 md:w-6 md:h-6 text-amber-600 mt-1 flex-shrink-0" />
+                  <Mail className="w-5 h-5 md:w-6 md:h-6 text-pink-600 mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">Email</h3>
                     <p className="text-gray-600 text-sm md:text-base">Info@Rikocraft.com</p>
@@ -193,9 +193,9 @@ const AboutUs = () => {
                 </div>
               </div>
               
-              <div className="bg-amber-50 p-4 md:p-6 rounded-2xl">
+              <div className="bg-pink-50 p-4 md:p-6 rounded-2xl">
                 <div className="flex items-start space-x-3 md:space-x-4">
-                  <Clock className="w-5 h-5 md:w-6 md:h-6 text-amber-600 mt-1 flex-shrink-0" />
+                  <Clock className="w-5 h-5 md:w-6 md:h-6 text-pink-600 mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">Working Hours</h3>
                     <p className="text-gray-600 text-sm md:text-base">
@@ -211,7 +211,7 @@ const AboutUs = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-r from-amber-600 to-orange-600">
+      <section className="py-12 md:py-20 bg-gradient-to-r from-pink-600/80 to-pink-600/80">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -221,15 +221,15 @@ const AboutUs = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 md:mb-6">
               Discover  Finest Crafts
             </h2>
-            <p className="text-base md:text-xl text-amber-100 mb-6 md:mb-8 max-w-3xl mx-auto">
+            <p className="text-base md:text-xl text-pink-100 mb-6 md:mb-8 max-w-3xl mx-auto">
               Explore our curated collection of handcrafted treasures that bring the rich 
               artistic heritage of India to your home.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-amber-600 px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-amber-50 transition-colors duration-300 text-sm md:text-base">
+              <button className="bg-white text-pink-600 px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-pink-50 transition-colors duration-300 text-sm md:text-base">
                 View Collection
               </button>
-              <button className="border-2 border-white text-white px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-amber-600 transition-colors duration-300 text-sm md:text-base">
+              <button className="border-2 border-white text-white px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-pink-600 transition-colors duration-300 text-sm md:text-base">
                 Contact Us
               </button>
             </div>

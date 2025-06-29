@@ -23,6 +23,7 @@ const config = {
     SELLER: '/api/seller',
     COUPONS: '/api/coupons',
     PRODUCTS: '/api/products',
+    SELLER: '/api/seller',
     HERO_CAROUSEL: '/api/hero-carousel',
   },
   

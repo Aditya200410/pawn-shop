@@ -15,7 +15,6 @@ import Testimonials from './components/Testimonials/Testimonials';
 import Footer from './components/Footer/Footer';
 import MissionVision from './components/MissionVision/MissionVision';
 import FAQ from './components/FAQ/FAQ';
-import Story from './pages/Story';
 import ContactPage from './pages/ContactPage';
 import Shop from './pages/Shop';
 import Login from './pages/Login';
@@ -137,7 +136,7 @@ function AppContent() {
           </main>
         } />
         <Route path="/faq" element={<FAQ />} />
-        <Route path="/story" element={<Story />} />
+        
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/shop" element={<Shop />} />

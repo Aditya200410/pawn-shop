@@ -264,7 +264,7 @@ const Account = () => {
           className="flex flex-col items-center space-y-4"
         >
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-primary-dark"></div>
-          <p className="text-primary-dark font-medium">Loading your account...</p>
+          <p className="text-white font-medium">Loading your account...</p>
         </motion.div>
       </div>
     );
@@ -283,7 +283,7 @@ const Account = () => {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold text-gray-900">Your Orders</h2>
+          <h2 className="text-2xl font-semibold text-white">Your Orders</h2>
           <div className="flex gap-2">
             <select
               value={filter}
@@ -459,8 +459,8 @@ const Account = () => {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                         activeTab === tab.id
-                          ? 'bg-primary text-primary-dark border border-primary shadow-sm'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          ? 'bg-pink-50 text-primary-dark border border-primary shadow-sm'
+                          : 'text-black-600 hover:bg-gray-50 hover:text-gray-900'
                       }`}
                     >
                       <tab.icon className="h-5 w-5" />
@@ -538,7 +538,7 @@ const Account = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setActiveTab('cart')}
-                          className="flex items-center space-x-3 p-4 bg-primary rounded-xl hover:bg-primary-dark hover:text-white transition-colors"
+                          className="flex items-center space-x-3 p-4 bg-pink-300 rounded-xl hover:bg-primary-50 hover:text-white transition-colors"
                         >
                           <ShoppingCartIcon className="h-6 w-6 text-primary-dark" />
                           <span className="font-medium text-gray-900">View Cart</span>
