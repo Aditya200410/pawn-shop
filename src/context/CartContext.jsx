@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import cartService from '../services/cartService';
 import { toast } from 'react-hot-toast';
@@ -20,7 +19,6 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [sellerToken, setSellerToken] = useState(null);
   const { isAuthenticated, user } = useAuth();
-  const navigate = useNavigate();
 
   // Load cart from backend or localStorage
   useEffect(() => {
@@ -95,9 +93,6 @@ export const CartProvider = ({ children }) => {
         const updatedCart = await cartService.addToCart(productId, quantity, user.email);
         setCartItems(updatedCart.items);
         toast.success('Item added to cart');
-        
-        // Redirect to cart page after successful addition
-        navigate('/cart');
       } else {
         // This should not happen if authentication is required, but keeping as fallback
         toast.error('Please sign in to add items to cart');
