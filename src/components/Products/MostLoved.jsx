@@ -138,7 +138,7 @@ export default function MostLoved() {
             <p className="text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-4 md:mb-6 max-w-2xl mx-auto">
               Our customers' favorite handcrafted pieces that have captured hearts and homes
             </p>
-            <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
+            <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 mx-auto"></div>
           </div>
         </motion.div>
 
@@ -167,7 +167,7 @@ export default function MostLoved() {
           >
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               View More Products
             </Link>
