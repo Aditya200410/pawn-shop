@@ -48,7 +48,7 @@ export default function BecomeSeller() {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={handleStartSelling}
-      className="mt-8 px-8 py-3 text-white bg-green-600 rounded-full font-semibold hover:bg-green-700 transition shadow-lg"
+      className="mt-8 px-8 py-3 text-white bg-pink-600 rounded-full font-semibold hover:bg-pink-700 transition shadow-lg"
     >
       Start Selling Now
     </motion.button>
@@ -112,7 +112,7 @@ export default function BecomeSeller() {
       </section>
 
       {/* Testimonials */}
-      <section className="bg-yellow-50 py-16 px-4">
+      <section className="bg-pinkw-50 py-16 px-4">
         <h2 className="text-3xl font-bold text-center mb-12">Seller Testimonials</h2>
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
           {[
@@ -161,12 +161,12 @@ export default function BecomeSeller() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-amber-600 text-white text-center px-4">
+      <section className="py-20 bg-pink-600 text-white text-center px-4">
         <h2 className="text-4xl font-bold mb-4">Ready to Start Selling?</h2>
         <p className="text-lg mb-6">Sign up now and list your first item in under 5 minutes.</p>
         <button 
           onClick={handleStartSelling}
-          className="bg-white text-green-700 font-semibold px-6 py-3 rounded-full hover:bg-gray-100 transition"
+          className="bg-white text-pink-700 font-semibold px-6 py-3 rounded-full hover:bg-gray-100 transition"
         >
           Join Now
         </button>
