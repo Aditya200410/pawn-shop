@@ -38,6 +38,15 @@ const Shop = () => {
     }
   }, [searchParams, setSellerTokenFromURL]);
 
+  // Handle category from query param (for footer links)
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam) {
+      setSelectedCategories({ main: categoryParam, sub: null, item: null });
+      setExpandedCategories(prev => ({ ...prev, [categoryParam]: true }));
+    }
+  }, [searchParams]);
+
   // Fetch products from backend
   useEffect(() => {
     const fetchProducts = async () => {
