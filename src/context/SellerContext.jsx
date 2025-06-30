@@ -199,7 +199,7 @@ export const SellerProvider = ({ children }) => {
         createdAt: data.seller.createdAt || new Date().toISOString()
       };
 
-      localStorage.setItem('seller_email', email);
+      localStorage.setItem('seller_email', data.seller.email);
       setSeller(newSellerData);
       toast.success('Registration successful!');
       return data;

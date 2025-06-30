@@ -21,6 +21,7 @@ const config = {
     SELLER: '/api/seller',
     COUPONS: '/api/coupons',
     HERO_CAROUSEL: '/api/hero-carousel',
+    REGISTER: '/api/seller/register',
   },
   
   // Full API URLs (constructed from base URL and endpoints)
