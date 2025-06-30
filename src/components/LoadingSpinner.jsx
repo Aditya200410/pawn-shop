@@ -16,7 +16,7 @@ const LoadingSpinner = ({
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <div className="text-center">
-        <div className={`animate-spin rounded-full border-b-2 border-orange-600 mx-auto ${sizeClasses[size]}`}></div>
+        <div className={`animate-spin rounded-full border-b-2 border-pink-600 mx-auto ${sizeClasses[size]}`}></div>
         {showText && (
           <p className="text-gray-600 text-sm mt-2">{text}</p>
         )}

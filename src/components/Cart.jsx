@@ -40,7 +40,7 @@ const Cart = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
       </div>
     );
   }
@@ -76,8 +76,8 @@ const Cart = () => {
 <div className="flex flex-col md:flex-row items-start md:items-center justify-center gap-4 md:gap-0 mb-8 md:mb-12">
   {/* Step 1 */}
   <div className="flex items-center">
-    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-orange-600 text-white flex items-center justify-center text-sm md:text-lg font-medium">1</div>
-    <div className="ml-2 md:ml-3 text-sm md:text-base text-orange-600 font-medium text-left">
+    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-pink-600 text-white flex items-center justify-center text-sm md:text-lg font-medium">1</div>
+    <div className="ml-2 md:ml-3 text-sm md:text-base text-pink-600 font-medium text-left">
       <span>Shopping Cart</span>
     </div>
   </div>
@@ -113,7 +113,7 @@ const Cart = () => {
           <p className="text-gray-600 mb-6 md:mb-8 text-base md:text-lg">Looks like you haven't added any items yet.</p>
           <Link
             to="/shop"
-            className="inline-block bg-orange-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-orange-700 transition-colors text-base md:text-lg font-medium"
+            className="inline-block bg-pink-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-pink-700 transition-colors text-base md:text-lg font-medium"
           >
             Return to Shop
           </Link>
@@ -172,7 +172,7 @@ const Cart = () => {
                             />
                           </Link>
                           <div className="min-w-0 flex-1">
-                            <Link to={`/product/${item.productId || item.product?._id || item.id}`} className="text-gray-900 hover:text-orange-600 font-medium text-sm md:text-base line-clamp-2">
+                            <Link to={`/product/${item.productId || item.product?._id || item.id}`} className="text-gray-900 hover:text-pink-600 font-medium text-sm md:text-base line-clamp-2">
                               {item.product?.name || item.name}
                             </Link>
                             <div className="text-sm text-gray-500 md:hidden mt-1">{item.product?.category || item.category}</div>
@@ -184,7 +184,7 @@ const Cart = () => {
                         <div className="flex items-center justify-center space-x-2 md:space-x-3">
                           <button 
                             onClick={() => updateQuantity(item.productId || item.product?._id || item.id, item.quantity - 1)} 
-                            className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-600 hover:text-orange-600 transition disabled:opacity-50" 
+                            className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-pink-600 hover:text-pink-600 transition disabled:opacity-50" 
                             disabled={item.quantity <= 1}
                           >
                             <Minus className="w-4 h-4" />
@@ -192,7 +192,7 @@ const Cart = () => {
                           <span className="font-medium">{item.quantity}</span>
                           <button 
                             onClick={() => updateQuantity(item.productId || item.product?._id || item.id, item.quantity + 1)} 
-                            className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-orange-600 hover:text-orange-600 transition"
+                            className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-300 hover:border-pink-600 hover:text-pink-600 transition"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
@@ -241,7 +241,7 @@ const Cart = () => {
                 const checkoutUrl = sellerToken ? `/checkout?seller=${sellerToken}` : '/checkout';
                 navigate(checkoutUrl);
               }}
-              className="w-full bg-orange-600 text-white py-3 rounded-xl mt-5 hover:bg-orange-700 transition-colors flex items-center justify-center space-x-2 text-base font-medium"
+              className="w-full bg-pink-600 text-white py-3 rounded-xl mt-5 hover:bg-pink-700 transition-colors flex items-center justify-center space-x-2 text-base font-medium"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="w-5 h-5" />

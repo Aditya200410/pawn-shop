@@ -211,7 +211,7 @@ export default function Checkout() {
                     id="customerName" 
                     value={formData.customerName} 
                     onChange={handleInputChange} 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent" 
                     required 
                   />
                 </div>
@@ -225,7 +225,7 @@ export default function Checkout() {
                       id="email" 
                       value={formData.email} 
                       onChange={handleInputChange} 
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent" 
                       required 
                     />
                   </div>
@@ -237,7 +237,7 @@ export default function Checkout() {
                       id="phone" 
                       value={formData.phone} 
                       onChange={handleInputChange} 
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent" 
                       required 
                     />
                   </div>
@@ -251,7 +251,7 @@ export default function Checkout() {
                     id="street" 
                     value={formData.address.street} 
                     onChange={handleAddressChange} 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent" 
                     required 
                   />
                 </div>
@@ -265,7 +265,7 @@ export default function Checkout() {
                       id="city" 
                       value={formData.address.city} 
                       onChange={handleAddressChange} 
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent" 
                       required 
                     />
                   </div>
@@ -277,7 +277,7 @@ export default function Checkout() {
                       id="state" 
                       value={formData.address.state} 
                       onChange={handleAddressChange} 
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent" 
                       required 
                     />
                   </div>
@@ -292,7 +292,7 @@ export default function Checkout() {
                       id="pincode" 
                       value={formData.address.pincode} 
                       onChange={handleAddressChange} 
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent" 
                       required 
                     />
                   </div>
@@ -321,7 +321,7 @@ export default function Checkout() {
                     value="cod" 
                     checked={formData.paymentMethod === 'cod'} 
                     onChange={handleInputChange} 
-                    className="h-4 w-4 text-orange-600 border-gray-300 focus:ring-orange-500" 
+                    className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
                   />
                   <label htmlFor="cod" className="ml-3 block text-sm font-medium text-gray-700">
                     Cash on Delivery (COD)
@@ -332,7 +332,7 @@ export default function Checkout() {
               <button 
                 type="submit" 
                 disabled={isSubmitting} 
-                className="w-full bg-orange-600 text-white py-3 px-4 rounded-lg hover:bg-orange-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium text-base"
+                className="w-full bg-pink-600 text-white py-3 px-4 rounded-lg hover:bg-pink-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium text-base"
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center">
@@ -361,13 +361,13 @@ export default function Checkout() {
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                         placeholder="Enter coupon code"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                         disabled={couponLoading}
                       />
                       <button
                         type="submit"
                         disabled={couponLoading || !couponCode.trim()}
-                        className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center min-w-[100px]"
+                        className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center min-w-[100px]"
                       >
                         {couponLoading ? (
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
