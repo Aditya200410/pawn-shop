@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useSeller } from '../context/SellerContext';
+import { toast } from 'react-hot-toast';
+import Loader from '../components/Loader';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -8,6 +11,8 @@ const fadeIn = {
 };
 
 export default function SellerAuth() {
+  const { seller, login, register, loading } = useSeller();
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -16,17 +21,44 @@ export default function SellerAuth() {
     phone: '',
     address: ''
   });
-  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    // Redirect if already logged in
+    if (seller) {
+      navigate('/seller/profile');
+    }
+  }, [seller, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement authentication logic
-    console.log('Form submitted:', formData);
+    try {
+      if (isLogin) {
+        await login(formData.email, formData.password);
+      } else {
+        if (!formData.businessName || !formData.phone || !formData.address) {
+          toast.error('Please fill in all fields');
+          return;
+        }
+        await register(formData);
+      }
+      toast.success(isLogin ? 'Login successful!' : 'Registration successful!');
+      navigate('/seller/profile');
+    } catch (err) {
+      toast.error(err.message || 'Authentication failed');
+    }
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -92,7 +124,6 @@ export default function SellerAuth() {
                   <input
                     type="text"
                     name="businessName"
-                    required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                     onChange={handleChange}
                     value={formData.businessName}
@@ -106,7 +137,6 @@ export default function SellerAuth() {
                   <input
                     type="tel"
                     name="phone"
-                    required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                     onChange={handleChange}
                     value={formData.phone}
@@ -117,10 +147,9 @@ export default function SellerAuth() {
                   <label htmlFor="address" className="block text-sm font-medium text-gray-700">
                     Business Address
                   </label>
-                  <textarea
+                  <input
+                    type="text"
                     name="address"
-                    rows="3"
-                    required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                     onChange={handleChange}
                     value={formData.address}
@@ -130,14 +159,12 @@ export default function SellerAuth() {
             )}
 
             <div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
               >
-                {isLogin ? 'Sign In' : 'Create Account'}
-              </motion.button>
+                {isLogin ? 'Sign In' : 'Register'}
+              </button>
             </div>
           </form>
 
@@ -146,9 +173,7 @@ export default function SellerAuth() {
               onClick={() => setIsLogin(!isLogin)}
               className="w-full text-center text-sm text-amber-600 hover:text-amber-500"
             >
-              {isLogin
-                ? "Don't have a seller account? Register now"
-                : 'Already have an account? Sign in'}
+              {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </button>
           </div>
         </motion.div>
