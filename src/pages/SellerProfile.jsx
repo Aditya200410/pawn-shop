@@ -55,10 +55,11 @@ const SellerProfile = () => {
   const [availableToWithdraw, setAvailableToWithdraw] = useState(0);
 
   useEffect(() => {
-    if (!loading && !seller) {
+    const sellerEmail = localStorage.getItem('seller_email');
+    if (!loading && !sellerEmail) {
       navigate('/seller');
     }
-  }, [loading, seller, navigate]);
+  }, [loading, navigate]);
 
   useEffect(() => {
     if (seller && seller.availableCommission !== undefined) {

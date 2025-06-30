@@ -32,8 +32,8 @@ const BecomeSeller = () => {
 
   useEffect(() => {
     // Redirect if already logged in as seller
-    const token = localStorage.getItem('seller_token');
-    if (token) {
+    const sellerEmail = localStorage.getItem('seller_email');
+    if (sellerEmail) {
       navigate('/seller/profile');
     }
   }, [navigate]);

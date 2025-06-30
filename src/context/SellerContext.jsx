@@ -18,19 +18,21 @@ export const SellerProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('seller_token');
-    if (token) {
-      fetchSellerProfile(token);
+    const sellerEmail = localStorage.getItem('seller_email');
+    if (sellerEmail) {
+      fetchSellerProfile(sellerEmail);
     } else {
       setLoading(false);
     }
   }, []);
 
-  const fetchSellerProfile = async (token) => {
+  const fetchSellerProfile = async (email) => {
     try {
-      const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
+      setLoading(true);
+      const response = await fetch(`${config.API_URLS.SELLER}/profile?email=${encodeURIComponent(email)}`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       });
 
@@ -69,7 +71,7 @@ export const SellerProvider = ({ children }) => {
       setSeller(sellerData);
     } catch (err) {
       setError(err.message);
-      localStorage.removeItem('seller_token');
+      localStorage.removeItem('seller_email');
       toast.error(err.message);
     } finally {
       setLoading(false);
@@ -126,7 +128,7 @@ export const SellerProvider = ({ children }) => {
         createdAt: data.seller.createdAt || new Date().toISOString()
       };
 
-      localStorage.setItem('seller_token', data.token);
+      localStorage.setItem('seller_email', email);
       setSeller(sellerData);
       toast.success('Login successful!');
       return data;
@@ -197,7 +199,7 @@ export const SellerProvider = ({ children }) => {
         createdAt: data.seller.createdAt || new Date().toISOString()
       };
 
-      localStorage.setItem('seller_token', data.token);
+      localStorage.setItem('seller_email', email);
       setSeller(newSellerData);
       toast.success('Registration successful!');
       return data;
@@ -211,7 +213,7 @@ export const SellerProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('seller_token');
+    localStorage.removeItem('seller_email');
     setSeller(null);
     toast.success('Logged out successfully');
     window.location.href = '/'; // Redirect to home page
@@ -220,12 +222,11 @@ export const SellerProvider = ({ children }) => {
   const updateProfile = async (updates) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('seller_token');
+      const email = localStorage.getItem('seller_email');
       const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(updates)
       });
