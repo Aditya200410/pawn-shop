@@ -17,13 +17,9 @@ const config = {
     SHOP: '/api/shop',
     ORDERS: '/api/orders',
     CATEGORIES: '/api/categories',
-    FEATURED_PRODUCTS: '/api/featured-products',
-    BESTSELLER: '/api/bestseller',
-    LOVED: '/api/loved',
+    PRODUCTS: '/api/products',
     SELLER: '/api/seller',
     COUPONS: '/api/coupons',
-    PRODUCTS: '/api/products',
-  
     HERO_CAROUSEL: '/api/hero-carousel',
   },
   

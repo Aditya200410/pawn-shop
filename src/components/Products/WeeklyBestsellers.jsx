@@ -48,7 +48,7 @@ export default function WeeklyBestsellers() {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(config.API_URLS.BESTSELLER);
+        const res = await fetch(`${config.API_URLS.PRODUCTS}/section/bestsellers`);
         if (!res.ok) throw new Error('Failed to fetch bestseller products');
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : data.products || []);

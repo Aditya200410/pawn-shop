@@ -63,7 +63,7 @@ export default function MostLoved() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
         
-        const res = await fetch(config.API_URLS.LOVED, {
+        const res = await fetch(`${config.API_URLS.PRODUCTS}/section/mostloved`, {
           signal: controller.signal
         });
         

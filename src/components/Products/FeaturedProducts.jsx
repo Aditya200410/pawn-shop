@@ -63,7 +63,7 @@ export default function FeaturedProducts() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
         
-        const res = await fetch(config.API_URLS.FEATURED_PRODUCTS, {
+        const res = await fetch(`${config.API_URLS.PRODUCTS}/section/featured`, {
           signal: controller.signal
         });
         
