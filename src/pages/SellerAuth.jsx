@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useSeller } from '../context/SellerContext';
-import { toast } from 'react-hot-toast';
-import Loader from '../components/Loader';
-import { ArrowRight } from 'lucide-react';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -12,43 +8,25 @@ const fadeIn = {
 };
 
 export default function SellerAuth() {
-  const { seller, login, loading } = useSeller();
-  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    businessName: '',
+    phone: '',
+    address: ''
   });
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Redirect if already logged in
-    const sellerEmail = localStorage.getItem('seller_email');
-    if (sellerEmail) {
-      navigate('/seller/profile');
-    }
-  }, [navigate]);
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      await login(formData.email, formData.password);
-      toast.success('Login successful!');
-      navigate('/seller/profile');
-    } catch (err) {
-      toast.error(err.message || 'Authentication failed');
-    }
+    // TODO: Implement authentication logic
+    console.log('Form submitted:', formData);
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -60,10 +38,12 @@ export default function SellerAuth() {
           className="text-center"
         >
           <h2 className="mt-6 text-4xl font-extrabold text-gray-900">
-            Welcome Back, Seller!
+            {isLogin ? 'Welcome Back, Seller!' : 'Join Our Seller Community'}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Access your seller dashboard and manage your products
+            {isLogin
+              ? 'Access your seller dashboard and manage your products'
+              : 'Start your journey as a Rikocraft seller today'}
           </p>
         </motion.div>
 
@@ -83,7 +63,7 @@ export default function SellerAuth() {
                 type="email"
                 name="email"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                 onChange={handleChange}
                 value={formData.email}
               />
@@ -97,46 +77,79 @@ export default function SellerAuth() {
                 type="password"
                 name="password"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                 onChange={handleChange}
                 value={formData.password}
               />
             </div>
 
+            {!isLogin && (
+              <>
+                <div>
+                  <label htmlFor="businessName" className="block text-sm font-medium text-gray-700">
+                    Business Name
+                  </label>
+                  <input
+                    type="text"
+                    name="businessName"
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    onChange={handleChange}
+                    value={formData.businessName}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    onChange={handleChange}
+                    value={formData.phone}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                    Business Address
+                  </label>
+                  <textarea
+                    name="address"
+                    rows="3"
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    onChange={handleChange}
+                    value={formData.address}
+                  />
+                </div>
+              </>
+            )}
+
             <div>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
               >
-                {loading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Signing In...
-                  </span>
-                ) : (
-                  <span className="flex items-center">
-                    Sign In
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </span>
-                )}
-              </button>
+                {isLogin ? 'Sign In' : 'Create Account'}
+              </motion.button>
             </div>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don't have a seller account?{' '}
-              <button
-                onClick={() => navigate('/seller')}
-                className="text-pink-600 hover:text-pink-500 font-medium"
-              >
-                Register here
-              </button>
-            </p>
+          <div className="mt-6">
+            <button
+              onClick={() => setIsLogin(!isLogin)}
+              className="w-full text-center text-sm text-amber-600 hover:text-amber-500"
+            >
+              {isLogin
+                ? "Don't have a seller account? Register now"
+                : 'Already have an account? Sign in'}
+            </button>
           </div>
         </motion.div>
       </div>
