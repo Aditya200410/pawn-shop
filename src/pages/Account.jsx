@@ -40,6 +40,8 @@ const useQuery = () => {
 
 const Account = () => {
   const query = useQuery();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -52,16 +54,29 @@ const Account = () => {
   });
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState(query.get('tab') || 'overview');
+  const [activeTab, setActiveTab] = useState(() => {
+    const initialTab = query.get('tab') || 'overview';
+    console.log('Initial activeTab set to:', initialTab);
+    return initialTab;
+  });
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const navigate = useNavigate();
   const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice, loading: cartLoading, getItemImage } = useCart();
   const { user, logout, updateProfile, isAuthenticated } = useAuth();
+
+  // Function to handle tab changes and update URL
+  const handleTabChange = (tabId) => {
+    console.log('handleTabChange called with:', tabId);
+    setActiveTab(tabId);
+    // Update URL without reloading the page
+    const newUrl = `/account?tab=${tabId}`;
+    console.log('Navigating to:', newUrl);
+    navigate(newUrl, { replace: true });
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -97,10 +112,12 @@ const Account = () => {
 
   useEffect(() => {
     const tab = query.get('tab');
+    console.log('URL changed, tab from query:', tab);
     if (tab) {
+      console.log('Setting active tab to:', tab);
       setActiveTab(tab);
     }
-  }, [query]);
+  }, [location.search]);
 
   useEffect(() => {
     if (filter === 'all') {
@@ -200,8 +217,10 @@ const Account = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
+    setError('');
+    setMessage('');
   };
 
   const handleSubmit = async (e) => {
@@ -211,64 +230,49 @@ const Account = () => {
 
     if (formData.newPassword && formData.newPassword !== formData.confirmNewPassword) {
       setError('New passwords do not match');
-      toast.error('New passwords do not match');
       return;
     }
 
     try {
-      await updateProfile({
+      const updateData = {
         name: formData.name,
-        email: formData.email,
         phone: formData.phone,
         address: formData.address,
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      });
+      };
 
+      if (formData.newPassword) {
+        updateData.currentPassword = formData.currentPassword;
+        updateData.newPassword = formData.newPassword;
+      }
+
+      await updateProfile(updateData);
       setMessage('Profile updated successfully!');
       setIsEditing(false);
+      
+      // Clear password fields
       setFormData(prev => ({
         ...prev,
         currentPassword: '',
         newPassword: '',
         confirmNewPassword: '',
       }));
-      toast.success('Profile updated successfully!');
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'An error occurred while updating your profile.';
-      setError(errorMessage);
-      toast.error(errorMessage);
+    } catch (error) {
+      setError(error.message || 'Failed to update profile');
     }
   };
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
-      setIsLoggingOut(true);
       await logout();
-      toast.success('Logged out successfully');
-      navigate('/login');
-      window.location.reload();
+      navigate('/');
     } catch (error) {
-      toast.error('Failed to logout. Please try again.');
+      console.error('Logout error:', error);
+      toast.error('Failed to logout');
     } finally {
       setIsLoggingOut(false);
     }
   };
-
-  if (loading || cartLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center space-y-4"
-        >
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-primary-dark"></div>
-          <p className="text-white font-medium">Loading your account...</p>
-        </motion.div>
-      </div>
-    );
-  }
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: UserCircleIcon },
@@ -456,7 +460,7 @@ const Account = () => {
                       key={tab.id}
                       whileHover={{ x: 4 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => setActiveTab(tab.id)}
+                      onClick={() => handleTabChange(tab.id)}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                         activeTab === tab.id
                           ? 'bg-pink-50 text-primary-dark border border-primary shadow-sm'
@@ -537,7 +541,7 @@ const Account = () => {
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          onClick={() => setActiveTab('cart')}
+                          onClick={() => handleTabChange('cart')}
                           className="flex items-center space-x-3 p-4 bg-pink-300 rounded-xl hover:bg-primary-50 hover:text-white transition-colors"
                         >
                           <ShoppingCartIcon className="h-6 w-6 text-primary-dark" />
@@ -547,7 +551,7 @@ const Account = () => {
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          onClick={() => setActiveTab('orders')}
+                          onClick={() => handleTabChange('orders')}
                           className="flex items-center space-x-3 p-4 bg-secondary rounded-xl hover:bg-primary transition-colors"
                         >
                           <GiftIcon className="h-6 w-6 text-primary-dark" />
@@ -557,7 +561,7 @@ const Account = () => {
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          onClick={() => setActiveTab('profile')}
+                          onClick={() => handleTabChange('profile')}
                           className="flex items-center space-x-3 p-4 bg-secondary rounded-xl hover:bg-primary transition-colors"
                         >
                           <PencilSquareIcon className="h-6 w-6 text-primary-dark" />
@@ -605,17 +609,19 @@ const Account = () => {
                     exit={{ opacity: 0, y: -20 }}
                     className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6"
                   >
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex justify-between items-center mb-6">
                       <h3 className="text-xl font-semibold text-gray-900">Profile Information</h3>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setIsEditing(!isEditing)}
-                        className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
-                      >
-                        <PencilSquareIcon className="h-4 w-4" />
-                        <span>{isEditing ? 'Cancel' : 'Edit Profile'}</span>
-                      </motion.button>
+                      {!isEditing && (
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setIsEditing(true)}
+                          className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                        >
+                          <PencilSquareIcon className="h-4 w-4" />
+                          <span>Edit Profile</span>
+                        </motion.button>
+                      )}
                     </div>
 
                     {isEditing ? (
@@ -628,7 +634,7 @@ const Account = () => {
                               name="name"
                               value={formData.name}
                               onChange={handleChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                               required
                             />
                           </div>
@@ -638,10 +644,10 @@ const Account = () => {
                               type="email"
                               name="email"
                               value={formData.email}
-                              onChange={handleChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
-                              required
+                              disabled
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
                             />
+                            <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
@@ -650,23 +656,23 @@ const Account = () => {
                               name="phone"
                               value={formData.phone}
                               onChange={handleChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                             />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                            <input
-                              type="text"
+                            <textarea
                               name="address"
                               value={formData.address}
                               onChange={handleChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                              rows="3"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                             />
                           </div>
                         </div>
 
                         <div className="border-t pt-6">
-                          <h4 className="text-lg font-medium text-gray-900 mb-4">Change Password</h4>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">Change Password (Optional)</h4>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
@@ -675,7 +681,7 @@ const Account = () => {
                                 name="currentPassword"
                                 value={formData.currentPassword}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                               />
                             </div>
                             <div>
@@ -685,85 +691,73 @@ const Account = () => {
                                 name="newPassword"
                                 value={formData.newPassword}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
                               <input
                                 type="password"
                                 name="confirmNewPassword"
                                 value={formData.confirmNewPassword}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                               />
                             </div>
                           </div>
                         </div>
 
                         {error && (
-                          <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
-                            <p className="text-red-700">{error}</p>
+                          <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <XCircleIcon className="h-5 w-5 text-red-500" />
+                            <span className="text-red-700">{error}</span>
                           </div>
                         )}
 
                         {message && (
-                          <div className="p-4 bg-green-50 border border-green-200 rounded-xl">
-                            <p className="text-green-700">{message}</p>
+                          <div className="flex items-center space-x-2 p-4 bg-green-50 border border-green-200 rounded-lg">
+                            <CheckCircleIcon className="h-5 w-5 text-green-500" />
+                            <span className="text-green-700">{message}</span>
                           </div>
                         )}
 
                         <div className="flex justify-end space-x-4">
                           <motion.button
-                            type="button"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            type="button"
                             onClick={() => setIsEditing(false)}
-                            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                           >
                             Cancel
                           </motion.button>
                           <motion.button
-                            type="submit"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
+                            type="submit"
+                            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
                           >
                             Save Changes
                           </motion.button>
                         </div>
                       </form>
                     ) : (
-                      <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl">
-                            <UserCircleIcon className="h-6 w-6 text-gray-400" />
-                            <div>
-                              <p className="text-sm text-gray-500">Full Name</p>
-                              <p className="font-medium text-gray-900">{user?.name}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl">
-                            <EnvelopeIcon className="h-6 w-6 text-gray-400" />
-                            <div>
-                              <p className="text-sm text-gray-500">Email</p>
-                              <p className="font-medium text-gray-900">{user?.email}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl">
-                            <PhoneIcon className="h-6 w-6 text-gray-400" />
-                            <div>
-                              <p className="text-sm text-gray-500">Phone</p>
-                              <p className="font-medium text-gray-900">{user?.phone || 'Not provided'}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl">
-                            <MapPinIcon className="h-6 w-6 text-gray-400" />
-                            <div>
-                              <p className="text-sm text-gray-500">Address</p>
-                              <p className="font-medium text-gray-900">{user?.address || 'Not provided'}</p>
-                            </div>
-                          </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">Full Name</label>
+                          <p className="text-lg font-medium text-gray-900">{user?.name}</p>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">Email</label>
+                          <p className="text-lg font-medium text-gray-900">{user?.email}</p>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">Phone</label>
+                          <p className="text-lg font-medium text-gray-900">{user?.phone || 'Not provided'}</p>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">Address</label>
+                          <p className="text-lg font-medium text-gray-900">{user?.address || 'Not provided'}</p>
                         </div>
                       </div>
                     )}
