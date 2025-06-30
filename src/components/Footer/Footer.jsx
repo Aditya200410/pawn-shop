@@ -163,18 +163,7 @@ export default function Footer() {
                     >
                       {category.name}
                     </Link>
-                    <ul className="ml-4 mt-1 space-y-2">
-                      {category.submenu.slice(0, 2).map((submenu) => (
-                        <li key={submenu.name}>
-                          <Link 
-                            to={`/shop?category=${encodeURIComponent(category.name)}&subcategory=${encodeURIComponent(submenu.name)}`}
-                            className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-xs block py-0.5"
-                          >
-                            {submenu.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+                   
                   </li>
                 ))}
                 <li>
