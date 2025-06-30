@@ -111,31 +111,6 @@ export default function Footer() {
             {/* Popular Categories and Useful Links Row - Mobile */}
             <div className="grid grid-cols-2 gap-6 md:hidden">
               {/* Popular Categories */}
-              <div>
-                <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
-                <ul className="space-y-3">
-                  <li>
-                    <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                      Wooden Craft
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                      Terracotta Items
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                      Dokra Art
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                      Handmade Jewellery
-                    </Link>
-                  </li>
-                </ul>
-              </div>
 
               {/* Useful Links */}
               <div>
@@ -177,29 +152,6 @@ export default function Footer() {
 
             {/* Popular Categories - Desktop */}
             <div className="hidden md:block">
-              <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                    Wooden Craft
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                    Terracotta Items
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                    Dokra Art
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/shop" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                    Handmade Jewellery
-                  </Link>
-                </li>
-              </ul>
             </div>
 
             {/* Useful Links - Desktop */}
