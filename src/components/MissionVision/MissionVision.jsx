@@ -40,7 +40,7 @@ export default function MissionVision() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-gray-900 mb-3 md:mb-4">
             Our <span className="font-serif italic">Story</span>
           </h2>
-          <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-amber-600 to-orange-600 mx-auto mb-4 md:mb-6"></div>
+          <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-amber-600 to-pink-600 mx-auto mb-4 md:mb-6"></div>
           <p className="text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Discover what drives us and shapes our commitment to excellence in every interaction
           </p>
@@ -67,7 +67,7 @@ export default function MissionVision() {
               
               <div className="p-3 md:p-6 lg:p-8">
                 <div className="flex items-center gap-2 md:gap-4 mb-2 md:mb-4 lg:mb-5">
-                  <div className="p-2 md:p-3 bg-gradient-to-br from-amber-100 to-orange-100 rounded-lg md:rounded-xl shadow-sm">
+                  <div className="p-2 md:p-3 bg-gradient-to-br from-amber-100 to-pink-100 rounded-lg md:rounded-xl shadow-sm">
                     <card.icon className="h-4 w-4 md:h-6 md:w-6 text-amber-700" />
                   </div>
                   <h3 className="text-sm md:text-xl lg:text-2xl font-semibold text-gray-900">{card.title}</h3>
