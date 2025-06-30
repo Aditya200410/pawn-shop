@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon, Star, Mail, MapPin } from 'lucide-react';
+import { categories } from '../../data/categories';
 
 const footerVariants = {
   hidden: {},
@@ -152,6 +153,64 @@ export default function Footer() {
 
             {/* Popular Categories - Desktop */}
             <div className="hidden md:block">
+              <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
+              <ul className="space-y-3">
+                {categories.map((category) => (
+                  <li key={category.name}>
+                    <Link 
+                      to={`/shop?category=${encodeURIComponent(category.name)}`}
+                      className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1"
+                    >
+                      {category.name}
+                    </Link>
+                    <ul className="ml-4 mt-1 space-y-2">
+                      {category.submenu.slice(0, 2).map((submenu) => (
+                        <li key={submenu.name}>
+                          <Link 
+                            to={`/shop?category=${encodeURIComponent(category.name)}&subcategory=${encodeURIComponent(submenu.name)}`}
+                            className="text-gray-300 hover:text-amber-500 transition-colors duration-300 text-xs block py-0.5"
+                          >
+                            {submenu.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+                <li>
+                  <Link 
+                    to="/shop"
+                    className="text-amber-500 hover:text-amber-400 transition-colors duration-300 text-sm font-medium block py-1"
+                  >
+                    View All Categories →
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Popular Categories - Mobile */}
+            <div className="md:hidden">
+              <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
+              <ul className="space-y-3">
+                {categories.slice(0, 4).map((category) => (
+                  <li key={category.name}>
+                    <Link 
+                      to={`/shop?category=${encodeURIComponent(category.name)}`}
+                      className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <Link 
+                    to="/shop"
+                    className="text-amber-500 hover:text-amber-400 transition-colors duration-300 text-sm font-medium block py-1"
+                  >
+                    View All Categories →
+                  </Link>
+                </li>
+              </ul>
             </div>
 
             {/* Useful Links - Desktop */}
