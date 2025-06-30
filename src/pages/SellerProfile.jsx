@@ -727,11 +727,11 @@ const SellerProfile = () => {
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Total Commission</h3>
                         <div className="p-2 sm:p-3 bg-green-500 rounded-xl">
-                          <FiDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                          
                         </div>
                       </div>
                       <p className="text-2xl sm:text-3xl font-bold text-green-600">₹{Math.round(seller.totalCommission || 0)}</p>
-                      <p className="text-xs sm:text-sm text-gray-600 mt-2">10% commission from orders</p>
+                      <p className="text-xs sm:text-sm text-gray-600 mt-2">30% commission from orders</p>
                     </motion.div>
 
                     <motion.div
