@@ -72,7 +72,7 @@ const AboutUs = () => {
                 Our Journey Begins
               </h2>
               <p className="text-base md:text-lg text-gray-600 mb-4 md:mb-6 leading-relaxed">
-                   Riko Craft enterprises emerged from a passion to showcase the incredible 
+                   Riko Enterprises emerged from a passion to showcase the incredible 
                 artistic heritage of Jharkhand and Eastern India. What began as a small initiative 
                 to support local artisans has blossomed into a growing platform for traditional crafts.
               </p>

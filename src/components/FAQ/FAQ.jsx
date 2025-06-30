@@ -8,7 +8,7 @@ const faqCategories = [
     questions: [
       {
         q: 'Is Riko Craft An Indian Company?',
-        a: 'Yes, RIKO CRAFT is a registered proprietorship start-up company in India. Full name of the company is **Riko Craft Enterprises.**'
+        a: 'Yes, RIKO CRAFT is a registered proprietorship start-up company in India. Full name of the company is **Riko Enterprises.**'
       },
      
       {
