@@ -111,7 +111,7 @@ const Categories = () => {
             <p className="text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-4 md:mb-6 max-w-2xl mx-auto">
               Discover our carefully curated collection of handcrafted treasures, each piece telling a unique story of craftsmanship and tradition
             </p>
-            <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 mx-auto"></div>
+            <div className="w-16 md:w-20 h-0.5 bg-[#8f3a61] mx-auto"></div>
           </div>
         </motion.div>
 
@@ -214,7 +214,7 @@ const Categories = () => {
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-all duration-300 group shadow-lg hover:shadow-xl"
+              className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-[#8f3a61] text-white font-medium rounded-lg hover:bg-pink-700 transition-all duration-300 group shadow-lg hover:shadow-xl"
             >
               View All Products
               <svg 

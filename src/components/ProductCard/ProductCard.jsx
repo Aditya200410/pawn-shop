@@ -8,9 +8,15 @@ import { toast } from 'react-hot-toast';
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   
+  const isOutOfStock = product.outOfStock === true || product.inStock === false;
+
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isOutOfStock) {
+      toast.error('Product is out of stock');
+      return;
+    }
     try {
       const productId = product._id || product.id;
       if (!productId) {
@@ -50,26 +56,30 @@ const ProductCard = ({ product }) => {
               e.target.src = 'https://placehold.co/400x500/e2e8f0/475569?text=Image';
             }}
           />
-          
+          {isOutOfStock && (
+            <div className="absolute top-3 right-3 bg-white/80 text-red-600 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm backdrop-blur-md">
+              Out of Stock
+            </div>
+          )}
           {product.regularPrice && product.regularPrice > product.price && (
-            <div className="absolute top-3 left-3 bg-pink-500 text-white px-2.5 py-1.5 rounded-md text-xs font-semibold">
+            <div className="absolute top-3 left-3 bg-[#8f3a61] text-white px-2.5 py-1.5 rounded-md text-xs font-semibold">
               -{Math.round(((product.regularPrice - product.price) / product.regularPrice) * 100)}%
             </div>
           )}
         </div>
 
         <div className="p-4 space-y-3 text-center">
-          <h3 className="text-lg font-semibold text-gray-800 truncate group-hover:text-pink-600 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-800 truncate group-hover:text-orange-600 transition-colors">
             {product.name}
           </h3>
           <p className="text-sm text-gray-500">{product.category}</p>
           <div className="flex items-baseline justify-center gap-2">
-            <span className="text-xl font-bold text-pink-600">
-              ₹{product.price.toFixed(2)}
+            <span className="text-xl font-bold text-[#8f3a61]">
+              ₹{Math.round(product.price)}
             </span>
             {product.regularPrice && product.regularPrice > product.price && (
               <span className="text-base text-gray-400 line-through">
-                ₹{product.regularPrice.toFixed(2)}
+                ₹{Math.round(product.regularPrice)}
               </span>
             )}
           </div>
@@ -80,17 +90,22 @@ const ProductCard = ({ product }) => {
         {hasOptions ? (
           <Link
             to={`/product/${product._id || product.id}`}
-            className="w-full bg-pink-500 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-pink-600 transition-all duration-300 ease-in-out"
+            className="w-full bg-[#8f3a61] text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[#8f3a61]/90 transition-all duration-300 ease-in-out"
           >
             Select options
           </Link>
         ) : (
           <button
             onClick={handleAddToCart}
-            className="w-full bg-pink-500 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-pink-600 transition-all duration-300 ease-in-out"
+            className={`w-full font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${
+              isOutOfStock
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-[#8f3a61] text-white hover:bg-[#8f3a61]/90'
+            }`}
+            disabled={isOutOfStock}
           >
             <ShoppingBag className="w-4 h-4" />
-            Add to cart
+            {isOutOfStock ? 'Out of Stock' : 'Add to cart'}
           </button>
         )}
       </div>

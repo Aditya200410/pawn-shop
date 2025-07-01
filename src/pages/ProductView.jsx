@@ -128,6 +128,9 @@ const ProductView = () => {
   if (loading) return <Loader />;
   if (!product) return null;
 
+  // Consistent out-of-stock logic
+  const isOutOfStock = product.outOfStock === true || product.inStock === false;
+
   // Use product.images array if available, otherwise fallback to single image
   const productImages = (() => {
     if (product.images && Array.isArray(product.images) && product.images.length > 0) {
@@ -202,6 +205,10 @@ const ProductView = () => {
   };
 
   const handleAddToCart = async () => {
+    if (isOutOfStock) {
+      toast.error('Product is out of stock');
+      return;
+    }
     try {
       const productId = product._id || product.id;
       if (!productId) {
@@ -307,7 +314,7 @@ const ProductView = () => {
                   }}
                 />
               </AnimatePresence>
-              {product.outOfStock && (
+              {isOutOfStock && (
                 <motion.div 
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -488,15 +495,15 @@ const ProductView = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleAddToCart}
-                  disabled={product.outOfStock}
+                  disabled={isOutOfStock}
                   className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold transition-all ${
-                    product.outOfStock
+                    isOutOfStock
                       ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       : 'bg-amber-600 text-white hover:bg-amber-700 shadow-lg hover:shadow-xl'
                   }`}
                 >
                   <ShoppingCartIcon className="h-5 w-5" />
-                  {product.outOfStock ? 'Out of Stock' : 'Add to Cart'}
+                  {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                 </motion.button>
                 
                 <motion.button 
