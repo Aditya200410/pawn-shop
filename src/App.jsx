@@ -31,6 +31,7 @@ import Toast from './components/Toast/Toast';
 import ForgotPassword from './pages/ForgotPassword';
 import AboutUs from './pages/AboutUs';
 import OrderConfirmation from './pages/OrderConfirmation';
+import Becomeseller from './pages/Becomeseller';
 import SellerAuth from './pages/SellerAuth';
 import SellerProfile from './pages/SellerProfile';
 import VerifyOTP from './pages/OTPVerification';
@@ -144,7 +145,7 @@ function AppContent() {
         <Route path="/otp-verification" element={<VerifyOTP />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path='/seller' element={<SellerAuth/>}/>
+        <Route path='/seller' element={<Becomeseller/>}/>
         <Route path='/seller/auth' element={<SellerAuth/>}/>
         <Route path='/seller/profile' element={<SellerProfile/>}/>
         <Route path="/cart" element={<Cart />} />
