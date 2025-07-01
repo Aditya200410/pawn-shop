@@ -65,7 +65,8 @@ export const SellerProvider = ({ children }) => {
         availableCommission: data.seller.availableCommission || 0,
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
-        createdAt: data.seller.createdAt || new Date().toISOString()
+        createdAt: data.seller.createdAt || new Date().toISOString(),
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
       };
 
       setSeller(sellerData);
@@ -125,7 +126,8 @@ export const SellerProvider = ({ children }) => {
         availableCommission: data.seller.availableCommission || 0,
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
-        createdAt: data.seller.createdAt || new Date().toISOString()
+        createdAt: data.seller.createdAt || new Date().toISOString(),
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
       };
 
       localStorage.setItem('seller_email', email);
@@ -196,7 +198,8 @@ export const SellerProvider = ({ children }) => {
         availableCommission: data.seller.availableCommission || 0,
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
-        createdAt: data.seller.createdAt || new Date().toISOString()
+        createdAt: data.seller.createdAt || new Date().toISOString(),
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
       };
 
       localStorage.setItem('seller_email', data.seller.email);
@@ -260,7 +263,8 @@ export const SellerProvider = ({ children }) => {
         availableCommission: data.seller.availableCommission || 0,
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
-        createdAt: data.seller.createdAt || new Date().toISOString()
+        createdAt: data.seller.createdAt || new Date().toISOString(),
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
       };
 
       setSeller(updatedSellerData);
