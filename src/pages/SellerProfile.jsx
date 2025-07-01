@@ -147,8 +147,30 @@ const SellerProfile = () => {
     availableCommission: seller.availableCommission || 0,
     withdrawals: Array.isArray(seller.withdrawals) ? seller.withdrawals : [],
     createdAt: seller.createdAt || '',
-    verified: typeof seller.verified === 'boolean' ? seller.verified : false
+    verified: typeof seller.verified === 'boolean' ? seller.verified : false,
+    blocked: typeof seller.blocked === 'boolean' ? seller.blocked : false
   };
+
+  if (safeSeller.blocked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-white to-red-100">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center bg-white p-8 rounded-2xl shadow-xl border-2 border-red-300"
+        >
+          <h2 className="text-2xl font-bold mb-4 text-red-600">Account Blocked</h2>
+          <p className="text-gray-700 mb-6">Your seller account has been blocked by the admin. Please contact support for more information.</p>
+          <button 
+            onClick={() => logout()} 
+            className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-500 text-white rounded-xl hover:from-red-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+          >
+            Logout
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
 
   const handleChange = (e) => {
     setFormData({
