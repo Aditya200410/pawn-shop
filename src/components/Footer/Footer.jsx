@@ -129,7 +129,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link to="/seller" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
-                      Seller
+                      Seller Program
                     </Link>
                   </li>
                   <li>

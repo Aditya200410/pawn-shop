@@ -145,7 +145,7 @@ function AppContent() {
         <Route path="/otp-verification" element={<VerifyOTP />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path='/seller' element={<BecomeSeller/>}/>
+        <Route path='/seller' element={<SellerAuth/>}/>
         <Route path='/seller/auth' element={<SellerAuth/>}/>
         <Route path='/seller/profile' element={<SellerProfile/>}/>
         <Route path="/cart" element={<Cart />} />

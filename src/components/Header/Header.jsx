@@ -275,7 +275,7 @@ const Header = () => {
                 <a href="/about" className="text-white/80 hover:text-white">Our Story</a>
                 <a href="/contact" className="text-white/80 hover:text-white">Contact</a>
                 <a href="/FAQ" className="text-white/80 hover:text-white">FAQ</a>
-                <a href="/seller" className="text-white/80 hover:text-white">seller Program</a>
+                <Link to="/seller" className="text-white/80 hover:text-white">Seller Program</Link>
                 <div className="flex items-center space-x-4 text-white">
                   <a href="#" className="hover:opacity-80"><FaFacebookF /></a>
                   <a href="#" className="hover:opacity-80"><FaTwitter /></a>
