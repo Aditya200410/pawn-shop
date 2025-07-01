@@ -155,7 +155,7 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                   <div className="space-y-4 sm:space-y-6">
-                    <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-pink-50 rounded-2xl">
+                    <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
                       <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mt-1 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Our Location</h3>
@@ -164,7 +164,7 @@ export default function ContactPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-pink-50 rounded-2xl">
+                    <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
                       <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mt-1 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Phone Number</h3>
@@ -176,7 +176,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-4 sm:space-y-6">
-                    <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-pink-50 rounded-2xl">
+                    <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
                       <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mt-1 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Email Address</h3>
@@ -209,7 +209,7 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                   <div className="space-y-4 sm:space-y-6">
-                    <div className="p-4 sm:p-6 bg-pink-50 rounded-2xl">
+                    <div className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
                       <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Our Mission</h3>
                       <p className="text-gray-600 text-sm sm:text-base">
                         To connect global customers with authentic Indian handicrafts while empowering 
@@ -217,7 +217,7 @@ export default function ContactPage() {
                       </p>
                     </div>
 
-                    <div className="p-4 sm:p-6 bg-pink-50 rounded-2xl">
+                    <div className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
                       <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Our Heritage</h3>
                       <p className="text-gray-600 text-sm sm:text-base">
                         Based in Jamshedpur, Jharkhand, we source directly from local artisans, 
@@ -227,7 +227,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-4 sm:space-y-6">
-                    <div className="p-4 sm:p-6 bg-pink-50 rounded-2xl">
+                    <div className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
                       <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Artisan Empowerment</h3>
                       <p className="text-gray-600 text-sm sm:text-base">
                         We work closely with local craftsmen, providing them fair compensation 
@@ -235,7 +235,7 @@ export default function ContactPage() {
                       </p>
                     </div>
 
-                    <div className="p-4 sm:p-6 bg-pink-50 rounded-2xl">
+                    <div className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
                       <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Quality Commitment</h3>
                       <p className="text-gray-600 text-sm sm:text-base">
                         Each piece is carefully curated and quality checked to ensure it meets 
@@ -265,9 +265,9 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {services.map((service, index) => (
-                    <div key={index} className="p-4 sm:p-6 bg-pink-50 rounded-2xl border border-orange-100">
+                    <div key={index} className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl border border-orange-100">
                       <div className="flex items-start gap-3 sm:gap-4">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8f3a61]-100 rounded-xl flex items-center justify-center flex-shrink-0">
                           <service.icon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                         </div>
                         <div>
@@ -299,9 +299,9 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {supportInfo.map((info, index) => (
-                    <div key={index} className="p-4 sm:p-6 bg-pink-50 rounded-2xl border border-orange-100">
+                    <div key={index} className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl border border-orange-100">
                       <div className="flex items-start gap-3 sm:gap-4">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8f3a61]-100 rounded-xl flex items-center justify-center flex-shrink-0">
                           <info.icon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                         </div>
                         <div>
@@ -313,7 +313,7 @@ export default function ContactPage() {
                   ))}
                 </div>
 
-                <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-pink-50 rounded-2xl">
+                <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
                   <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Need Immediate Help?</h3>
                   <p className="text-gray-600 mb-4 text-sm sm:text-base">
                     Our customer support team is available to assist you with any questions or concerns.
@@ -321,14 +321,14 @@ export default function ContactPage() {
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <a 
                       href="tel:+918340624635"
-                      className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-pink-600 text-white rounded-xl font-medium hover:bg-pink-700 transition-colors text-sm sm:text-base"
+                      className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-[#8f3a61]-600 text-white rounded-xl font-medium hover:bg-[#8f3a61]-700 transition-colors text-sm sm:text-base"
                     >
                       <Phone className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Call Us Now
                     </a>
                     <a 
                       href="mailto:Info@Rikocraft.com"
-                      className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-orange-600 text-orange-600 rounded-xl font-medium hover:bg-pink-600 hover:text-white transition-colors text-sm sm:text-base"
+                      className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-orange-600 text-orange-600 rounded-xl font-medium hover:bg-[#8f3a61]-600 hover:text-white transition-colors text-sm sm:text-base"
                     >
                       <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Send Email

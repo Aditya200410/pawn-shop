@@ -122,7 +122,7 @@ export default function WeeklyBestsellers() {
             <p className="text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-4 md:mb-6 max-w-2xl mx-auto">
               The most popular handcrafted pieces that customers can't stop talking about
             </p>
-            <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 mx-auto"></div>
+            <div className="w-16 md:w-20 h-0.5 bg-gradient-to-r from-[#8f3a61]-500 to-[#8f3a61]-600 mx-auto"></div>
           </div>
         </motion.div>
 
@@ -141,7 +141,7 @@ export default function WeeklyBestsellers() {
                   onClick={() => handleCategoryChange(category)}
                   className={`px-4 md:px-6 py-2 md:py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 ${
                     selectedCategory === category
-                      ? 'bg-pink-600 text-white shadow-lg'
+                      ? 'bg-[#8f3a61]-600 text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -181,7 +181,7 @@ export default function WeeklyBestsellers() {
               </p>
               <Link 
                 to="/shop" 
-                className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-pink-600 to-pink-700 text-white rounded-xl font-semibold hover:from-pink-700 hover:to-pink-800 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
+                className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-[#8f3a61]-600 to-[#8f3a61]-700 text-white rounded-xl font-semibold hover:from-[#8f3a61]-700 hover:to-[#8f3a61]-800 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
               >
                 View More Products
                 <svg 
