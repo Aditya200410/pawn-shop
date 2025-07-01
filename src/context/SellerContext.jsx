@@ -282,7 +282,8 @@ export const SellerProvider = ({ children }) => {
     login,
     register,
     logout,
-    updateProfile
+    updateProfile,
+    fetchProfile: fetchSellerProfile
   };
 
   return (
