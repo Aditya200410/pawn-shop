@@ -25,12 +25,19 @@ const SellerAuth = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    // Trim all fields to avoid whitespace issues
+    const trimmedForm = Object.fromEntries(
+      Object.entries(form).map(([k, v]) => [k, typeof v === 'string' ? v.trim() : v])
+    );
+    console.log('Submitting seller registration/login:', trimmedForm);
     if (isLogin) {
-      const res = await login(form.email, form.password);
+      const res = await login(trimmedForm.email, trimmedForm.password);
       if (res.success) navigate('/seller/profile');
+      else console.error('Login failed:', res);
     } else {
-      const res = await register(form);
+      const res = await register(trimmedForm);
       if (res.success) navigate('/seller/profile');
+      else console.error('Registration failed:', res);
     }
   };
 
