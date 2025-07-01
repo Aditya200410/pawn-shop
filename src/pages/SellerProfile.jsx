@@ -160,7 +160,7 @@ const SellerProfile = () => {
           className="text-center bg-white p-8 rounded-2xl shadow-xl border-2 border-red-300"
         >
           <h2 className="text-2xl font-bold mb-4 text-red-600">Account Blocked</h2>
-          <p className="text-gray-700 mb-6">Your seller account has been blocked by the admin. Please contact support for more information.</p>
+          <p className="text-gray-700 mb-6">Your account has been blocked by the admin.</p>
           <button 
             onClick={() => logout()} 
             className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-500 text-white rounded-xl hover:from-red-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl"
