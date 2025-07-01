@@ -281,7 +281,7 @@ const SellerProfile = () => {
     },
     {
       title: 'Commission Rate',
-      value: '10%',
+      value: '30%',
       svg: (
         <svg className="w-6 h-6" fill="none" stroke="url(#rate-gradient)" strokeWidth="2" viewBox="0 0 24 24">
           <defs>
