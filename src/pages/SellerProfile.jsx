@@ -303,7 +303,7 @@ const SellerProfile = () => {
       {/* Hidden poster for download */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
         <div ref={posterRef}>
-          <RikoCraftPoster qrSrc={seller.qrCode} />
+          <RikoCraftPoster qrSrc={safeSeller.qrCode} />
         </div>
       </div>
 
@@ -465,7 +465,7 @@ const SellerProfile = () => {
                       <div className="flex justify-center">
                         <div className="bg-white p-3 sm:p-4 rounded-2xl shadow-lg">
                           <img 
-                            src={seller.qrCode} 
+                            src={safeSeller.qrCode} 
                             alt="Shop QR Code" 
                             className="w-32 h-32 sm:w-48 sm:h-48 rounded-xl"
                           />
