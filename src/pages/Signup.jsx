@@ -297,44 +297,82 @@ const Signup = () => {
         </div>
       </div>
 
-      {/* Right Side - Image */}
-      <motion.div 
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="hidden lg:block lg:w-1/2 relative"
-      >
-        <img src="/footer.png" alt="Signup Banner" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 flex items-center justify-center p-12">
-          <div className="text-white text-center">
-            <h2 className="text-4xl font-light mb-6">
-              Unlock a World of <span className="font-serif italic">Unique Finds</span>
-            </h2>
-            <p className="text-lg text-gray-100 mb-8">
-              Join our community to buy, sell, and discover one-of-a-kind items.
-            </p>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <span>Curated collections from trusted sellers</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <span>Secure transactions and buyer protection</span>
-              </div>
-            </div>
+     {/* Right Side - Image */}
+<motion.div 
+  initial={{ opacity: 0, x: 20 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.5, delay: 0.2 }}
+  className="hidden lg:block lg:w-1/2 relative"
+>
+  <img src="/footer.png" alt="Signup Banner" className="absolute inset-0 w-full h-full object-cover" />
+  <div className="absolute inset-0 bg-black/50" />
+  <div className="absolute inset-0 flex items-center justify-center p-12">
+    <div className="text-white text-center">
+      <h2 className="text-4xl font-light mb-6">
+        Unlock a World of <span className="font-serif italic">Unique Finds</span>
+      </h2>
+      <p className="text-lg text-gray-100 mb-8">
+        Join our community to buy, sell, and discover one-of-a-kind items.
+      </p>
+      <div className="space-y-4 text-left max-w-md mx-auto">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
           </div>
+          <span>Curated collections from trusted sellers</span>
         </div>
-      </motion.div>
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span>Secure transactions and buyer protection</span>
+        </div>
+
+        {/* New Premium Features */}
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span>Authentic <span className="italic">Dhokra Art</span> from master artisans</span>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span>Exquisite <span className="italic">Heritage Products</span> with timeless appeal</span>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span>Finely crafted <span className="italic">Art & Craft</span> for discerning tastes</span>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span>Exclusive <span className="italic">Seller Program</span> for passionate creators</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</motion.div>
+
     </div>
   );
 };
