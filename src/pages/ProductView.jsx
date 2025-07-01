@@ -511,7 +511,7 @@ const ProductView = () => {
                   whileTap={{ scale: 0.98 }}
                   className="p-4 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
                 >
-                  <HeartIcon className="h-5 w-5 text-gray-600" />
+                 
                 </motion.button>
                 
                 <motion.button 
