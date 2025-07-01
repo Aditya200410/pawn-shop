@@ -29,23 +29,23 @@ import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
 
 const SellerProfile = () => {
-  const { seller, loading, error, updateProfile, logout } = useSeller();
+  const { seller, loading, error, updateProfile, logout, fetchProfile } = useSeller();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
   const posterRef = useRef();
   const [formData, setFormData] = useState({
-    businessName: seller?.businessName || '',
-    phone: seller?.phone || '',
-    address: seller?.address || '',
-    businessType: seller?.businessType || '',
-    accountHolderName: seller?.accountHolderName || '',
-    bankAccountNumber: seller?.bankAccountNumber || '',
-    ifscCode: seller?.ifscCode || '',
-    bankName: seller?.bankName || ''
+    businessName: '',
+    phone: '',
+    address: '',
+    businessType: '',
+    accountHolderName: '',
+    bankAccountNumber: '',
+    ifscCode: '',
+    bankName: ''
   });
   const [showWithdrawForm, setShowWithdrawForm] = useState(false);
-  const [bankDetails, setBankDetails] = useState(seller?.bankDetails || {
+  const [bankDetails, setBankDetails] = useState({
     accountName: '',
     accountNumber: '',
     ifsc: '',
@@ -54,20 +54,44 @@ const SellerProfile = () => {
   const [withdrawing, setWithdrawing] = useState(false);
   const [availableToWithdraw, setAvailableToWithdraw] = useState(0);
 
+  // Fetch seller profile on mount if not present
   useEffect(() => {
-    const sellerEmail = localStorage.getItem('seller_email');
-    if (!loading && !sellerEmail) {
-      navigate('/seller');
+    if (!seller) {
+      const token = localStorage.getItem('seller_token');
+      if (token) fetchProfile(token);
     }
-  }, [loading, navigate]);
+    // eslint-disable-next-line
+  }, []);
 
+  // Update formData when seller is loaded
   useEffect(() => {
-    if (seller && seller.availableCommission !== undefined) {
-      setAvailableToWithdraw(Math.round(seller.availableCommission));
-    } else {
-      setAvailableToWithdraw(0);
+    if (seller) {
+      setFormData({
+        businessName: seller.businessName || '',
+        phone: seller.phone || '',
+        address: seller.address || '',
+        businessType: seller.businessType || '',
+        accountHolderName: seller.accountHolderName || '',
+        bankAccountNumber: seller.bankAccountNumber || '',
+        ifscCode: seller.ifscCode || '',
+        bankName: seller.bankName || ''
+      });
+      setBankDetails({
+        accountName: seller.accountHolderName || '',
+        accountNumber: seller.bankAccountNumber || '',
+        ifsc: seller.ifscCode || '',
+        bankName: seller.bankName || ''
+      });
+      setAvailableToWithdraw(Math.round(seller.availableCommission || 0));
     }
   }, [seller]);
+
+  useEffect(() => {
+    const sellerEmail = localStorage.getItem('seller_email');
+    if (!loading && !seller && !sellerEmail) {
+      navigate('/seller');
+    }
+  }, [loading, seller, navigate]);
 
   if (loading) {
     return (
@@ -122,7 +146,7 @@ const SellerProfile = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/seller/auth');
+    navigate('/seller');
     window.location.reload();
   };
 

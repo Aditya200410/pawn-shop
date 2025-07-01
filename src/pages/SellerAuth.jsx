@@ -1,183 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useSeller } from '../context/SellerContext';
-import { toast } from 'react-hot-toast';
-import Loader from '../components/Loader';
+import { useNavigate } from 'react-router-dom';
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
-export default function SellerAuth() {
-  const { seller, login, register, loading } = useSeller();
-  const navigate = useNavigate();
+const SellerAuth = () => {
+  const { login, register, loading, error } = useSeller();
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
+    businessName: '',
     email: '',
     password: '',
-    businessName: '',
     phone: '',
-    address: ''
+    address: '',
+    businessType: '',
+    accountHolderName: '',
+    bankAccountNumber: '',
+    ifscCode: '',
+    bankName: ''
   });
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Redirect if already logged in
-    if (seller) {
-      navigate('/seller/profile');
-    }
-  }, [seller, navigate]);
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    try {
-      if (isLogin) {
-        await login(formData.email, formData.password);
-      } else {
-        if (!formData.businessName || !formData.phone || !formData.address) {
-          toast.error('Please fill in all fields');
-          return;
-        }
-        await register(formData);
-      }
-      toast.success(isLogin ? 'Login successful!' : 'Registration successful!');
-      navigate('/seller/profile');
-    } catch (err) {
-      toast.error(err.message || 'Authentication failed');
+    if (isLogin) {
+      const res = await login(form.email, form.password);
+      if (res.success) navigate('/seller/profile');
+    } else {
+      const res = await register(form);
+      if (res.success) navigate('/seller/profile');
     }
   };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader />
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full mx-auto space-y-8">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-          className="text-center"
-        >
-          <h2 className="mt-6 text-4xl font-extrabold text-gray-900">
-            {isLogin ? 'Welcome Back, Seller!' : 'Join Our Seller Community'}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {isLogin
-              ? 'Access your seller dashboard and manage your products'
-              : 'Start your journey as a Rikocraft seller today'}
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-          transition={{ delay: 0.2 }}
-          className="bg-white py-8 px-4 shadow-xl rounded-xl sm:px-10"
-        >
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                type="email"
-                name="email"
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                onChange={handleChange}
-                value={formData.email}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                onChange={handleChange}
-                value={formData.password}
-              />
-            </div>
-
-            {!isLogin && (
-              <>
-                <div>
-                  <label htmlFor="businessName" className="block text-sm font-medium text-gray-700">
-                    Business Name
-                  </label>
-                  <input
-                    type="text"
-                    name="businessName"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                    onChange={handleChange}
-                    value={formData.businessName}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                    onChange={handleChange}
-                    value={formData.phone}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                    Business Address
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                    onChange={handleChange}
-                    value={formData.address}
-                  />
-                </div>
-              </>
-            )}
-
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
-              >
-                {isLogin ? 'Sign In' : 'Register'}
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-6">
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="w-full text-center text-sm text-amber-600 hover:text-amber-500"
-            >
-              {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
-            </button>
-          </div>
-        </motion.div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">{isLogin ? 'Seller Login' : 'Seller Registration'}</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {!isLogin && (
+            <>
+              <input name="businessName" placeholder="Business Name" value={form.businessName} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+              <input name="phone" placeholder="Phone" value={form.phone} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+              <input name="address" placeholder="Address" value={form.address} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+              <input name="businessType" placeholder="Business Type" value={form.businessType} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+              <input name="accountHolderName" placeholder="Account Holder Name" value={form.accountHolderName} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+              <input name="bankAccountNumber" placeholder="Bank Account Number" value={form.bankAccountNumber} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+              <input name="ifscCode" placeholder="IFSC Code" value={form.ifscCode} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+              <input name="bankName" placeholder="Bank Name" value={form.bankName} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+            </>
+          )}
+          <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+          <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+          <button type="submit" className="w-full bg-pink-500 text-white py-2 rounded hover:bg-pink-600 transition" disabled={loading}>
+            {loading ? 'Please wait...' : isLogin ? 'Login' : 'Register'}
+          </button>
+        </form>
+        <div className="mt-4 text-center">
+          <button onClick={() => setIsLogin(!isLogin)} className="text-pink-600 hover:underline">
+            {isLogin ? 'New seller? Register here' : 'Already have an account? Login'}
+          </button>
+        </div>
       </div>
     </div>
   );
-} 
+};
+
+export default SellerAuth; 

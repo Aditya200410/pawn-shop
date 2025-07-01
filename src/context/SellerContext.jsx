@@ -1,224 +1,132 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import config from '../config/config';
-import { toast } from 'react-hot-toast';
 
-export const SellerContext = createContext();
+const SellerContext = createContext();
 
-export const useSeller = () => {
-  const context = useContext(SellerContext);
-  if (!context) {
-    throw new Error('useSeller must be used within a SellerProvider');
-  }
-  return context;
-};
+export const useSeller = () => useContext(SellerContext);
 
 export const SellerProvider = ({ children }) => {
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Load seller from localStorage on mount
   useEffect(() => {
     const token = localStorage.getItem('seller_token');
     if (token) {
-      fetchSellerProfile(token);
+      fetchProfile(token);
     } else {
       setLoading(false);
     }
   }, []);
 
-  const fetchSellerProfile = async (token) => {
-    try {
-      const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      const data = await response.json();
-      console.log('Profile data:', data); // Debug log
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Failed to fetch seller profile');
-      }
-
-      // Ensure all required fields are present
-      const sellerData = {
-        id: data.seller.id,
-        businessName: data.seller.businessName,
-        email: data.seller.email,
-        phone: data.seller.phone || '',
-        address: data.seller.address || '',
-        status: data.seller.status,
-        createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken,
-        websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode
-      };
-
-      setSeller(sellerData);
-    } catch (err) {
-      setError(err.message);
-      localStorage.removeItem('seller_token');
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const login = async (email, password) => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      const response = await fetch(`${config.API_URLS.SELLER}/login`, {
+      const res = await fetch('/api/seller/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-
-      const data = await response.json();
-      console.log('Login data:', data); // Debug log
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Login failed');
+      const data = await res.json();
+      if (data.success && data.token) {
+        localStorage.setItem('seller_token', data.token);
+        setSeller(data.seller);
+        setError(null);
+      } else {
+        setError(data.message || 'Login failed');
       }
-
-      // Ensure all required fields are present
-      const sellerData = {
-        id: data.seller.id,
-        businessName: data.seller.businessName,
-        email: data.seller.email,
-        phone: data.seller.phone || '',
-        address: data.seller.address || '',
-        status: data.seller.status,
-        createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken,
-        websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode
-      };
-
-      localStorage.setItem('seller_token', data.token);
-      setSeller(sellerData);
-      toast.success('Login successful!');
+      setLoading(false);
       return data;
     } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
-      throw err;
-    } finally {
+      setError('Login failed');
+      setLoading(false);
+      return { success: false };
+    }
+  };
+
+  const register = async (formData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/seller/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (data.success && data.token) {
+        localStorage.setItem('seller_token', data.token);
+        setSeller(data.seller);
+        setError(null);
+      } else {
+        setError(data.message || 'Registration failed');
+      }
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setError('Registration failed');
+      setLoading(false);
+      return { success: false };
+    }
+  };
+
+  const fetchProfile = async (token) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/seller/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSeller(data.seller);
+      } else {
+        setError(data.message || 'Failed to fetch profile');
+      }
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch profile');
       setLoading(false);
     }
   };
 
-  const register = async (sellerData) => {
+  const updateProfile = async (updateFields) => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      const response = await fetch(`${config.API_URLS.SELLER}/register`, {
-        method: 'POST',
+      const token = localStorage.getItem('seller_token');
+      const res = await fetch('/api/seller/profile', {
+        method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(sellerData)
+        body: JSON.stringify(updateFields)
       });
-
-      const data = await response.json();
-      console.log('Register data:', data); // Debug log
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Registration failed');
+      const data = await res.json();
+      if (data.success) {
+        setSeller(data.seller);
+        setError(null);
+      } else {
+        setError(data.message || 'Failed to update profile');
       }
-
-      // Ensure all required fields are present
-      const newSellerData = {
-        id: data.seller.id,
-        businessName: data.seller.businessName,
-        email: data.seller.email,
-        phone: data.seller.phone || '',
-        address: data.seller.address || '',
-        status: data.seller.status,
-        createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken,
-        websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode
-      };
-
-      localStorage.setItem('seller_token', data.token);
-      setSeller(newSellerData);
-      toast.success('Registration successful!');
+      setLoading(false);
       return data;
     } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
-      throw err;
-    } finally {
+      setError('Failed to update profile');
       setLoading(false);
+      return { success: false };
     }
   };
 
   const logout = () => {
     localStorage.removeItem('seller_token');
     setSeller(null);
-    toast.success('Logged out successfully');
-  };
-
-  const updateProfile = async (updates) => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('seller_token');
-      const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(updates)
-      });
-
-      const data = await response.json();
-      console.log('Update profile data:', data); // Debug log
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Failed to update profile');
-      }
-
-      // Ensure all required fields are present
-      const updatedSellerData = {
-        id: data.seller.id,
-        businessName: data.seller.businessName,
-        email: data.seller.email,
-        phone: data.seller.phone || '',
-        address: data.seller.address || '',
-        status: data.seller.status,
-        createdAt: data.seller.createdAt,
-        couponToken: data.seller.couponToken,
-        websiteLink: data.seller.websiteLink,
-        qrCode: data.seller.qrCode
-      };
-
-      setSeller(updatedSellerData);
-      toast.success('Profile updated successfully');
-      return data;
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const value = {
-    seller,
-    loading,
-    error,
-    login,
-    register,
-    logout,
-    updateProfile
   };
 
   return (
-    <SellerContext.Provider value={value}>
+    <SellerContext.Provider value={{ seller, loading, error, login, register, fetchProfile, updateProfile, logout }}>
       {children}
     </SellerContext.Provider>
   );
