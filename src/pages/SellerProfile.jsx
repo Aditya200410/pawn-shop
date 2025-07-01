@@ -77,10 +77,10 @@ const SellerProfile = () => {
         bankName: seller.bankName || ''
       });
       setBankDetails({
-        accountName: seller.accountHolderName || '',
-        accountNumber: seller.bankAccountNumber || '',
-        ifsc: seller.ifscCode || '',
-        bankName: seller.bankName || ''
+        accountName: seller.accountHolderName || seller.bankDetails?.accountName || '',
+        accountNumber: seller.bankAccountNumber || seller.bankDetails?.accountNumber || '',
+        ifsc: seller.ifscCode || seller.bankDetails?.ifsc || '',
+        bankName: seller.bankName || seller.bankDetails?.bankName || ''
       });
       setAvailableToWithdraw(Math.round(seller.availableCommission || 0));
     }
@@ -125,6 +125,30 @@ const SellerProfile = () => {
   if (!seller) {
     return null;
   }
+
+  // Fallbacks for all fields used in rendering
+  const safeSeller = {
+    businessName: seller.businessName || '',
+    email: seller.email || '',
+    phone: seller.phone || '',
+    address: seller.address || '',
+    businessType: seller.businessType || '',
+    accountHolderName: seller.accountHolderName || seller.bankDetails?.accountName || '',
+    bankAccountNumber: seller.bankAccountNumber || seller.bankDetails?.accountNumber || '',
+    ifscCode: seller.ifscCode || seller.bankDetails?.ifsc || '',
+    bankName: seller.bankName || seller.bankDetails?.bankName || '',
+    sellerToken: seller.sellerToken || '',
+    websiteLink: seller.websiteLink || '',
+    qrCode: seller.qrCode || '',
+    images: Array.isArray(seller.images) ? seller.images : [],
+    profileImage: seller.profileImage || null,
+    totalOrders: seller.totalOrders || 0,
+    totalCommission: seller.totalCommission || 0,
+    availableCommission: seller.availableCommission || 0,
+    withdrawals: Array.isArray(seller.withdrawals) ? seller.withdrawals : [],
+    createdAt: seller.createdAt || '',
+    verified: typeof seller.verified === 'boolean' ? seller.verified : false
+  };
 
   const handleChange = (e) => {
     setFormData({
