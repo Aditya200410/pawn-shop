@@ -155,7 +155,7 @@ export default function Checkout() {
       codExtraCharge: getCodExtraCharge(),
       finalTotal: getFinalPrice(),
       coupon: appliedCoupon ? appliedCoupon.code : null,
-      paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'processing',
+      paymentStatus: formData.paymentMethod === 'cod' ? 'pending' : 'completed',
     };
 
     try {
