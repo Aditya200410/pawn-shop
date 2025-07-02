@@ -417,18 +417,20 @@ const ProductView = () => {
               </h1>
               
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <StarIconSolid
-                    key={i}
-                      className={`h-5 w-5 ${
-                        i < Math.floor(averageRating) ? 'text-yellow-400' : 'text-gray-300'
-                    }`}
-                  />
-                ))}
-                </div>
-                {/* Show average rating as a number with one decimal */}
-                <span className="text-gray-700 font-medium text-lg">{Number(averageRating).toFixed(1)}</span>
+                {/* Stock Available Indicator (replaces review stars) */}
+                {typeof product.stock === 'number' ? (
+                  product.stock > 0 ? (
+                    <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">
+                      {product.stock} in stock
+                    </span>
+                  ) : (
+                    <span className="text-xs font-semibold text-red-700 bg-red-100 px-2 py-1 rounded-full">
+                      Out of Stock
+                    </span>
+                  )
+                ) : (
+                  <span className="text-xs font-semibold text-gray-500">Stock unknown</span>
+                )}
               </div>
             </div>
 
@@ -506,15 +508,21 @@ const ProductView = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleAddToCart}
-                  disabled={isOutOfStock}
+                  disabled={typeof product.stock === 'number' ? product.stock <= 0 : isOutOfStock}
                   className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold transition-all ${
-                    isOutOfStock
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-amber-600 text-white hover:bg-amber-700 shadow-lg hover:shadow-xl'
+                    typeof product.stock === 'number'
+                      ? (product.stock <= 0
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-amber-600 text-white hover:bg-amber-700 shadow-lg hover:shadow-xl')
+                      : (isOutOfStock
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-amber-600 text-white hover:bg-amber-700 shadow-lg hover:shadow-xl')
                   }`}
                 >
                   <ShoppingCartIcon className="h-5 w-5" />
-                  {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                  {typeof product.stock === 'number'
+                    ? (product.stock <= 0 ? 'Out of Stock' : 'Add to Cart')
+                    : (isOutOfStock ? 'Out of Stock' : 'Add to Cart')}
                 </motion.button>
                 
                 <motion.button 
