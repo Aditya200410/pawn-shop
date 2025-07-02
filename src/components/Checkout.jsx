@@ -366,10 +366,7 @@ export default function Checkout() {
                       onChange={handleInputChange} 
                       className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
                     />
-                    <div className="ml-3">
-                      <span className="block text-sm font-medium text-gray-700">UPI Payment</span>
-                      <span className="block text-xs text-gray-500">Pay full amount online via UPI, Cards, Net Banking</span>
-                    </div>
+                    <span className="ml-3 text-sm font-medium text-gray-700">UPI</span>
                   </label>
                   
                   {isCodAvailableForCart && (
@@ -383,17 +380,14 @@ export default function Checkout() {
                         onChange={handleInputChange} 
                         className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
                       />
-                      <div className="ml-3">
-                        <span className="block text-sm font-medium text-gray-700">Cash on Delivery (COD)</span>
-                        <span className="block text-xs text-gray-500">Pay ₹39 online + remaining amount on delivery</span>
-                      </div>
+                      <span className="ml-3 text-sm font-medium text-gray-700">COD</span>
                     </label>
                   )}
                   
                   {!isCodAvailableForCart && (
                     <div className="p-3 bg-gray-100 rounded-lg">
                       <p className="text-sm text-gray-600">
-                        COD is not available for one or more items in your cart. Please use UPI payment.
+                        COD is not available for one or more items in your cart.
                       </p>
                     </div>
                   )}
