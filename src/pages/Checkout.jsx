@@ -178,8 +178,8 @@ const Checkout = () => {
     }
   };
 
-  // Calculate COD advance payment
-  const getCodAdvancePayment = () => {
+  // Calculate COD extra charge (39 rupees extra for COD orders)
+  const getCodExtraCharge = () => {
     return formData.paymentMethod === 'cod' ? 39 : 0;
   };
 
@@ -187,17 +187,13 @@ const Checkout = () => {
   const getFinalTotal = () => {
     const subtotal = getTotalPrice();
     const shipping = calculateShippingCost();
-    const codAdvance = getCodAdvancePayment();
-    return subtotal + shipping + codAdvance;
+    const codExtra = getCodExtraCharge();
+    return subtotal + shipping + codExtra;
   };
 
-  // Calculate amount to be paid online (for COD: only advance, for online: full amount)
+  // Calculate amount to be paid online (for COD: full amount including extra charge, for online: full amount)
   const getOnlinePaymentAmount = () => {
-    if (formData.paymentMethod === 'cod') {
-      return getCodAdvancePayment();
-    } else {
-      return getFinalTotal();
-    }
+    return getFinalTotal();
   };
 
   const handleSubmit = async (e) => {
@@ -237,7 +233,7 @@ const Checkout = () => {
       })),
       totalAmount: getTotalPrice(),
       shippingCost: calculateShippingCost(),
-      codAdvancePayment: getCodAdvancePayment(),
+      codExtraCharge: getCodExtraCharge(),
       finalTotal: getFinalTotal(),
       paymentMethod: formData.paymentMethod,
       paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'processing',
@@ -317,7 +313,7 @@ const Checkout = () => {
           })),
           totalAmount: getTotalPrice(),
           shippingCost: calculateShippingCost(),
-          codAdvancePayment: getCodAdvancePayment(),
+          codExtraCharge: getCodExtraCharge(),
           finalTotal: getFinalTotal(),
           paymentMethod: formData.paymentMethod,
           paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
@@ -330,7 +326,7 @@ const Checkout = () => {
 
         if (orderResponse.success) {
           const successMessage = formData.paymentMethod === 'cod' 
-            ? 'Advance payment successful! Order placed successfully!' 
+            ? 'Payment successful! Order placed successfully! Remaining amount to be paid on delivery.' 
             : 'Payment successful! Order placed successfully!';
           toast.success(successMessage);
           clearCart();
@@ -738,7 +734,7 @@ const Checkout = () => {
                           <div className="flex-1">
                             <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
                             <p className="text-sm text-gray-600 mt-1">
-                              Pay ₹39 advance via UPI + remaining amount on delivery
+                              Pay full amount online + ₹39 extra charge + remaining amount on delivery
                             </p>
                           </div>
                         </label>
@@ -903,20 +899,18 @@ const Checkout = () => {
                   </div>
                   {formData.paymentMethod === 'cod' && (
                     <div className="flex justify-between">
-                      <span>COD Advance Payment</span>
-                      <span>₹{getCodAdvancePayment().toFixed(2)}</span>
+                      <span>COD Extra Charge</span>
+                      <span>₹{getCodExtraCharge().toFixed(2)}</span>
                     </div>
                   )}
                   <div className="border-t pt-3">
                     <div className="flex justify-between font-semibold text-lg">
-                      <span>
-                        {formData.paymentMethod === 'cod' ? 'Amount to Pay Online' : 'Total Amount'}
-                      </span>
-                      <span>₹{getOnlinePaymentAmount().toFixed(2)}</span>
+                      <span>Total Amount</span>
+                      <span>₹{getFinalTotal().toFixed(2)}</span>
                     </div>
                     {formData.paymentMethod === 'cod' && (
                       <div className="text-sm text-gray-600 mt-1">
-                        Remaining ₹{(getTotalPrice() + calculateShippingCost()).toFixed(2)} to be paid on delivery
+                        Pay ₹{getFinalTotal().toFixed(2)} online + remaining ₹{(getTotalPrice() + calculateShippingCost()).toFixed(2)} on delivery
                       </div>
                     )}
                   </div>
