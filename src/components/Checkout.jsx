@@ -379,16 +379,16 @@ export default function Checkout() {
                     <span className="ml-3 text-sm font-medium text-gray-700">UPI</span>
                   </label>
                   <label className={`flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 ${!isCodAvailableForCart ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                    <input 
-                      type="radio" 
-                      name="paymentMethod" 
-                      id="cod" 
-                      value="cod" 
-                      checked={formData.paymentMethod === 'cod'} 
-                      onChange={handleInputChange} 
-                      className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    id="cod" 
+                    value="cod" 
+                    checked={formData.paymentMethod === 'cod'} 
+                    onChange={handleInputChange} 
+                    className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
                       disabled={!isCodAvailableForCart}
-                    />
+                  />
                     <span className="ml-3 text-sm font-medium text-gray-700">COD</span>
                   </label>
                   {!isCodAvailableForCart && (

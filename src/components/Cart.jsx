@@ -76,7 +76,7 @@ const Cart = () => {
 <div className="flex flex-col md:flex-row items-start md:items-center justify-center gap-4 md:gap-0 mb-8 md:mb-12">
   {/* Step 1 */}
   <div className="flex items-center">
-    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-pink-600 text-white flex items-center justify-center text-sm md:text-lg font-medium">1</div>
+    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#8f3a61] text-white flex items-center justify-center text-sm md:text-lg font-medium">1</div>
     <div className="ml-2 md:ml-3 text-sm md:text-base text-pink-600 font-medium text-left">
       <span>Shopping Cart</span>
     </div>
@@ -113,7 +113,7 @@ const Cart = () => {
           <p className="text-gray-600 mb-6 md:mb-8 text-base md:text-lg">Looks like you haven't added any items yet.</p>
           <Link
             to="/shop"
-            className="inline-block bg-pink-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-pink-700 transition-colors text-base md:text-lg font-medium"
+            className="inline-block bg-[#8f3a61] text-white px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-[#8f3a61] transition-colors text-base md:text-lg font-medium"
           >
             Return to Shop
           </Link>
@@ -241,7 +241,7 @@ const Cart = () => {
                 const checkoutUrl = sellerToken ? `/checkout?seller=${sellerToken}` : '/checkout';
                 navigate(checkoutUrl);
               }}
-              className="w-full bg-pink-600 text-white py-3 rounded-xl mt-5 hover:bg-pink-700 transition-colors flex items-center justify-center space-x-2 text-base font-medium"
+              className="w-full bg-[#8f3a61] text-white py-3 rounded-xl mt-5 hover:bg-[#8f3a61] transition-colors flex items-center justify-center space-x-2 text-base font-medium"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="w-5 h-5" />

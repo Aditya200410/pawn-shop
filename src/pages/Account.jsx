@@ -463,7 +463,7 @@ const Account = () => {
                       onClick={() => handleTabChange(tab.id)}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                         activeTab === tab.id
-                          ? 'bg-pink-50 text-primary-dark border border-primary shadow-sm'
+                          ? 'bg-[#8f3a61]-50 text-primary-dark border border-primary shadow-sm'
                           : 'text-black-600 hover:bg-gray-50 hover:text-gray-900'
                       }`}
                     >
@@ -542,7 +542,7 @@ const Account = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleTabChange('cart')}
-                          className="flex items-center space-x-3 p-4 bg-pink-300 rounded-xl hover:bg-primary-50 hover:text-white transition-colors"
+                          className="flex items-center space-x-3 p-4 bg-[#8f3a61]-300 rounded-xl hover:bg-primary-50 hover:text-white transition-colors"
                         >
                           <ShoppingCartIcon className="h-6 w-6 text-primary-dark" />
                           <span className="font-medium text-gray-900">View Cart</span>

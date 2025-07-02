@@ -266,7 +266,7 @@ const SellerProfile = () => {
           <path stroke="url(#orders-gradient)" d="M3 7V6a2 2 0 012-2h2a2 2 0 012 2v1m0 0h4m-4 0v10a2 2 0 002 2h4a2 2 0 002-2V7m-8 0V6a2 2 0 012-2h2a2 2 0 012 2v1" />
         </svg>
       ),
-      bgColor: 'bg-blue-50'
+      bgColor: 'bg-pink-50'
     },
     {
       title: 'Total Commission',
@@ -283,7 +283,7 @@ const SellerProfile = () => {
           <path stroke="url(#commission-gradient)" d="M8 12h8M12 8v8" />
         </svg>
       ),
-      bgColor: 'bg-green-50'
+      bgColor: 'bg-pink-50'
     },
     {
       title: 'Available to Withdraw',
@@ -299,7 +299,7 @@ const SellerProfile = () => {
           <path stroke="url(#withdraw-gradient)" d="M12 4v16m8-8H4" />
         </svg>
       ),
-      bgColor: 'bg-purple-50'
+      bgColor: 'bg-pink-50'
     },
     {
       title: 'Commission Rate',
@@ -416,10 +416,10 @@ const SellerProfile = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <motion.div
                       whileHover={{ y: -5 }}
-                      className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-2xl border border-blue-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <div className="flex items-center mb-4">
-                        <div className="p-2 sm:p-3 bg-blue-500 rounded-xl mr-3 sm:mr-4">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl mr-3 sm:mr-4">
                           <FiTag className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -427,15 +427,15 @@ const SellerProfile = () => {
                           <p className="text-xs sm:text-sm text-gray-600">Your unique identifier</p>
                         </div>
                       </div>
-                      <p className="text-lg sm:text-2xl font-bold text-blue-600 font-mono break-all">{seller.sellerToken}</p>
+                      <p className="text-lg sm:text-2xl font-bold text-pink-600 font-mono break-all">{seller.sellerToken}</p>
                     </motion.div>
 
                     <motion.div
                       whileHover={{ y: -5 }}
-                      className="bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 rounded-2xl border border-green-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <div className="flex items-center mb-4">
-                        <div className="p-2 sm:p-3 bg-green-500 rounded-xl mr-3 sm:mr-4">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl mr-3 sm:mr-4">
                           <FiLink className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -447,7 +447,7 @@ const SellerProfile = () => {
                         href={seller.websiteLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-green-600 hover:text-green-700 font-medium break-all text-sm sm:text-base"
+                        className="text-pink-600 hover:text-pink-700 font-medium break-all text-sm sm:text-base"
                       >
                         View Shop →
                       </a>
@@ -455,10 +455,10 @@ const SellerProfile = () => {
 
                     <motion.div
                       whileHover={{ y: -5 }}
-                      className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 rounded-2xl border border-purple-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <div className="flex items-center mb-4">
-                        <div className="p-2 sm:p-3 bg-purple-500 rounded-xl mr-3 sm:mr-4">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl mr-3 sm:mr-4">
                           <FiSmartphone className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -468,7 +468,7 @@ const SellerProfile = () => {
                       </div>
                       <button
                         onClick={downloadQRCode}
-                        className="flex items-center text-purple-600 hover:text-purple-700 font-medium text-sm sm:text-base"
+                        className="flex items-center text-pink-600 hover:text-pink-700 font-medium text-sm sm:text-base"
                       >
                         <FiDownload className="w-4 h-4 sm:w-4 sm:h-4 mr-2" />
                         Download QR Code
@@ -481,7 +481,7 @@ const SellerProfile = () => {
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-8 rounded-2xl border border-gray-200 text-center"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-8 rounded-2xl border border-pink-200 text-center"
                     >
                       <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-900">Your Shop QR Code</h3>
                       <div className="flex justify-center">
@@ -524,33 +524,13 @@ const SellerProfile = () => {
                     )}
                   </div>
 
-                  {/* Profile Image */}
-                  {seller.profileImage && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-2xl border border-blue-200"
-                    >
-                      <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 flex items-center">
-                        <FiUser className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mr-2" />
-                        Profile Image
-                      </h3>
-                      <div className="flex justify-center">
-                        <img
-                          src={seller.profileImage.url}
-                          alt={seller.profileImage.alt || 'Profile image'}
-                          className="w-32 h-32 sm:w-48 sm:h-48 object-cover rounded-2xl shadow-lg"
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-
+                
                   {/* Business Images Gallery */}
                   {seller.images && seller.images.length > 0 && (
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 rounded-2xl border border-gray-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 flex items-center">
                         <FiImage className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mr-2" />
@@ -590,7 +570,7 @@ const SellerProfile = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       onSubmit={handleSubmit}
-                      className="bg-gray-50 p-4 sm:p-8 rounded-2xl space-y-4 sm:space-y-6"
+                      className="bg-pink-50 p-4 sm:p-8 rounded-2xl space-y-4 sm:space-y-6"
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <div>
@@ -600,7 +580,7 @@ const SellerProfile = () => {
                             name="businessName"
                             value={formData.businessName}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                         <div>
@@ -610,7 +590,7 @@ const SellerProfile = () => {
                             name="businessType"
                             value={formData.businessType}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                         <div>
@@ -620,7 +600,7 @@ const SellerProfile = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                         <div>
@@ -630,7 +610,7 @@ const SellerProfile = () => {
                             name="accountHolderName"
                             value={formData.accountHolderName}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                         <div>
@@ -640,7 +620,7 @@ const SellerProfile = () => {
                             name="bankAccountNumber"
                             value={formData.bankAccountNumber}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                         <div>
@@ -650,7 +630,7 @@ const SellerProfile = () => {
                             name="ifscCode"
                             value={formData.ifscCode}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                         <div>
@@ -660,7 +640,7 @@ const SellerProfile = () => {
                             name="bankName"
                             value={formData.bankName}
                             onChange={handleChange}
-                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
                       </div>
@@ -671,7 +651,7 @@ const SellerProfile = () => {
                           value={formData.address}
                           onChange={handleChange}
                           rows="4"
-                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                         />
                       </div>
                       <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4">
@@ -680,7 +660,7 @@ const SellerProfile = () => {
                           whileTap={{ scale: 0.95 }}
                           type="button"
                           onClick={() => setIsEditing(false)}
-                          className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-300 text-sm sm:text-base"
+                          className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-pink-200 rounded-xl text-pink-700 hover:bg-pink-50 transition-all duration-300 text-sm sm:text-base"
                         >
                           <FiX className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                           Cancel
@@ -689,7 +669,7 @@ const SellerProfile = () => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           type="submit"
-                          className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg text-sm sm:text-base"
+                          className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg text-sm sm:text-base"
                         >
                           <FiCheck className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                           Save Changes
@@ -700,24 +680,24 @@ const SellerProfile = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-2xl border border-blue-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Business Name</h3>
-                        <p className="text-base sm:text-lg text-blue-600 break-words">{seller.businessName}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.businessName}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 rounded-2xl border border-green-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Email</h3>
-                        <p className="text-base sm:text-lg text-green-600 break-words">{seller.email}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.email}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 rounded-2xl border border-purple-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Phone</h3>
-                        <p className="text-base sm:text-lg text-purple-600">{seller.phone}</p>
+                        <p className="text-base sm:text-lg text-pink-600">{seller.phone}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
@@ -728,38 +708,38 @@ const SellerProfile = () => {
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 sm:p-6 rounded-2xl border border-indigo-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Address</h3>
-                        <p className="text-base sm:text-lg text-indigo-600 break-words">{seller.address}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.address}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-teal-50 to-teal-100 p-4 sm:p-6 rounded-2xl border border-teal-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Account Holder</h3>
-                        <p className="text-base sm:text-lg text-teal-600 break-words">{seller.accountHolderName}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.accountHolderName}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 sm:p-6 rounded-2xl border border-orange-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Bank Account</h3>
-                        <p className="text-base sm:text-lg text-orange-600 break-words">{seller.bankAccountNumber}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.bankAccountNumber}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-red-50 to-red-100 p-4 sm:p-6 rounded-2xl border border-red-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">IFSC Code</h3>
-                        <p className="text-base sm:text-lg text-red-600 break-words">{seller.ifscCode}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.ifscCode}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
-                        className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 sm:p-6 rounded-2xl border border-yellow-200"
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Bank Name</h3>
-                        <p className="text-base sm:text-lg text-yellow-600 break-words">{seller.bankName}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.bankName}</p>
                       </motion.div>
                     </div>
                   )}
@@ -781,7 +761,7 @@ const SellerProfile = () => {
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setShowWithdrawForm(true)}
                       disabled={availableToWithdraw <= 0}
-                      className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                      className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                     >
                       <FiCreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Withdraw Earnings
@@ -792,43 +772,43 @@ const SellerProfile = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                     <motion.div
                       whileHover={{ y: -5 }}
-                      className="bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 rounded-2xl border border-green-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Total Commission</h3>
-                        <div className="p-2 sm:p-3 bg-green-500 rounded-xl">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl">
                           
                         </div>
                       </div>
-                      <p className="text-2xl sm:text-3xl font-bold text-green-600">₹{Math.round(seller.totalCommission || 0)}</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-pink-600">₹{Math.round(seller.totalCommission || 0)}</p>
                       <p className="text-xs sm:text-sm text-gray-600 mt-2">30% commission from orders</p>
                     </motion.div>
 
                     <motion.div
                       whileHover={{ y: -5 }}
-                      className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-2xl border border-blue-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Available to Withdraw</h3>
-                        <div className="p-2 sm:p-3 bg-blue-500 rounded-xl">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl">
                           <FiTrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                       </div>
-                      <p className="text-2xl sm:text-3xl font-bold text-blue-600">₹{availableToWithdraw}</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-pink-600">₹{availableToWithdraw}</p>
                       <p className="text-xs sm:text-sm text-gray-600 mt-2">Ready for withdrawal</p>
                     </motion.div>
 
                     <motion.div
                       whileHover={{ y: -5 }}
-                      className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 rounded-2xl border border-purple-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Total Orders</h3>
-                        <div className="p-2 sm:p-3 bg-purple-500 rounded-xl">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl">
                           <FiShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                       </div>
-                      <p className="text-2xl sm:text-3xl font-bold text-purple-600">{seller.totalOrders || 0}</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-pink-600">{seller.totalOrders || 0}</p>
                       <p className="text-xs sm:text-sm text-gray-600 mt-2">Orders through your link</p>
                     </motion.div>
                   </div>
@@ -837,7 +817,7 @@ const SellerProfile = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 rounded-2xl border border-gray-200"
+                    className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                   >
                     <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 flex items-center">
                       <FiCreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mr-2" />
@@ -878,10 +858,10 @@ const SellerProfile = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <motion.div
                       whileHover={{ y: -5 }}
-                      className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-2xl border border-blue-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <div className="flex items-center mb-4">
-                        <div className="p-2 sm:p-3 bg-blue-500 rounded-xl mr-3 sm:mr-4">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl mr-3 sm:mr-4">
                           <FiDownload className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div>
@@ -891,7 +871,7 @@ const SellerProfile = () => {
                       </div>
                       <button
                         onClick={downloadQRCode}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-all duration-300 text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-pink-500 text-white rounded-xl hover:bg-pink-600 transition-all duration-300 text-sm sm:text-base"
                       >
                         Download Poster
                       </button>
@@ -899,10 +879,10 @@ const SellerProfile = () => {
 
                     <motion.div
                       whileHover={{ y: -5 }}
-                      className="bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 rounded-2xl border border-green-200"
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                     >
                       <div className="flex items-center mb-4">
-                        <div className="p-2 sm:p-3 bg-green-500 rounded-xl mr-3 sm:mr-4">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl mr-3 sm:mr-4">
                           <FiLink className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div>
@@ -915,7 +895,7 @@ const SellerProfile = () => {
                           navigator.clipboard.writeText(seller.websiteLink);
                           toast.success('Link copied to clipboard!');
                         }}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-all duration-300 text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-pink-500 text-white rounded-xl hover:bg-pink-600 transition-all duration-300 text-sm sm:text-base"
                       >
                         Copy Link
                       </button>
@@ -950,7 +930,7 @@ const SellerProfile = () => {
                   <input
                     type="text"
                     placeholder="Enter account holder name"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
                     value={bankDetails.accountName}
                     onChange={e => setBankDetails({ ...bankDetails, accountName: e.target.value })}
                     required
@@ -961,7 +941,7 @@ const SellerProfile = () => {
                   <input
                     type="text"
                     placeholder="Enter account number"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
                     value={bankDetails.accountNumber}
                     onChange={e => setBankDetails({ ...bankDetails, accountNumber: e.target.value })}
                     required
@@ -972,7 +952,7 @@ const SellerProfile = () => {
                   <input
                     type="text"
                     placeholder="Enter IFSC code"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
                     value={bankDetails.ifsc}
                     onChange={e => setBankDetails({ ...bankDetails, ifsc: e.target.value })}
                     required
@@ -983,7 +963,7 @@ const SellerProfile = () => {
                   <input
                     type="text"
                     placeholder="Enter bank name"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
                     value={bankDetails.bankName}
                     onChange={e => setBankDetails({ ...bankDetails, bankName: e.target.value })}
                     required
@@ -994,7 +974,7 @@ const SellerProfile = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="button"
-                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-300 text-sm sm:text-base"
+                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 text-pink-700 rounded-xl hover:bg-pink-50 transition-all duration-300 text-sm sm:text-base"
                     onClick={() => setShowWithdrawForm(false)}
                   >
                     Cancel
@@ -1003,7 +983,7 @@ const SellerProfile = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg text-sm sm:text-base"
+                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg text-sm sm:text-base"
                     disabled={withdrawing}
                   >
                     {withdrawing ? 'Processing...' : `Withdraw ₹${availableToWithdraw}`}

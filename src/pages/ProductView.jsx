@@ -391,7 +391,7 @@ const ProductView = () => {
             {/* Product Header */}
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <span className="px-3 py-1 bg-pink-100 text-pink-800 text-sm font-medium rounded-full">
+                <span className="px-3 py-1 bg-pink text-pink-800 text-sm font-medium rounded-full">
                   {product.category}
                 </span>
                 {product.isNew && (
@@ -513,10 +513,10 @@ const ProductView = () => {
                     typeof product.stock === 'number'
                       ? (product.stock <= 0
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-pink-600 text-white hover:bg-pink-700 shadow-lg hover:shadow-xl')
+                        : 'bg-[#8f3a61] text-white hover:bg-[#8f3a61] shadow-lg hover:shadow-xl')
                       : (isOutOfStock
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-pink-600 text-white hover:bg-pink-700 shadow-lg hover:shadow-xl')
+                        : 'bg-[#8f3a61] text-white hover:bg-[#8f3a61] shadow-lg hover:shadow-xl')
                   }`}
                 >
                   <ShoppingCartIcon className="h-5 w-5" />

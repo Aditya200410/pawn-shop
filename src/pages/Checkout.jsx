@@ -723,12 +723,12 @@ const Checkout = () => {
                     <div className="flex flex-col gap-4">
                       {isCodAvailableForCart && (
                         <label className="flex items-center gap-3 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="paymentMethod"
+                        <input
+                          type="radio"
+                          name="paymentMethod"
                             value="cod"
                             checked={formData.paymentMethod === 'cod'}
-                            onChange={handleInputChange}
+                          onChange={handleInputChange}
                             className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                           />
                           <div className="flex-1">
@@ -749,12 +749,12 @@ const Checkout = () => {
                           onChange={handleInputChange}
                           className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
-                        <div className="flex-1">
+                          <div className="flex-1">
                           <span className="text-gray-800 font-medium">Online Payment (Razorpay, UPI, Cards)</span>
                           <p className="text-sm text-gray-600 mt-1">
                             Pay full amount online
-                          </p>
-                        </div>
+                            </p>
+                          </div>
                       </label>
                       {!isCodAvailableForCart && (
                         <div className="text-red-600 text-sm mt-2">
@@ -888,7 +888,7 @@ const Checkout = () => {
                   <div className="flex justify-between">
                     <span>Subtotal ({cartItems.length} items)</span>
                     <span>₹{getTotalPrice().toFixed(2)}</span>
-                  </div>
+                </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
                     <span className={calculateShippingCost() === 0 ? 'text-green-600' : ''}>
@@ -899,17 +899,17 @@ const Checkout = () => {
                     <div className="flex justify-between">
                       <span>COD Extra Charge</span>
                       <span>₹{getCodExtraCharge().toFixed(2)}</span>
-                    </div>
-                  )}
+                  </div>
+                )}
                   <div className="border-t pt-3">
                     <div className="flex justify-between font-semibold text-lg">
                       <span>Total Amount</span>
                       <span>₹{getFinalTotal().toFixed(2)}</span>
-                    </div>
+                </div>
                     {formData.paymentMethod === 'cod' && (
                       <div className="text-sm text-gray-600 mt-1">
                         Pay ₹{getFinalTotal().toFixed(2)} online + remaining ₹{(getTotalPrice() + calculateShippingCost()).toFixed(2)} on delivery
-                      </div>
+                  </div>
                     )}
                   </div>
                 </div>
