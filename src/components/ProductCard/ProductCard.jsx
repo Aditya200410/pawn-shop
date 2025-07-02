@@ -6,15 +6,21 @@ import config from '../../config/config.js';
 import { toast } from 'react-hot-toast';
 
 const ProductCard = ({ product }) => {
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
   
-  const isOutOfStock = product.outOfStock === true || product.inStock === false;
+  const isOutOfStock = product.stock === 0 || product.outOfStock === true || product.inStock === false;
+  const cartQuantity = cartItems?.find(item => (item.product?._id || item.product?.id || item.id) === (product._id || product.id))?.quantity || 0;
+  const isCartLimit = cartQuantity >= (product.stock || 0);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (isOutOfStock) {
       toast.error('Product is out of stock');
+      return;
+    }
+    if (isCartLimit) {
+      toast.error('Cannot add more than available stock');
       return;
     }
     try {
@@ -69,7 +75,7 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div className="p-4 space-y-3 text-center">
-          <h3 className="text-lg font-semibold text-gray-800 truncate group-hover:text-orange-600 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-800 truncate group-hover:text-pink-600 transition-colors">
             {product.name}
           </h3>
           <p className="text-sm text-gray-500">{product.category}</p>
@@ -98,14 +104,14 @@ const ProductCard = ({ product }) => {
           <button
             onClick={handleAddToCart}
             className={`w-full font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ease-in-out ${
-              isOutOfStock
+              isOutOfStock || isCartLimit
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 : 'bg-[#8f3a61] text-white hover:bg-[#8f3a61]/90'
             }`}
-            disabled={isOutOfStock}
+            disabled={isOutOfStock || isCartLimit}
           >
             <ShoppingBag className="w-4 h-4" />
-            {isOutOfStock ? 'Out of Stock' : 'Add to cart'}
+            {isOutOfStock ? 'Out of Stock' : isCartLimit ? 'Max Stock' : 'Add to cart'}
           </button>
         )}
       </div>
