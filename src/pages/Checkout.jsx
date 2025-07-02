@@ -167,6 +167,39 @@ const Checkout = () => {
     }
   };
 
+  // Calculate shipping cost based on payment method and order total
+  const calculateShippingCost = () => {
+    if (formData.paymentMethod === 'cod') {
+      // COD: Free shipping above 499, 50 rupees below 499
+      return getTotalPrice() >= 499 ? 0 : 50;
+    } else {
+      // Online payment: Regular shipping logic (you can customize this)
+      return getTotalPrice() >= 499 ? 0 : 50;
+    }
+  };
+
+  // Calculate COD advance payment
+  const getCodAdvancePayment = () => {
+    return formData.paymentMethod === 'cod' ? 39 : 0;
+  };
+
+  // Calculate final total
+  const getFinalTotal = () => {
+    const subtotal = getTotalPrice();
+    const shipping = calculateShippingCost();
+    const codAdvance = getCodAdvancePayment();
+    return subtotal + shipping + codAdvance;
+  };
+
+  // Calculate amount to be paid online (for COD: only advance, for online: full amount)
+  const getOnlinePaymentAmount = () => {
+    if (formData.paymentMethod === 'cod') {
+      return getCodAdvancePayment();
+    } else {
+      return getFinalTotal();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -203,8 +236,11 @@ const Checkout = () => {
         image: getItemImage(item)
       })),
       totalAmount: getTotalPrice(),
+      shippingCost: calculateShippingCost(),
+      codAdvancePayment: getCodAdvancePayment(),
+      finalTotal: getFinalTotal(),
       paymentMethod: formData.paymentMethod,
-      paymentStatus: formData.paymentMethod === 'cod' ? 'pending' : 'processing',
+      paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'processing',
       sellerToken: sellerToken, // Include seller token if present
       couponCode: appliedCoupon ? appliedCoupon.code : undefined // Pass coupon code to backend
     };
@@ -246,7 +282,7 @@ const Checkout = () => {
       }
 
       const orderData = {
-        amount: getTotalPrice(),
+        amount: getOnlinePaymentAmount(), // Use the calculated online payment amount
         orderId: `order_${Date.now()}`
       };
 
@@ -280,8 +316,11 @@ const Checkout = () => {
             image: getItemImage(item)
           })),
           totalAmount: getTotalPrice(),
-          paymentMethod: 'razorpay',
-          paymentStatus: 'Paid',
+          shippingCost: calculateShippingCost(),
+          codAdvancePayment: getCodAdvancePayment(),
+          finalTotal: getFinalTotal(),
+          paymentMethod: formData.paymentMethod,
+          paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
           paymentId: paymentResult.payment_id,
           razorpayOrderId: paymentResult.order_id,
           couponCode: appliedCoupon ? appliedCoupon.code : undefined // Pass coupon code to backend
@@ -290,7 +329,10 @@ const Checkout = () => {
         const orderResponse = await orderService.createOrder(orderData);
 
         if (orderResponse.success) {
-          toast.success('Payment successful! Order placed successfully!');
+          const successMessage = formData.paymentMethod === 'cod' 
+            ? 'Advance payment successful! Order placed successfully!' 
+            : 'Payment successful! Order placed successfully!';
+          toast.success(successMessage);
           clearCart();
           clearSellerToken();
           navigate('/account?tab=orders');
@@ -693,7 +735,12 @@ const Checkout = () => {
                             onChange={handleInputChange}
                             className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                           />
-                          <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
+                          <div className="flex-1">
+                            <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
+                            <p className="text-sm text-gray-600 mt-1">
+                              Pay ₹39 advance via UPI + remaining amount on delivery
+                            </p>
+                          </div>
                         </label>
                       )}
                       {/* Always show online payment if not all items support COD, or as an option */}
@@ -707,7 +754,12 @@ const Checkout = () => {
                             onChange={handleInputChange}
                             className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                           />
-                          <span className="text-gray-800 font-medium">Online Payment (Razorpay, UPI, Cards)</span>
+                          <div className="flex-1">
+                            <span className="text-gray-800 font-medium">Online Payment (Razorpay, UPI, Cards)</span>
+                            <p className="text-sm text-gray-600 mt-1">
+                              Pay full amount online
+                            </p>
+                          </div>
                         </label>
                       )}
                       {!isCodAvailableForCart && (
@@ -836,27 +888,38 @@ const Checkout = () => {
                 ))}
               </div>
 
-              <div className="border-t border-pink-200 pt-4 space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-pink-700">Subtotal</span>
-                  <span className="font-semibold text-pink-900">₹{subtotal.toFixed(2)}</span>
-                </div>
-                {appliedCoupon && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-green-600">Discount ({appliedCoupon.discountPercentage}% off)</span>
-                    <span className="text-green-600 font-semibold">-₹{appliedCoupon.discountAmount.toFixed(2)}</span>
+              <div className="bg-white rounded-xl p-6 mb-8">
+                <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span>Subtotal ({cartItems.length} items)</span>
+                    <span>₹{getTotalPrice().toFixed(2)}</span>
                   </div>
-                )}
-                <div className="flex justify-between text-sm">
-                  <span className="text-pink-700">Shipping</span>
-                  <span className="text-green-600 font-semibold">FREE</span>
-                </div>
-                <div className="border-t border-pink-200 pt-3">
-                  <div className="flex justify-between text-lg font-bold">
-                    <span className="text-pink-900">Total</span>
-                    <span className="text-pink-900">₹{finalTotal.toFixed(2)}</span>
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span className={calculateShippingCost() === 0 ? 'text-green-600' : ''}>
+                      {calculateShippingCost() === 0 ? 'Free' : `₹${calculateShippingCost().toFixed(2)}`}
+                    </span>
                   </div>
-                  <p className="text-xs text-pink-600 mt-1">Including all taxes</p>
+                  {formData.paymentMethod === 'cod' && (
+                    <div className="flex justify-between">
+                      <span>COD Advance Payment</span>
+                      <span>₹{getCodAdvancePayment().toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="border-t pt-3">
+                    <div className="flex justify-between font-semibold text-lg">
+                      <span>
+                        {formData.paymentMethod === 'cod' ? 'Amount to Pay Online' : 'Total Amount'}
+                      </span>
+                      <span>₹{getOnlinePaymentAmount().toFixed(2)}</span>
+                    </div>
+                    {formData.paymentMethod === 'cod' && (
+                      <div className="text-sm text-gray-600 mt-1">
+                        Remaining ₹{(getTotalPrice() + calculateShippingCost()).toFixed(2)} to be paid on delivery
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
