@@ -739,25 +739,23 @@ const Checkout = () => {
                           </div>
                         </label>
                       )}
-                      {/* Always show online payment if not all items support COD, or as an option */}
-                      {(!isCodAvailableForCart || formData.paymentMethod !== 'cod') && (
-                        <label className="flex items-center gap-3 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            value="razorpay"
-                            checked={formData.paymentMethod === 'razorpay'}
-                            onChange={handleInputChange}
-                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <div className="flex-1">
-                            <span className="text-gray-800 font-medium">Online Payment (Razorpay, UPI, Cards)</span>
-                            <p className="text-sm text-gray-600 mt-1">
-                              Pay full amount online
-                            </p>
-                          </div>
-                        </label>
-                      )}
+                      {/* Always show online payment as an option */}
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="razorpay"
+                          checked={formData.paymentMethod === 'razorpay'}
+                          onChange={handleInputChange}
+                          className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <div className="flex-1">
+                          <span className="text-gray-800 font-medium">Online Payment (Razorpay, UPI, Cards)</span>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Pay full amount online
+                          </p>
+                        </div>
+                      </label>
                       {!isCodAvailableForCart && (
                         <div className="text-red-600 text-sm mt-2">
                           Cash on Delivery is not available for one or more items in your cart. Please use online payment.
