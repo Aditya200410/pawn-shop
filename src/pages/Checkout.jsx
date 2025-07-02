@@ -119,6 +119,12 @@ const Checkout = () => {
     }
   }, [cartItems, navigate]);
 
+  // Determine if COD is available for all cart items
+  const isCodAvailableForCart = cartItems.every(item => {
+    const prod = item.product || item;
+    return prod.codAvailable !== false; // treat undefined as true for backward compatibility
+  });
+
   const validateForm = () => {
     const errors = {};
     const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'state', 'zipCode'];
@@ -674,91 +680,41 @@ const Checkout = () => {
                   </div>
 
                   {/* Payment Method */}
-                  <div className="mb-8">
-                    <div className="flex items-center space-x-3 mb-6">
-                      <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-pink-400 rounded-full flex items-center justify-center">
-                        <CreditCard size={20} className="text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-pink-900">Payment Method</h3>
-                        <p className="text-pink-600 text-sm">Choose your preferred payment option</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <motion.label
-                        whileHover={{ scale: 1.02 }}
-                        className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                          formData.paymentMethod === 'razorpay'
-                            ? 'border-pink-500 bg-pink-50'
-                            : 'border-pink-200 hover:border-pink-300'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="razorpay"
-                          checked={formData.paymentMethod === 'razorpay'}
-                          onChange={handleInputChange}
-                          className="sr-only"
-                        />
-                        <div className="flex items-center space-x-4">
-                          <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-pink-400 rounded-full flex items-center justify-center">
-                            {formData.paymentMethod === 'razorpay' && (
-                              <CheckCircle size={16} className="text-white" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2">
-                              <span className="font-semibold text-pink-900">Secure Online Payment</span>
-                              <div className="flex items-center space-x-1">
-                                <Shield size={14} className="text-green-500" />
-                                <span className="text-xs text-green-600">Secure</span>
-                              </div>
-                            </div>
-                            <p className="text-sm text-pink-600">
-                              Pay with UPI, Cards, Net Banking, or Wallets
-                            </p>
-                          </div>
+                  <div className="bg-white rounded-xl p-6 mb-8">
+                    <h2 className="text-lg font-semibold mb-4">Payment Method</h2>
+                    <div className="flex flex-col gap-4">
+                      {isCodAvailableForCart && (
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="cod"
+                            checked={formData.paymentMethod === 'cod'}
+                            onChange={handleInputChange}
+                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
+                        </label>
+                      )}
+                      {/* Always show online payment if not all items support COD, or as an option */}
+                      {(!isCodAvailableForCart || formData.paymentMethod !== 'cod') && (
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="razorpay"
+                            checked={formData.paymentMethod === 'razorpay'}
+                            onChange={handleInputChange}
+                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <span className="text-gray-800 font-medium">Online Payment (Razorpay, UPI, Cards)</span>
+                        </label>
+                      )}
+                      {!isCodAvailableForCart && (
+                        <div className="text-red-600 text-sm mt-2">
+                          Cash on Delivery is not available for one or more items in your cart. Please use online payment.
                         </div>
-                      </motion.label>
-
-                      <motion.label
-                        whileHover={{ scale: 1.02 }}
-                        className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                          formData.paymentMethod === 'cod'
-                            ? 'border-pink-500 bg-pink-50'
-                            : 'border-pink-200 hover:border-pink-300'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="cod"
-                          checked={formData.paymentMethod === 'cod'}
-                          onChange={handleInputChange}
-                          className="sr-only"
-                        />
-                        <div className="flex items-center space-x-4">
-                          <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-pink-400 rounded-full flex items-center justify-center">
-                            {formData.paymentMethod === 'cod' && (
-                              <CheckCircle size={16} className="text-white" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2">
-                              <span className="font-semibold text-pink-900">Cash on Delivery</span>
-                              <div className="flex items-center space-x-1">
-                                <Clock size={14} className="text-pink-500" />
-                                <span className="text-xs text-pink-600">Pay Later</span>
-                              </div>
-                            </div>
-                            <p className="text-sm text-pink-600">
-                              Pay when you receive your order
-                            </p>
-                          </div>
-                        </div>
-                      </motion.label>
+                      )}
                     </div>
                   </div>
 

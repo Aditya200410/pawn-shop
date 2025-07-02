@@ -399,7 +399,18 @@ const ProductView = () => {
                     New Arrival
                   </span>
                 )}
-            </div>
+                {typeof product.codAvailable !== 'undefined' && (
+                  product.codAvailable ? (
+                    <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                      Cash on Delivery Available
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 bg-gray-200 text-gray-600 text-sm font-medium rounded-full">
+                      COD Not Available
+                    </span>
+                  )
+                )}
+              </div>
 
               <h1 className="text-4xl font-bold text-gray-900 leading-tight">
                 {product.name}
