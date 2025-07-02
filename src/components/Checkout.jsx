@@ -28,10 +28,44 @@ export default function Checkout() {
       pincode: '',
       country: 'India',
     },
-    paymentMethod: 'cod', // Default to Cash on Delivery
+    paymentMethod: 'upi', // Default to UPI
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  // Check if COD is available for all cart items
+  const isCodAvailableForCart = cartItems.every(item => {
+    const prod = item.product || item;
+    return prod.codAvailable !== false; // treat undefined as true for backward compatibility
+  });
+
+  // Calculate shipping cost
+  const calculateShippingCost = () => {
+    const subtotal = getTotalPrice();
+    return subtotal >= 499 ? 0 : 50;
+  };
+
+  // Calculate COD extra charge
+  const getCodExtraCharge = () => {
+    return formData.paymentMethod === 'cod' ? 39 : 0;
+  };
+
+  // Calculate final price
+  const getFinalPrice = () => {
+    const subtotal = getTotalPrice();
+    const shipping = calculateShippingCost();
+    const codExtra = getCodExtraCharge();
+    return subtotal - discountAmount + shipping + codExtra;
+  };
+
+  // Calculate amount to be paid online
+  const getOnlinePaymentAmount = () => {
+    if (formData.paymentMethod === 'cod') {
+      return getCodExtraCharge(); // Only 39 rupees for COD
+    } else {
+      return getFinalPrice(); // Full amount for UPI
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -60,6 +94,13 @@ export default function Checkout() {
     }
   }, [cartItems, navigate, isSubmitting]);
 
+  // Set default payment method based on COD availability
+  useEffect(() => {
+    if (!isCodAvailableForCart && formData.paymentMethod === 'cod') {
+      setFormData(prev => ({ ...prev, paymentMethod: 'upi' }));
+    }
+  }, [isCodAvailableForCart, formData.paymentMethod]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -81,11 +122,6 @@ export default function Checkout() {
     return true;
   };
 
-  const getFinalPrice = () => {
-    const subtotal = getTotalPrice();
-    return subtotal - discountAmount;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -102,11 +138,14 @@ export default function Checkout() {
         quantity: item.quantity,
         image: getItemImage(item),
       })),
-      totalAmount: getFinalPrice(),
+      totalAmount: getTotalPrice(),
       subtotal: getTotalPrice(),
       discount: discountAmount,
+      shippingCost: calculateShippingCost(),
+      codExtraCharge: getCodExtraCharge(),
+      finalTotal: getFinalPrice(),
       coupon: appliedCoupon ? appliedCoupon.code : null,
-      paymentStatus: formData.paymentMethod === 'cod' ? 'Pending' : 'Paid',
+      paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'processing',
     };
 
     try {
@@ -116,7 +155,10 @@ export default function Checkout() {
         localStorage.removeItem('appliedCoupon');
         localStorage.removeItem('discountAmount');
         
-        toast.success('Order placed successfully!');
+        const successMessage = formData.paymentMethod === 'cod' 
+          ? 'Order placed successfully! Pay ₹39 online + amount on delivery.' 
+          : 'Order placed successfully!';
+        toast.success(successMessage);
         await clearCart();
         navigate(`/order-confirmation/${response.order._id}`);
       } else {
@@ -313,19 +355,48 @@ export default function Checkout() {
 
               <div className="border-t pt-4 mt-6">
                 <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
-                <div className="flex items-center p-3 border border-gray-200 rounded-lg">
-                  <input 
-                    type="radio" 
-                    name="paymentMethod" 
-                    id="cod" 
-                    value="cod" 
-                    checked={formData.paymentMethod === 'cod'} 
-                    onChange={handleInputChange} 
-                    className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
-                  />
-                  <label htmlFor="cod" className="ml-3 block text-sm font-medium text-gray-700">
-                    Cash on Delivery (COD)
+                <div className="space-y-3">
+                  <label className="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input 
+                      type="radio" 
+                      name="paymentMethod" 
+                      id="upi" 
+                      value="upi" 
+                      checked={formData.paymentMethod === 'upi'} 
+                      onChange={handleInputChange} 
+                      className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
+                    />
+                    <div className="ml-3">
+                      <span className="block text-sm font-medium text-gray-700">UPI Payment</span>
+                      <span className="block text-xs text-gray-500">Pay full amount online via UPI, Cards, Net Banking</span>
+                    </div>
                   </label>
+                  
+                  {isCodAvailableForCart && (
+                    <label className="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        id="cod" 
+                        value="cod" 
+                        checked={formData.paymentMethod === 'cod'} 
+                        onChange={handleInputChange} 
+                        className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
+                      />
+                      <div className="ml-3">
+                        <span className="block text-sm font-medium text-gray-700">Cash on Delivery (COD)</span>
+                        <span className="block text-xs text-gray-500">Pay ₹39 online + remaining amount on delivery</span>
+                      </div>
+                    </label>
+                  )}
+                  
+                  {!isCodAvailableForCart && (
+                    <div className="p-3 bg-gray-100 rounded-lg">
+                      <p className="text-sm text-gray-600">
+                        COD is not available for one or more items in your cart. Please use UPI payment.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -340,7 +411,7 @@ export default function Checkout() {
                     Placing Order...
                   </div>
                 ) : (
-                  `Place Order (₹${getFinalPrice().toFixed(2)})`
+                  `Place Order (₹${getOnlinePaymentAmount().toFixed(2)})`
                 )}
               </button>
             </form>
@@ -438,13 +509,26 @@ export default function Checkout() {
                 )}
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span className="text-green-600">Free</span>
+                  <span className={calculateShippingCost() === 0 ? 'text-green-600' : ''}>
+                    {calculateShippingCost() === 0 ? 'Free' : `₹${calculateShippingCost().toFixed(2)}`}
+                  </span>
                 </div>
+                {formData.paymentMethod === 'cod' && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>COD Extra Charge</span>
+                    <span>₹{getCodExtraCharge().toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="pt-3 border-t">
                   <div className="flex justify-between font-bold text-lg">
-                    <span>Total</span>
+                    <span>Total Amount</span>
                     <span>₹{getFinalPrice().toFixed(2)}</span>
                   </div>
+                  {formData.paymentMethod === 'cod' && (
+                    <div className="text-sm text-gray-600 mt-1">
+                      Pay ₹{getCodExtraCharge().toFixed(2)} online + ₹{(getTotalPrice() - discountAmount + calculateShippingCost()).toFixed(2)} on delivery
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
