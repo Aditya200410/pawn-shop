@@ -96,10 +96,12 @@ export default function Checkout() {
 
   // Set default payment method based on COD availability
   useEffect(() => {
-    if (!isCodAvailableForCart && formData.paymentMethod === 'cod') {
+    if (isCodAvailableForCart) {
+      setFormData(prev => ({ ...prev, paymentMethod: 'cod' }));
+    } else {
       setFormData(prev => ({ ...prev, paymentMethod: 'upi' }));
     }
-  }, [isCodAvailableForCart, formData.paymentMethod]);
+  }, [isCodAvailableForCart]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -130,7 +132,15 @@ export default function Checkout() {
     setError(null);
 
     const orderData = {
-      ...formData,
+      customerName: formData.customerName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address.street,
+      city: formData.address.city,
+      state: formData.address.state,
+      pincode: formData.address.pincode,
+      country: formData.address.country,
+      paymentMethod: formData.paymentMethod,
       items: cartItems.map(item => ({
         productId: item.product?._id || item.id,
         name: item.product?.name || item.name,
@@ -368,22 +378,19 @@ export default function Checkout() {
                     />
                     <span className="ml-3 text-sm font-medium text-gray-700">UPI</span>
                   </label>
-                  
-                  {isCodAvailableForCart && (
-                    <label className="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
-                      <input 
-                        type="radio" 
-                        name="paymentMethod" 
-                        id="cod" 
-                        value="cod" 
-                        checked={formData.paymentMethod === 'cod'} 
-                        onChange={handleInputChange} 
-                        className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
-                      />
-                      <span className="ml-3 text-sm font-medium text-gray-700">COD</span>
-                    </label>
-                  )}
-                  
+                  <label className={`flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 ${!isCodAvailableForCart ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <input 
+                      type="radio" 
+                      name="paymentMethod" 
+                      id="cod" 
+                      value="cod" 
+                      checked={formData.paymentMethod === 'cod'} 
+                      onChange={handleInputChange} 
+                      className="h-4 w-4 text-pink-600 border-gray-300 focus:ring-pink-500" 
+                      disabled={!isCodAvailableForCart}
+                    />
+                    <span className="ml-3 text-sm font-medium text-gray-700">COD</span>
+                  </label>
                   {!isCodAvailableForCart && (
                     <div className="p-3 bg-gray-100 rounded-lg">
                       <p className="text-sm text-gray-600">
