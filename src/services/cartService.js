@@ -3,10 +3,9 @@ import config from '../config/config.js';
 
 const cartService = {
     // Get user's cart
-    getCart: async (email) => {
-        if (!email) throw new Error('Email is required for cart operations');
+    getCart: async () => {
         try {
-            const response = await axios.get(`${config.API_URLS.CART}?email=${encodeURIComponent(email)}`, {
+            const response = await axios.get(`${config.API_URLS.CART}`, {
                 withCredentials: config.CORS.WITH_CREDENTIALS
             });
             return response.data;
@@ -16,15 +15,13 @@ const cartService = {
     },
 
     // Add item to cart
-    addToCart: async (productId, quantity, email) => {
-        if (!email) throw new Error('Email is required for cart operations');
+    addToCart: async (productId, quantity) => {
         try {
             const response = await axios.post(
                 `${config.API_URLS.CART}/add`,
                 { 
                     productId: productId._id || productId.id || productId, 
-                    quantity, 
-                    email 
+                    quantity
                 },
                 { withCredentials: config.CORS.WITH_CREDENTIALS }
             );
@@ -35,12 +32,11 @@ const cartService = {
     },
 
     // Update item quantity
-    updateQuantity: async (productId, quantity, email) => {
-        if (!email) throw new Error('Email is required for cart operations');
+    updateQuantity: async (productId, quantity) => {
         try {
             const response = await axios.put(
                 `${config.API_URLS.CART}/update`,
-                { productId, quantity, email },
+                { productId, quantity },
                 { withCredentials: config.CORS.WITH_CREDENTIALS }
             );
             return response.data;
@@ -50,13 +46,11 @@ const cartService = {
     },
 
     // Remove item from cart
-    removeFromCart: async (productId, email) => {
-        if (!email) throw new Error('Email is required for cart operations');
+    removeFromCart: async (productId) => {
         try {
             const response = await axios.delete(
                 `${config.API_URLS.CART}/remove/${productId}`,
                 {
-                    data: { email },
                     withCredentials: config.CORS.WITH_CREDENTIALS
                 }
             );
@@ -67,11 +61,9 @@ const cartService = {
     },
 
     // Clear cart
-    clearCart: async (email) => {
-        if (!email) throw new Error('Email is required for cart operations');
+    clearCart: async () => {
         try {
             const response = await axios.delete(`${config.API_URLS.CART}/clear`, {
-                data: { email },
                 withCredentials: config.CORS.WITH_CREDENTIALS
             });
             return response.data;
