@@ -320,7 +320,8 @@ const Checkout = () => {
           paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
           paymentId: paymentResult.payment_id,
           razorpayOrderId: paymentResult.order_id,
-          couponCode: appliedCoupon ? appliedCoupon.code : undefined // Pass coupon code to backend
+          couponCode: appliedCoupon ? appliedCoupon.code : undefined, // Pass coupon code to backend
+          sellerToken: sellerToken // Always include sellerToken
         };
 
         const orderResponse = await orderService.createOrder(orderData);
@@ -361,8 +362,8 @@ const Checkout = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(localStorage.getItem('token') ? {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          ...(localStorage.getItem('seller_jwt') ? {
+            'Authorization': `Bearer ${localStorage.getItem('seller_jwt')}`
           } : {})
         },
         body: JSON.stringify({
@@ -381,8 +382,8 @@ const Checkout = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            ...(localStorage.getItem('token') ? {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            ...(localStorage.getItem('seller_jwt') ? {
+              'Authorization': `Bearer ${localStorage.getItem('seller_jwt')}`
             } : {})
           },
           body: JSON.stringify({ code: coupon.code })
@@ -441,7 +442,28 @@ const Checkout = () => {
         customerName: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phone,
-        // ...add any other required fields
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.zipCode,
+        country: formData.country,
+        items: cartItems.map(item => ({
+          productId: item.product?._id || item.id,
+          name: item.product?.name || item.name,
+          quantity: item.quantity,
+          price: item.product?.price || item.price,
+          image: getItemImage(item)
+        })),
+        totalAmount: getTotalPrice(),
+        shippingCost: calculateShippingCost(),
+        codExtraCharge: getCodExtraCharge(),
+        finalTotal: getFinalTotal(),
+        paymentMethod: formData.paymentMethod,
+        paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
+        paymentId: paymentResult.payment_id,
+        razorpayOrderId: paymentResult.order_id,
+        couponCode: appliedCoupon ? appliedCoupon.code : undefined, // Pass coupon code to backend
+        sellerToken: sellerToken // Always include sellerToken
       };
       // Call your backend to create a PhonePe order
       const response = await fetch(`${config.API_BASE_URL}/api/payment/phonepe`, {

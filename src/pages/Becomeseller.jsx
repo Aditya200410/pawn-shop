@@ -13,7 +13,7 @@ const fadeIn = {
 
 const BecomeSeller = () => {
   const navigate = useNavigate();
-  const { register, loading } = useSeller();
+  const { register, loading, seller } = useSeller();
   const [formData, setFormData] = useState({
     businessName: '',
     email: '',
@@ -27,12 +27,10 @@ const BecomeSeller = () => {
   const [imagePreview, setImagePreview] = useState([]);
 
   useEffect(() => {
-    // Redirect if already logged in as seller
-    const sellerEmail = localStorage.getItem('seller_email');
-    if (sellerEmail) {
+    if (seller) {
       navigate('/seller/profile');
     }
-  }, [navigate]);
+  }, [seller, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -99,28 +97,19 @@ const BecomeSeller = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) return;
-
     try {
       const { confirmPassword, ...registerData } = formData;
-
-      // Create FormData for multipart/form-data
       const submitData = new FormData();
-      
-      // Add form fields
       Object.keys(registerData).forEach(key => {
         submitData.append(key, registerData[key]);
       });
-
-      // Add images
       selectedImages.forEach(image => {
         submitData.append('images', image);
       });
-
       await register(submitData);
       toast.success('Registration successful!');
-      navigate('/seller/profile');
+      // Navigation is handled by useEffect
     } catch (error) {
       toast.error(error.message || 'An error occurred during registration');
     }

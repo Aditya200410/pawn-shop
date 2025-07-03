@@ -17,14 +17,17 @@ export const SellerProvider = ({ children }) => {
   const [sellerToken, setSellerToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('seller_jwt');
     if (token) {
       setSellerToken(token);
       fetchSellerProfile(token);
+      setLoggedIn(true);
     } else {
       setLoading(false);
+      setLoggedIn(false);
     }
   }, []);
 
@@ -72,11 +75,14 @@ export const SellerProvider = ({ children }) => {
       };
 
       setSeller(sellerData);
+      setLoggedIn(true);
     } catch (err) {
       setError(err.message);
       setSeller(null);
       setSellerToken(null);
-      toast.error(err.message);
+      setLoggedIn(false);
+      // Show a user-friendly error, do not log out immediately
+      toast.error(err.message || 'Failed to fetch seller profile');
     } finally {
       setLoading(false);
     }
@@ -107,6 +113,7 @@ export const SellerProvider = ({ children }) => {
       }
 
       setSellerTokenAndPersist(data.token);
+      setLoggedIn(true);
 
       // Ensure all required fields are present with fallbacks
       const sellerData = {
@@ -139,6 +146,7 @@ export const SellerProvider = ({ children }) => {
       return data;
     } catch (err) {
       setError(err.message);
+      setLoggedIn(false);
       toast.error(err.message);
       throw err;
     } finally {
@@ -210,6 +218,7 @@ export const SellerProvider = ({ children }) => {
   const logout = () => {
     setSeller(null);
     setSellerTokenAndPersist(null);
+    setLoggedIn(false);
     toast.success('Logged out successfully');
     window.location.href = '/'; // Redirect to home page
   };
@@ -279,7 +288,8 @@ export const SellerProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
-    fetchProfile: fetchSellerProfile
+    fetchProfile: fetchSellerProfile,
+    loggedIn
   };
 
   return (

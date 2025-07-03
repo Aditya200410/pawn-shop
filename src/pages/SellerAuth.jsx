@@ -19,20 +19,19 @@ export default function SellerAuth() {
     password: ''
   });
 
+  // Redirect to profile after login and seller is loaded
   useEffect(() => {
-    // Redirect if already logged in
-    const sellerEmail = localStorage.getItem('seller_email');
-    if (sellerEmail) {
+    if (seller) {
       navigate('/seller/profile');
     }
-  }, [navigate]);
+  }, [seller, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(formData.email, formData.password);
       toast.success('Login successful!');
-      navigate('/seller/profile');
+      // Navigation is handled by useEffect
     } catch (err) {
       toast.error(err.message || 'Authentication failed');
     }
