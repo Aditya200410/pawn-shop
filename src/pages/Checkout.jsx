@@ -443,7 +443,7 @@ const Checkout = () => {
         // ...add any other required fields
       };
       // Call your backend to create a PhonePe order
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/payment/phonepe`, {
+      const response = await fetch(`${config.API_BASE_URL}/api/payment/phonepe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
