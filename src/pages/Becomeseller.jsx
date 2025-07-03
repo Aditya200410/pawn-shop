@@ -76,9 +76,9 @@ const BecomeSeller = () => {
   };
 
   const validateForm = () => {
-    const { businessName, email, password, confirmPassword, phone, address, businessType } = formData;
-    if (!businessName || !email || !password || !confirmPassword || !phone || !address || !businessType) {
-      toast.error('All fields are required');
+    const { businessName, email, password, confirmPassword } = formData;
+    if (!businessName || !email || !password || !confirmPassword) {
+      toast.error('Business name, email, and password are required');
       return false;
     }
     if (password !== confirmPassword) {
@@ -92,11 +92,6 @@ const BecomeSeller = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast.error('Invalid email format');
-      return false;
-    }
-    const phoneRegex = /^\+?[\d\s-]{10,}$/;
-    if (!phoneRegex.test(phone)) {
-      toast.error('Invalid phone number format');
       return false;
     }
     return true;
@@ -183,13 +178,12 @@ const BecomeSeller = () => {
 
               <div>
                 <label htmlFor="businessType" className="block text-sm font-medium text-gray-700">
-                  Business Type *
+                  Business Type
                 </label>
                 <input
                   type="text"
                   name="businessType"
                   id="businessType"
-                  required
                   placeholder="e.g., Handicrafts, Textiles, Jewelry"
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
                   onChange={handleChange}
@@ -214,13 +208,12 @@ const BecomeSeller = () => {
 
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Phone Number *
+                  Phone Number
                 </label>
                 <input
                   type="tel"
                   name="phone"
                   id="phone"
-                  required
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
                   onChange={handleChange}
                   value={formData.phone}
@@ -230,12 +223,11 @@ const BecomeSeller = () => {
 
             <div>
               <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                Business Address *
+                Business Address
               </label>
               <textarea
                 name="address"
                 id="address"
-                required
                 rows="3"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
                 onChange={handleChange}
