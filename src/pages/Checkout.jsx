@@ -35,15 +35,13 @@ const Checkout = () => {
   const { user, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   
-  // Get seller token from URL parameters and set it in context
-  const urlSellerToken = searchParams.get('seller');
-  
-  // Set seller token from URL if present
+  // Always set seller token from URL if present (robustness)
   useEffect(() => {
+    const urlSellerToken = searchParams.get('seller');
     if (urlSellerToken) {
       setSellerTokenFromURL(urlSellerToken);
     }
-  }, [urlSellerToken, setSellerTokenFromURL]);
+  }, [searchParams, setSellerTokenFromURL]);
   
   const [activeStep, setActiveStep] = useState('shipping');
   const [formData, setFormData] = useState({
