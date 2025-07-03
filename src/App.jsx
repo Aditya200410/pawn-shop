@@ -148,6 +148,7 @@ function AppContent() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path='/seller' element={<Becomeseller/>}/>
         <Route path='/seller/auth' element={<SellerAuth/>}/>
+        
         <Route path='/seller/profile' element={<SellerProfile/>}/>
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
