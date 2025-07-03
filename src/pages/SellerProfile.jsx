@@ -87,8 +87,7 @@ const SellerProfile = () => {
   }, [seller]);
 
   useEffect(() => {
-    const sellerEmail = localStorage.getItem('seller_email');
-    if (!loading && !seller && !sellerEmail) {
+    if (!loading && !seller) {
       navigate('/seller');
     }
   }, [loading, seller, navigate]);
@@ -211,7 +210,7 @@ const SellerProfile = () => {
     try {
       const res = await fetch(`/api/seller/withdraw`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('seller_token')}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('seller_jwt')}` },
         body: JSON.stringify({
           bankDetails,
           amount: availableToWithdraw

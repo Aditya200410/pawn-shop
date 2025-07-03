@@ -21,11 +21,10 @@ export default function SellerAuth() {
 
   useEffect(() => {
     // Redirect if already logged in
-    const sellerEmail = localStorage.getItem('seller_email');
-    if (sellerEmail) {
+    if (seller) {
       navigate('/seller/profile');
     }
-  }, [navigate]);
+  }, [seller, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
