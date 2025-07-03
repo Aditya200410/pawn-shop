@@ -248,7 +248,6 @@ const Account = () => {
       await updateProfile(updateData);
       setMessage('Profile updated successfully!');
       setIsEditing(false);
-      
       // Clear password fields
       setFormData(prev => ({
         ...prev,

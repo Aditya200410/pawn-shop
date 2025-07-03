@@ -91,6 +91,7 @@ const Checkout = () => {
         lastName: user.lastName || user.name?.split(' ').slice(1).join(' ') || '',
         email: user.email || '',
         phone: user.phone || '',
+        address: user.address || '',
       }));
     }
   }, [user]);

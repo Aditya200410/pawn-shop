@@ -28,14 +28,14 @@ export const SellerProvider = ({ children }) => {
     }
   }, []);
 
-  const fetchSellerProfile = async (email) => {
+  const fetchSellerProfile = async (token) => {
     try {
       setLoading(true);
       const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          ...(sellerToken ? { Authorization: `Bearer ${sellerToken}` } : {})
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         }
       });
 
@@ -107,6 +107,9 @@ export const SellerProvider = ({ children }) => {
       }
 
       setSellerTokenAndPersist(data.token);
+      if (data.seller && data.seller.email) {
+        localStorage.setItem('seller_email', data.seller.email);
+      }
 
       // Ensure all required fields are present with fallbacks
       const sellerData = {
@@ -168,6 +171,9 @@ export const SellerProvider = ({ children }) => {
       }
 
       setSellerTokenAndPersist(data.token);
+      if (data.seller && data.seller.email) {
+        localStorage.setItem('seller_email', data.seller.email);
+      }
 
       // Ensure all required fields are present with fallbacks
       const newSellerData = {
@@ -210,6 +216,7 @@ export const SellerProvider = ({ children }) => {
   const logout = () => {
     setSeller(null);
     setSellerTokenAndPersist(null);
+    localStorage.removeItem('seller_email');
     toast.success('Logged out successfully');
     window.location.href = '/'; // Redirect to home page
   };
