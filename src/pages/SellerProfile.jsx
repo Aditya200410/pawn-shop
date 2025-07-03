@@ -486,37 +486,7 @@ const SellerProfile = () => {
                     </motion.div>
                   )}
 
-                  {/* Add this section near the top of the overview tab */}
-                  <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 mt-8 mb-8">
-                    <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><FiLink /> Your Shop Link & QR</h2>
-                    <div className="flex flex-col md:flex-row items-center gap-6">
-                      <div className="flex-1">
-                        <div className="mb-2">
-                          <span className="font-semibold">Seller Token:</span>
-                          <span className="ml-2 text-gray-700 select-all">{safeSeller.sellerToken}</span>
-                        </div>
-                        <div className="mb-2">
-                          <span className="font-semibold">Shop Link:</span>
-                          <a href={safeSeller.websiteLink} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-600 underline break-all">{safeSeller.websiteLink}</a>
-                          <button
-                            className="ml-2 px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs"
-                            onClick={() => {
-                              navigator.clipboard.writeText(safeSeller.websiteLink);
-                              toast.success('Shop link copied!');
-                            }}
-                          >Copy</button>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <span className="font-semibold mb-1">Shop QR Code:</span>
-                        {safeSeller.qrCode ? (
-                          <img src={safeSeller.qrCode} alt="Shop QR Code" className="w-32 h-32 border rounded-lg" />
-                        ) : (
-                          <span className="text-gray-400">No QR code available</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                 
                 </motion.div>
               )}
 
