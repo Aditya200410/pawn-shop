@@ -14,6 +14,7 @@ export const useSeller = () => {
 
 export const SellerProvider = ({ children }) => {
   const [seller, setSeller] = useState(null);
+  const [sellerToken, setSellerToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -29,10 +30,11 @@ export const SellerProvider = ({ children }) => {
   const fetchSellerProfile = async (email) => {
     try {
       setLoading(true);
-      const response = await fetch(`${config.API_URLS.SELLER}/profile?email=${encodeURIComponent(email)}`, {
+      const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(sellerToken ? { Authorization: `Bearer ${sellerToken}` } : {})
         }
       });
 
@@ -72,7 +74,8 @@ export const SellerProvider = ({ children }) => {
       setSeller(sellerData);
     } catch (err) {
       setError(err.message);
-      localStorage.removeItem('seller_email');
+      setSeller(null);
+      setSellerToken(null);
       toast.error(err.message);
     } finally {
       setLoading(false);
@@ -84,25 +87,18 @@ export const SellerProvider = ({ children }) => {
       setLoading(true);
       const response = await fetch(`${config.API_URLS.SELLER}/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
       const data = await response.json();
       console.log('Login data:', data); // Debug log
 
-      if (!response.ok) {
-        if (response.status === 500) {
-          throw new Error('Server error. Please try again later.');
-        }
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Login failed');
       }
 
-      if (!data.success) {
-        throw new Error(data.message || 'Login failed');
-      }
+      setSellerToken(data.token);
 
       // Ensure all required fields are present with fallbacks
       const sellerData = {
@@ -130,7 +126,6 @@ export const SellerProvider = ({ children }) => {
         blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
       };
 
-      localStorage.setItem('seller_email', email);
       setSeller(sellerData);
       toast.success('Login successful!');
       return data;
@@ -161,20 +156,11 @@ export const SellerProvider = ({ children }) => {
       const data = await response.json();
       console.log('Register data:', data); // Debug log
 
-      if (!response.ok) {
-        if (response.status === 500) {
-          throw new Error('Server error. Please try again later.');
-        }
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Registration failed');
       }
 
-      if (!data.success) {
-        let msg = data.message || 'Registration failed';
-        if (msg.toLowerCase().includes('email already registered')) {
-          msg = 'This email is already registered. Please sign in or use a different email.';
-        }
-        throw new Error(msg);
-      }
+      setSellerToken(data.token);
 
       // Ensure all required fields are present with fallbacks
       const newSellerData = {
@@ -202,7 +188,6 @@ export const SellerProvider = ({ children }) => {
         blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
       };
 
-      localStorage.setItem('seller_email', data.seller.email);
       setSeller(newSellerData);
       toast.success('Registration successful!');
       return data;
@@ -216,8 +201,8 @@ export const SellerProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('seller_email');
     setSeller(null);
+    setSellerToken(null);
     toast.success('Logged out successfully');
     window.location.href = '/'; // Redirect to home page
   };
@@ -225,11 +210,11 @@ export const SellerProvider = ({ children }) => {
   const updateProfile = async (updates) => {
     try {
       setLoading(true);
-      const email = localStorage.getItem('seller_email');
       const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(sellerToken ? { Authorization: `Bearer ${sellerToken}` } : {})
         },
         body: JSON.stringify(updates)
       });
@@ -281,6 +266,7 @@ export const SellerProvider = ({ children }) => {
 
   const value = {
     seller,
+    sellerToken,
     loading,
     error,
     login,
