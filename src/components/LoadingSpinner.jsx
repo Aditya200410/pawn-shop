@@ -3,7 +3,7 @@ import React from 'react';
 const LoadingSpinner = ({ 
   size = 'md', 
   text = 'Loading...', 
-  className = '',
+  
   showText = true 
 }) => {
   const sizeClasses = {
@@ -14,9 +14,9 @@ const LoadingSpinner = ({
   };
 
   return (
-    <div className={`flex items-center justify-center ${className}`}>
+    <div className={`flex items-center justify-center bg-[#8f3a61]`}>
       <div className="text-center">
-        <div className={`animate-spin rounded-full border-b-2 border-pink-600 mx-auto ${sizeClasses[size]}`}></div>
+        <div className={`bg-[#8f3a61] animate-spin rounded-full border-b-2 border-pink-600 mx-auto ${sizeClasses[size]}`}></div>
         {showText && (
           <p className="text-gray-600 text-sm mt-2">{text}</p>
         )}

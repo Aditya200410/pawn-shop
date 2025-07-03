@@ -21,11 +21,7 @@ const BecomeSeller = () => {
     confirmPassword: '',
     phone: '',
     address: '',
-    businessType: '',
-    accountHolderName: '',
-    bankAccountNumber: '',
-    ifscCode: '',
-    bankName: ''
+    businessType: ''
   });
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagePreview, setImagePreview] = useState([]);
@@ -80,39 +76,29 @@ const BecomeSeller = () => {
   };
 
   const validateForm = () => {
-    const { 
-      businessName, email, password, confirmPassword, phone, address,
-      businessType, accountHolderName, bankAccountNumber, ifscCode, bankName 
-    } = formData;
-
-    if (!businessName || !email || !password || !confirmPassword || !phone || !address ||
-        !businessType || !accountHolderName || !bankAccountNumber || !ifscCode || !bankName) {
+    const { businessName, email, password, confirmPassword, phone, address, businessType } = formData;
+    if (!businessName || !email || !password || !confirmPassword || !phone || !address || !businessType) {
       toast.error('All fields are required');
       return false;
     }
-
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
       return false;
     }
-
     if (password.length < 6) {
       toast.error('Password must be at least 6 characters long');
       return false;
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast.error('Invalid email format');
       return false;
     }
-
     const phoneRegex = /^\+?[\d\s-]{10,}$/;
     if (!phoneRegex.test(phone)) {
       toast.error('Invalid phone number format');
       return false;
     }
-
     return true;
   };
 
@@ -287,72 +273,6 @@ const BecomeSeller = () => {
                   onChange={handleChange}
                   value={formData.confirmPassword}
                 />
-              </div>
-            </div>
-
-            {/* Bank Details */}
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Bank Details for Commission Payments</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="accountHolderName" className="block text-sm font-medium text-gray-700">
-                    Account Holder Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="accountHolderName"
-                    id="accountHolderName"
-                    required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
-                    onChange={handleChange}
-                    value={formData.accountHolderName}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="bankAccountNumber" className="block text-sm font-medium text-gray-700">
-                    Bank Account Number *
-                  </label>
-                  <input
-                    type="text"
-                    name="bankAccountNumber"
-                    id="bankAccountNumber"
-                    required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
-                    onChange={handleChange}
-                    value={formData.bankAccountNumber}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="ifscCode" className="block text-sm font-medium text-gray-700">
-                    IFSC Code *
-                  </label>
-                  <input
-                    type="text"
-                    name="ifscCode"
-                    id="ifscCode"
-                    required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
-                    onChange={handleChange}
-                    value={formData.ifscCode}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="bankName" className="block text-sm font-medium text-gray-700">
-                    Bank Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="bankName"
-                    id="bankName"
-                    required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
-                    onChange={handleChange}
-                    value={formData.bankName}
-                  />
-                </div>
               </div>
             </div>
 
