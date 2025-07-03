@@ -57,7 +57,7 @@ const SellerProfile = () => {
   // Fetch seller profile on mount if not present
   useEffect(() => {
     if (!seller) {
-      const token = localStorage.getItem('seller_jwt');
+      const token = localStorage.getItem('seller_token');
       if (token) fetchProfile(token);
     }
     // eslint-disable-next-line
@@ -87,7 +87,8 @@ const SellerProfile = () => {
   }, [seller]);
 
   useEffect(() => {
-    if (!loading && !seller) {
+    const sellerEmail = localStorage.getItem('seller_email');
+    if (!loading && !seller && !sellerEmail) {
       navigate('/seller');
     }
   }, [loading, seller, navigate]);
@@ -102,7 +103,8 @@ const SellerProfile = () => {
 
   if (error) {
     useEffect(() => {
-      navigate('/seller');
+      logout();
+      navigate('/becomeseller');
     }, [logout, navigate]);
     return null;
   }
@@ -209,7 +211,7 @@ const SellerProfile = () => {
     try {
       const res = await fetch(`/api/seller/withdraw`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('seller_jwt')}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('seller_token')}` },
         body: JSON.stringify({
           bankDetails,
           amount: availableToWithdraw

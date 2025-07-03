@@ -13,7 +13,7 @@ const fadeIn = {
 
 const BecomeSeller = () => {
   const navigate = useNavigate();
-  const { register, loading, seller } = useSeller();
+  const { register, loading } = useSeller();
   const [formData, setFormData] = useState({
     businessName: '',
     email: '',
@@ -28,10 +28,11 @@ const BecomeSeller = () => {
 
   useEffect(() => {
     // Redirect if already logged in as seller
-    if (seller) {
+    const sellerEmail = localStorage.getItem('seller_email');
+    if (sellerEmail) {
       navigate('/seller/profile');
     }
-  }, [seller, navigate]);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

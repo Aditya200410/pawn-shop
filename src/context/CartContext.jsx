@@ -87,10 +87,16 @@ export const CartProvider = ({ children }) => {
         toast.error('Please sign in to add items to cart');
         return;
       }
-      // Add to backend for authenticated user (no email needed)
-      const updatedCart = await cartService.addToCart(productId, quantity);
-      setCartItems(updatedCart.items);
-      toast.success('Item added to cart');
+
+      if (isAuthenticated && user && user.email) {
+        // Add to backend by email
+        const updatedCart = await cartService.addToCart(productId, quantity, user.email);
+        setCartItems(updatedCart.items);
+        toast.success('Item added to cart');
+      } else {
+        // This should not happen if authentication is required, but keeping as fallback
+        toast.error('Please sign in to add items to cart');
+      }
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart');
@@ -103,9 +109,15 @@ export const CartProvider = ({ children }) => {
         toast.error('Please sign in to manage your cart');
         return;
       }
-      const updatedCart = await cartService.removeFromCart(productId);
-      setCartItems(updatedCart.items);
-      toast.success('Item removed from cart');
+
+      if (isAuthenticated && user && user.email) {
+        // Remove from backend by email
+        const updatedCart = await cartService.removeFromCart(productId, user.email);
+        setCartItems(updatedCart.items);
+        toast.success('Item removed from cart');
+      } else {
+        toast.error('Please sign in to manage your cart');
+      }
     } catch (error) {
       console.error('Error removing from cart:', error);
       toast.error('Failed to remove item from cart');
@@ -119,9 +131,15 @@ export const CartProvider = ({ children }) => {
         toast.error('Please sign in to manage your cart');
         return;
       }
-      const updatedCart = await cartService.updateQuantity(productId, quantity);
-      setCartItems(updatedCart.items);
-      toast.success('Cart updated');
+
+      if (isAuthenticated && user && user.email) {
+        // Update in backend by email
+        const updatedCart = await cartService.updateQuantity(productId, quantity, user.email);
+        setCartItems(updatedCart.items);
+        toast.success('Cart updated');
+      } else {
+        toast.error('Please sign in to manage your cart');
+      }
     } catch (error) {
       console.error('Error updating cart:', error);
       toast.error('Failed to update cart');
@@ -134,9 +152,15 @@ export const CartProvider = ({ children }) => {
         toast.error('Please sign in to manage your cart');
         return;
       }
-      await cartService.clearCart();
-      setCartItems([]);
-      toast.success('Cart cleared');
+
+      if (isAuthenticated && user && user.email) {
+        // Clear in backend by email
+        await cartService.clearCart(user.email);
+        setCartItems([]);
+        toast.success('Cart cleared');
+      } else {
+        toast.error('Please sign in to manage your cart');
+      }
     } catch (error) {
       console.error('Error clearing cart:', error);
       toast.error('Failed to clear cart');

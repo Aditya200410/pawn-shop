@@ -22,27 +22,29 @@ export const SellerProvider = ({ children }) => {
     const token = localStorage.getItem('seller_jwt');
     if (token) {
       setSellerToken(token);
-      fetchSellerProfile();
+      fetchSellerProfile(token);
     } else {
       setLoading(false);
     }
   }, []);
 
-  const fetchSellerProfile = async () => {
+  const fetchSellerProfile = async (email) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('seller_jwt');
       const response = await fetch(`${config.API_URLS.SELLER}/profile`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
+          ...(sellerToken ? { Authorization: `Bearer ${sellerToken}` } : {})
         }
       });
+
       const data = await response.json();
+
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to fetch seller profile');
       }
+
       // Ensure all required fields are present
       const sellerData = {
         id: data.seller.id || data.seller._id || '',
@@ -68,6 +70,7 @@ export const SellerProvider = ({ children }) => {
         createdAt: data.seller.createdAt || new Date().toISOString(),
         blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
       };
+
       setSeller(sellerData);
     } catch (err) {
       setError(err.message);
@@ -104,7 +107,34 @@ export const SellerProvider = ({ children }) => {
       }
 
       setSellerTokenAndPersist(data.token);
-      await fetchSellerProfile(); // Fetch profile with new token
+
+      // Ensure all required fields are present with fallbacks
+      const sellerData = {
+        id: data.seller.id || data.seller._id || '',
+        businessName: data.seller.businessName || '',
+        email: data.seller.email || '',
+        phone: data.seller.phone || '',
+        address: data.seller.address || '',
+        businessType: data.seller.businessType || '',
+        accountHolderName: data.seller.accountHolderName || '',
+        bankAccountNumber: data.seller.bankAccountNumber || '',
+        ifscCode: data.seller.ifscCode || '',
+        bankName: data.seller.bankName || '',
+        sellerToken: data.seller.sellerToken || '',
+        websiteLink: data.seller.websiteLink || '',
+        qrCode: data.seller.qrCode || '',
+        images: data.seller.images || [],
+        profileImage: data.seller.profileImage || null,
+        totalOrders: data.seller.totalOrders || 0,
+        totalCommission: data.seller.totalCommission || 0,
+        availableCommission: data.seller.availableCommission || 0,
+        bankDetails: data.seller.bankDetails || {},
+        withdrawals: data.seller.withdrawals || [],
+        createdAt: data.seller.createdAt || new Date().toISOString(),
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
+      };
+
+      setSeller(sellerData);
       toast.success('Login successful!');
       return data;
     } catch (err) {
