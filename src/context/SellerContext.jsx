@@ -19,9 +19,10 @@ export const SellerProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const sellerEmail = localStorage.getItem('seller_email');
-    if (sellerEmail) {
-      fetchSellerProfile(sellerEmail);
+    const token = localStorage.getItem('seller_jwt');
+    if (token) {
+      setSellerToken(token);
+      fetchSellerProfile(token);
     } else {
       setLoading(false);
     }
@@ -39,7 +40,6 @@ export const SellerProvider = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log('Profile data:', data); // Debug log
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to fetch seller profile');
@@ -82,6 +82,15 @@ export const SellerProvider = ({ children }) => {
     }
   };
 
+  const setSellerTokenAndPersist = (token) => {
+    setSellerToken(token);
+    if (token) {
+      localStorage.setItem('seller_jwt', token);
+    } else {
+      localStorage.removeItem('seller_jwt');
+    }
+  };
+
   const login = async (email, password) => {
     try {
       setLoading(true);
@@ -92,13 +101,12 @@ export const SellerProvider = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log('Login data:', data); // Debug log
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Login failed');
       }
 
-      setSellerToken(data.token);
+      setSellerTokenAndPersist(data.token);
 
       // Ensure all required fields are present with fallbacks
       const sellerData = {
@@ -154,13 +162,12 @@ export const SellerProvider = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log('Register data:', data); // Debug log
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Registration failed');
       }
 
-      setSellerToken(data.token);
+      setSellerTokenAndPersist(data.token);
 
       // Ensure all required fields are present with fallbacks
       const newSellerData = {
@@ -202,7 +209,7 @@ export const SellerProvider = ({ children }) => {
 
   const logout = () => {
     setSeller(null);
-    setSellerToken(null);
+    setSellerTokenAndPersist(null);
     toast.success('Logged out successfully');
     window.location.href = '/'; // Redirect to home page
   };
@@ -220,7 +227,6 @@ export const SellerProvider = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log('Update profile data:', data); // Debug log
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update profile');
