@@ -424,6 +424,46 @@ const Checkout = () => {
     toast.success('Coupon removed successfully');
   };
 
+  // Add PhonePe as a payment option in the payment method section
+  const handlePhonePePayment = async () => {
+    setPaymentProcessing(true);
+    setError(null);
+    try {
+      if (!validateForm()) {
+        setError("Please fill in all required fields correctly.");
+        setPaymentProcessing(false);
+        return;
+      }
+      // Prepare order data as needed by your backend
+      const orderData = {
+        amount: getOnlinePaymentAmount(),
+        customerName: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        phone: formData.phone,
+        // ...add any other required fields
+      };
+      // Call your backend to create a PhonePe order
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/payment/phonepe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+      const data = await response.json();
+      if (data.success && data.redirectUrl) {
+        // Redirect to PhonePe payment page
+        window.location.href = data.redirectUrl;
+      } else {
+        setError(data.message || "Failed to initiate PhonePe payment.");
+        toast.error(data.message || "Failed to initiate PhonePe payment.");
+      }
+    } catch (error) {
+      setError(error.message || "PhonePe payment failed.");
+      toast.error(error.message || "PhonePe payment failed.");
+    } finally {
+      setPaymentProcessing(false);
+    }
+  };
+
   // Show authentication prompt if user is not signed in
   if (!isAuthenticated) {
     return (
@@ -744,17 +784,17 @@ const Checkout = () => {
                         <input
                           type="radio"
                           name="paymentMethod"
-                          value="razorpay"
-                          checked={formData.paymentMethod === 'razorpay'}
+                          value="phonepe"
+                          checked={formData.paymentMethod === 'phonepe'}
                           onChange={handleInputChange}
                           className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
-                          <div className="flex-1">
-                          <span className="text-gray-800 font-medium">Online Payment (Razorpay, UPI, Cards)</span>
+                        <div className="flex-1">
+                          <span className="text-gray-800 font-medium">UPI (PhonePe)</span>
                           <p className="text-sm text-gray-600 mt-1">
-                            Pay full amount online
-                            </p>
-                          </div>
+                            Pay securely using UPI via PhonePe
+                          </p>
+                        </div>
                       </label>
                       {!isCodAvailableForCart && (
                         <div className="text-red-600 text-sm mt-2">
@@ -918,7 +958,11 @@ const Checkout = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={formData.paymentMethod === 'razorpay' ? handleRazorpayPayment : handleSubmit}
+                onClick={
+                  formData.paymentMethod === 'phonepe'
+                    ? handlePhonePePayment
+                    : handleSubmit
+                }
                 disabled={loading || paymentProcessing}
                 className="w-full mt-6 bg-gradient-to-r from-pink-500 to-pink-400 text-white px-6 py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
@@ -928,7 +972,7 @@ const Checkout = () => {
                   <>
                     <Lock size={20} />
                     <span>
-                      {formData.paymentMethod === 'razorpay' ? 'Proceed to Payment' : 'Place Order'}
+                      {formData.paymentMethod === 'phonepe' ? 'Proceed to PhonePe Payment' : 'Place Order'}
                     </span>
                   </>
                 )}
