@@ -102,24 +102,10 @@ const SellerProfile = () => {
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-white to-pink-50">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center bg-white p-8 rounded-2xl shadow-xl"
-        >
-          <h2 className="text-2xl font-bold mb-4 text-red-600">Something went wrong</h2>
-          <p className="text-gray-700 mb-6">{error}</p>
-          <button 
-            onClick={() => navigate('/seller')} 
-            className="px-6 py-3 bg-gradient-to-r from-pink-500 to-pink-500 text-white rounded-xl hover:from-pink-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
-          >
-            Go to Seller Login
-          </button>
-        </motion.div>
-      </div>
-    );
+    useEffect(() => {
+      navigate('/becomeseller');
+    }, [navigate]);
+    return null;
   }
 
   if (!seller) {
@@ -427,7 +413,7 @@ const SellerProfile = () => {
                           <p className="text-xs sm:text-sm text-gray-600">Your unique identifier</p>
                         </div>
                       </div>
-                      <p className="text-lg sm:text-2xl font-bold text-pink-600 font-mono break-all">{seller.sellerToken}</p>
+                      <p className="text-lg sm:text-2xl font-bold text-pink-600 font-mono break-all">{safeSeller.sellerToken}</p>
                     </motion.div>
 
                     <motion.div
@@ -444,7 +430,7 @@ const SellerProfile = () => {
                         </div>
                       </div>
                       <a 
-                        href={seller.websiteLink}
+                        href={safeSeller.websiteLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-pink-600 hover:text-pink-700 font-medium break-all text-sm sm:text-base"
@@ -477,7 +463,7 @@ const SellerProfile = () => {
                   </div>
 
                   {/* QR Code Display */}
-                  {seller.qrCode && (
+                  {safeSeller.qrCode && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -526,7 +512,7 @@ const SellerProfile = () => {
 
                 
                   {/* Business Images Gallery */}
-                  {seller.images && seller.images.length > 0 && (
+                  {safeSeller.images && safeSeller.images.length > 0 && (
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -534,10 +520,10 @@ const SellerProfile = () => {
                     >
                       <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 flex items-center">
                         <FiImage className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mr-2" />
-                        Business Images ({seller.images.length})
+                        Business Images ({safeSeller.images.length})
                       </h3>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-                        {seller.images.map((image, index) => (
+                        {safeSeller.images.map((image, index) => (
                           <motion.div
                             key={image._id || index}
                             whileHover={{ scale: 1.05 }}
@@ -683,63 +669,63 @@ const SellerProfile = () => {
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Business Name</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.businessName}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.businessName}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Email</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.email}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.email}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Phone</h3>
-                        <p className="text-base sm:text-lg text-pink-600">{seller.phone}</p>
+                        <p className="text-base sm:text-lg text-pink-600">{safeSeller.phone}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Business Type</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.businessType}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.businessType}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Address</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.address}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.address}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Account Holder</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.accountHolderName}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.accountHolderName}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Bank Account</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.bankAccountNumber}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.bankAccountNumber}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">IFSC Code</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.ifscCode}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.ifscCode}</p>
                       </motion.div>
                       <motion.div
                         whileHover={{ y: -2 }}
                         className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Bank Name</h3>
-                        <p className="text-base sm:text-lg text-pink-600 break-words">{seller.bankName}</p>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.bankName}</p>
                       </motion.div>
                     </div>
                   )}
@@ -780,7 +766,7 @@ const SellerProfile = () => {
                           
                         </div>
                       </div>
-                      <p className="text-2xl sm:text-3xl font-bold text-pink-600">₹{Math.round(seller.totalCommission || 0)}</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-pink-600">₹{Math.round(safeSeller.totalCommission)}</p>
                       <p className="text-xs sm:text-sm text-gray-600 mt-2">30% commission from orders</p>
                     </motion.div>
 
@@ -808,7 +794,7 @@ const SellerProfile = () => {
                           <FiShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                       </div>
-                      <p className="text-2xl sm:text-3xl font-bold text-pink-600">{seller.totalOrders || 0}</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-pink-600">{safeSeller.totalOrders}</p>
                       <p className="text-xs sm:text-sm text-gray-600 mt-2">Orders through your link</p>
                     </motion.div>
                   </div>
@@ -826,19 +812,19 @@ const SellerProfile = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <p className="text-xs sm:text-sm text-gray-600">Account Holder</p>
-                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.accountHolderName}</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{safeSeller.accountHolderName}</p>
                       </div>
                       <div>
                         <p className="text-xs sm:text-sm text-gray-600">Account Number</p>
-                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.bankAccountNumber}</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{safeSeller.bankAccountNumber}</p>
                       </div>
                       <div>
                         <p className="text-xs sm:text-sm text-gray-600">IFSC Code</p>
-                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.ifscCode}</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{safeSeller.ifscCode}</p>
                       </div>
                       <div>
                         <p className="text-xs sm:text-sm text-gray-600">Bank Name</p>
-                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{seller.bankName}</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{safeSeller.bankName}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -892,7 +878,7 @@ const SellerProfile = () => {
                       </div>
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(seller.websiteLink);
+                          navigator.clipboard.writeText(safeSeller.websiteLink);
                           toast.success('Link copied to clipboard!');
                         }}
                         className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-pink-500 text-white rounded-xl hover:bg-pink-600 transition-all duration-300 text-sm sm:text-base"
