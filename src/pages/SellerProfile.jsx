@@ -169,7 +169,7 @@ const SellerProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateProfile(formData);
+      await updateProfile({ ...formData, email: seller.email });
       setIsEditing(false);
       toast.success('Profile updated successfully');
     } catch (err) {
