@@ -102,7 +102,7 @@ const SellerProfile = () => {
 
   if (error) {
     useEffect(() => {
-      logout();
+     
       navigate('/becomeseller');
     }, [logout, navigate]);
     return null;
