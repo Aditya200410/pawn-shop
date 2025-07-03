@@ -12,10 +12,12 @@ const env = {
   ENABLE_ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS === 'true',
   ENABLE_LOGGING: import.meta.env.VITE_ENABLE_LOGGING === 'true',
   
-  // Payment Gateway
-  RAZORPAY: {
-    KEY_ID: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_1DP5mmOlF5G5ag',
-    KEY_SECRET: import.meta.env.VITE_RAZORPAY_KEY_SECRET || '',
+  // PhonePe Payment Gateway
+  PHONEPE: {
+    MERCHANT_ID: import.meta.env.PHONEPE_MERCHANT_ID || '',
+    CLIENT_SECRET: import.meta.env.PHONEPE_CLIENT_SECRET || '',
+    ENV: import.meta.env.PHONEPE_ENV || 'production',
+    FRONTEND_URL: import.meta.env.FRONTEND_URL || 'https://rikocraft.com',
   },
   
   // Image CDN
@@ -114,5 +116,11 @@ const env = {
     }
   },
 };
+
+// Required PhonePe env variables:
+// VITE_PHONEPE_MERCHANT_ID
+// VITE_PHONEPE_CLIENT_SECRET
+// VITE_PHONEPE_ENV (sandbox or production)
+// VITE_FRONTEND_URL (your frontend base URL)
 
 export default env; 

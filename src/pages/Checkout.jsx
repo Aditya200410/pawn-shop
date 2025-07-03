@@ -264,83 +264,54 @@ const Checkout = () => {
     }
   };
 
-  const handleRazorpayPayment = async () => {
+  const handlePhonePePayment = async () => {
     setPaymentProcessing(true);
     setError(null);
-
     try {
-      // Validate form first
       if (!validateForm()) {
         setError("Please fill in all required fields correctly.");
         setPaymentProcessing(false);
         return;
       }
-
+      // Prepare order data as needed by your backend
       const orderData = {
-        amount: getOnlinePaymentAmount(), // Use the calculated online payment amount
-        orderId: `order_${Date.now()}`
-      };
-
-      const userData = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+        amount: getOnlinePaymentAmount(),
+        customerName: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phone,
-        address: formData.address
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.zipCode,
+        country: formData.country,
+        items: cartItems.map(item => ({
+          productId: item.product?._id || item.id,
+          name: item.product?.name || item.name,
+          quantity: item.quantity,
+          price: item.product?.price || item.price,
+          image: getItemImage(item)
+        })),
+        totalAmount: getTotalPrice(),
+        shippingCost: calculateShippingCost(),
+        codExtraCharge: getCodExtraCharge(),
+        finalTotal: getFinalTotal(),
+        paymentMethod: formData.paymentMethod,
+        paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
+        couponCode: appliedCoupon ? appliedCoupon.code : undefined, // Pass coupon code to backend
+        sellerToken: sellerToken // Always include sellerToken
       };
-
-      // Initiate Razorpay payment
-      const paymentResult = await paymentService.initiatePayment(orderData, userData);
-
-      if (paymentResult.success) {
-        // Create order in backend
-        const orderData = {
-          customerName: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          city: formData.city,
-          state: formData.state,
-          pincode: formData.zipCode,
-          country: formData.country,
-          items: cartItems.map(item => ({
-            productId: item.product?._id || item.id,
-            name: item.product?.name || item.name,
-            quantity: item.quantity,
-            price: item.product?.price || item.price,
-            image: getItemImage(item)
-          })),
-          totalAmount: getTotalPrice(),
-          shippingCost: calculateShippingCost(),
-          codExtraCharge: getCodExtraCharge(),
-          finalTotal: getFinalTotal(),
-          paymentMethod: formData.paymentMethod,
-          paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
-          paymentId: paymentResult.payment_id,
-          razorpayOrderId: paymentResult.order_id,
-          couponCode: appliedCoupon ? appliedCoupon.code : undefined, // Pass coupon code to backend
-          sellerToken: sellerToken // Always include sellerToken
-        };
-
-        const orderResponse = await orderService.createOrder(orderData);
-
-        if (orderResponse.success) {
-          const successMessage = formData.paymentMethod === 'cod' 
-            ? 'Payment successful! Order placed successfully! Remaining amount to be paid on delivery.' 
-            : 'Payment successful! Order placed successfully!';
-          toast.success(successMessage);
-          clearCart();
-          clearSellerToken();
-          navigate('/account?tab=orders');
-        } else {
-          setError("Payment successful but order creation failed. Please contact support.");
-          toast.error("Payment successful but order creation failed.");
-        }
+      // Call your backend to create a PhonePe order using the new paymentService
+      const data = await paymentService.initiatePhonePePayment(orderData);
+      if (data.success && data.redirectUrl) {
+        // Redirect to PhonePe payment page
+        window.location.href = data.redirectUrl;
+      } else {
+        setError(data.message || "Failed to initiate PhonePe payment.");
+        toast.error(data.message || "Failed to initiate PhonePe payment.");
       }
     } catch (error) {
-      console.error('Payment error:', error);
-      setError(error.message || "Payment failed. Please try again.");
-      toast.error(error.message || "Payment failed.");
+      setError(error.message || "PhonePe payment failed.");
+      toast.error(error.message || "PhonePe payment failed.");
     } finally {
       setPaymentProcessing(false);
     }
@@ -422,65 +393,6 @@ const Checkout = () => {
     setAppliedCoupon(null);
     setCouponError('');
     toast.success('Coupon removed successfully');
-  };
-
-  // Add PhonePe as a payment option in the payment method section
-  const handlePhonePePayment = async () => {
-    setPaymentProcessing(true);
-    setError(null);
-    try {
-      if (!validateForm()) {
-        setError("Please fill in all required fields correctly.");
-        setPaymentProcessing(false);
-        return;
-      }
-      // Prepare order data as needed by your backend
-      const orderData = {
-        amount: getOnlinePaymentAmount(),
-        customerName: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        pincode: formData.zipCode,
-        country: formData.country,
-        items: cartItems.map(item => ({
-          productId: item.product?._id || item.id,
-          name: item.product?.name || item.name,
-          quantity: item.quantity,
-          price: item.product?.price || item.price,
-          image: getItemImage(item)
-        })),
-        totalAmount: getTotalPrice(),
-        shippingCost: calculateShippingCost(),
-        codExtraCharge: getCodExtraCharge(),
-        finalTotal: getFinalTotal(),
-        paymentMethod: formData.paymentMethod,
-        paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
-        couponCode: appliedCoupon ? appliedCoupon.code : undefined, // Pass coupon code to backend
-        sellerToken: sellerToken // Always include sellerToken
-      };
-      // Call your backend to create a PhonePe order
-      const response = await fetch(`${config.API_BASE_URL}/api/payment/phonepe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-      });
-      const data = await response.json();
-      if (data.success && data.redirectUrl) {
-        // Redirect to PhonePe payment page
-        window.location.href = data.redirectUrl;
-      } else {
-        setError(data.message || "Failed to initiate PhonePe payment.");
-        toast.error(data.message || "Failed to initiate PhonePe payment.");
-      }
-    } catch (error) {
-      setError(error.message || "PhonePe payment failed.");
-      toast.error(error.message || "PhonePe payment failed.");
-    } finally {
-      setPaymentProcessing(false);
-    }
   };
 
   // Show authentication prompt if user is not signed in

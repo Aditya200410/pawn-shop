@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
@@ -95,8 +95,18 @@ class ErrorBoundary extends React.Component {
 
 function AppContent() {
   useScrollToTop();
-  const { toast, setToast } = useCart();
+  const { toast, setToast, setSellerTokenFromURL } = useCart();
   const { loading: authLoading } = useAuth();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+
+  // Global seller token handler
+  useEffect(() => {
+    const sellerToken = searchParams.get('seller');
+    if (sellerToken) {
+      setSellerTokenFromURL(sellerToken);
+    }
+  }, [location, searchParams, setSellerTokenFromURL]);
 
   // Show loading only if auth is still loading
   if (authLoading) {
