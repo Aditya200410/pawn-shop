@@ -56,7 +56,7 @@ const Hero = () => {
     return (
       <div className="w-full h-[600px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         {loading ? (
-          <div className="w-12 h-12 border-4 border-blue-100 border-l-blue-500 rounded-full animate-spin" />
+          <div className="w-12 h-12 border-4 border-pink-100 border-l-pink-500 rounded-full animate-spin" />
         ) : (
           <p className="text-gray-600 text-lg text-center p-8">{error || 'No carousel items available'}</p>
         )}
@@ -189,7 +189,7 @@ const Hero = () => {
                   }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center bg-amber-800 text-white px-7 py-3 rounded-full font-semibold hover:bg-amber-900 transition-colors text-lg md:text-xl lg:text-2xl shadow-lg"
+                  className="inline-flex items-center bg-pink-800 text-white px-7 py-3 rounded-full font-semibold hover:bg-pink-900 transition-colors text-lg md:text-xl lg:text-2xl shadow-lg"
                   style={{ gap: '0.75rem' }}
                 >
                   <span className="mr-2 md:mr-4">{carouselData[currentSlide].buttonText}</span>

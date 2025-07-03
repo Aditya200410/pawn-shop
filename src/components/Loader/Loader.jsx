@@ -48,7 +48,7 @@ const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false, show
             }}
           />
           <motion.div
-            className="absolute inset-0 border-4 border-amber-600 border-t-transparent rounded-full"
+            className="absolute inset-0 border-4 border-[#8f3a61]-600 border-t-transparent rounded-full"
             animate={{ rotate: 360 }}
             transition={{ 
               duration: 1.5, 
@@ -60,7 +60,7 @@ const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false, show
       )}
       {!showLogo && (
         <motion.div
-          className={`${sizeClasses[size]} border-4 border-amber-600 border-t-transparent rounded-full animate-spin`}
+          className={`${sizeClasses[size]} border-4 border-[#8f3a61]-600 border-t-transparent rounded-full animate-spin`}
         />
       )}
       {text && (
@@ -83,7 +83,7 @@ const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false, show
         {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
-            className="w-2 h-2 bg-amber-600 rounded-full"
+            className="w-2 h-2 bg-[#8f3a61]-600 rounded-full"
             animate={{ 
               scale: [1, 1.5, 1],
               opacity: [0.5, 1, 0.5]

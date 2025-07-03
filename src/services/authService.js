@@ -163,5 +163,24 @@ export const authService = {
     isAuthenticated() {
         const token = localStorage.getItem('token');
         return !!token;
+    },
+
+    async verifyForgotOtp(email, otp, newPassword) {
+        try {
+            const response = await fetch(`${config.API_URLS.AUTH}/verify-forgot-otp`, {
+                method: 'POST',
+                headers: config.CORS.HEADERS,
+                credentials: 'include',
+                body: JSON.stringify({ email, otp, newPassword }),
+            });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to reset password');
+            }
+            return response.json();
+        } catch (error) {
+            console.error('Forgot OTP verification error:', error);
+            throw error;
+        }
     }
 }; 

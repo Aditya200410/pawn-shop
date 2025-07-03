@@ -95,7 +95,7 @@ export default function ContactPage() {
             <h1 className="text-5xl md:text-6xl font-bold mb-4">
             Riko Enterprises
             </h1>
-            <p className="text-xl md:text-2xl text-orange-100 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-pink-100 max-w-3xl mx-auto">
               Connecting you with the finest Indian handicrafts and authentic cultural heritage
             </p>
           </motion.div>
@@ -122,8 +122,8 @@ export default function ContactPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 text-sm sm:text-base ${
                     activeTab === tab.id
-                      ? 'bg-white text-orange-600 shadow-lg'
-                      : 'text-white hover:text-orange-600 hover:bg-white/50'
+                      ? 'bg-white text-pink-600 shadow-lg'
+                      : 'text-white hover:text-pink-600 hover:bg-white/50'
                   }`}
                 >
                   <tab.icon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -156,7 +156,7 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                   <div className="space-y-4 sm:space-y-6">
                     <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
-                      <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mt-1 flex-shrink-0" />
+                      <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600 mt-1 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Our Location</h3>
                         <p className="text-gray-600 text-sm sm:text-base">Jamshedpur, Jharkhand - 831004</p>
@@ -165,10 +165,10 @@ export default function ContactPage() {
                     </div>
 
                     <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
-                      <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mt-1 flex-shrink-0" />
+                      <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600 mt-1 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Phone Number</h3>
-                        <a href="tel:+918340624635" className="text-orange-600 hover:text-orange-700 font-medium text-sm sm:text-base">
+                        <a href="tel:+918340624635" className="text-pink-600 hover:text-pink-700 font-medium text-sm sm:text-base">
                           +91 8340624635
                         </a>
                       </div>
@@ -177,10 +177,10 @@ export default function ContactPage() {
 
                   <div className="space-y-4 sm:space-y-6">
                     <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
-                      <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mt-1 flex-shrink-0" />
+                      <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600 mt-1 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Email Address</h3>
-                        <a href="mailto:Info@Rikocraft.com" className="text-orange-600 hover:text-orange-700 font-medium text-sm sm:text-base">
+                        <a href="mailto:Info@Rikocraft.com" className="text-pink-600 hover:text-pink-700 font-medium text-sm sm:text-base">
                           Info@Rikocraft.com
                         </a>
                         <p className="text-xs sm:text-sm text-gray-500 mt-1">We respond within 24 hours</p>
@@ -265,10 +265,10 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {services.map((service, index) => (
-                    <div key={index} className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl border border-orange-100">
+                    <div key={index} className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl border border-pink-100">
                       <div className="flex items-start gap-3 sm:gap-4">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8f3a61]-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <service.icon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+                          <service.icon className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" />
                         </div>
                         <div>
                           <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">{service.title}</h3>
@@ -299,10 +299,10 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {supportInfo.map((info, index) => (
-                    <div key={index} className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl border border-orange-100">
+                    <div key={index} className="p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl border border-pink-100">
                       <div className="flex items-start gap-3 sm:gap-4">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8f3a61]-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <info.icon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+                          <info.icon className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" />
                         </div>
                         <div>
                           <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">{info.title}</h3>
@@ -328,7 +328,7 @@ export default function ContactPage() {
                     </a>
                     <a 
                       href="mailto:Info@Rikocraft.com"
-                      className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-orange-600 text-orange-600 rounded-xl font-medium hover:bg-[#8f3a61]-600 hover:text-white transition-colors text-sm sm:text-base"
+                      className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-pink-600 text-pink-600 rounded-xl font-medium hover:bg-[#8f3a61]-600 hover:text-white transition-colors text-sm sm:text-base"
                     >
                       <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Send Email
