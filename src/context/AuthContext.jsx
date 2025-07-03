@@ -95,9 +95,9 @@ export const AuthProvider = ({ children }) => {
     const updateProfile = async (userData) => {
         try {
             const response = await authService.updateProfile(userData);
-            setUser(response.data.user);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            return response.data;
+            setUser(response.user);
+            localStorage.setItem('user', JSON.stringify(response.user));
+            return response;
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Failed to update profile';
             toast.error(errorMessage);

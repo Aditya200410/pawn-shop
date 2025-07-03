@@ -69,10 +69,11 @@ export const CartProvider = ({ children }) => {
     }
   }, [sellerToken]);
 
-  // Function to set seller token
+  // Function to set seller token from URL and persist it
   const setSellerTokenFromURL = (token) => {
     if (token) {
       setSellerToken(token);
+      localStorage.setItem('sellerToken', token);
     }
   };
 

@@ -87,8 +87,7 @@ const SellerProfile = () => {
   }, [seller]);
 
   useEffect(() => {
-    const sellerEmail = localStorage.getItem('seller_email');
-    if (!loading && !seller && !sellerEmail) {
+    if (!loading && !seller) {
       navigate('/seller');
     }
   }, [loading, seller, navigate]);
