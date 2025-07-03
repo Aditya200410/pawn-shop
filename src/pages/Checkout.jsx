@@ -458,8 +458,6 @@ const Checkout = () => {
         finalTotal: getFinalTotal(),
         paymentMethod: formData.paymentMethod,
         paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
-        paymentId: paymentResult.payment_id,
-        razorpayOrderId: paymentResult.order_id,
         couponCode: appliedCoupon ? appliedCoupon.code : undefined, // Pass coupon code to backend
         sellerToken: sellerToken // Always include sellerToken
       };
