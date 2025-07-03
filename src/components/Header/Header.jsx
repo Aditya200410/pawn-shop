@@ -5,6 +5,7 @@ import { ShoppingBag, Menu, X, ChevronDown, Search, User, Heart, Home, ShoppingC
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useSeller } from '../../context/SellerContext';
 import logo from '/logo.png';
 import config from '../../config/config.js';
 import axios from 'axios';
@@ -27,6 +28,7 @@ const Header = () => {
   const location = useLocation();
   const { cartItems } = useCart();
   const { user } = useAuth();
+  const { seller } = useSeller();
   const [dynamicCategories, setDynamicCategories] = useState([]);
   const [activeMobileTab, setActiveMobileTab] = useState('menu');
 
@@ -156,7 +158,7 @@ const Header = () => {
   const MmenuItems = [
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
-    { name: 'Seller Program', path: '/seller' },
+    seller ? { name: 'Seller Dashboard', path: '/seller/profile' } : { name: 'Seller Program', path: '/seller' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ];
@@ -275,7 +277,11 @@ const Header = () => {
                 <a href="/about" className="text-white/80 hover:text-white">Our Story</a>
                 <a href="/contact" className="text-white/80 hover:text-white">Contact</a>
                 <a href="/FAQ" className="text-white/80 hover:text-white">FAQ</a>
-                <Link to="/seller" className="text-white/80 hover:text-white">Seller Program</Link>
+                {seller ? (
+                  <Link to="/seller/profile" className="text-white/80 hover:text-white">Seller Dashboard</Link>
+                ) : (
+                  <Link to="/seller" className="text-white/80 hover:text-white">Seller Program</Link>
+                )}
                 <div className="flex items-center space-x-4 text-white">
                   <a href="#" className="hover:opacity-80"><FaFacebookF /></a>
                   <a href="#" className="hover:opacity-80"><FaTwitter /></a>

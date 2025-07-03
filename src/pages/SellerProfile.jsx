@@ -57,7 +57,7 @@ const SellerProfile = () => {
   // Fetch seller profile on mount if not present
   useEffect(() => {
     if (!seller) {
-      const token = localStorage.getItem('seller_token');
+      const token = localStorage.getItem('seller_jwt');
       if (token) fetchProfile(token);
     }
     // eslint-disable-next-line
