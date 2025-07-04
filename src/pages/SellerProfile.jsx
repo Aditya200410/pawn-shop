@@ -23,11 +23,14 @@ import {
   FiUsers,
   FiPackage,
   FiStar,
-  FiImage
+  FiImage,
+  FiClock,
+  FiHistory
 } from 'react-icons/fi';
 import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
 import config from '../config/config';
+import historyService from '../services/historyService';
 
 const SellerProfile = () => {
   const { seller, loading, error, updateProfile, logout, fetchProfile, loggedIn } = useSeller();
@@ -56,6 +59,11 @@ const SellerProfile = () => {
   });
   const [withdrawing, setWithdrawing] = useState(false);
   const [availableToWithdraw, setAvailableToWithdraw] = useState(0);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [withdrawalHistory, setWithdrawalHistory] = useState([]);
+  const [commissionHistory, setCommissionHistory] = useState([]);
+  const [commissionSummary, setCommissionSummary] = useState({});
+  const [activeHistoryTab, setActiveHistoryTab] = useState('withdrawals');
 
   // Fetch seller profile on mount if not present
   useEffect(() => {
@@ -65,6 +73,35 @@ const SellerProfile = () => {
     }
     // eslint-disable-next-line
   }, []);
+
+  // Load history data when history tab is active
+  useEffect(() => {
+    if (activeTab === 'history' && seller) {
+      loadHistoryData();
+    }
+  }, [activeTab, seller]);
+
+  const loadHistoryData = async () => {
+    setHistoryLoading(true);
+    try {
+      // Load withdrawal history
+      const withdrawalData = await historyService.getWithdrawalHistory();
+      setWithdrawalHistory(withdrawalData.withdrawals || []);
+
+      // Load commission history
+      const commissionData = await historyService.getCommissionHistory();
+      setCommissionHistory(commissionData.commissionHistory || []);
+
+      // Load commission summary
+      const summaryData = await historyService.getCommissionSummary();
+      setCommissionSummary(summaryData.summary || {});
+    } catch (error) {
+      console.error('Failed to load history data:', error);
+      toast.error('Failed to load history data');
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
 
   // Update formData when seller is loaded
   useEffect(() => {
@@ -249,7 +286,8 @@ const SellerProfile = () => {
     { id: 'overview', label: 'Overview', icon: FiBarChart },
     { id: 'profile', label: 'Profile', icon: FiUser },
     { id: 'earnings', label: 'Earnings', icon: FiDollarSign },
-    { id: 'tools', label: 'Tools', icon: FiSettings }
+    { id: 'tools', label: 'Tools', icon: FiSettings },
+    { id: 'history', label: 'History', icon: FiHistory }
   ];
 
   const stats = [
@@ -954,6 +992,245 @@ const SellerProfile = () => {
                       </button>
                     </motion.div>
                   </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'history' && (
+                <motion.div
+                  key="history"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-6 sm:space-y-8"
+                >
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Transaction History</h2>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => setActiveHistoryTab('withdrawals')}
+                        className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 text-sm ${
+                          activeHistoryTab === 'withdrawals'
+                            ? 'bg-pink-500 text-white shadow-lg'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        Withdrawals
+                      </button>
+                      <button
+                        onClick={() => setActiveHistoryTab('commission')}
+                        className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 text-sm ${
+                          activeHistoryTab === 'commission'
+                            ? 'bg-pink-500 text-white shadow-lg'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        Commission
+                      </button>
+                    </div>
+                  </div>
+
+                  {historyLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader />
+                    </div>
+                  ) : (
+                    <AnimatePresence mode="wait">
+                      {activeHistoryTab === 'withdrawals' && (
+                        <motion.div
+                          key="withdrawals"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          className="space-y-6"
+                        >
+                          {withdrawalHistory.length === 0 ? (
+                            <div className="text-center py-12">
+                              <FiHistory className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                              <h3 className="text-lg font-semibold text-gray-600 mb-2">No Withdrawal History</h3>
+                              <p className="text-gray-500">You haven't made any withdrawal requests yet.</p>
+                            </div>
+                          ) : (
+                            <div className="bg-white rounded-xl shadow border border-pink-100 overflow-hidden">
+                              <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-pink-100">
+                                  <thead className="bg-pink-50">
+                                    <tr>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request Date</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Processed Date</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="bg-white divide-y divide-pink-50">
+                                    {withdrawalHistory.map((withdrawal) => (
+                                      <tr key={withdrawal._id} className="hover:bg-pink-50">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                          <div className="text-sm font-semibold text-gray-900">
+                                            {historyService.formatAmount(withdrawal.amount)}
+                                          </div>
+                                          {withdrawal.processingFee > 0 && (
+                                            <div className="text-xs text-gray-500">
+                                              Fee: {historyService.formatAmount(withdrawal.processingFee)}
+                                            </div>
+                                          )}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${historyService.getStatusColor(withdrawal.status)}`}>
+                                            {withdrawal.status}
+                                          </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                          {historyService.formatDate(withdrawal.requestDate)}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                          {withdrawal.processedDate ? historyService.formatDate(withdrawal.processedDate) : '-'}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm font-medium">
+                                          {withdrawal.status === 'pending' && (
+                                            <button
+                                              onClick={async () => {
+                                                try {
+                                                  await historyService.cancelWithdrawal(withdrawal._id);
+                                                  toast.success('Withdrawal cancelled successfully');
+                                                  loadHistoryData();
+                                                } catch (error) {
+                                                  toast.error(error.message);
+                                                }
+                                              }}
+                                              className="text-red-600 hover:text-red-900"
+                                            >
+                                              Cancel
+                                            </button>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+
+                      {activeHistoryTab === 'commission' && (
+                        <motion.div
+                          key="commission"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          className="space-y-6"
+                        >
+                          {/* Commission Summary */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
+                              <div className="flex items-center">
+                                <div className="p-2 bg-green-500 rounded-lg mr-3">
+                                  <FiTrendingUp className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                  <p className="text-sm text-green-600">Total Earned</p>
+                                  <p className="text-lg font-bold text-green-700">
+                                    {historyService.formatAmount(commissionSummary.totalEarned || 0)}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border border-orange-200">
+                              <div className="flex items-center">
+                                <div className="p-2 bg-orange-500 rounded-lg mr-3">
+                                  <FiDollarSign className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                  <p className="text-sm text-orange-600">Total Deducted</p>
+                                  <p className="text-lg font-bold text-orange-700">
+                                    {historyService.formatAmount(commissionSummary.totalDeducted || 0)}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
+                              <div className="flex items-center">
+                                <div className="p-2 bg-blue-500 rounded-lg mr-3">
+                                  <FiClock className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                  <p className="text-sm text-blue-600">Pending</p>
+                                  <p className="text-lg font-bold text-blue-700">
+                                    {historyService.formatAmount(commissionSummary.pendingAmount || 0)}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {commissionHistory.length === 0 ? (
+                            <div className="text-center py-12">
+                              <FiBarChart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                              <h3 className="text-lg font-semibold text-gray-600 mb-2">No Commission History</h3>
+                              <p className="text-gray-500">You haven't earned any commissions yet.</p>
+                            </div>
+                          ) : (
+                            <div className="bg-white rounded-xl shadow border border-pink-100 overflow-hidden">
+                              <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-pink-100">
+                                  <thead className="bg-pink-50">
+                                    <tr>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="bg-white divide-y divide-pink-50">
+                                    {commissionHistory.map((commission) => (
+                                      <tr key={commission._id} className="hover:bg-pink-50">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${historyService.getTypeColor(commission.type)}`}>
+                                            {commission.type}
+                                          </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                          <div className="text-sm font-semibold text-gray-900">
+                                            {historyService.formatAmount(commission.amount)}
+                                          </div>
+                                          {commission.orderAmount > 0 && (
+                                            <div className="text-xs text-gray-500">
+                                              Order: {historyService.formatAmount(commission.orderAmount)}
+                                            </div>
+                                          )}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${historyService.getStatusColor(commission.status)}`}>
+                                            {commission.status}
+                                          </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                          {historyService.formatDate(commission.createdAt)}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-900">
+                                          <div className="max-w-xs truncate" title={commission.description}>
+                                            {commission.description}
+                                          </div>
+                                          {commission.orderDetails?.orderNumber && (
+                                            <div className="text-xs text-gray-500">
+                                              Order: #{commission.orderDetails.orderNumber}
+                                            </div>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
