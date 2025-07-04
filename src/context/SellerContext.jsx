@@ -71,7 +71,8 @@ export const SellerProvider = ({ children }) => {
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt || new Date().toISOString(),
-        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false,
+        upi: data.seller.upi || data.seller.bankDetails?.upi || ''
       };
 
       setSeller(sellerData);
@@ -138,7 +139,8 @@ export const SellerProvider = ({ children }) => {
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt || new Date().toISOString(),
-        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false,
+        upi: data.seller.upi || data.seller.bankDetails?.upi || ''
       };
 
       setSeller(sellerData);
@@ -200,7 +202,8 @@ export const SellerProvider = ({ children }) => {
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt || new Date().toISOString(),
-        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false,
+        upi: data.seller.upi || data.seller.bankDetails?.upi || ''
       };
 
       setSeller(newSellerData);
@@ -264,7 +267,8 @@ export const SellerProvider = ({ children }) => {
         bankDetails: data.seller.bankDetails || {},
         withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt || new Date().toISOString(),
-        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false
+        blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false,
+        upi: data.seller.upi || data.seller.bankDetails?.upi || ''
       };
 
       setSeller(updatedSellerData);

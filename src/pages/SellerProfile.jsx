@@ -42,14 +42,16 @@ const SellerProfile = () => {
     accountHolderName: '',
     bankAccountNumber: '',
     ifscCode: '',
-    bankName: ''
+    bankName: '',
+    upi: ''
   });
   const [showWithdrawForm, setShowWithdrawForm] = useState(false);
   const [bankDetails, setBankDetails] = useState({
     accountName: '',
     accountNumber: '',
     ifsc: '',
-    bankName: ''
+    bankName: '',
+    upi: ''
   });
   const [withdrawing, setWithdrawing] = useState(false);
   const [availableToWithdraw, setAvailableToWithdraw] = useState(0);
@@ -74,13 +76,15 @@ const SellerProfile = () => {
         accountHolderName: seller.accountHolderName || '',
         bankAccountNumber: seller.bankAccountNumber || '',
         ifscCode: seller.ifscCode || '',
-        bankName: seller.bankName || ''
+        bankName: seller.bankName || '',
+        upi: seller.upi || seller.bankDetails?.upi || ''
       });
       setBankDetails({
         accountName: seller.accountHolderName || seller.bankDetails?.accountName || '',
         accountNumber: seller.bankAccountNumber || seller.bankDetails?.accountNumber || '',
         ifsc: seller.ifscCode || seller.bankDetails?.ifsc || '',
-        bankName: seller.bankName || seller.bankDetails?.bankName || ''
+        bankName: seller.bankName || seller.bankDetails?.bankName || '',
+        upi: seller.upi || seller.bankDetails?.upi || ''
       });
       setAvailableToWithdraw(Math.round(seller.availableCommission || 0));
     }
@@ -138,7 +142,8 @@ const SellerProfile = () => {
     withdrawals: Array.isArray(seller.withdrawals) ? seller.withdrawals : [],
     createdAt: seller.createdAt || '',
     verified: typeof seller.verified === 'boolean' ? seller.verified : false,
-    blocked: typeof seller.blocked === 'boolean' ? seller.blocked : false
+    blocked: typeof seller.blocked === 'boolean' ? seller.blocked : false,
+    upi: seller.upi || seller.bankDetails?.upi || ''
   };
 
   if (safeSeller.blocked) {
@@ -635,6 +640,16 @@ const SellerProfile = () => {
                             className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                           />
                         </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">UPI</label>
+                          <input
+                            type="text"
+                            name="upi"
+                            value={formData.upi}
+                            onChange={handleChange}
+                            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                          />
+                        </div>
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Address</label>
@@ -732,6 +747,13 @@ const SellerProfile = () => {
                       >
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Bank Name</h3>
                         <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.bankName}</p>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ y: -2 }}
+                        className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
+                      >
+                        <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">UPI</h3>
+                        <p className="text-base sm:text-lg text-pink-600 break-words">{safeSeller.upi}</p>
                       </motion.div>
                     </div>
                   )}
@@ -831,6 +853,10 @@ const SellerProfile = () => {
                       <div>
                         <p className="text-xs sm:text-sm text-gray-600">Bank Name</p>
                         <p className="font-semibold text-gray-900 text-sm sm:text-base">{safeSeller.bankName}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs sm:text-sm text-gray-600">UPI</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{safeSeller.upi}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -959,6 +985,16 @@ const SellerProfile = () => {
                     value={bankDetails.bankName}
                     onChange={e => setBankDetails({ ...bankDetails, bankName: e.target.value })}
                     required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">UPI</label>
+                  <input
+                    type="text"
+                    placeholder="Enter UPI ID"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
+                    value={bankDetails.upi}
+                    onChange={e => setBankDetails({ ...bankDetails, upi: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
