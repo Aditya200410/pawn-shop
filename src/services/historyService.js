@@ -8,6 +8,8 @@ class HistoryService {
   async getWithdrawalHistory(params = {}) {
     try {
       const token = localStorage.getItem('seller_jwt');
+      console.log('Getting withdrawal history with token:', token ? 'Token exists' : 'No token');
+      
       const response = await axios.get(`${API_BASE_URL}/api/withdrawals/history`, {
         params,
         headers: {
@@ -18,6 +20,8 @@ class HistoryService {
       return response.data;
     } catch (error) {
       console.error('Get withdrawal history error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
       throw new Error(error.response?.data?.message || 'Failed to fetch withdrawal history');
     }
   }
@@ -34,6 +38,7 @@ class HistoryService {
       return response.data;
     } catch (error) {
       console.error('Get withdrawal details error:', error);
+      console.error('Error response:', error.response?.data);
       throw new Error(error.response?.data?.message || 'Failed to fetch withdrawal details');
     }
   }
@@ -58,6 +63,10 @@ class HistoryService {
   async getCommissionHistory(params = {}) {
     try {
       const token = localStorage.getItem('seller_jwt');
+      console.log('Getting commission history with token:', token ? 'Token exists' : 'No token');
+      console.log('API URL:', `${API_BASE_URL}/api/commission/history`);
+      console.log('Params:', params);
+      
       const response = await axios.get(`${API_BASE_URL}/api/commission/history`, {
         params,
         headers: {
@@ -65,9 +74,13 @@ class HistoryService {
           'Content-Type': 'application/json'
         }
       });
+      console.log('Commission history response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Get commission history error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Error config:', error.config);
       throw new Error(error.response?.data?.message || 'Failed to fetch commission history');
     }
   }
@@ -84,6 +97,7 @@ class HistoryService {
       return response.data;
     } catch (error) {
       console.error('Get commission details error:', error);
+      console.error('Error response:', error.response?.data);
       throw new Error(error.response?.data?.message || 'Failed to fetch commission details');
     }
   }
@@ -91,15 +105,20 @@ class HistoryService {
   async getCommissionSummary() {
     try {
       const token = localStorage.getItem('seller_jwt');
+      console.log('Getting commission summary with token:', token ? 'Token exists' : 'No token');
+      
       const response = await axios.get(`${API_BASE_URL}/api/commission/summary`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
+      console.log('Commission summary response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Get commission summary error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
       throw new Error(error.response?.data?.message || 'Failed to fetch commission summary');
     }
   }

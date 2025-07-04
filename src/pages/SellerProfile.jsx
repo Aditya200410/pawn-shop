@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import Loader from '../components/Loader';
 import { 
-  FiDollarSign, 
   FiShoppingCart, 
   FiLink, 
   FiTag, 
@@ -24,8 +23,10 @@ import {
   FiPackage,
   FiStar,
   FiImage,
-  FiClock,
-  FiHistory
+  FiBell,
+  FiCheckCircle,
+  FiXCircle,
+  FiAlertCircle
 } from 'react-icons/fi';
 import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
@@ -64,6 +65,8 @@ const SellerProfile = () => {
   const [commissionHistory, setCommissionHistory] = useState([]);
   const [commissionSummary, setCommissionSummary] = useState({});
   const [activeHistoryTab, setActiveHistoryTab] = useState('withdrawals');
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   // Fetch seller profile on mount if not present
   useEffect(() => {
@@ -81,25 +84,118 @@ const SellerProfile = () => {
     }
   }, [activeTab, seller]);
 
+  // Check for withdrawal status updates
+  useEffect(() => {
+    if (seller && withdrawalHistory.length > 0) {
+      checkWithdrawalStatusUpdates();
+    }
+  }, [seller, withdrawalHistory]);
+
   const loadHistoryData = async () => {
     setHistoryLoading(true);
     try {
+      console.log('Loading history data for seller:', seller?._id);
+      
       // Load withdrawal history
+      console.log('Loading withdrawal history...');
       const withdrawalData = await historyService.getWithdrawalHistory();
+      console.log('Withdrawal data received:', withdrawalData);
       setWithdrawalHistory(withdrawalData.withdrawals || []);
 
       // Load commission history
+      console.log('Loading commission history...');
       const commissionData = await historyService.getCommissionHistory();
+      console.log('Commission data received:', commissionData);
       setCommissionHistory(commissionData.commissionHistory || []);
 
       // Load commission summary
+      console.log('Loading commission summary...');
       const summaryData = await historyService.getCommissionSummary();
+      console.log('Summary data received:', summaryData);
       setCommissionSummary(summaryData.summary || {});
+      
+      console.log('All history data loaded successfully');
     } catch (error) {
       console.error('Failed to load history data:', error);
-      toast.error('Failed to load history data');
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data
+      });
+      toast.error(`Failed to load history data: ${error.message}`);
     } finally {
       setHistoryLoading(false);
+    }
+  };
+
+  const checkWithdrawalStatusUpdates = async () => {
+    try {
+      // Fetch latest withdrawal data
+      const withdrawalData = await historyService.getWithdrawalHistory();
+      const latestWithdrawals = withdrawalData.withdrawals || [];
+      
+      // Check for status changes and create notifications
+      latestWithdrawals.forEach(latestWithdrawal => {
+        const oldWithdrawal = withdrawalHistory.find(w => w._id === latestWithdrawal._id);
+        
+        if (oldWithdrawal && oldWithdrawal.status !== latestWithdrawal.status) {
+          let notification = {
+            id: Date.now() + Math.random(),
+            type: 'withdrawal',
+            title: '',
+            message: '',
+            icon: null,
+            color: ''
+          };
+
+          switch (latestWithdrawal.status) {
+            case 'approved':
+              notification = {
+                ...notification,
+                title: 'Withdrawal Approved!',
+                message: `Your withdrawal request of ₹${latestWithdrawal.amount} has been approved and payment is being processed.`,
+                icon: FiCheckCircle,
+                color: 'green'
+              };
+              break;
+            case 'completed':
+              notification = {
+                ...notification,
+                title: 'Payment Completed!',
+                message: `Your withdrawal of ₹${latestWithdrawal.amount} has been successfully transferred to your bank account.`,
+                icon: FiCheckCircle,
+                color: 'green'
+              };
+              break;
+            case 'rejected':
+              notification = {
+                ...notification,
+                title: 'Withdrawal Rejected',
+                message: `Your withdrawal request of ₹${latestWithdrawal.amount} has been rejected. ${latestWithdrawal.rejectionReason ? `Reason: ${latestWithdrawal.rejectionReason}` : ''}`,
+                icon: FiXCircle,
+                color: 'red'
+              };
+              break;
+            default:
+              return;
+          }
+
+          // Add notification
+          setNotifications(prev => [notification, ...prev.slice(0, 4)]); // Keep only last 5 notifications
+          
+          // Show toast notification
+          if (notification.color === 'green') {
+            toast.success(notification.message);
+          } else {
+            toast.error(notification.message);
+          }
+        }
+      });
+
+      // Update withdrawal history
+      setWithdrawalHistory(latestWithdrawals);
+    } catch (error) {
+      console.error('Error checking withdrawal updates:', error);
     }
   };
 
@@ -133,6 +229,27 @@ const SellerProfile = () => {
       navigate('/seller');
     }
   }, [loading, seller, loggedIn, navigate]);
+
+  // Auto-remove notifications after 10 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setNotifications(prev => prev.filter(n => Date.now() - n.id < 10000));
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, [notifications]);
+
+  // Close notifications dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showNotifications && !event.target.closest('.notification-dropdown')) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotifications]);
 
   if (loading) {
     return (
@@ -285,9 +402,9 @@ const SellerProfile = () => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: FiBarChart },
     { id: 'profile', label: 'Profile', icon: FiUser },
-    { id: 'earnings', label: 'Earnings', icon: FiDollarSign },
+    { id: 'earnings', label: 'Earnings', icon: FiTrendingUp },
     { id: 'tools', label: 'Tools', icon: FiSettings },
-    { id: 'history', label: 'History', icon: FiHistory }
+    { id: 'history', label: 'History', icon: FiBarChart },
   ];
 
   const stats = [
@@ -383,15 +500,91 @@ const SellerProfile = () => {
                   <h1 className="text-2xl sm:text-4xl font-bold mb-2">Seller Dashboard</h1>
                   <p className="text-pink-100 text-base sm:text-lg">Welcome back, {seller.businessName}!</p>
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleLogout}
-                  className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white bg-opacity-20 backdrop-blur-sm text-white rounded-xl hover:bg-white hover:text-pink-600 transition-all duration-300 border border-white border-opacity-30 text-sm sm:text-base"
-                >
-                  <FiLogOut className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Logout
-                </motion.button>
+                <div className="flex items-center gap-3">
+                  {/* Notification Bell */}
+                  <div className="relative notification-dropdown">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setShowNotifications(!showNotifications)}
+                      className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white bg-opacity-20 backdrop-blur-sm text-white rounded-xl hover:bg-white hover:text-pink-600 transition-all duration-300 border border-white border-opacity-30 text-sm sm:text-base"
+                    >
+                      <FiBell className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      Notifications
+                      {notifications.length > 0 && (
+                        <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                          {notifications.length}
+                        </span>
+                      )}
+                    </motion.button>
+                    
+                    {/* Notifications Dropdown */}
+                    <AnimatePresence>
+                      {showNotifications && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto"
+                        >
+                          <div className="p-4 border-b border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+                          </div>
+                          <div className="p-2">
+                            {notifications.length === 0 ? (
+                              <div className="text-center py-8">
+                                <FiBell className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                                <p className="text-gray-500 text-sm">No new notifications</p>
+                              </div>
+                            ) : (
+                              notifications.map((notification) => {
+                                const IconComponent = notification.icon;
+                                return (
+                                  <motion.div
+                                    key={notification.id}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    className={`p-3 rounded-lg mb-2 border-l-4 ${
+                                      notification.color === 'green' 
+                                        ? 'bg-green-50 border-green-500' 
+                                        : notification.color === 'red'
+                                        ? 'bg-red-50 border-red-500'
+                                        : 'bg-blue-50 border-blue-500'
+                                    }`}
+                                  >
+                                    <div className="flex items-start gap-3">
+                                      <IconComponent className={`w-5 h-5 mt-0.5 ${
+                                        notification.color === 'green' ? 'text-green-600' : 'text-red-600'
+                                      }`} />
+                                      <div className="flex-1">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                                          {notification.title}
+                                        </h4>
+                                        <p className="text-xs text-gray-600">
+                                          {notification.message}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                );
+                              })
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleLogout}
+                    className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white bg-opacity-20 backdrop-blur-sm text-white rounded-xl hover:bg-white hover:text-pink-600 transition-all duration-300 border border-white border-opacity-30 text-sm sm:text-base"
+                  >
+                    <FiLogOut className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                    Logout
+                  </motion.button>
+                </div>
               </div>
               
               {/* Quick Stats */}
@@ -1045,7 +1238,7 @@ const SellerProfile = () => {
                         >
                           {withdrawalHistory.length === 0 ? (
                             <div className="text-center py-12">
-                              <FiHistory className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                              <FiBarChart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                               <h3 className="text-lg font-semibold text-gray-600 mb-2">No Withdrawal History</h3>
                               <p className="text-gray-500">You haven't made any withdrawal requests yet.</p>
                             </div>
@@ -1140,7 +1333,7 @@ const SellerProfile = () => {
                             <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border border-orange-200">
                               <div className="flex items-center">
                                 <div className="p-2 bg-orange-500 rounded-lg mr-3">
-                                  <FiDollarSign className="w-5 h-5 text-white" />
+                                  <FiTrendingUp className="w-5 h-5 text-white" />
                                 </div>
                                 <div>
                                   <p className="text-sm text-orange-600">Total Deducted</p>
@@ -1153,7 +1346,7 @@ const SellerProfile = () => {
                             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
                               <div className="flex items-center">
                                 <div className="p-2 bg-blue-500 rounded-lg mr-3">
-                                  <FiClock className="w-5 h-5 text-white" />
+                                  <FiAlertCircle className="w-5 h-5 text-white" />
                                 </div>
                                 <div>
                                   <p className="text-sm text-blue-600">Pending</p>
