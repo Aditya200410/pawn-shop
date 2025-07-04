@@ -277,9 +277,9 @@ const Checkout = () => {
         return;
       }
 
-      console.log('Checkout - Starting PhonePe payment process');
+      console.log('Checkout - Starting PhonePe payment process (2025 API)');
       
-      // Prepare order data as needed by your backend
+      // Prepare enhanced order data for 2025 PhonePe API
       const orderData = {
         amount: getOnlinePaymentAmount(),
         customerName: `${formData.firstName} ${formData.lastName}`,
@@ -301,15 +301,39 @@ const Checkout = () => {
         shippingCost: calculateShippingCost(),
         codExtraCharge: getCodExtraCharge(),
         finalTotal: getFinalTotal(),
-        paymentMethod: formData.paymentMethod,
+        paymentMethod: 'phonepe', // Explicitly set to phonepe
         paymentStatus: 'processing', // Will be updated after payment
         couponCode: appliedCoupon ? appliedCoupon.code : undefined,
-        sellerToken: sellerToken
+        sellerToken: sellerToken,
+        // Additional 2025 fields
+        customerDetails: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          fullName: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone,
+          address: {
+            street: formData.address,
+            city: formData.city,
+            state: formData.state,
+            zipCode: formData.zipCode,
+            country: formData.country
+          }
+        },
+        // Enhanced metadata for 2025
+        metadata: {
+          source: 'web',
+          userAgent: navigator.userAgent,
+          timestamp: new Date().toISOString(),
+          cartItemsCount: cartItems.length,
+          hasCoupon: !!appliedCoupon,
+          sellerToken: sellerToken || null
+        }
       };
 
-      console.log('Checkout - PhonePe order data:', orderData);
+      console.log('Checkout - Enhanced PhonePe order data for 2025:', orderData);
       
-      // Call your backend to create a PhonePe order using the new paymentService
+      // Call your backend to create a PhonePe order using the enhanced paymentService
       const data = await paymentService.initiatePhonePePayment(orderData);
       
       console.log('Checkout - PhonePe response:', data);
@@ -317,22 +341,42 @@ const Checkout = () => {
       if (data.success && data.redirectUrl) {
         console.log('Checkout - Redirecting to PhonePe:', data.redirectUrl);
         
-        // Store transaction ID for later verification
+        // Store enhanced transaction data for later verification
         if (data.transactionId) {
           localStorage.setItem('phonepe_transaction_id', data.transactionId);
+          localStorage.setItem('phonepe_order_data', JSON.stringify(orderData));
+          localStorage.setItem('phonepe_redirect_time', new Date().toISOString());
         }
         
-        // Redirect to PhonePe payment page
-        window.location.href = data.redirectUrl;
+        // Show success message before redirect
+        toast.success('Redirecting to PhonePe payment gateway...');
+        
+        // Small delay to show the toast
+        setTimeout(() => {
+          // Redirect to PhonePe payment page
+          window.location.href = data.redirectUrl;
+        }, 1000);
       } else {
-        const errorMsg = data.message || "Failed to initiate PhonePe payment.";
+        const errorMsg = data.message || data.error?.message || "Failed to initiate PhonePe payment.";
         console.error('Checkout - PhonePe initiation failed:', errorMsg);
         setError(errorMsg);
         toast.error(errorMsg);
       }
     } catch (error) {
       console.error('Checkout - PhonePe payment error:', error);
-      const errorMsg = error.message || "PhonePe payment failed.";
+      let errorMsg = error.message || "PhonePe payment failed.";
+      
+      // Enhanced error handling for 2025
+      if (error.response?.data?.error?.message) {
+        errorMsg = error.response.data.error.message;
+      } else if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      } else if (error.code === 'ECONNABORTED') {
+        errorMsg = 'Payment gateway timeout. Please try again.';
+      } else if (error.code === 'ENOTFOUND') {
+        errorMsg = 'Payment gateway not reachable. Please try again.';
+      }
+      
       setError(errorMsg);
       toast.error(errorMsg);
     } finally {
