@@ -251,7 +251,7 @@ export default function Footer() {
                 <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
                   <FacebookIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
                 </a>
-                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                <a href="https://www.instagram.com/riko.craft?igsh=YWlsZmRnNmk5eXp2" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
                   <InstagramIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
                 </a>
                 <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">

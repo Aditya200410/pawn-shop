@@ -12,6 +12,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
   });
@@ -29,13 +30,22 @@ const Signup = () => {
       return;
     }
 
+    // Validate phone number format (basic validation)
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setError('Please enter a valid 10-digit mobile number');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       await register({
         name: formData.name,
         email: formData.email,
+        phone: formData.phone,
         password: formData.password
       });
-      toast.success('OTP sent! Please check your email.');
+      toast.success('OTP sent! Please check your phone.');
       navigate('/otp-verification', { state: { email: formData.email } });
     } catch (err) {
       setError(err.message || contextError || 'Failed to create account');
@@ -123,6 +133,30 @@ const Signup = () => {
                       placeholder="Enter your email"
                     />
                   </div>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                  Mobile Number
+                </label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    required
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your mobile number"
+                  />
                 </div>
               </div>
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { motion } from 'framer-motion';
-import { Mail, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const OTPVerification = () => {
@@ -47,10 +47,10 @@ const OTPVerification = () => {
         <div className="max-w-md w-full space-y-8">
           <div>
             <h2 className="text-4xl font-light tracking-tight text-gray-900 text-center">
-              Verify <span className="font-serif italic">Your Email</span>
+              Verify <span className="font-serif italic">Your Phone</span>
             </h2>
             <p className="mt-2 text-sm text-gray-600 text-center">
-              Please enter the OTP sent to <span className="font-medium">{email}</span>
+              Please enter the OTP sent to your mobile number
             </p>
             <p className="mt-2 text-center text-xs text-gray-500">
               Check the console for the OTP (testing purposes only)
@@ -131,7 +131,7 @@ const OTPVerification = () => {
       <div className="lg:hidden w-full bg-gray-50 py-12 px-4">
         <div className="max-w-md mx-auto">
           <h3 className="text-2xl font-semibold text-gray-900 text-center mb-8">
-            Why Choose Our Heritage Shop?
+            Secure Phone Verification
           </h3>
           <div className="grid grid-cols-2 gap-6">
             <div className="text-center">
@@ -140,8 +140,8 @@ const OTPVerification = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h4 className="font-medium text-gray-900 mb-1">Reliable</h4>
-              <p className="text-sm text-gray-600">Trusted service for years</p>
+              <h4 className="font-medium text-gray-900 mb-1">Secure</h4>
+              <p className="text-sm text-gray-600">Phone verification for safety</p>
             </div>
             {/* Add more features if needed */}
           </div>

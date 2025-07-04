@@ -32,6 +32,7 @@ import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
 import config from '../config/config';
 import historyService from '../services/historyService';
+import { createRoot } from 'react-dom/client';
 
 const SellerProfile = () => {
   const { seller, loading, error, updateProfile, logout, fetchProfile, loggedIn } = useSeller();
@@ -371,16 +372,27 @@ const SellerProfile = () => {
       return;
     }
     try {
-      const posterNode = posterRef.current;
-      const canvas = await html2canvas(posterNode, { backgroundColor: null, useCORS: true });
-      const url = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${seller.businessName}-poster.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast.success('Poster downloaded successfully!');
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      document.body.appendChild(tempDiv);
+      import('../components/RikoCraftPoster.jsx').then(({ default: RikoCraftPoster }) => {
+        const root = createRoot(tempDiv);
+        root.render(<RikoCraftPoster qrSrc={seller.qrCode} />);
+        setTimeout(async () => {
+          const canvas = await html2canvas(tempDiv, { backgroundColor: null, useCORS: true });
+          const url = canvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${seller.businessName}-poster.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          root.unmount();
+          document.body.removeChild(tempDiv);
+          toast.success('Poster downloaded successfully!');
+        }, 200);
+      });
     } catch (error) {
       console.error('Error downloading poster:', error);
       toast.error('Failed to download poster');
@@ -726,7 +738,7 @@ const SellerProfile = () => {
                         className="flex items-center text-pink-600 hover:text-pink-700 font-medium text-sm sm:text-base"
                       >
                         <FiDownload className="w-4 h-4 sm:w-4 sm:h-4 mr-2" />
-                        Download QR Code
+                        Download Poster
                       </button>
                     </motion.div>
                   </div>
