@@ -772,45 +772,58 @@ const Checkout = () => {
                   <div className="bg-white rounded-xl p-6 mb-8">
                     <h2 className="text-lg font-semibold mb-4">Payment Method</h2>
                     <div className="flex flex-col gap-4">
-                      {isCodAvailableForCart && (
+                      {isCodAvailableForCart ? (
+                        <>
+                          <label className="flex items-center gap-3 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="cod"
+                              checked={formData.paymentMethod === 'cod'}
+                              onChange={handleInputChange}
+                              className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <div className="flex-1">
+                              <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
+                              <p className="text-sm text-gray-600 mt-1">
+                                Pay full amount online + ₹39 extra charge + remaining amount on delivery
+                              </p>
+                            </div>
+                          </label>
+                          <label className="flex items-center gap-3 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="phonepe"
+                              checked={formData.paymentMethod === 'phonepe'}
+                              onChange={handleInputChange}
+                              className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <div className="flex-1">
+                              <span className="text-gray-800 font-medium">UPI (PhonePe)</span>
+                              <p className="text-sm text-gray-600 mt-1">
+                                Pay securely using UPI via PhonePe
+                              </p>
+                            </div>
+                          </label>
+                        </>
+                      ) : (
                         <label className="flex items-center gap-3 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                            value="cod"
-                            checked={formData.paymentMethod === 'cod'}
-                          onChange={handleInputChange}
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="phonepe"
+                            checked={formData.paymentMethod === 'phonepe'}
+                            onChange={handleInputChange}
                             className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                           />
                           <div className="flex-1">
-                            <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
+                            <span className="text-gray-800 font-medium">UPI (PhonePe)</span>
                             <p className="text-sm text-gray-600 mt-1">
-                              Pay full amount online + ₹39 extra charge + remaining amount on delivery
+                              Pay securely using UPI via PhonePe
                             </p>
                           </div>
                         </label>
-                      )}
-                      {/* Always show online payment as an option */}
-                      <label className="flex items-center gap-3 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="phonepe"
-                          checked={formData.paymentMethod === 'phonepe'}
-                          onChange={handleInputChange}
-                          className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <div className="flex-1">
-                          <span className="text-gray-800 font-medium">UPI (PhonePe)</span>
-                          <p className="text-sm text-gray-600 mt-1">
-                            Pay securely using UPI via PhonePe
-                          </p>
-                        </div>
-                      </label>
-                      {!isCodAvailableForCart && (
-                        <div className="text-red-600 text-sm mt-2">
-                          Cash on Delivery is not available for one or more items in your cart. Please use online payment.
-                        </div>
                       )}
                     </div>
                   </div>
