@@ -60,20 +60,20 @@ const Cart = () => {
 
   return (
     <motion.div
-      className="container mx-auto px-4 py-8 mt-16 md:mt-20"
+      className="container mx-auto px-2 py-4 mt-6 md:mt-8"
       initial="hidden"
       animate="visible"
       variants={fadeInUp}
     >
       {/* Checkout Steps */}
       <motion.div
-        className="flex items-center justify-center mb-8 md:mb-12 overflow-x-auto"
+        className="flex items-center justify-center mb-4 md:mb-6 overflow-x-auto"
         variants={fadeInUp}
       >
         <div className="flex items-center min-w-max">
           {/* Step 1 */}
          {/* Stepper Section */}
-<div className="flex flex-col md:flex-row items-start md:items-center justify-center gap-4 md:gap-0 mb-8 md:mb-12">
+<div className="flex flex-col md:flex-row items-start md:items-center justify-center gap-2 md:gap-0 mb-4 md:mb-6">
   {/* Step 1 */}
   <div className="flex items-center">
     <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#8f3a61] text-white flex items-center justify-center text-sm md:text-lg font-medium">1</div>
@@ -107,20 +107,20 @@ const Cart = () => {
       </motion.div>
 
       {cartItems.length === 0 ? (
-        <motion.div className="text-center py-12 md:py-16" variants={fadeInUp}>
+        <motion.div className="text-center py-8 md:py-10" variants={fadeInUp}>
           <ShoppingBag className="w-16 h-16 md:w-20 md:h-20 mx-auto text-gray-400 mb-4 md:mb-6" />
-          <h2 className="text-2xl md:text-3xl font-semibold mb-3 md:mb-4">Your cart is empty</h2>
-          <p className="text-gray-600 mb-6 md:mb-8 text-base md:text-lg">Looks like you haven't added any items yet.</p>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-2 md:mb-3">Your cart is empty</h2>
+          <p className="text-gray-600 mb-4 md:mb-5 text-base md:text-lg">Looks like you haven't added any items yet.</p>
           <Link
             to="/shop"
-            className="inline-block bg-[#8f3a61] text-white px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-[#8f3a61] transition-colors text-base md:text-lg font-medium"
+            className="inline-block bg-[#8f3a61] text-white px-5 md:px-7 py-2.5 md:py-3.5 rounded-full hover:bg-[#8f3a61] transition-colors text-base md:text-lg font-medium"
           >
             Return to Shop
           </Link>
         </motion.div>
       ) : (
         <motion.div
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6"
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
@@ -216,10 +216,10 @@ const Cart = () => {
           </motion.div>
 
           {/* Order Summary */}
-          <motion.div className="bg-white rounded-2xl shadow-sm p-4 md:p-6 sticky top-24" variants={fadeInUp}>
-            <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6">Order Summary</h3>
+          <motion.div className="bg-white rounded-2xl shadow-sm p-3 md:p-4 sticky top-20" variants={fadeInUp}>
+            <h3 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Order Summary</h3>
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex justify-between text-gray-600 text-sm">
                 <span>Subtotal</span>
                 <span>₹{getTotalPrice().toFixed(2)}</span>
@@ -228,7 +228,7 @@ const Cart = () => {
                 <span>Shipping</span>
                 <span className="text-green-600">Free</span>
               </div>
-              <div className="border-t border-gray-200 pt-3 mt-3">
+              <div className="border-t border-gray-200 pt-2 mt-2">
                 <div className="flex justify-between font-semibold text-base">
                   <span>Total</span>
                   <span>₹{getTotalPrice().toFixed(2)}</span>
@@ -241,20 +241,20 @@ const Cart = () => {
                 const checkoutUrl = sellerToken ? `/checkout?seller=${sellerToken}` : '/checkout';
                 navigate(checkoutUrl);
               }}
-              className="w-full bg-[#8f3a61] text-white py-3 rounded-xl mt-5 hover:bg-[#8f3a61] transition-colors flex items-center justify-center space-x-2 text-base font-medium"
+              className="w-full bg-[#8f3a61] text-white py-2.5 rounded-xl mt-4 hover:bg-[#8f3a61] transition-colors flex items-center justify-center space-x-2 text-base font-medium"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="w-5 h-5" />
             </button>
 
             {/* Info */}
-            <div className="mt-6 space-y-3 text-sm text-gray-600">
+            <div className="mt-4 space-y-2 text-sm text-gray-600">
               <div className="flex items-start gap-2"><Truck className="w-4 h-4" /> Free Shipping above ₹499</div>
               <div className="flex items-start gap-2"><Shield className="w-4 h-4" /> Secure Payment</div>
               <div className="flex items-start gap-2"><RefreshCw className="w-4 h-4" /> Easy Returns</div>
               
               {/* Timeframes Section */}
-              <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+              <div className="mt-3 pt-3 border-t border-gray-200 space-y-1.5">
                 <div className="flex items-start gap-2">
                   <Clock className="w-4 h-4 mt-0.5" />
                   <div>

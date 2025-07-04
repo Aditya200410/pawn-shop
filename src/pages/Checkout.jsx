@@ -120,8 +120,7 @@ const Checkout = () => {
 
   // Determine if COD is available for all cart items
   const isCodAvailableForCart = cartItems.every(item => {
-    const prod = item.product || item;
-    return prod.codAvailable !== false; // treat undefined as true for backward compatibility
+    return item.codAvailable !== false; // treat undefined as true for backward compatibility
   });
 
   // Ensure payment method is valid when COD is not available

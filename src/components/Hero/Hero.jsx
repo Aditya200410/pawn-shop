@@ -29,8 +29,8 @@ const Hero = () => {
       if (!response.ok) throw new Error('Failed to fetch carousel data');
       const data = await response.json();
       const filteredData = data.filter(item => {
-        if (isMobile()) return item.showOn === 'mobile';
-        return item.showOn === 'desktop';
+        if (isMobile()) return item.isMobile === true;
+        return item.isMobile === false;
       });
       setCarouselData(filteredData);
     } catch (err) {
@@ -128,7 +128,7 @@ const Hero = () => {
           className="absolute inset-0 z-0"
         >
           <div className="absolute inset-0">
-            {carouselData[currentSlide].desktopImage || carouselData[currentSlide].mobileImage ? (
+            {carouselData[currentSlide].image ? (
               <video
                 className="absolute inset-0 w-full h-full object-cover"
                 autoPlay
@@ -137,12 +137,12 @@ const Hero = () => {
                 playsInline
                 onError={handleMediaError}
               >
-                <source src={carouselData[currentSlide].desktopImage || carouselData[currentSlide].mobileImage} type="video/mp4" />
+                <source src={carouselData[currentSlide].image} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             ) : (
               <img
-                src={carouselData[currentSlide].desktopImage || carouselData[currentSlide].mobileImage}
+                src={carouselData[currentSlide].image}
                 alt={carouselData[currentSlide].title}
                 className="absolute inset-0 w-full h-full object-cover"
                 onError={handleMediaError}
