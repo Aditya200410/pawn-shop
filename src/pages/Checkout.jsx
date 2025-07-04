@@ -81,6 +81,7 @@ const Checkout = () => {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponLoading, setCouponLoading] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [cartLoading, setCartLoading] = useState(true);
 
   // Pre-fill form with user data if logged in
   useEffect(() => {
@@ -127,8 +128,6 @@ const Checkout = () => {
         try {
           const cartData = await cartService.getCart(user.email);
           if (cartData.items) {
-            // Update cartItems in context if possible
-            // If useCart provides a setCartItems, use it; otherwise, update locally
             if (typeof setCartItems === 'function') {
               setCartItems(cartData.items);
             }
@@ -137,6 +136,7 @@ const Checkout = () => {
           console.error('Failed to refresh cart on checkout:', err);
         }
       }
+      setCartLoading(false);
     };
     refreshCart();
     // eslint-disable-next-line
@@ -511,6 +511,10 @@ const Checkout = () => {
         </div>
       </div>
     );
+  }
+
+  if (cartLoading) {
+    return <Loader />;
   }
 
   if (cartItems.length === 0) {
