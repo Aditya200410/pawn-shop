@@ -281,7 +281,7 @@ const BecomeSeller = () => {
             {/* Image Upload Section */}
             <div className="border-t border-gray-200 pt-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Business Images (Optional)
+                Business Images
               </label>
               <div className="space-y-4">
                 {/* Upload Button */}
