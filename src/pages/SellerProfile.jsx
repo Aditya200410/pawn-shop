@@ -91,6 +91,17 @@ const SellerProfile = () => {
     }
   }, [seller, withdrawalHistory]);
 
+  // Periodic check for withdrawal status updates (every 30 seconds)
+  useEffect(() => {
+    if (seller && withdrawalHistory.length > 0) {
+      const interval = setInterval(() => {
+        checkWithdrawalStatusUpdates();
+      }, 30000); // Check every 30 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [seller, withdrawalHistory]);
+
   const loadHistoryData = async () => {
     setHistoryLoading(true);
     try {
@@ -112,7 +123,7 @@ const SellerProfile = () => {
       console.log('Loading commission summary...');
       const summaryData = await historyService.getCommissionSummary();
       console.log('Summary data received:', summaryData);
-      setCommissionSummary(summaryData.summary || {});
+      setCommissionSummary(summaryData || {});
       
       console.log('All history data loaded successfully');
     } catch (error) {
@@ -194,6 +205,14 @@ const SellerProfile = () => {
 
       // Update withdrawal history
       setWithdrawalHistory(latestWithdrawals);
+      
+      // Also refresh seller profile to get updated commission data
+      if (seller) {
+        const token = localStorage.getItem('seller_jwt');
+        if (token) {
+          fetchProfile(token);
+        }
+      }
     } catch (error) {
       console.error('Error checking withdrawal updates:', error);
     }
@@ -387,7 +406,11 @@ const SellerProfile = () => {
         // Refetch seller profile to update withdrawals
         if (typeof fetchProfile === 'function') {
           const token = localStorage.getItem('seller_jwt');
-          if (token) await fetchProfile(token);
+          if (token) {
+            await fetchProfile(token);
+            // Also refresh withdrawal history
+            await loadHistoryData();
+          }
         }
       } else {
         toast.error(data.message || 'Failed to request withdrawal');

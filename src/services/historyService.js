@@ -10,7 +10,7 @@ class HistoryService {
       const token = localStorage.getItem('seller_jwt');
       console.log('Getting withdrawal history with token:', token ? 'Token exists' : 'No token');
       
-      const response = await axios.get(`${API_BASE_URL}/api/withdrawals/history`, {
+      const response = await axios.get(`${API_BASE_URL}/api/withdrawal/history`, {
         params,
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -29,7 +29,7 @@ class HistoryService {
   async getWithdrawalDetails(withdrawalId) {
     try {
       const token = localStorage.getItem('seller_jwt');
-      const response = await axios.get(`${API_BASE_URL}/api/withdrawals/details/${withdrawalId}`, {
+      const response = await axios.get(`${API_BASE_URL}/api/withdrawal/details/${withdrawalId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ class HistoryService {
   async cancelWithdrawal(withdrawalId) {
     try {
       const token = localStorage.getItem('seller_jwt');
-      const response = await axios.put(`${API_BASE_URL}/api/withdrawals/cancel/${withdrawalId}`, {}, {
+      const response = await axios.put(`${API_BASE_URL}/api/withdrawal/cancel/${withdrawalId}`, {}, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
