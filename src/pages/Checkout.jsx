@@ -240,6 +240,9 @@ const Checkout = () => {
       couponCode: appliedCoupon ? appliedCoupon.code : undefined // Pass coupon code to backend
     };
     
+    console.log('Checkout - sellerToken being sent:', sellerToken);
+    console.log('Checkout - orderData:', orderData);
+    
     try {
       const response = await orderService.createOrder(orderData);
 

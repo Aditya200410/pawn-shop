@@ -48,8 +48,10 @@ export const CartProvider = ({ children }) => {
   // Load seller token from localStorage on mount
   useEffect(() => {
     const savedSellerToken = localStorage.getItem('sellerToken');
+    console.log('CartContext - Loading sellerToken from localStorage:', savedSellerToken);
     if (savedSellerToken) {
       setSellerToken(savedSellerToken);
+      console.log('CartContext - sellerToken loaded from localStorage:', savedSellerToken);
     }
   }, []);
 
@@ -71,15 +73,18 @@ export const CartProvider = ({ children }) => {
 
   // Function to set seller token from URL and persist it
   const setSellerTokenFromURL = (token) => {
+    console.log('CartContext - setSellerTokenFromURL called with:', token);
     if (token) {
       setSellerToken(token);
       localStorage.setItem('sellerToken', token);
+      console.log('CartContext - sellerToken set to:', token);
     }
   };
 
   // Function to clear seller token
   const clearSellerToken = () => {
     setSellerToken(null);
+    localStorage.removeItem('sellerToken');
   };
 
   const addToCart = async (productId, quantity = 1) => {
