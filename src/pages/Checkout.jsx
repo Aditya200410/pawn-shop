@@ -124,6 +124,26 @@ const Checkout = () => {
     return prod.codAvailable !== false; // treat undefined as true for backward compatibility
   });
 
+  // Ensure payment method is valid when COD is not available
+  useEffect(() => {
+    if (!isCodAvailableForCart && formData.paymentMethod === 'cod') {
+      setFormData(prev => ({
+        ...prev,
+        paymentMethod: 'phonepe'
+      }));
+    }
+  }, [isCodAvailableForCart]);
+
+  // Also ensure on initial load
+  useEffect(() => {
+    if (!isCodAvailableForCart && formData.paymentMethod === 'cod') {
+      setFormData(prev => ({
+        ...prev,
+        paymentMethod: 'phonepe'
+      }));
+    }
+  }, []);
+
   const validateForm = () => {
     const errors = {};
     const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'state', 'zipCode'];
@@ -203,6 +223,13 @@ const Checkout = () => {
     // Basic validation
     if (cartItems.length === 0) {
       setError("Your cart is empty.");
+      setLoading(false);
+      return;
+    }
+
+    // Prevent COD order if not available
+    if (!isCodAvailableForCart && formData.paymentMethod === 'cod') {
+      setError("Cash on Delivery is not available for one or more items in your cart. Please use online payment.");
       setLoading(false);
       return;
     }
