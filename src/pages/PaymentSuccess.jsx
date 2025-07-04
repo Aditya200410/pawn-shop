@@ -14,7 +14,7 @@ const PaymentSuccess = () => {
   useEffect(() => {
     const verifyPayment = async () => {
       try {
-        // Get transactionId from URL parameters (enhanced for 2025)
+        // Get transactionId from URL parameters
         const params = new URLSearchParams(window.location.search);
         const transactionId = params.get('transactionId') || 
                              params.get('merchantTransactionId') || 
@@ -33,14 +33,14 @@ const PaymentSuccess = () => {
           return;
         }
 
-        // Enhanced URL parameter checking for 2025
+        // Check URL parameters for payment status
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         const state = urlParams.get('state');
         const responseCode = urlParams.get('responseCode');
         const message = urlParams.get('message');
         
-        console.log('PaymentSuccess - Enhanced URL params for 2025:', { 
+        console.log('PaymentSuccess - URL params:', { 
           code, 
           state, 
           responseCode, 
@@ -48,7 +48,7 @@ const PaymentSuccess = () => {
           transactionId: finalTransactionId 
         });
 
-        // Enhanced success detection for 2025
+        // Check if payment appears successful from URL params
         const isSuccessFromURL = code === 'SUCCESS' || 
                                 state === 'COMPLETED' || 
                                 responseCode === 'SUCCESS' ||
@@ -68,12 +68,12 @@ const PaymentSuccess = () => {
           return;
         }
 
-        // Enhanced backend verification for 2025
-        console.log('PaymentSuccess - Verifying payment with backend (2025 API)...');
+        // Verify payment with backend
+        console.log('PaymentSuccess - Verifying payment with backend...');
         
         try {
           const data = await paymentService.checkPhonePeStatus(finalTransactionId);
-          console.log('PaymentSuccess - Enhanced backend verification response:', data);
+          console.log('PaymentSuccess - Backend verification response:', data);
           setStatus(data);
         } catch (backendError) {
           console.error('PaymentSuccess - Backend verification failed:', backendError);
@@ -109,7 +109,7 @@ const PaymentSuccess = () => {
     verifyPayment();
   }, [retryCount]);
 
-  // Enhanced retry mechanism for 2025
+  // Retry mechanism
   const handleRetry = () => {
     if (retryCount < 3) {
       setRetryCount(prev => prev + 1);

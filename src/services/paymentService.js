@@ -4,33 +4,38 @@ import config from '../config/config';
 const API_BASE_URL = config.API_BASE_URL;
 
 class PaymentService {
-  // Initiate PhonePe payment with latest 2025 API support
+  // Initiate PhonePe payment according to official API documentation
   async initiatePhonePePayment(orderData) {
     try {
       console.log('PaymentService - Initiating PhonePe payment with data:', orderData);
       
-      // Enhanced order data for 2025 PhonePe API
-      const enhancedOrderData = {
-        ...orderData,
-        // Additional fields for better tracking and 2025 features
-        timestamp: new Date().toISOString(),
-        source: 'web',
-        // Enhanced customer data
-        customerData: {
-          name: orderData.customerName,
-          email: orderData.email,
-          phone: orderData.phone,
-          address: orderData.address
-        }
+      // Prepare order data according to PhonePe API requirements
+      const phonePeOrderData = {
+        amount: orderData.amount,
+        customerName: orderData.customerName,
+        email: orderData.email,
+        phone: orderData.phone,
+        address: orderData.address,
+        city: orderData.city,
+        state: orderData.state,
+        pincode: orderData.pincode,
+        country: orderData.country,
+        items: orderData.items,
+        totalAmount: orderData.totalAmount,
+        shippingCost: orderData.shippingCost,
+        codExtraCharge: orderData.codExtraCharge,
+        finalTotal: orderData.finalTotal,
+        paymentMethod: 'phonepe',
+        sellerToken: orderData.sellerToken,
+        couponCode: orderData.couponCode
       };
       
-      console.log('PaymentService - Enhanced order data for 2025 API:', enhancedOrderData);
+      console.log('PaymentService - PhonePe order data:', phonePeOrderData);
       
-      const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe`, enhancedOrderData, {
+      const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe`, phonePeOrderData, {
         timeout: 30000, // 30 second timeout
         headers: {
-          'Content-Type': 'application/json',
-          'X-Client-Version': '2025.1.0', // Indicate we're using 2025 API features
+          'Content-Type': 'application/json'
         }
       });
       
@@ -59,7 +64,7 @@ class PaymentService {
     }
   }
 
-  // Check PhonePe payment status with enhanced error handling
+  // Check PhonePe payment status
   async checkPhonePeStatus(transactionId) {
     try {
       console.log('PaymentService - Checking PhonePe status for:', transactionId);
@@ -67,8 +72,7 @@ class PaymentService {
       const response = await axios.get(`${API_BASE_URL}/api/payment/phonepe/status/${transactionId}`, {
         timeout: 30000,
         headers: {
-          'Content-Type': 'application/json',
-          'X-Client-Version': '2025.1.0',
+          'Content-Type': 'application/json'
         }
       });
       
@@ -93,7 +97,7 @@ class PaymentService {
     }
   }
 
-  // New method to handle PhonePe callback verification
+  // Handle PhonePe callback verification
   async verifyPhonePeCallback(callbackData) {
     try {
       console.log('PaymentService - Verifying PhonePe callback:', callbackData);
@@ -101,8 +105,7 @@ class PaymentService {
       const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe/callback`, callbackData, {
         timeout: 30000,
         headers: {
-          'Content-Type': 'application/json',
-          'X-Client-Version': '2025.1.0',
+          'Content-Type': 'application/json'
         }
       });
       

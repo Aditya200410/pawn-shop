@@ -277,9 +277,9 @@ const Checkout = () => {
         return;
       }
 
-      console.log('Checkout - Starting PhonePe payment process (2025 API)');
+      console.log('Checkout - Starting PhonePe payment process');
       
-      // Prepare enhanced order data for 2025 PhonePe API
+      // Prepare order data according to PhonePe API requirements
       const orderData = {
         amount: getOnlinePaymentAmount(),
         customerName: `${formData.firstName} ${formData.lastName}`,
@@ -301,39 +301,14 @@ const Checkout = () => {
         shippingCost: calculateShippingCost(),
         codExtraCharge: getCodExtraCharge(),
         finalTotal: getFinalTotal(),
-        paymentMethod: 'phonepe', // Explicitly set to phonepe
-        paymentStatus: 'processing', // Will be updated after payment
-        couponCode: appliedCoupon ? appliedCoupon.code : undefined,
+        paymentMethod: 'phonepe',
         sellerToken: sellerToken,
-        // Additional 2025 fields
-        customerDetails: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          fullName: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
-          phone: formData.phone,
-          address: {
-            street: formData.address,
-            city: formData.city,
-            state: formData.state,
-            zipCode: formData.zipCode,
-            country: formData.country
-          }
-        },
-        // Enhanced metadata for 2025
-        metadata: {
-          source: 'web',
-          userAgent: navigator.userAgent,
-          timestamp: new Date().toISOString(),
-          cartItemsCount: cartItems.length,
-          hasCoupon: !!appliedCoupon,
-          sellerToken: sellerToken || null
-        }
+        couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
 
-      console.log('Checkout - Enhanced PhonePe order data for 2025:', orderData);
+      console.log('Checkout - PhonePe order data:', orderData);
       
-      // Call your backend to create a PhonePe order using the enhanced paymentService
+      // Call backend to create PhonePe order
       const data = await paymentService.initiatePhonePePayment(orderData);
       
       console.log('Checkout - PhonePe response:', data);
@@ -341,7 +316,7 @@ const Checkout = () => {
       if (data.success && data.redirectUrl) {
         console.log('Checkout - Redirecting to PhonePe:', data.redirectUrl);
         
-        // Store enhanced transaction data for later verification
+        // Store transaction data for later verification
         if (data.transactionId) {
           localStorage.setItem('phonepe_transaction_id', data.transactionId);
           localStorage.setItem('phonepe_order_data', JSON.stringify(orderData));
@@ -366,7 +341,6 @@ const Checkout = () => {
       console.error('Checkout - PhonePe payment error:', error);
       let errorMsg = error.message || "PhonePe payment failed.";
       
-      // Enhanced error handling for 2025
       if (error.response?.data?.error?.message) {
         errorMsg = error.response.data.error.message;
       } else if (error.response?.data?.message) {
