@@ -4,6 +4,8 @@ import config from '../../config/config';
 
 const isMobile = () => window.innerWidth <= 768;
 
+const isVideo = (url) => url && url.toLowerCase().endsWith('.mp4');
+
 const Hero = () => {
   const [carouselData, setCarouselData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -128,7 +130,7 @@ const Hero = () => {
           className="absolute inset-0 z-0"
         >
           <div className="absolute inset-0">
-            {carouselData[currentSlide].image ? (
+            {isVideo(carouselData[currentSlide].image) ? (
               <video
                 className="absolute inset-0 w-full h-full object-cover"
                 autoPlay

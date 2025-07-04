@@ -28,10 +28,12 @@ import apiService from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import Loader from '../components/Loader';
 import AuthPrompt from '../components/AuthPrompt';
+import FlashMessage from '../components/FlashMessage';
+import cartService from '../services/cartService';
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cartItems, getTotalPrice, clearCart, getItemImage, sellerToken, setSellerTokenFromURL, clearSellerToken } = useCart();
+  const { cartItems, getTotalPrice, clearCart, getItemImage, sellerToken, setSellerTokenFromURL, clearSellerToken, setCartItems } = useCart();
   const { user, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   
@@ -117,6 +119,28 @@ const Checkout = () => {
       navigate('/cart');
     }
   }, [cartItems, navigate]);
+
+  // Force cart refresh from backend on checkout page load
+  useEffect(() => {
+    const refreshCart = async () => {
+      if (isAuthenticated && user && user.email) {
+        try {
+          const cartData = await cartService.getCart(user.email);
+          if (cartData.items) {
+            // Update cartItems in context if possible
+            // If useCart provides a setCartItems, use it; otherwise, update locally
+            if (typeof setCartItems === 'function') {
+              setCartItems(cartData.items);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to refresh cart on checkout:', err);
+        }
+      }
+    };
+    refreshCart();
+    // eslint-disable-next-line
+  }, []);
 
   // Determine if COD is available for all cart items
   const isCodAvailableForCart = cartItems.every(item => {
