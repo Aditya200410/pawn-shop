@@ -40,20 +40,28 @@ const RikoCraftPoster = ({ qrSrc = "/qr.jpg" }) => (
     <div
       style={{
         background: "#fff",
-        borderRadius: 16,
-        border: "6px solid #444",
-        width: 220,
-        height: 220,
+        borderRadius: 24,
+        border: "4px solid #444",
+        width: "min(90vw, 320px)",
+        height: "min(90vw, 320px)",
         margin: "32px auto 16px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+        overflow: "hidden"
       }}
     >
       <img
         src={qrSrc}
         alt="Shop QR"
-        style={{ width: 180, height: 180, objectFit: "contain" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          borderRadius: 20,
+          background: "#fff"
+        }}
       />
     </div>
 
