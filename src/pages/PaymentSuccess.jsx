@@ -3,13 +3,17 @@ import { CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import config from '../config/config';
 import paymentService from '../services/paymentService';
+import { useCart } from '../context/CartContext';
+import { toast } from 'react-hot-toast';
 
 const PaymentSuccess = () => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [orderCreated, setOrderCreated] = useState(false);
   const navigate = useNavigate();
+  const { clearCart, clearSellerToken } = useCart();
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -22,8 +26,9 @@ const PaymentSuccess = () => {
         
         console.log('PaymentSuccess - Transaction ID from URL:', transactionId);
         
-        // Also check localStorage for transaction ID
+        // Also check localStorage for transaction ID and order data
         const storedTransactionId = localStorage.getItem('phonepe_transaction_id');
+        const storedOrderData = localStorage.getItem('phonepe_order_data');
         const finalTransactionId = transactionId || storedTransactionId;
         
         if (!finalTransactionId) {
@@ -56,14 +61,62 @@ const PaymentSuccess = () => {
 
         if (isSuccessFromURL) {
           console.log('PaymentSuccess - Payment appears successful based on URL params');
-          setStatus({ 
-            success: true, 
-            code: 'PAYMENT_SUCCESS', 
-            data: { 
-              state: 'COMPLETED',
-              message: message || 'Payment completed successfully'
-            } 
-          });
+          
+          // Try to create order if we have order data
+          if (storedOrderData && !orderCreated) {
+            try {
+              const orderData = JSON.parse(storedOrderData);
+              orderData.transactionId = finalTransactionId;
+              
+              console.log('PaymentSuccess - Creating order with data:', orderData);
+              
+              const result = await paymentService.completePaymentFlow(finalTransactionId, orderData);
+              
+              if (result.success) {
+                setOrderCreated(true);
+                // Clear cart and seller token after successful order creation
+                clearCart();
+                clearSellerToken();
+                // Clear stored payment data
+                localStorage.removeItem('phonepe_transaction_id');
+                localStorage.removeItem('phonepe_order_data');
+                localStorage.removeItem('phonepe_redirect_time');
+                
+                toast.success('Order placed successfully!');
+              }
+              
+              setStatus({ 
+                success: true, 
+                code: 'PAYMENT_SUCCESS', 
+                data: { 
+                  state: 'COMPLETED',
+                  message: message || 'Payment completed successfully'
+                },
+                order: result.order
+              });
+            } catch (orderError) {
+              console.error('PaymentSuccess - Order creation failed:', orderError);
+              // Payment succeeded but order creation failed
+              setStatus({ 
+                success: true, 
+                code: 'PAYMENT_SUCCESS_ORDER_FAILED', 
+                data: { 
+                  state: 'COMPLETED',
+                  message: 'Payment successful but order creation failed. Please contact support.'
+                }
+              });
+            }
+          } else {
+            setStatus({ 
+              success: true, 
+              code: 'PAYMENT_SUCCESS', 
+              data: { 
+                state: 'COMPLETED',
+                message: message || 'Payment completed successfully'
+              } 
+            });
+          }
+          
           setLoading(false);
           return;
         }
@@ -72,9 +125,23 @@ const PaymentSuccess = () => {
         console.log('PaymentSuccess - Verifying payment with backend...');
         
         try {
-          const data = await paymentService.checkPhonePeStatus(finalTransactionId);
-          console.log('PaymentSuccess - Backend verification response:', data);
-          setStatus(data);
+          const result = await paymentService.completePaymentFlow(finalTransactionId, storedOrderData ? JSON.parse(storedOrderData) : null);
+          
+          if (result.success) {
+            setOrderCreated(true);
+            // Clear cart and seller token after successful order creation
+            clearCart();
+            clearSellerToken();
+            // Clear stored payment data
+            localStorage.removeItem('phonepe_transaction_id');
+            localStorage.removeItem('phonepe_order_data');
+            localStorage.removeItem('phonepe_redirect_time');
+            
+            toast.success('Order placed successfully!');
+          }
+          
+          console.log('PaymentSuccess - Backend verification response:', result);
+          setStatus(result);
         } catch (backendError) {
           console.error('PaymentSuccess - Backend verification failed:', backendError);
           
@@ -107,7 +174,7 @@ const PaymentSuccess = () => {
     };
 
     verifyPayment();
-  }, [retryCount]);
+  }, [retryCount, orderCreated, clearCart, clearSellerToken]);
 
   // Retry mechanism
   const handleRetry = () => {
@@ -161,6 +228,12 @@ const PaymentSuccess = () => {
         <p className="text-gray-700 mb-6">
           {status.data?.message || 'Thank you for your order. Your payment was received successfully.'}
         </p>
+        {status.order && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <p className="text-green-800 font-semibold">Order ID: {status.order.order?._id || 'Processing...'}</p>
+            <p className="text-green-700 text-sm">You will receive an email confirmation shortly.</p>
+          </div>
+        )}
         <div className="flex gap-4">
           <button onClick={handleGoOrders} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-semibold transition">View Orders</button>
           <button onClick={handleGoHome} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">Go to Home</button>
@@ -198,9 +271,11 @@ const PaymentSuccess = () => {
   }
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center bg-gray-50">
-      <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full mx-auto">
-        {content}
+    <div className="min-h-screen bg-gradient-to-br from-pink-500 via-white to-pink-100">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
+          {content}
+        </div>
       </div>
     </div>
   );

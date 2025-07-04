@@ -277,11 +277,19 @@ const Checkout = () => {
         return;
       }
 
+      // Validate minimum order amount for online payment
+      const finalAmount = getOnlinePaymentAmount();
+      if (finalAmount < 1) {
+        setError("Order amount must be at least ₹1 for online payment.");
+        setPaymentProcessing(false);
+        return;
+      }
+
       console.log('Checkout - Starting PhonePe payment process');
       
       // Prepare order data according to PhonePe API requirements
       const orderData = {
-        amount: getOnlinePaymentAmount(),
+        amount: finalAmount,
         customerName: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phone,
@@ -349,6 +357,10 @@ const Checkout = () => {
         errorMsg = 'Payment gateway timeout. Please try again.';
       } else if (error.code === 'ENOTFOUND') {
         errorMsg = 'Payment gateway not reachable. Please try again.';
+      } else if (error.response?.status === 500) {
+        errorMsg = 'Payment gateway error. Please try again later.';
+      } else if (error.response?.status === 400) {
+        errorMsg = 'Invalid payment request. Please check your details.';
       }
       
       setError(errorMsg);

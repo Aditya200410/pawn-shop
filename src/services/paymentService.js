@@ -1,5 +1,6 @@
 import axios from 'axios';
 import config from '../config/config';
+import orderService from './orderService';
 
 const API_BASE_URL = config.API_BASE_URL;
 
@@ -114,6 +115,76 @@ class PaymentService {
     } catch (error) {
       console.error('PaymentService - Callback verification error:', error);
       throw new Error('Failed to verify payment callback');
+    }
+  }
+
+  // Create order after successful payment
+  async createOrderAfterPayment(orderData, paymentStatus = 'completed') {
+    try {
+      console.log('PaymentService - Creating order after payment:', orderData);
+      
+      const orderPayload = {
+        customerName: orderData.customerName,
+        email: orderData.email,
+        phone: orderData.phone,
+        address: orderData.address,
+        city: orderData.city,
+        state: orderData.state,
+        pincode: orderData.pincode,
+        country: orderData.country,
+        items: orderData.items,
+        totalAmount: orderData.totalAmount,
+        paymentMethod: 'phonepe',
+        paymentStatus: paymentStatus,
+        sellerToken: orderData.sellerToken,
+        transactionId: orderData.transactionId,
+        couponCode: orderData.couponCode
+      };
+
+      const response = await orderService.createOrder(orderPayload);
+      console.log('PaymentService - Order created successfully:', response);
+      return response;
+    } catch (error) {
+      console.error('PaymentService - Order creation error:', error);
+      throw new Error('Failed to create order after payment');
+    }
+  }
+
+  // Complete payment flow - verify payment and create order
+  async completePaymentFlow(transactionId, orderData) {
+    try {
+      console.log('PaymentService - Completing payment flow for transaction:', transactionId);
+      
+      // First verify payment status
+      const paymentStatus = await this.checkPhonePeStatus(transactionId);
+      
+      if (paymentStatus.success && paymentStatus.data?.state === 'COMPLETED') {
+        // Payment is successful, create order
+        const orderResult = await this.createOrderAfterPayment(orderData, 'completed');
+        return {
+          success: true,
+          paymentStatus,
+          order: orderResult
+        };
+      } else if (paymentStatus.success && paymentStatus.data?.state === 'PENDING') {
+        // Payment is pending, create order with pending status
+        const orderResult = await this.createOrderAfterPayment(orderData, 'pending');
+        return {
+          success: true,
+          paymentStatus,
+          order: orderResult
+        };
+      } else {
+        // Payment failed
+        return {
+          success: false,
+          paymentStatus,
+          message: 'Payment verification failed'
+        };
+      }
+    } catch (error) {
+      console.error('PaymentService - Payment flow completion error:', error);
+      throw error;
     }
   }
 }
