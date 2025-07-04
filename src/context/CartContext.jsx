@@ -3,6 +3,7 @@ import { useAuth } from './AuthContext';
 import cartService from '../services/cartService';
 import { toast } from 'react-hot-toast';
 import config from '../config/config';
+import { updateURLWithSellerToken, removeSellerTokenFromURL, getSellerTokenFromURL } from '../utils/urlUtils';
 
 const CartContext = createContext();
 
@@ -45,13 +46,23 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, [isAuthenticated, user]);
 
-  // Load seller token from localStorage on mount
+  // Load seller token from localStorage on mount and update URL
   useEffect(() => {
     const savedSellerToken = localStorage.getItem('sellerToken');
+    const urlSellerToken = getSellerTokenFromURL();
+    
     console.log('CartContext - Loading sellerToken from localStorage:', savedSellerToken);
-    if (savedSellerToken) {
-      setSellerToken(savedSellerToken);
-      console.log('CartContext - sellerToken loaded from localStorage:', savedSellerToken);
+    console.log('CartContext - sellerToken from URL:', urlSellerToken);
+    
+    // Priority: URL token > localStorage token
+    const tokenToUse = urlSellerToken || savedSellerToken;
+    
+    if (tokenToUse) {
+      setSellerToken(tokenToUse);
+      localStorage.setItem('sellerToken', tokenToUse);
+      // Ensure URL has the token
+      updateURLWithSellerToken(tokenToUse);
+      console.log('CartContext - sellerToken set to:', tokenToUse);
     }
   }, []);
 
@@ -62,12 +73,16 @@ export const CartProvider = ({ children }) => {
     }
   }, [cartItems, isAuthenticated]);
 
-  // Save seller token to localStorage
+  // Save seller token to localStorage and update URL
   useEffect(() => {
     if (sellerToken) {
       localStorage.setItem('sellerToken', sellerToken);
+      // Update URL to include seller token
+      updateURLWithSellerToken(sellerToken);
     } else {
       localStorage.removeItem('sellerToken');
+      // Remove seller token from URL
+      removeSellerTokenFromURL();
     }
   }, [sellerToken]);
 
@@ -77,6 +92,8 @@ export const CartProvider = ({ children }) => {
     if (token) {
       setSellerToken(token);
       localStorage.setItem('sellerToken', token);
+      // Update URL to include seller token
+      updateURLWithSellerToken(token);
       console.log('CartContext - sellerToken set to:', token);
     }
   };
@@ -85,6 +102,15 @@ export const CartProvider = ({ children }) => {
   const clearSellerToken = () => {
     setSellerToken(null);
     localStorage.removeItem('sellerToken');
+    // Remove seller token from URL
+    removeSellerTokenFromURL();
+  };
+
+  // Function to update URL with current seller token
+  const updateURLWithCurrentSellerToken = () => {
+    if (sellerToken) {
+      updateURLWithSellerToken(sellerToken);
+    }
   };
 
   const addToCart = async (productId, quantity = 1) => {
@@ -234,7 +260,8 @@ export const CartProvider = ({ children }) => {
         getItemImage,
         sellerToken,
         setSellerTokenFromURL,
-        clearSellerToken
+        clearSellerToken,
+        updateURLWithCurrentSellerToken
       }}
     >
       {children}

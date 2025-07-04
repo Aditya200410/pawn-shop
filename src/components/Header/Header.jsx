@@ -9,6 +9,8 @@ import logo from '/logo.png';
 import config from '../../config/config.js';
 import axios from 'axios';
 import Loader from '../Loader';
+import { useSellerNavigation } from '../../hooks/useSellerNavigation';
+
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,6 +31,7 @@ const Header = () => {
   const { user } = useAuth();
   const [dynamicCategories, setDynamicCategories] = useState([]);
   const [activeMobileTab, setActiveMobileTab] = useState('menu');
+  const { navigateToHome, navigateToShop, navigateToProduct } = useSellerNavigation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -110,22 +113,14 @@ const Header = () => {
   }, []);
 
   const handleCategoryClick = (category, subcategory = null, item = null) => {
-    navigate('/shop', {
-      state: {
-        selectedCategory: {
-          main: category,
-          sub: subcategory,
-          item: item
-        }
-      }
-    });
+    navigateToShop();
     setIsMobileMenuOpen(false);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      navigateToShop();
       setIsMobileMenuOpen(false);
     }
   };
@@ -142,7 +137,7 @@ const Header = () => {
     setIsDesktopSearchFocused(false);
     setSearchResults([]);
     setSearchQuery('');
-    navigate(`/product/${id}`);
+    navigateToProduct(id);
   };
 
   const isActive = (path) => location.pathname === path;
@@ -279,7 +274,7 @@ const Header = () => {
                 <div className="flex items-center space-x-4 text-white">
                   <a href="#" className="hover:opacity-80"><FaFacebookF /></a>
                   <a href="#" className="hover:opacity-80"><FaTwitter /></a>
-                  <a href="#" className="hover:opacity-80"><FaInstagram /></a>
+                  <a href="https://www.instagram.com/riko.craft?igsh=YWlsZmRnNmk5eXp2" className="hover:opacity-80"><FaInstagram /></a>
                 </div>
               </div>
             </div>
@@ -290,9 +285,9 @@ const Header = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-[90px] md:h-[120px]">
             {/* Desktop Logo */}
-            <Link to="/" className="hidden md:block">
+            <button onClick={navigateToHome} className="hidden md:block">
               <img src={logo} alt="Riko Craft" className="h-20 w-auto" />
-            </Link>
+            </button>
 
             {/* Mobile Hamburger Menu - Left */}
             <button
@@ -304,11 +299,11 @@ const Header = () => {
 
             {/* Logo Image - Centered (Mobile Only) */}
             <div className="absolute left-1/2 transform -translate-x-1/2 md:hidden">
-            <Link to="/" className="md:block">
+            <button onClick={navigateToHome} className="md:block">
             
             
               <img src={logo} alt="Riko Craft" className="h-16 w-auto" />
-              </Link>
+              </button>
             </div>
 
             {/* Desktop Search */}
@@ -389,6 +384,7 @@ const Header = () => {
 
             {/* Desktop Icons */}
             <div className="hidden md:flex items-center space-x-6">
+            
               {user ? (
                 <div className="flex items-center space-x-4">
                   

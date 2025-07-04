@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useSearchParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
@@ -96,10 +96,11 @@ class ErrorBoundary extends React.Component {
 
 function AppContent() {
   useScrollToTop();
-  const { toast, setToast, setSellerTokenFromURL } = useCart();
+  const { toast, setToast, setSellerTokenFromURL, sellerToken, updateURLWithCurrentSellerToken } = useCart();
   const { loading: authLoading } = useAuth();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // Global seller token handler
   useEffect(() => {
@@ -108,6 +109,13 @@ function AppContent() {
       setSellerTokenFromURL(sellerToken);
     }
   }, [location, searchParams, setSellerTokenFromURL]);
+
+  // Ensure URL has seller token when navigating
+  useEffect(() => {
+    if (sellerToken && !searchParams.get('seller')) {
+      updateURLWithCurrentSellerToken();
+    }
+  }, [sellerToken, location.pathname, updateURLWithCurrentSellerToken]);
 
   // Show loading only if auth is still loading
   if (authLoading) {

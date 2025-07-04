@@ -30,12 +30,14 @@ import Loader from '../components/Loader';
 import AuthPrompt from '../components/AuthPrompt';
 import FlashMessage from '../components/FlashMessage';
 import cartService from '../services/cartService';
+import { useSellerNavigation } from '../hooks/useSellerNavigation';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, getTotalPrice, clearCart, getItemImage, sellerToken, setSellerTokenFromURL, clearSellerToken, setCartItems } = useCart();
   const { user, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
+  const { navigateToCart } = useSellerNavigation();
   
   // Always set seller token from URL if present (robustness)
   useEffect(() => {
@@ -561,7 +563,7 @@ const Checkout = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/cart')}
+                onClick={navigateToCart}
                 className="flex items-center space-x-2 text-pink-700 hover:text-pink-900 transition-colors"
               >
                 <ArrowLeft size={20} />
@@ -590,6 +592,8 @@ const Checkout = () => {
               className="bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden"
             >
               <div className="p-8">
+              
+
                 <div className="mb-6 p-4 bg-gradient-to-r from-pink-50 to-pink-50 border border-pink-200 rounded-xl">
                   <div className="flex items-center space-x-2 mb-2">
                     <Sparkles size={20} className="text-pink-500" />

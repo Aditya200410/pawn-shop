@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import config from '../config/config.js';
 import { toast } from 'react-hot-toast';
 import AuthPrompt from './AuthPrompt';
+import { useSellerNavigation } from '../hooks/useSellerNavigation';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -28,6 +29,7 @@ const Cart = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { navigateToCheckout } = useSellerNavigation();
 
   // Handle seller token from URL
   React.useEffect(() => {
@@ -236,11 +238,9 @@ const Cart = () => {
               </div>
             </div>
 
+           
             <button
-              onClick={() => {
-                const checkoutUrl = sellerToken ? `/checkout?seller=${sellerToken}` : '/checkout';
-                navigate(checkoutUrl);
-              }}
+              onClick={navigateToCheckout}
               className="w-full bg-[#8f3a61] text-white py-2.5 rounded-xl mt-4 hover:bg-[#8f3a61] transition-colors flex items-center justify-center space-x-2 text-base font-medium"
             >
               <span>Proceed to Checkout</span>
