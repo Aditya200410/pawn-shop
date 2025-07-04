@@ -276,6 +276,9 @@ const Checkout = () => {
         setPaymentProcessing(false);
         return;
       }
+
+      console.log('Checkout - Starting PhonePe payment process');
+      
       // Prepare order data as needed by your backend
       const orderData = {
         amount: getOnlinePaymentAmount(),
@@ -299,22 +302,39 @@ const Checkout = () => {
         codExtraCharge: getCodExtraCharge(),
         finalTotal: getFinalTotal(),
         paymentMethod: formData.paymentMethod,
-        paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'Paid',
-        couponCode: appliedCoupon ? appliedCoupon.code : undefined, // Pass coupon code to backend
-        sellerToken: sellerToken // Always include sellerToken
+        paymentStatus: 'processing', // Will be updated after payment
+        couponCode: appliedCoupon ? appliedCoupon.code : undefined,
+        sellerToken: sellerToken
       };
+
+      console.log('Checkout - PhonePe order data:', orderData);
+      
       // Call your backend to create a PhonePe order using the new paymentService
       const data = await paymentService.initiatePhonePePayment(orderData);
+      
+      console.log('Checkout - PhonePe response:', data);
+      
       if (data.success && data.redirectUrl) {
+        console.log('Checkout - Redirecting to PhonePe:', data.redirectUrl);
+        
+        // Store transaction ID for later verification
+        if (data.transactionId) {
+          localStorage.setItem('phonepe_transaction_id', data.transactionId);
+        }
+        
         // Redirect to PhonePe payment page
         window.location.href = data.redirectUrl;
       } else {
-        setError(data.message || "Failed to initiate PhonePe payment.");
-        toast.error(data.message || "Failed to initiate PhonePe payment.");
+        const errorMsg = data.message || "Failed to initiate PhonePe payment.";
+        console.error('Checkout - PhonePe initiation failed:', errorMsg);
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
-      setError(error.message || "PhonePe payment failed.");
-      toast.error(error.message || "PhonePe payment failed.");
+      console.error('Checkout - PhonePe payment error:', error);
+      const errorMsg = error.message || "PhonePe payment failed.";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setPaymentProcessing(false);
     }

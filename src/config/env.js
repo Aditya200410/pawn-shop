@@ -14,10 +14,10 @@ const env = {
   
   // PhonePe Payment Gateway
   PHONEPE: {
-    MERCHANT_ID: import.meta.env.PHONEPE_MERCHANT_ID || '',
-    CLIENT_SECRET: import.meta.env.PHONEPE_CLIENT_SECRET || '',
-    ENV: import.meta.env.PHONEPE_ENV || 'production',
-    FRONTEND_URL: import.meta.env.FRONTEND_URL || 'https://rikocraft.com',
+    MERCHANT_ID: import.meta.env.VITE_PHONEPE_MERCHANT_ID || '',
+    CLIENT_SECRET: import.meta.env.VITE_PHONEPE_CLIENT_SECRET || '',
+    ENV: import.meta.env.VITE_PHONEPE_ENV || 'production',
+    FRONTEND_URL: import.meta.env.VITE_FRONTEND_URL || 'https://pawn-shop-git-local-host-api-used-aditya200410s-projects.vercel.app',
   },
   
   // Image CDN
