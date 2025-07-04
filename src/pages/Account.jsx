@@ -92,7 +92,6 @@ const Account = () => {
       navigate('/login');
       return;
     }
-    
     setFormData(prev => ({
       ...prev,
       name: user.name,
@@ -100,9 +99,14 @@ const Account = () => {
       phone: user.phone || '',
       address: user.address || '',
     }));
-    
-    setOrders([]);
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (user?.email) {
+      fetchOrders();
+    }
+    // eslint-disable-next-line
+  }, [user?.email]);
 
   useEffect(() => {
     if (activeTab === 'orders') {
