@@ -27,6 +27,7 @@ import {
 } from 'react-icons/fi';
 import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
+import config from '../config/config';
 
 const SellerProfile = () => {
   const { seller, loading, error, updateProfile, logout, fetchProfile, loggedIn } = useSeller();
@@ -217,7 +218,7 @@ const SellerProfile = () => {
     e.preventDefault();
     setWithdrawing(true);
     try {
-      const res = await fetch(`/api/seller/withdraw`, {
+      const res = await fetch(`${config.API_BASE_URL}/api/seller/withdraw`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('seller_jwt')}` },
         body: JSON.stringify({
@@ -229,6 +230,11 @@ const SellerProfile = () => {
       if (res.ok && data.success) {
         toast.success('Withdrawal request submitted!');
         setShowWithdrawForm(false);
+        // Refetch seller profile to update withdrawals
+        if (typeof fetchProfile === 'function') {
+          const token = localStorage.getItem('seller_jwt');
+          if (token) await fetchProfile(token);
+        }
       } else {
         toast.error(data.message || 'Failed to request withdrawal');
       }
@@ -860,6 +866,35 @@ const SellerProfile = () => {
                       </div>
                     </div>
                   </motion.div>
+
+                  {/* Withdrawal History */}
+                  {Array.isArray(safeSeller.withdrawals) && safeSeller.withdrawals.length > 0 && (
+                    <div className="bg-white rounded-xl shadow border border-pink-100 p-4 sm:p-6 mt-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Withdrawal History</h3>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-pink-100">
+                          <thead>
+                            <tr>
+                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Requested At</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-pink-50">
+                            {safeSeller.withdrawals.slice().reverse().map((w, idx) => (
+                              <tr key={idx}>
+                                <td className="px-4 py-2 text-pink-700 font-semibold">₹{w.amount}</td>
+                                <td className="px-4 py-2">
+                                  <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${w.status === 'completed' ? 'bg-green-100 text-green-700' : w.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>{w.status}</span>
+                                </td>
+                                <td className="px-4 py-2 text-gray-600">{w.requestedAt ? new Date(w.requestedAt).toLocaleString() : ''}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
