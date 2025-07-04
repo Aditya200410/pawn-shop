@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSeller } from '../context/SellerContext';
 import { toast } from 'react-hot-toast';
 import Loader from '../components/Loader';
-import { Upload, X, ArrowRight } from 'lucide-react';
+import { Upload, X, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -25,6 +25,7 @@ const BecomeSeller = () => {
   });
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagePreview, setImagePreview] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (seller) {
@@ -230,30 +231,52 @@ const BecomeSeller = () => {
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password *
                 </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
-                  onChange={handleChange}
-                  value={formData.password}
-                />
+                <div className="mt-1 relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    id="password"
+                    required
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 pr-10"
+                    onChange={handleChange}
+                    value={formData.password}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                   Confirm Password *
                 </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  id="confirmPassword"
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
-                  onChange={handleChange}
-                  value={formData.confirmPassword}
-                />
+                <div className="mt-1 relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    required
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 pr-10"
+                    onChange={handleChange}
+                    value={formData.confirmPassword}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
