@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import config from '../../config/config';
 
+const isMobile = () => window.innerWidth <= 768;
+
 const Hero = () => {
   const [carouselData, setCarouselData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +28,11 @@ const Hero = () => {
       const response = await fetch(`${config.API_BASE_URL}/api/hero-carousel/active`);
       if (!response.ok) throw new Error('Failed to fetch carousel data');
       const data = await response.json();
-      setCarouselData(data);
+      const filteredData = data.filter(item => {
+        if (isMobile()) return item.showOn === 'mobile';
+        return item.showOn === 'desktop';
+      });
+      setCarouselData(filteredData);
     } catch (err) {
       console.error('Error fetching carousel data:', err);
       setError('Failed to load carousel content');
@@ -122,7 +128,7 @@ const Hero = () => {
           className="absolute inset-0 z-0"
         >
           <div className="absolute inset-0">
-            {carouselData[currentSlide].image.endsWith('.mp4') ? (
+            {carouselData[currentSlide].desktopImage || carouselData[currentSlide].mobileImage ? (
               <video
                 className="absolute inset-0 w-full h-full object-cover"
                 autoPlay
@@ -131,12 +137,12 @@ const Hero = () => {
                 playsInline
                 onError={handleMediaError}
               >
-                <source src={carouselData[currentSlide].image} type="video/mp4" />
+                <source src={carouselData[currentSlide].desktopImage || carouselData[currentSlide].mobileImage} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             ) : (
               <img
-                src={carouselData[currentSlide].image}
+                src={carouselData[currentSlide].desktopImage || carouselData[currentSlide].mobileImage}
                 alt={carouselData[currentSlide].title}
                 className="absolute inset-0 w-full h-full object-cover"
                 onError={handleMediaError}
