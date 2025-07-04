@@ -241,15 +241,14 @@ const BecomeSeller = () => {
                     onChange={handleChange}
                     value={formData.password}
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                    >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500 focus:outline-none"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
                 </div>
               </div>
 
@@ -267,15 +266,14 @@ const BecomeSeller = () => {
                     onChange={handleChange}
                     value={formData.confirmPassword}
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                    >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500 focus:outline-none"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
                 </div>
               </div>
             </div>
@@ -283,7 +281,7 @@ const BecomeSeller = () => {
             {/* Image Upload Section */}
             <div className="border-t border-gray-200 pt-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Business Images
+                Business Images (Optional)
               </label>
               <div className="space-y-4">
                 {/* Upload Button */}
