@@ -72,8 +72,8 @@ const Checkout = () => {
     billingZipCode: '',
     billingCountry: 'India',
     
-    // Payment Information
-    paymentMethod: 'cod'
+    // Payment Information - will be set after cart loads
+    paymentMethod: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -84,6 +84,7 @@ const Checkout = () => {
   const [couponLoading, setCouponLoading] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [cartLoading, setCartLoading] = useState(true);
+  const [cartLoaded, setCartLoaded] = useState(false);
 
   // Pre-fill form with user data if logged in
   useEffect(() => {
@@ -118,10 +119,10 @@ const Checkout = () => {
   }, [formData.billingSameAsShipping, formData.firstName, formData.lastName, formData.email, formData.phone, formData.address, formData.city, formData.state, formData.zipCode, formData.country]);
 
   useEffect(() => {
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0 && cartLoaded) {
       navigate('/cart');
     }
-  }, [cartItems, navigate]);
+  }, [cartItems, navigate, cartLoaded]);
 
   // Force cart refresh from backend on checkout page load
   useEffect(() => {
@@ -139,6 +140,7 @@ const Checkout = () => {
         }
       }
       setCartLoading(false);
+      setCartLoaded(true);
     };
     refreshCart();
     // eslint-disable-next-line
@@ -149,25 +151,22 @@ const Checkout = () => {
     return item.codAvailable !== false; // treat undefined as true for backward compatibility
   });
 
-  // Ensure payment method is valid when COD is not available
+  // Set payment method after cart loads and COD availability is determined
   useEffect(() => {
-    if (!isCodAvailableForCart && formData.paymentMethod === 'cod') {
-      setFormData(prev => ({
-        ...prev,
-        paymentMethod: 'phonepe'
-      }));
+    if (cartLoaded && cartItems.length > 0) {
+      if (isCodAvailableForCart) {
+        setFormData(prev => ({
+          ...prev,
+          paymentMethod: 'cod'
+        }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          paymentMethod: 'phonepe'
+        }));
+      }
     }
-  }, [isCodAvailableForCart]);
-
-  // Also ensure on initial load
-  useEffect(() => {
-    if (!isCodAvailableForCart && formData.paymentMethod === 'cod') {
-      setFormData(prev => ({
-        ...prev,
-        paymentMethod: 'phonepe'
-      }));
-    }
-  }, []);
+  }, [cartLoaded, cartItems, isCodAvailableForCart]);
 
   const validateForm = () => {
     const errors = {};
@@ -292,8 +291,7 @@ const Checkout = () => {
       couponCode: appliedCoupon ? appliedCoupon.code : undefined // Pass coupon code to backend
     };
     
-    console.log('Checkout - sellerToken being sent:', sellerToken);
-    console.log('Checkout - orderData:', orderData);
+
     
     try {
       const response = await orderService.createOrder(orderData);
@@ -337,8 +335,6 @@ const Checkout = () => {
         return;
       }
 
-      console.log('Checkout - Starting PhonePe payment process');
-      
       // Prepare order data according to PhonePe API requirements
       const orderData = {
         amount: finalAmount,
@@ -366,15 +362,10 @@ const Checkout = () => {
         couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
 
-      console.log('Checkout - PhonePe order data:', orderData);
-      
       // Call backend to create PhonePe order
       const data = await paymentService.initiatePhonePePayment(orderData);
       
-      console.log('Checkout - PhonePe response:', data);
-      
       if (data.success && data.redirectUrl) {
-        console.log('Checkout - Redirecting to PhonePe:', data.redirectUrl);
         
         // Store transaction data for later verification
         if (data.transactionId) {
@@ -393,12 +384,10 @@ const Checkout = () => {
         }, 1000);
       } else {
         const errorMsg = data.message || data.error?.message || "Failed to initiate PhonePe payment.";
-        console.error('Checkout - PhonePe initiation failed:', errorMsg);
         setError(errorMsg);
         toast.error(errorMsg);
       }
     } catch (error) {
-      console.error('Checkout - PhonePe payment error:', error);
       let errorMsg = error.message || "PhonePe payment failed.";
       
       if (error.response?.data?.error?.message) {
@@ -515,7 +504,7 @@ const Checkout = () => {
     );
   }
 
-  if (cartLoading) {
+  if (cartLoading || !cartLoaded || !formData.paymentMethod) {
     return <Loader />;
   }
 
@@ -803,7 +792,12 @@ const Checkout = () => {
                   <div className="bg-white rounded-xl p-6 mb-8">
                     <h2 className="text-lg font-semibold mb-4">Payment Method</h2>
                     <div className="flex flex-col gap-4">
-                      {isCodAvailableForCart ? (
+                      {!cartLoaded || !formData.paymentMethod ? (
+                        <div className="flex items-center justify-center py-4">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
+                          <span className="ml-2 text-gray-600">Loading payment options...</span>
+                        </div>
+                      ) : isCodAvailableForCart ? (
                         <>
                           <label className="flex items-center gap-3 cursor-pointer">
                             <input
@@ -839,22 +833,29 @@ const Checkout = () => {
                           </label>
                         </>
                       ) : (
-                        <label className="flex items-center gap-3 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            value="phonepe"
-                            checked={formData.paymentMethod === 'phonepe'}
-                            onChange={handleInputChange}
-                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <div className="flex-1">
-                            <span className="text-gray-800 font-medium">UPI (PhonePe)</span>
-                            <p className="text-sm text-gray-600 mt-1">
-                              Pay securely using UPI via PhonePe
+                        <>
+                          <label className="flex items-center gap-3 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="phonepe"
+                              checked={formData.paymentMethod === 'phonepe'}
+                              onChange={handleInputChange}
+                              className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <div className="flex-1">
+                              <span className="text-gray-800 font-medium">UPI (PhonePe)</span>
+                              <p className="text-sm text-gray-600 mt-1">
+                                Pay securely using UPI via PhonePe
+                              </p>
+                            </div>
+                          </label>
+                          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p className="text-sm text-yellow-700">
+                              <span className="font-medium">Note:</span> Cash on Delivery is not available for one or more items in your cart.
                             </p>
                           </div>
-                        </label>
+                        </>
                       )}
                     </div>
                   </div>
@@ -933,81 +934,95 @@ const Checkout = () => {
               </div>
 
               <div className="space-y-4 mb-6">
-                {cartItems.map((item, index) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-center space-x-4 p-3 bg-pink-50/50 rounded-xl"
-                  >
-                    <div className="relative">
-                      <img 
-                        src={config.fixImageUrl(getItemImage(item))} 
-                        alt={item.product?.name || item.name} 
-                        className="w-16 h-16 rounded-lg object-cover border border-pink-200" 
-                        onError={e => {
-                          e.target.onerror = null;
-                          if (item.product?.images && item.product.images.length > 0) {
-                            const nextImage = item.product.images.find(img => img !== e.target.src);
-                            if (nextImage) {
-                              e.target.src = config.fixImageUrl(nextImage);
-                              return;
+                {!cartLoaded ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                    <span className="ml-3 text-gray-600">Loading cart items...</span>
+                  </div>
+                ) : (
+                  cartItems.map((item, index) => (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-center space-x-4 p-3 bg-pink-50/50 rounded-xl"
+                    >
+                      <div className="relative">
+                        <img 
+                          src={config.fixImageUrl(getItemImage(item))} 
+                          alt={item.product?.name || item.name} 
+                          className="w-16 h-16 rounded-lg object-cover border border-pink-200" 
+                          onError={e => {
+                            e.target.onerror = null;
+                            if (item.product?.images && item.product.images.length > 0) {
+                              const nextImage = item.product.images.find(img => img !== e.target.src);
+                              if (nextImage) {
+                                e.target.src = config.fixImageUrl(nextImage);
+                                return;
+                              }
                             }
-                          }
-                          e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Product';
-                        }}
-                      />
-                      <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-pink-400 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-semibold">
-                        {item.quantity}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-pink-900 line-clamp-2">
-                        {item.product?.name || item.name}
-                      </h4>
-                      <p className="text-sm text-pink-600">
-                        ₹{(item.product?.price || item.price).toFixed(2)}
+                            e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Product';
+                          }}
+                        />
+                        <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-pink-400 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-semibold">
+                          {item.quantity}
+                        </span>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-pink-900 line-clamp-2">
+                          {item.product?.name || item.name}
+                        </h4>
+                        <p className="text-sm text-pink-600">
+                          ₹{(item.product?.price || item.price).toFixed(2)}
+                        </p>
+                      </div>
+                      <p className="text-sm font-bold text-pink-900">
+                        ₹{((item.product?.price || item.price) * item.quantity).toFixed(2)}
                       </p>
-                    </div>
-                    <p className="text-sm font-bold text-pink-900">
-                      ₹{((item.product?.price || item.price) * item.quantity).toFixed(2)}
-                    </p>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))
+                )}
               </div>
 
               <div className="bg-white rounded-xl p-6 mb-8">
                 <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span>Subtotal ({cartItems.length} items)</span>
-                    <span>₹{getTotalPrice().toFixed(2)}</span>
-                </div>
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span className={calculateShippingCost() === 0 ? 'text-green-600' : ''}>
-                      {calculateShippingCost() === 0 ? 'Free' : `₹${calculateShippingCost().toFixed(2)}`}
-                    </span>
+                {!cartLoaded || !formData.paymentMethod ? (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
+                    <span className="ml-2 text-gray-600">Calculating totals...</span>
                   </div>
-                  {formData.paymentMethod === 'cod' && (
+                ) : (
+                  <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span>COD Extra Charge</span>
-                      <span>₹{getCodExtraCharge().toFixed(2)}</span>
+                      <span>Subtotal ({cartItems.length} items)</span>
+                      <span>₹{getTotalPrice().toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Shipping</span>
+                      <span className={calculateShippingCost() === 0 ? 'text-green-600' : ''}>
+                        {calculateShippingCost() === 0 ? 'Free' : `₹${calculateShippingCost().toFixed(2)}`}
+                      </span>
+                    </div>
+                    {formData.paymentMethod === 'cod' && (
+                      <div className="flex justify-between">
+                        <span>COD Extra Charge</span>
+                        <span>₹{getCodExtraCharge().toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="border-t pt-3">
+                      <div className="flex justify-between font-semibold text-lg">
+                        <span>Total Amount</span>
+                        <span>₹{getFinalTotal().toFixed(2)}</span>
+                      </div>
+                      {formData.paymentMethod === 'cod' && (
+                        <div className="text-sm text-gray-600 mt-1">
+                          Pay ₹{getFinalTotal().toFixed(2)} online + remaining ₹{(getTotalPrice() + calculateShippingCost()).toFixed(2)} on delivery
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
-                  <div className="border-t pt-3">
-                    <div className="flex justify-between font-semibold text-lg">
-                      <span>Total Amount</span>
-                      <span>₹{getFinalTotal().toFixed(2)}</span>
-                </div>
-                    {formData.paymentMethod === 'cod' && (
-                      <div className="text-sm text-gray-600 mt-1">
-                        Pay ₹{getFinalTotal().toFixed(2)} online + remaining ₹{(getTotalPrice() + calculateShippingCost()).toFixed(2)} on delivery
-                  </div>
-                    )}
-                  </div>
-                </div>
               </div>
 
               <motion.button
@@ -1018,10 +1033,12 @@ const Checkout = () => {
                     ? handlePhonePePayment
                     : handleSubmit
                 }
-                disabled={loading || paymentProcessing}
+                disabled={loading || paymentProcessing || !cartLoaded || !formData.paymentMethod}
                 className="w-full mt-6 bg-gradient-to-r from-pink-500 to-pink-400 text-white px-6 py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {loading || paymentProcessing ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                ) : !cartLoaded || !formData.paymentMethod ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 ) : (
                   <>
