@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
@@ -18,6 +18,44 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [msg91Token, setMsg91Token] = useState(null);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+
+  // MSG91 Configuration
+  const msg91Config = {
+    widgetId: "356765707a68343736313035",
+    tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
+    exposeMethods: "true",
+    success: (data) => {
+      console.log('MSG91 success response', data);
+      setMsg91Token(data.token);
+      setIsOtpSent(true);
+      toast.success('OTP sent successfully! Please verify your phone number.');
+    },
+    failure: (error) => {
+      console.log('MSG91 failure reason', error);
+      setError('Failed to send OTP. Please try again.');
+      setIsLoading(false);
+    },
+  };
+
+  // Load MSG91 script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://verify.msg91.com/otp-provider.js';
+    script.onload = () => {
+      console.log('MSG91 script loaded');
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      const existingScript = document.querySelector('script[src="https://verify.msg91.com/otp-provider.js"]');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,17 +77,23 @@ const Signup = () => {
     }
 
     try {
-      await register({
+      // Store user data in localStorage for OTP verification
+      localStorage.setItem('pendingRegistration', JSON.stringify({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         password: formData.password
+      }));
+
+      // Navigate to OTP verification page with MSG91
+      navigate('/otp-verification', { 
+        state: { 
+          phone: formData.phone,
+          useMsg91: true 
+        } 
       });
-      toast.success('OTP sent! Please check your phone.');
-      navigate('/otp-verification', { state: { email: formData.email } });
     } catch (err) {
       setError(err.message || contextError || 'Failed to create account');
-    } finally {
       setIsLoading(false);
     }
   };

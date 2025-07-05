@@ -8,7 +8,7 @@ class PaymentService {
   // Initiate PhonePe payment according to official API documentation
   async initiatePhonePePayment(orderData) {
     try {
-      console.log('PaymentService - Initiating PhonePe payment with data:', orderData);
+  
       
       // Prepare order data according to PhonePe API requirements
       const phonePeOrderData = {
@@ -31,7 +31,7 @@ class PaymentService {
         couponCode: orderData.couponCode
       };
       
-      console.log('PaymentService - PhonePe order data:', phonePeOrderData);
+      
       
       const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe`, phonePeOrderData, {
         timeout: 30000, // 30 second timeout
@@ -40,7 +40,7 @@ class PaymentService {
         }
       });
       
-      console.log('PaymentService - PhonePe response:', response.data);
+      
       return response.data;
     } catch (error) {
       console.error('PaymentService - PhonePe initiation error:', error);
@@ -70,7 +70,7 @@ class PaymentService {
   // Check PhonePe payment status
   async checkPhonePeStatus(orderId) {
     try {
-      console.log('PaymentService - Checking PhonePe status for:', orderId);
+  
       
       const response = await axios.get(`${API_BASE_URL}/api/payment/phonepe/status/${orderId}`, {
         timeout: 30000,
@@ -79,7 +79,7 @@ class PaymentService {
         }
       });
       
-      console.log('PaymentService - PhonePe status response:', response.data);
+      
       return response.data;
     } catch (error) {
       console.error('PaymentService - PhonePe status check error:', error);
@@ -103,7 +103,7 @@ class PaymentService {
   // Handle PhonePe callback verification
   async verifyPhonePeCallback(callbackData) {
     try {
-      console.log('PaymentService - Verifying PhonePe callback:', callbackData);
+  
       
       const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe/callback`, callbackData, {
         timeout: 30000,
@@ -112,7 +112,7 @@ class PaymentService {
         }
       });
       
-      console.log('PaymentService - Callback verification response:', response.data);
+      
       return response.data;
     } catch (error) {
       console.error('PaymentService - Callback verification error:', error);
@@ -123,7 +123,7 @@ class PaymentService {
   // Process refund through PhonePe
   async processRefund(refundData) {
     try {
-      console.log('PaymentService - Processing refund:', refundData);
+  
       
       const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe/refund`, refundData, {
         timeout: 30000,
@@ -132,7 +132,7 @@ class PaymentService {
         }
       });
       
-      console.log('PaymentService - Refund response:', response.data);
+      
       return response.data;
     } catch (error) {
       console.error('PaymentService - Refund error:', error);
@@ -158,7 +158,7 @@ class PaymentService {
   // Check refund status
   async checkRefundStatus(merchantRefundId) {
     try {
-      console.log('PaymentService - Checking refund status for:', merchantRefundId);
+  
       
       const response = await axios.get(`${API_BASE_URL}/api/payment/phonepe/refund/${merchantRefundId}/status`, {
         timeout: 30000,
@@ -167,7 +167,7 @@ class PaymentService {
         }
       });
       
-      console.log('PaymentService - Refund status response:', response.data);
+      
       return response.data;
     } catch (error) {
       console.error('PaymentService - Refund status check error:', error);
@@ -191,7 +191,7 @@ class PaymentService {
   // Create order after successful payment
   async createOrderAfterPayment(orderData, paymentStatus = 'completed') {
     try {
-      console.log('PaymentService - Creating order after payment:', orderData);
+  
       
       const orderPayload = {
         customerName: orderData.customerName,

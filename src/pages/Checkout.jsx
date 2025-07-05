@@ -323,7 +323,7 @@ const Checkout = () => {
       if (response.success) {
         toast.success('Order placed successfully!');
         if (sellerToken) {
-          toast.success('Seller commission has been tracked!');
+       
         }
         clearCart(); // Clear cart on successful order
         clearSellerToken();
