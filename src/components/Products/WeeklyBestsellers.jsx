@@ -181,7 +181,7 @@ export default function WeeklyBestsellers() {
               </p>
               <Link 
                 to="/shop" 
-                className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-[#8f3a61]-600 to-[#8f3a61]-700 text-white rounded-xl font-semibold hover:from-[#8f3a61]-700 hover:to-[#8f3a61]-800 transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
+                className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-[#8f3a61] to-[#7a2f52] text-white rounded-xl font-semibold hover:from-[#7a2f52] hover:to-[#6a2847] transition-all duration-300 text-sm shadow-lg hover:shadow-xl"
               >
                 View More Products
                 <svg 

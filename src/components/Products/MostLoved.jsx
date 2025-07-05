@@ -167,7 +167,7 @@ export default function MostLoved() {
           >
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-[#8f3a61]-600 to-[#8f3a61]-700 hover:from-[#8f3a61]-700 hover:to-[#8f3a61]-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-[#8f3a61] to-[#7a2f52] hover:from-[#7a2f52] hover:to-[#6a2847] transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               View More Products
             </Link>
