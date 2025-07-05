@@ -4,6 +4,7 @@ import { authService } from '../services/authService';
 import { motion } from 'framer-motion';
 import { Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { loadMSG91Script, initializeMSG91Widget } from '../utils/msg91Loader';
 
 const OTPVerification = () => {
   const [otp, setOtp] = useState('');
@@ -18,7 +19,7 @@ const OTPVerification = () => {
   // MSG91 Configuration for verification
   const msg91VerifyConfig = {
     widgetId: "356765707a68343736313035",
-    tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
+    tokenAuth: "458779A7a7SWhj0F6866bba9P1",
     identifier: phone,
     exposeMethods: "true",
     success: (data) => {
@@ -38,30 +39,17 @@ const OTPVerification = () => {
   // Load MSG91 script for verification
   useEffect(() => {
     if (useMsg91 && phone) {
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = 'https://verify.msg91.com/otp-provider.js';
-      script.onload = () => {
-        console.log('MSG91 script loaded for verification');
-        if (window.initSendOTP) {
-          window.initSendOTP(msg91VerifyConfig);
-        } else {
-          console.error('MSG91 widget not available');
-          setError('MSG91 widget failed to load. Please try again.');
+      const initializeWidget = async () => {
+        try {
+          await loadMSG91Script();
+          await initializeMSG91Widget(msg91VerifyConfig);
+        } catch (error) {
+          console.error('MSG91 initialization error:', error);
+          setError('MSG91 widget failed to load. Please try again or contact support.');
         }
       };
-      script.onerror = () => {
-        console.error('Failed to load MSG91 script');
-        setError('Failed to load OTP verification widget. Please try again.');
-      };
-      document.head.appendChild(script);
 
-      return () => {
-        const existingScript = document.querySelector('script[src="https://verify.msg91.com/otp-provider.js"]');
-        if (existingScript) {
-          document.head.removeChild(existingScript);
-        }
-      };
+      initializeWidget();
     }
   }, [useMsg91, phone]);
 
@@ -183,7 +171,20 @@ const OTPVerification = () => {
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
                     <p className="text-gray-500">Loading MSG91 verification widget...</p>
+                    <p className="text-xs text-gray-400 mt-2">If the widget doesn't load, please refresh the page</p>
                   </div>
+                </div>
+                {/* Fallback button if widget fails */}
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setError('MSG91 widget is not available. Please contact support or try again later.');
+                    }}
+                    className="text-sm text-gray-500 hover:text-gray-700 underline"
+                  >
+                    Having trouble with the widget?
+                  </button>
                 </div>
               </div>
             </div>
@@ -268,6 +269,61 @@ const OTPVerification = () => {
           </div>
         </div>
       </div>
+
+      {/* Right Side - Image */}
+      <motion.div 
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="hidden lg:block lg:w-1/2 relative"
+      >
+        <img src="/footer.png" alt="OTP Verification Banner" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className="text-white text-center">
+            <h2 className="text-4xl font-light mb-6">
+              Secure <span className="font-serif italic">Phone Verification</span>
+            </h2>
+            <p className="text-lg text-gray-100 mb-8">
+              Verify your phone number to complete your registration and access our platform.
+            </p>
+            <div className="space-y-4 text-left max-w-md mx-auto">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span>Instant OTP verification via SMS</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span>Secure and encrypted verification process</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span>Protect your account with phone verification</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span>Quick and user-friendly verification</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 };

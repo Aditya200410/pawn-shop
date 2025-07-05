@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { loadMSG91Script } from '../utils/msg91Loader';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const Signup = () => {
   // MSG91 Configuration
   const msg91Config = {
     widgetId: "356765707a68343736313035",
-    tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
+    tokenAuth: "458779A7a7SWhj0F6866bba9P1",
     exposeMethods: "true",
     success: (data) => {
       console.log('MSG91 success response', data);
@@ -41,20 +42,16 @@ const Signup = () => {
 
   // Load MSG91 script
   useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://verify.msg91.com/otp-provider.js';
-    script.onload = () => {
-      console.log('MSG91 script loaded');
-    };
-    document.head.appendChild(script);
-
-    return () => {
-      const existingScript = document.querySelector('script[src="https://verify.msg91.com/otp-provider.js"]');
-      if (existingScript) {
-        document.head.removeChild(existingScript);
+    const loadScript = async () => {
+      try {
+        await loadMSG91Script();
+        console.log('MSG91 script loaded successfully');
+      } catch (error) {
+        console.error('MSG91 script loading error:', error);
       }
     };
+
+    loadScript();
   }, []);
 
   const handleSubmit = async (e) => {
