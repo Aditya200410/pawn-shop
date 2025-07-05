@@ -31,8 +31,19 @@ const OTPVerification = () => {
     },
     failure: (error) => {
       console.log('MSG91 verification failure', error);
-      setError('OTP verification failed. Please try again.');
+      // Use enhanced error message if available
+      const errorMessage = error.userMessage || 'OTP verification failed. Please try again.';
+      setError(errorMessage);
       setLoading(false);
+      
+      // Show toast with specific error message
+      if (error.code === '408' || error.message?.includes('IPBlocked')) {
+        toast.error('MSG91 service temporarily unavailable. Please try again later.');
+      } else if (error.code === '401' || error.message?.includes('Unauthorized')) {
+        toast.error('Authentication failed. Please contact support.');
+      } else {
+        toast.error(errorMessage);
+      }
     },
   };
 
@@ -80,7 +91,16 @@ const OTPVerification = () => {
       console.log('Backend response:', responseData);
 
       if (!response.ok) {
-        throw new Error(responseData.message || 'Registration failed');
+        // Handle specific MSG91 error codes
+        if (responseData.code === 'MSG91_IP_BLOCKED') {
+          throw new Error('MSG91 service temporarily unavailable. Please try again later or contact support.');
+        } else if (responseData.code === 'MSG91_AUTH_ERROR') {
+          throw new Error('MSG91 authentication failed. Please contact support.');
+        } else if (responseData.code === 'MSG91_VERIFICATION_FAILED') {
+          throw new Error('OTP verification failed. Please try again.');
+        } else {
+          throw new Error(responseData.message || 'Registration failed');
+        }
       }
 
       // Clear pending registration data
@@ -103,10 +123,32 @@ const OTPVerification = () => {
     setError('');
     setLoading(true);
     try {
-      await authService.verifyOTP({ email, otp });
-      toast.success('OTP verified! Registration complete. Please login.');
+      const pendingRegistration = JSON.parse(localStorage.getItem('pendingRegistration'));
+      if (!pendingRegistration) {
+        throw new Error('Registration data not found');
+      }
+
+      // For traditional verification, we'll use email OTP or create user directly
+      // Since we don't have email OTP set up, we'll create the user directly
+      const response = await fetch('https://pawnbackend-xmqa.onrender.com/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pendingRegistration),
+      });
+
+      const responseData = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Registration failed');
+      }
+
+      // Clear pending registration data
+      localStorage.removeItem('pendingRegistration');
+      
+      toast.success('Registration successful! Please login.');
       navigate('/login', { state: { message: 'Registration successful! Please login.' } });
-      window.location.reload();
     } catch (err) {
       setError(err.message || 'Verification failed');
       toast.error(err.message || 'OTP verification failed');
@@ -138,12 +180,12 @@ const OTPVerification = () => {
             <p className="mt-2 text-sm text-gray-600 text-center">
               {useMsg91 
                 ? `Please verify the OTP sent to ${phone}`
-                : 'Please enter the OTP sent to your mobile number'
+                : 'Please complete your registration'
               }
             </p>
             {!useMsg91 && (
               <p className="mt-2 text-center text-xs text-gray-500">
-                Check the console for the OTP (testing purposes only)
+                MSG91 verification is not available. Using traditional registration.
               </p>
             )}
             <p className="mt-2 text-center text-xs text-gray-500">
@@ -189,32 +231,26 @@ const OTPVerification = () => {
               </div>
             </div>
           ) : (
-            // Traditional OTP input form
-            <form className="mt-8 space-y-6" onSubmit={handleTraditionalVerification}>
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                    OTP
-                  </label>
-                  <div className="mt-1 relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+            // Traditional registration completion
+            <div className="mt-8 space-y-6">
+              <div className="text-center">
+                <p className="text-sm text-gray-600 mb-4">
+                  Complete your registration by clicking the button below
+                </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <div className="text-center">
+                    <div className="text-blue-600 mb-2">
+                      <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                     </div>
-                    <input
-                      id="otp"
-                      name="otp"
-                      type="text"
-                      required
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      maxLength={6}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                      placeholder="Enter OTP"
-                    />
+                    <p className="text-blue-800 font-medium">Registration Ready</p>
+                    <p className="text-blue-600 text-sm mt-1">Your account will be created without phone verification</p>
                   </div>
                 </div>
               </div>
-              <div>
+              
+              <form onSubmit={handleTraditionalVerification}>
                 <button
                   type="submit"
                   disabled={loading}
@@ -227,24 +263,16 @@ const OTPVerification = () => {
                 >
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
                   <span className="absolute left-0 inset-y-0 flex items-center pl-3 z-10">
-                    <Lock className="h-5 w-5 text-white/80 group-hover:text-white" />
+                    <svg className="h-5 w-5 text-white/80 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </span>
                   <span className="relative z-10">
-                    {loading ? (
-                      <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Verifying...
-                      </span>
-                    ) : (
-                      'Verify OTP'
-                    )}
+                    {loading ? 'Creating Account...' : 'Complete Registration'}
                   </span>
                 </button>
-              </div>
-            </form>
+              </form>
+            </div>
           )}
         </div>
       </motion.div>

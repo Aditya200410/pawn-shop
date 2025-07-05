@@ -91,13 +91,37 @@ export const initializeMSG91Widget = (config) => {
     }
 
     try {
-      // Add error handling to the config
+      // Enhanced error handling for IP blocked and other issues
       const enhancedConfig = {
         ...config,
         failure: (error) => {
           console.error('MSG91 widget failure:', error);
-          if (config.failure) {
-            config.failure(error);
+          
+          // Handle specific error codes
+          if (error.code === '408' || error.message?.includes('IPBlocked')) {
+            console.error('MSG91 IP Blocked Error - Please check API key and IP whitelist');
+            if (config.failure) {
+              config.failure({
+                ...error,
+                userMessage: 'MSG91 service temporarily unavailable. Please try again later or contact support.'
+              });
+            }
+          } else if (error.code === '401' || error.message?.includes('Unauthorized')) {
+            console.error('MSG91 Authentication Error - Invalid API key');
+            if (config.failure) {
+              config.failure({
+                ...error,
+                userMessage: 'Authentication failed. Please contact support.'
+              });
+            }
+          } else {
+            // Generic error handling
+            if (config.failure) {
+              config.failure({
+                ...error,
+                userMessage: 'OTP verification failed. Please try again.'
+              });
+            }
           }
           reject(error);
         },

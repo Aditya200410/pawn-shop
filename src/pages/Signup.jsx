@@ -35,7 +35,18 @@ const Signup = () => {
     },
     failure: (error) => {
       console.log('MSG91 failure reason', error);
-      setError('Failed to send OTP. Please try again.');
+      
+      // Handle specific MSG91 errors
+      if (error.code === '408' || error.message?.includes('IPBlocked')) {
+        setError('MSG91 service temporarily unavailable. Please try again later or contact support.');
+        toast.error('MSG91 service temporarily unavailable. Please try again later.');
+      } else if (error.code === '401' || error.message?.includes('Unauthorized')) {
+        setError('MSG91 authentication failed. Please contact support.');
+        toast.error('MSG91 authentication failed. Please contact support.');
+      } else {
+        setError('Failed to send OTP. Please try again.');
+        toast.error('Failed to send OTP. Please try again.');
+      }
       setIsLoading(false);
     },
   };
@@ -48,6 +59,7 @@ const Signup = () => {
         console.log('MSG91 script loaded successfully');
       } catch (error) {
         console.error('MSG91 script loading error:', error);
+        // Don't show error to user as we have fallback
       }
     };
 
@@ -82,13 +94,27 @@ const Signup = () => {
         password: formData.password
       }));
 
-      // Navigate to OTP verification page with MSG91
-      navigate('/otp-verification', { 
-        state: { 
-          phone: formData.phone,
-          useMsg91: true 
-        } 
-      });
+      // Check if MSG91 is available, if not use traditional registration
+      const isMsg91Available = await loadMSG91Script().then(() => true).catch(() => false);
+      
+      if (isMsg91Available) {
+        // Navigate to OTP verification page with MSG91
+        navigate('/otp-verification', { 
+          state: { 
+            phone: formData.phone,
+            useMsg91: true 
+          } 
+        });
+      } else {
+        // Use traditional registration without MSG91
+        console.log('MSG91 not available, using traditional registration');
+        navigate('/otp-verification', { 
+          state: { 
+            phone: formData.phone,
+            useMsg91: false 
+          } 
+        });
+      }
     } catch (err) {
       setError(err.message || contextError || 'Failed to create account');
       setIsLoading(false);
