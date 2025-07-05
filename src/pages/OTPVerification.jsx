@@ -23,8 +23,10 @@ const OTPVerification = () => {
     exposeMethods: "true",
     success: (data) => {
       console.log('MSG91 verification success', data);
-      setMsg91Token(data.token);
-      handleMsg91Verification(data.token);
+      // Extract the access token from the response
+      const accessToken = data.token || data.access_token || data.accessToken;
+      setMsg91Token(accessToken);
+      handleMsg91Verification(accessToken);
     },
     failure: (error) => {
       console.log('MSG91 verification failure', error);
@@ -72,6 +74,8 @@ const OTPVerification = () => {
         throw new Error('Registration data not found');
       }
 
+      console.log('Sending MSG91 token to backend:', token);
+
       // Call backend to complete registration with MSG91 token
       const response = await fetch('https://pawnbackend-xmqa.onrender.com/api/auth/register-with-msg91', {
         method: 'POST',
@@ -84,9 +88,11 @@ const OTPVerification = () => {
         }),
       });
 
+      const responseData = await response.json();
+      console.log('Backend response:', responseData);
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Registration failed');
+        throw new Error(responseData.message || 'Registration failed');
       }
 
       // Clear pending registration data
@@ -95,6 +101,7 @@ const OTPVerification = () => {
       toast.success('Registration successful! Please login.');
       navigate('/login', { state: { message: 'Registration successful! Please login.' } });
     } catch (err) {
+      console.error('MSG91 verification error:', err);
       setError(err.message || 'Verification failed');
       toast.error(err.message || 'OTP verification failed');
     } finally {
