@@ -16,8 +16,8 @@ const env = {
   PHONEPE: {
     CLIENT_ID: import.meta.env.VITE_PHONEPE_CLIENT_ID || '',
     CLIENT_SECRET: import.meta.env.VITE_PHONEPE_CLIENT_SECRET || '',
-    CLIENT_VERSION: import.meta.env.VITE_PHONEPE_CLIENT_VERSION || '1.0',
-    ENV: import.meta.env.VITE_PHONEPE_ENV || 'sandbox',
+    CLIENT_VERSION: import.meta.env.VITE_PHONEPE_CLIENT_VERSION || '1',
+    ENV: import.meta.env.VITE_PHONEPE_ENV || 'production',
     FRONTEND_URL: import.meta.env.VITE_FRONTEND_URL || 'https://pawn-shop-git-local-host-api-used-aditya200410s-projects.vercel.app',
     BACKEND_URL: import.meta.env.VITE_BACKEND_URL || 'https://pawnbackend-xmqa.onrender.com',
   },

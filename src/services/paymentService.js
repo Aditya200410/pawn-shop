@@ -68,11 +68,11 @@ class PaymentService {
   }
 
   // Check PhonePe payment status
-  async checkPhonePeStatus(transactionId) {
+  async checkPhonePeStatus(orderId) {
     try {
-      console.log('PaymentService - Checking PhonePe status for:', transactionId);
+      console.log('PaymentService - Checking PhonePe status for:', orderId);
       
-      const response = await axios.get(`${API_BASE_URL}/api/payment/phonepe/status/${transactionId}`, {
+      const response = await axios.get(`${API_BASE_URL}/api/payment/phonepe/status/${orderId}`, {
         timeout: 30000,
         headers: {
           'Content-Type': 'application/json'
@@ -207,7 +207,8 @@ class PaymentService {
         paymentMethod: 'phonepe',
         paymentStatus: paymentStatus,
         sellerToken: orderData.sellerToken,
-        transactionId: orderData.transactionId,
+        orderId: orderData.orderId,
+        merchantOrderId: orderData.merchantOrderId,
         couponCode: orderData.couponCode
       };
 
@@ -221,12 +222,12 @@ class PaymentService {
   }
 
   // Complete payment flow - verify payment and create order
-  async completePaymentFlow(transactionId, orderData) {
+  async completePaymentFlow(orderId, orderData) {
     try {
-      console.log('PaymentService - Completing payment flow for transaction:', transactionId);
+      console.log('PaymentService - Completing payment flow for order:', orderId);
       
       // First verify payment status
-      const paymentStatus = await this.checkPhonePeStatus(transactionId);
+      const paymentStatus = await this.checkPhonePeStatus(orderId);
       
       if (paymentStatus.success && paymentStatus.data?.state === 'COMPLETED') {
         // Payment is successful, create order

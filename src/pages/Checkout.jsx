@@ -32,6 +32,30 @@ import FlashMessage from '../components/FlashMessage';
 import cartService from '../services/cartService';
 import { useSellerNavigation } from '../hooks/useSellerNavigation';
 
+// Get PhonePe checkout object
+const getPhonePeCheckout = () => {
+  return new Promise((resolve, reject) => {
+    if (window.PhonePeCheckout) {
+      resolve(window.PhonePeCheckout);
+      return;
+    }
+    
+    // Wait for script to load if not already available
+    const checkInterval = setInterval(() => {
+      if (window.PhonePeCheckout) {
+        clearInterval(checkInterval);
+        resolve(window.PhonePeCheckout);
+      }
+    }, 100);
+    
+    // Timeout after 5 seconds
+    setTimeout(() => {
+      clearInterval(checkInterval);
+      reject(new Error('PhonePe checkout script not loaded'));
+    }, 5000);
+  });
+};
+
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, getTotalPrice, clearCart, getItemImage, sellerToken, setSellerTokenFromURL, clearSellerToken, setCartItems } = useCart();
@@ -370,20 +394,53 @@ const Checkout = () => {
       if (data.success && data.redirectUrl) {
         
         // Store transaction data for later verification
-        if (data.transactionId) {
-          localStorage.setItem('phonepe_transaction_id', data.transactionId);
+        if (data.orderId) {
+          localStorage.setItem('phonepe_order_id', data.orderId);
+          localStorage.setItem('phonepe_merchant_order_id', data.merchantOrderId);
           localStorage.setItem('phonepe_order_data', JSON.stringify(orderData));
           localStorage.setItem('phonepe_redirect_time', new Date().toISOString());
         }
         
-        // Show success message before redirect
-        toast.success('Redirecting to PhonePe payment gateway...');
+        // Get PhonePe checkout object
+        try {
+          const PhonePeCheckout = await getPhonePeCheckout();
+          
+          // Define callback function for payment completion
+          // Based on: https://developer.phonepe.com/v1/reference/initiate-payment-using-js-standard-checkout
+          const paymentCallback = (response) => {
+            console.log('PhonePe payment callback:', response);
+            
+            if (response === 'USER_CANCEL') {
+              toast.error('Payment was cancelled by the user.');
+              // Add any custom logic for cancelled payment
+            } else if (response === 'CONCLUDED') {
+              toast.success('Payment process has concluded.');
+              // Add any custom logic for completed payment
+              // You can verify payment status here
+              setTimeout(() => {
+                window.location.reload();
+              }, 2000);
+            }
+          };
+
+          // Show success message
+          toast.success('Initiating PhonePe payment...');
+          
+          // Invoke PhonePe checkout in redirect mode
+          // Based on: https://developer.phonepe.com/v1/reference/initiate-payment-using-js-standard-checkout
+          PhonePeCheckout.transact({ 
+            tokenUrl: data.redirectUrl 
+          });
+          
+        } catch (scriptError) {
+          console.error('Failed to load PhonePe script:', scriptError);
+          // Fallback to direct redirect
+          toast.success('Opening PhonePe payment gateway...');
+          setTimeout(() => {
+            window.open(data.redirectUrl, '_blank', 'noopener,noreferrer');
+          }, 1000);
+        }
         
-        // Small delay to show the toast
-        setTimeout(() => {
-          // Redirect to PhonePe payment page
-          window.location.href = data.redirectUrl;
-        }, 1000);
       } else {
         const errorMsg = data.message || data.error?.message || "Failed to initiate PhonePe payment.";
         setError(errorMsg);
