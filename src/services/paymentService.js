@@ -59,6 +59,8 @@ class PaymentService {
         errorMessage = 'Payment service not found. Please contact support.';
       } else if (error.response?.status === 500) {
         errorMessage = 'Payment gateway error. Please try again later.';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Payment gateway authentication failed. Please try again.';
       }
       
       throw new Error(errorMessage);
@@ -115,6 +117,74 @@ class PaymentService {
     } catch (error) {
       console.error('PaymentService - Callback verification error:', error);
       throw new Error('Failed to verify payment callback');
+    }
+  }
+
+  // Process refund through PhonePe
+  async processRefund(refundData) {
+    try {
+      console.log('PaymentService - Processing refund:', refundData);
+      
+      const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe/refund`, refundData, {
+        timeout: 30000,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('PaymentService - Refund response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('PaymentService - Refund error:', error);
+      
+      let errorMessage = 'Failed to process refund';
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error?.message) {
+        errorMessage = error.response.data.error.message;
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Refund request timeout. Please try again.';
+      } else if (error.response?.status === 404) {
+        errorMessage = 'Refund service not found. Please contact support.';
+      } else if (error.response?.status === 500) {
+        errorMessage = 'Refund gateway error. Please try again later.';
+      }
+      
+      throw new Error(errorMessage);
+    }
+  }
+
+  // Check refund status
+  async checkRefundStatus(merchantRefundId) {
+    try {
+      console.log('PaymentService - Checking refund status for:', merchantRefundId);
+      
+      const response = await axios.get(`${API_BASE_URL}/api/payment/phonepe/refund/${merchantRefundId}/status`, {
+        timeout: 30000,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('PaymentService - Refund status response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('PaymentService - Refund status check error:', error);
+      
+      let errorMessage = 'Failed to check refund status';
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error?.message) {
+        errorMessage = error.response.data.error.message;
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Refund status check timeout. Please try again.';
+      } else if (error.response?.status === 404) {
+        errorMessage = 'Refund not found. Please contact support.';
+      }
+      
+      throw new Error(errorMessage);
     }
   }
 

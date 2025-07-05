@@ -362,6 +362,8 @@ const Checkout = () => {
         couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
 
+      console.log('Initiating PhonePe payment with order data:', orderData);
+
       // Call backend to create PhonePe order
       const data = await paymentService.initiatePhonePePayment(orderData);
       
@@ -388,6 +390,7 @@ const Checkout = () => {
         toast.error(errorMsg);
       }
     } catch (error) {
+      console.error('PhonePe payment error:', error);
       let errorMsg = error.message || "PhonePe payment failed.";
       
       if (error.response?.data?.error?.message) {
@@ -402,6 +405,8 @@ const Checkout = () => {
         errorMsg = 'Payment gateway error. Please try again later.';
       } else if (error.response?.status === 400) {
         errorMsg = 'Invalid payment request. Please check your details.';
+      } else if (error.response?.status === 401) {
+        errorMsg = 'Payment gateway authentication failed. Please try again.';
       }
       
       setError(errorMsg);

@@ -14,10 +14,12 @@ const env = {
   
   // PhonePe Payment Gateway
   PHONEPE: {
-    MERCHANT_ID: import.meta.env.VITE_PHONEPE_MERCHANT_ID || '',
+    CLIENT_ID: import.meta.env.VITE_PHONEPE_CLIENT_ID || '',
     CLIENT_SECRET: import.meta.env.VITE_PHONEPE_CLIENT_SECRET || '',
-    ENV: import.meta.env.VITE_PHONEPE_ENV || 'production',
+    CLIENT_VERSION: import.meta.env.VITE_PHONEPE_CLIENT_VERSION || '1.0',
+    ENV: import.meta.env.VITE_PHONEPE_ENV || 'sandbox',
     FRONTEND_URL: import.meta.env.VITE_FRONTEND_URL || 'https://pawn-shop-git-local-host-api-used-aditya200410s-projects.vercel.app',
+    BACKEND_URL: import.meta.env.VITE_BACKEND_URL || 'https://pawnbackend-xmqa.onrender.com',
   },
   
   // Image CDN
@@ -54,7 +56,20 @@ const env = {
   // Environment Detection
   IS_DEVELOPMENT: import.meta.env.DEV,
   IS_PRODUCTION: import.meta.env.PROD,
-  MODE: import.meta.env.MODE,
+  IS_TESTING: import.meta.env.MODE === 'test',
+  
+  // Performance Monitoring
+  PERFORMANCE: {
+    ENABLE_METRICS: import.meta.env.VITE_ENABLE_PERFORMANCE_METRICS === 'true',
+    SAMPLE_RATE: parseFloat(import.meta.env.VITE_PERFORMANCE_SAMPLE_RATE || '0.1'),
+  },
+  
+  // Error Reporting
+  ERROR_REPORTING: {
+    ENABLE_SENTRY: import.meta.env.VITE_ENABLE_SENTRY === 'true',
+    SENTRY_DSN: import.meta.env.VITE_SENTRY_DSN || '',
+    SENTRY_ENVIRONMENT: import.meta.env.VITE_SENTRY_ENVIRONMENT || 'development',
+  },
   
   // CORS Configuration
   CORS: {
@@ -118,9 +133,11 @@ const env = {
 };
 
 // Required PhonePe env variables:
-// VITE_PHONEPE_MERCHANT_ID
-// VITE_PHONEPE_CLIENT_SECRET
-// VITE_PHONEPE_ENV (sandbox or production)
-// VITE_FRONTEND_URL (your frontend base URL)
+// VITE_PHONEPE_CLIENT_ID - Your PhonePe client ID
+// VITE_PHONEPE_CLIENT_SECRET - Your PhonePe client secret
+// VITE_PHONEPE_CLIENT_VERSION - Your PhonePe client version (default: 1.0)
+// VITE_PHONEPE_ENV - Environment (sandbox or production)
+// VITE_FRONTEND_URL - Your frontend base URL
+// VITE_BACKEND_URL - Your backend base URL
 
 export default env; 
