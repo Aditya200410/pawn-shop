@@ -560,7 +560,14 @@ const SellerProfile = () => {
                           initial={{ opacity: 0, y: -10, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                          className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto"
+                          className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto
+                            sm:w-80 sm:bottom-auto sm:right-0
+                            w-screen left-1/2 -translate-x-1/2 bottom-0 sm:translate-x-0 sm:left-auto
+                            sm:rounded-xl rounded-t-2xl sm:rounded-b-xl rounded-b-none
+                            sm:p-0 p-2"
+                          style={{
+                            maxHeight: '80vh',
+                          }}
                         >
                           <div className="p-4 border-b border-gray-200">
                             <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
@@ -1063,7 +1070,7 @@ const SellerProfile = () => {
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Total Commission</h3>
                         <div className="p-2 sm:p-3 bg-pink-500 rounded-xl">
-                          
+                        <FiTrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                       </div>
                       <p className="text-2xl sm:text-3xl font-bold text-pink-600">₹{Math.round(safeSeller.totalCommission)}</p>
@@ -1350,48 +1357,7 @@ const SellerProfile = () => {
                           exit={{ opacity: 0, y: -20 }}
                           className="space-y-6"
                         >
-                          {/* Commission Summary */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
-                              <div className="flex items-center">
-                                <div className="p-2 bg-green-500 rounded-lg mr-3">
-                                  <FiTrendingUp className="w-5 h-5 text-white" />
-                                </div>
-                                <div>
-                                  <p className="text-sm text-green-600">Total Earned</p>
-                                  <p className="text-lg font-bold text-green-700">
-                                    {historyService.formatAmount(commissionSummary.totalEarned || 0)}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border border-orange-200">
-                              <div className="flex items-center">
-                                <div className="p-2 bg-orange-500 rounded-lg mr-3">
-                                  <FiTrendingUp className="w-5 h-5 text-white" />
-                                </div>
-                                <div>
-                                  <p className="text-sm text-orange-600">Total Deducted</p>
-                                  <p className="text-lg font-bold text-orange-700">
-                                    {historyService.formatAmount(commissionSummary.totalDeducted || 0)}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
-                              <div className="flex items-center">
-                                <div className="p-2 bg-blue-500 rounded-lg mr-3">
-                                  <FiAlertCircle className="w-5 h-5 text-white" />
-                                </div>
-                                <div>
-                                  <p className="text-sm text-blue-600">Pending</p>
-                                  <p className="text-lg font-bold text-blue-700">
-                                    {historyService.formatAmount(commissionSummary.pendingAmount || 0)}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                         
 
                           {commissionHistory.length === 0 ? (
                             <div className="text-center py-12">
