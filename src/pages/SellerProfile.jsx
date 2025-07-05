@@ -403,12 +403,12 @@ const SellerProfile = () => {
     e.preventDefault();
     setWithdrawing(true);
     try {
-      const res = await fetch(`${config.API_BASE_URL}/api/seller/withdraw`, {
+      const res = await fetch(`${config.API_BASE_URL}/api/withdrawal/request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('seller_jwt')}` },
         body: JSON.stringify({
-          bankDetails,
-          amount: availableToWithdraw
+          amount: availableToWithdraw,
+          sellerNotes: `Withdrawal request for ₹${availableToWithdraw}`
         })
       });
       const data = await res.json();
