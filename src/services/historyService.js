@@ -4,20 +4,28 @@ import config from '../config/config';
 const API_BASE_URL = config.API_BASE_URL;
 
 class HistoryService {
-  // Withdrawal History
+  // Withdrawal History - Using old system
   async getWithdrawalHistory(params = {}) {
     try {
       const token = localStorage.getItem('seller_jwt');
       console.log('Getting withdrawal history with token:', token ? 'Token exists' : 'No token');
       
-      const response = await axios.get(`${API_BASE_URL}/api/withdrawal/history`, {
-        params,
+      // Get seller profile which includes withdrawals
+      const response = await axios.get(`${API_BASE_URL}/api/seller/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
-      return response.data;
+      
+      if (response.data.success && response.data.seller) {
+        return {
+          success: true,
+          withdrawals: response.data.seller.withdrawals || []
+        };
+      }
+      
+      return { success: true, withdrawals: [] };
     } catch (error) {
       console.error('Get withdrawal history error:', error);
       console.error('Error response:', error.response?.data);
@@ -29,13 +37,22 @@ class HistoryService {
   async getWithdrawalDetails(withdrawalId) {
     try {
       const token = localStorage.getItem('seller_jwt');
-      const response = await axios.get(`${API_BASE_URL}/api/withdrawal/details/${withdrawalId}`, {
+      // Get seller profile and find the specific withdrawal
+      const response = await axios.get(`${API_BASE_URL}/api/seller/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
-      return response.data;
+      
+      if (response.data.success && response.data.seller) {
+        const withdrawal = response.data.seller.withdrawals?.find(w => w._id === withdrawalId);
+        if (withdrawal) {
+          return { success: true, withdrawal };
+        }
+      }
+      
+      throw new Error('Withdrawal not found');
     } catch (error) {
       console.error('Get withdrawal details error:', error);
       console.error('Error response:', error.response?.data);
