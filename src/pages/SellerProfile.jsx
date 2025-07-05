@@ -26,7 +26,8 @@ import {
   FiBell,
   FiCheckCircle,
   FiXCircle,
-  FiAlertCircle
+  FiAlertCircle,
+  FiRefreshCw
 } from 'react-icons/fi';
 import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
@@ -80,21 +81,28 @@ const SellerProfile = () => {
 
   // Load history data when history tab is active
   useEffect(() => {
-    if (activeTab === 'history' && seller) {
+    if (activeTab === 'history' && seller && !historyLoading) {
       loadHistoryData();
     }
   }, [activeTab, seller]);
 
   // Check for withdrawal status updates
   useEffect(() => {
-    if (seller && withdrawalHistory.length > 0) {
+    if (seller && withdrawalHistory.length > 0 && !historyLoading) {
       checkWithdrawalStatusUpdates();
     }
   }, [seller, withdrawalHistory]);
 
+  // Check for commission status updates
+  useEffect(() => {
+    if (seller && commissionHistory.length > 0 && !historyLoading) {
+      checkCommissionStatusUpdates();
+    }
+  }, [seller, commissionHistory]);
+
   // Periodic check for withdrawal status updates (every 30 seconds)
   useEffect(() => {
-    if (seller && withdrawalHistory.length > 0) {
+    if (seller && withdrawalHistory.length > 0 && !historyLoading) {
       const interval = setInterval(() => {
         checkWithdrawalStatusUpdates();
       }, 30000); // Check every 30 seconds
@@ -102,6 +110,17 @@ const SellerProfile = () => {
       return () => clearInterval(interval);
     }
   }, [seller, withdrawalHistory]);
+
+  // Periodic check for commission status updates (every 30 seconds)
+  useEffect(() => {
+    if (seller && commissionHistory.length > 0 && !historyLoading) {
+      const interval = setInterval(() => {
+        checkCommissionStatusUpdates();
+      }, 30000); // Check every 30 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [seller, commissionHistory]);
 
   const loadHistoryData = async () => {
     setHistoryLoading(true);
@@ -183,7 +202,7 @@ const SellerProfile = () => {
               notification = {
                 ...notification,
                 title: 'Withdrawal Rejected',
-                message: `Your withdrawal request of ₹${latestWithdrawal.amount} has been rejected. ${latestWithdrawal.rejectionReason ? `Reason: ${latestWithdrawal.rejectionReason}` : ''}`,
+                message: `Your withdrawal request of ₹${latestWithdrawal.amount} has been rejected.`,
                 icon: FiXCircle,
                 color: 'red'
               };
@@ -204,18 +223,103 @@ const SellerProfile = () => {
         }
       });
 
-      // Update withdrawal history
-      setWithdrawalHistory(latestWithdrawals);
-      
-      // Also refresh seller profile to get updated commission data
-      if (seller) {
-        const token = localStorage.getItem('seller_jwt');
-        if (token) {
-          fetchProfile(token);
+      // Only update withdrawal history if there are actual changes
+      const hasChanges = latestWithdrawals.some(latestWithdrawal => {
+        const oldWithdrawal = withdrawalHistory.find(w => w._id === latestWithdrawal._id);
+        return !oldWithdrawal || oldWithdrawal.status !== latestWithdrawal.status;
+      });
+
+      if (hasChanges) {
+        setWithdrawalHistory(latestWithdrawals);
+        
+        // Also refresh seller profile to get updated commission data
+        if (seller) {
+          const token = localStorage.getItem('seller_jwt');
+          if (token) {
+            fetchProfile(token);
+          }
         }
       }
     } catch (error) {
       console.error('Error checking withdrawal updates:', error);
+    }
+  };
+
+  const checkCommissionStatusUpdates = async () => {
+    try {
+      // Fetch latest commission data
+      const commissionData = await historyService.checkCommissionStatusUpdates(commissionHistory);
+      
+      if (commissionData.success && commissionData.statusChanges.length > 0) {
+        // Create notifications for status changes
+        commissionData.statusChanges.forEach(change => {
+          let notification = {
+            id: Date.now() + Math.random(),
+            type: 'commission',
+            title: '',
+            message: '',
+            icon: null,
+            color: ''
+          };
+
+          switch (change.newStatus) {
+            case 'confirmed':
+              notification = {
+                ...notification,
+                title: 'Commission Confirmed!',
+                message: `Your commission of ₹${change.commission.amount} has been confirmed and is now available for withdrawal.`,
+                icon: FiCheckCircle,
+                color: 'green'
+              };
+              break;
+            case 'cancelled':
+              notification = {
+                ...notification,
+                title: 'Commission Cancelled',
+                message: `Your commission of ₹${change.commission.amount} has been cancelled.`,
+                icon: FiXCircle,
+                color: 'red'
+              };
+              break;
+            case 'refunded':
+              notification = {
+                ...notification,
+                title: 'Commission Refunded',
+                message: `Your commission of ₹${change.commission.amount} has been refunded.`,
+                icon: FiRefreshCw,
+                color: 'blue'
+              };
+              break;
+            default:
+              return;
+          }
+
+          // Add notification
+          setNotifications(prev => [notification, ...prev.slice(0, 4)]); // Keep only last 5 notifications
+          
+          // Show toast notification
+          if (notification.color === 'green') {
+            toast.success(notification.message);
+          } else if (notification.color === 'red') {
+            toast.error(notification.message);
+          } else {
+            toast.info(notification.message);
+          }
+        });
+
+        // Update commission history
+        setCommissionHistory(commissionData.updatedHistory);
+        
+        // Also refresh seller profile to get updated commission data
+        if (seller) {
+          const token = localStorage.getItem('seller_jwt');
+          if (token) {
+            fetchProfile(token);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking commission updates:', error);
     }
   };
 
@@ -1304,9 +1408,9 @@ const SellerProfile = () => {
                                           <div className="text-sm font-semibold text-gray-900">
                                             {historyService.formatAmount(withdrawal.amount)}
                                           </div>
-                                          {withdrawal.processingFee > 0 && (
+                                          {(withdrawal.processingFee > 0 || withdrawal.fee > 0) && (
                                             <div className="text-xs text-gray-500">
-                                              Fee: {historyService.formatAmount(withdrawal.processingFee)}
+                                              Fee: {historyService.formatAmount(withdrawal.processingFee || withdrawal.fee || 0)}
                                             </div>
                                           )}
                                         </td>
@@ -1316,10 +1420,10 @@ const SellerProfile = () => {
                                           </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                          {historyService.formatDate(withdrawal.requestDate)}
+                                          {historyService.formatDate(withdrawal.requestedAt || withdrawal.requestDate)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                          {withdrawal.processedDate ? historyService.formatDate(withdrawal.processedDate) : '-'}
+                                          {withdrawal.processedAt || withdrawal.processedDate ? historyService.formatDate(withdrawal.processedAt || withdrawal.processedDate) : '-'}
                                         </td>
                                         <td className="px-6 py-4 text-sm font-medium">
                                           {withdrawal.status === 'pending' && (

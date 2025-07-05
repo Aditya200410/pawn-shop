@@ -10,22 +10,17 @@ class HistoryService {
       const token = localStorage.getItem('seller_jwt');
       console.log('Getting withdrawal history with token:', token ? 'Token exists' : 'No token');
       
-      // Get seller profile which includes withdrawals
-      const response = await axios.get(`${API_BASE_URL}/api/seller/profile`, {
+      // Use the withdrawal history endpoint directly
+      const response = await axios.get(`${API_BASE_URL}/api/withdrawal/history`, {
+        params,
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
       
-      if (response.data.success && response.data.seller) {
-        return {
-          success: true,
-          withdrawals: response.data.seller.withdrawals || []
-        };
-      }
-      
-      return { success: true, withdrawals: [] };
+      console.log('Withdrawal history response:', response.data);
+      return response.data;
     } catch (error) {
       console.error('Get withdrawal history error:', error);
       console.error('Error response:', error.response?.data);
@@ -37,22 +32,15 @@ class HistoryService {
   async getWithdrawalDetails(withdrawalId) {
     try {
       const token = localStorage.getItem('seller_jwt');
-      // Get seller profile and find the specific withdrawal
-      const response = await axios.get(`${API_BASE_URL}/api/seller/profile`, {
+      // Use the withdrawal details endpoint directly
+      const response = await axios.get(`${API_BASE_URL}/api/withdrawal/details/${withdrawalId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
       
-      if (response.data.success && response.data.seller) {
-        const withdrawal = response.data.seller.withdrawals?.find(w => w._id === withdrawalId);
-        if (withdrawal) {
-          return { success: true, withdrawal };
-        }
-      }
-      
-      throw new Error('Withdrawal not found');
+      return response.data;
     } catch (error) {
       console.error('Get withdrawal details error:', error);
       console.error('Error response:', error.response?.data);
@@ -137,6 +125,48 @@ class HistoryService {
       console.error('Error response:', error.response?.data);
       console.error('Error status:', error.response?.status);
       throw new Error(error.response?.data?.message || 'Failed to fetch commission summary');
+    }
+  }
+
+  // Check for commission status updates
+  async checkCommissionStatusUpdates(currentCommissionHistory) {
+    try {
+      const token = localStorage.getItem('seller_jwt');
+      const response = await axios.get(`${API_BASE_URL}/api/commission/history`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.data.success) {
+        const latestCommissionHistory = response.data.commissionHistory || [];
+        
+        // Check for status changes
+        const statusChanges = [];
+        latestCommissionHistory.forEach(latestCommission => {
+          const oldCommission = currentCommissionHistory.find(c => c._id === latestCommission._id);
+          
+          if (oldCommission && oldCommission.status !== latestCommission.status) {
+            statusChanges.push({
+              commission: latestCommission,
+              oldStatus: oldCommission.status,
+              newStatus: latestCommission.status
+            });
+          }
+        });
+        
+        return {
+          success: true,
+          updatedHistory: latestCommissionHistory,
+          statusChanges
+        };
+      }
+      
+      return { success: false, updatedHistory: [], statusChanges: [] };
+    } catch (error) {
+      console.error('Check commission status updates error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to check commission status updates');
     }
   }
 
