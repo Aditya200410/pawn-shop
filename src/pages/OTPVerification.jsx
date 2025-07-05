@@ -19,7 +19,7 @@ const OTPVerification = () => {
   // MSG91 Configuration for verification
   const msg91VerifyConfig = {
     widgetId: "356765707a68343736313035",
-    tokenAuth: "458779A7a7SWhj0F6866bba9P1",
+    tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
     identifier: phone,
     exposeMethods: "true",
     success: (data) => {

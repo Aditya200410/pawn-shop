@@ -25,7 +25,7 @@ const Signup = () => {
   // MSG91 Configuration
   const msg91Config = {
     widgetId: "356765707a68343736313035",
-    tokenAuth: "458779A7a7SWhj0F6866bba9P1",
+    tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
     exposeMethods: "true",
     success: (data) => {
       console.log('MSG91 success response', data);
