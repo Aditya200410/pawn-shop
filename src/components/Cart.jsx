@@ -249,7 +249,7 @@ const Cart = () => {
 
             {/* Info */}
             <div className="mt-4 space-y-2 text-sm text-gray-600">
-              <div className="flex items-start gap-2"><Truck className="w-4 h-4" /> Free Shipping above ₹499</div>
+              <div className="flex items-start gap-2"><Truck className="w-4 h-4" /> Free Shipping</div>
               <div className="flex items-start gap-2"><Shield className="w-4 h-4" /> Secure Payment</div>
               <div className="flex items-start gap-2"><RefreshCw className="w-4 h-4" /> Easy Returns</div>
               

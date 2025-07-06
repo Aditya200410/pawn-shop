@@ -77,8 +77,13 @@ const Checkout = () => {
     const fetchCodUpfrontAmount = async () => {
       try {
         const response = await settingsAPI.getCodUpfrontAmount();
-        if (response.success && response.amount) {
-          setCodUpfrontAmount(response.amount);
+        console.log('COD upfront amount response:', response);
+        
+        // Check both response.data and direct response
+        const amount = response.data?.amount || response.amount;
+        if (amount) {
+          console.log('Setting upfront amount to:', amount);
+          setCodUpfrontAmount(Number(amount));
         }
       } catch (error) {
         console.error('Failed to fetch COD upfront amount:', error);
@@ -371,9 +376,15 @@ const Checkout = () => {
         return;
       }
 
-      // Validate minimum order amount for online payment
-      const finalAmount = getOnlinePaymentAmount();
-      if (finalAmount < 1) {
+      // Determine payment amount based on payment method
+      let paymentAmount;
+      if (formData.paymentMethod === 'cod') {
+        paymentAmount = codUpfrontAmount; // Use upfront amount for COD
+      } else {
+        paymentAmount = getOnlinePaymentAmount(); // Use full amount for online payment
+      }
+      
+      if (paymentAmount < 1) {
         setError("Order amount must be at least ₹1 for online payment.");
         setPaymentProcessing(false);
         return;
@@ -381,7 +392,7 @@ const Checkout = () => {
 
       // Prepare order data according to PhonePe API requirements
       const orderData = {
-        amount: finalAmount,
+        amount: paymentAmount,
         customerName: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phone,
@@ -1203,7 +1214,7 @@ const Checkout = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={formData.paymentMethod === 'cod' ? handleSubmit : handlePhonePePayment}
+                onClick={handlePhonePePayment}
                 disabled={loading || paymentProcessing || !cartLoaded || !formData.paymentMethod}
                 className="w-full mt-6 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white px-6 py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
