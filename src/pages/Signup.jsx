@@ -40,6 +40,11 @@ const Signup = () => {
     console.log('✅ Form validation passed');
 
     try {
+      // Store password temporarily for auto-login after OTP verification
+      localStorage.setItem('tempRegistrationData', JSON.stringify({
+        password: formData.password
+      }));
+
       // Call the backend register endpoint
       const response = await fetch(`${config.API_BASE_URL}/api/auth/register`, {
         method: 'POST',
@@ -74,6 +79,8 @@ const Signup = () => {
       const errorMessage = err.message || contextError || 'Failed to create account';
       setError(errorMessage);
       toast.error(errorMessage);
+      // Clear temporary data on error
+      localStorage.removeItem('tempRegistrationData');
     } finally {
       setIsLoading(false);
     }

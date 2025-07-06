@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import orderService from '../services/orderService';
 import config from '../config/config.js';
-import { X } from 'lucide-react';
+import { X, Truck } from 'lucide-react';
 
 export default function Checkout() {
   const { cartItems, clearCart, getTotalPrice, getItemImage } = useCart();
@@ -41,8 +41,8 @@ export default function Checkout() {
 
   // Calculate shipping cost
   const calculateShippingCost = () => {
-    const subtotal = getTotalPrice();
-    return subtotal >= 499 ? 0 : 50;
+    // Free delivery for all orders
+    return 0;
   };
 
   // Calculate COD extra charge
@@ -420,6 +420,24 @@ export default function Checkout() {
 
           {/* Order Summary */}
           <div className="md:col-span-1">
+            {/* Free Delivery Highlight */}
+            <div className="mb-4 p-4 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61]/90 rounded-lg text-white shadow-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <Truck size={16} className="text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg">🚚 FREE DELIVERY</h4>
+                    <p className="text-white/80 text-sm">On all orders nationwide</p>
+                  </div>
+                </div>
+                <div className="text-2xl font-bold">
+                  🎉
+                </div>
+              </div>
+            </div>
+
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4 border-b pb-2">Order Summary</h2>
               
@@ -527,7 +545,7 @@ export default function Checkout() {
                   </div>
                   {formData.paymentMethod === 'cod' && (
                     <div className="text-sm text-gray-600 mt-1">
-                      Pay ₹{getCodExtraCharge().toFixed(2)} online + ₹{(getTotalPrice() - discountAmount + calculateShippingCost()).toFixed(2)} on delivery
+                      Pay ₹{getCodExtraCharge().toFixed(2)} online + ₹{(getTotalPrice() - discountAmount).toFixed(2)} on delivery
                     </div>
                   )}
                 </div>

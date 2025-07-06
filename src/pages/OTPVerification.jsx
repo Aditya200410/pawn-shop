@@ -86,10 +86,10 @@ const OTPVerification = () => {
       }
 
       console.log('✅ OTP verification successful!');
-      toast.success('Registration successful! Please login.');
+      toast.success('Registration successful! Logging you in...');
       
-      // Redirect to login
-      navigate('/login');
+      // Now automatically log in the user
+      await autoLogin(email);
       
     } catch (err) {
       console.error('❌ OTP verification error:', err);
@@ -98,6 +98,62 @@ const OTPVerification = () => {
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const autoLogin = async (userEmail) => {
+    try {
+      // Get the password from the registration data (we'll need to store it temporarily)
+      const registrationData = localStorage.getItem('tempRegistrationData');
+      let password = 'defaultPassword123'; // fallback
+      
+      if (registrationData) {
+        try {
+          const data = JSON.parse(registrationData);
+          password = data.password;
+        } catch (e) {
+          console.log('Using default password for auto-login');
+        }
+      }
+
+      console.log('🔄 Attempting auto-login...');
+      
+      const loginResponse = await fetch(`${config.API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          password: password
+        })
+      });
+
+      const loginData = await loginResponse.json();
+
+      if (!loginResponse.ok) {
+        throw new Error(loginData.message || 'Auto-login failed');
+      }
+
+      // Store the token
+      localStorage.setItem('token', loginData.token);
+      localStorage.setItem('user', JSON.stringify(loginData.user));
+      
+      // Clear temporary registration data
+      localStorage.removeItem('tempRegistrationData');
+      
+      console.log('✅ Auto-login successful!');
+      toast.success('Welcome! You are now logged in.');
+      
+      // Redirect to home page
+      navigate('/');
+      
+    } catch (err) {
+      console.error('❌ Auto-login error:', err);
+      // If auto-login fails, redirect to login page
+      toast.error('Registration successful! Please login with your credentials.');
+      navigate('/login');
     }
   };
 

@@ -17,6 +17,7 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [maxPrice, setMaxPrice] = useState(100000);
   const [selectedCategories, setSelectedCategories] = useState({
     main: null,
     sub: null,
@@ -57,7 +58,15 @@ const Shop = () => {
         if (!res.ok) throw new Error('Failed to fetch products');
         const data = await res.json();
         console.log('Fetched products:', data);
-        setProducts(Array.isArray(data) ? data : data.products || []);
+        const productsArray = Array.isArray(data) ? data : data.products || [];
+        setProducts(productsArray);
+        
+        // Calculate maximum price from products
+        if (productsArray.length > 0) {
+          const maxProductPrice = Math.max(...productsArray.map(product => product.price || 0));
+          setMaxPrice(maxProductPrice);
+          setPriceRange([0, maxProductPrice]);
+        }
         
         // Generate dynamic categories from products data
         generateDynamicCategories(data);
@@ -259,7 +268,7 @@ const Shop = () => {
                       }}
                       className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
                         isCategorySelected(category.name) 
-                          ? 'bg-amber-600 text-white shadow-md' 
+                          ? 'bg-pink-600 text-white shadow-md' 
                           : 'text-gray-600 hover:bg-gray-50'
                       }`}
                     >
@@ -297,7 +306,7 @@ const Shop = () => {
                               }}
                                 className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
                                   isCategorySelected(category.name, sub.name) 
-                                    ? 'bg-amber-600 text-white shadow-md' 
+                                    ? 'bg-pink-600 text-white shadow-md' 
                                     : 'text-gray-600 hover:bg-gray-50'
                               }`}
                             >
@@ -330,7 +339,7 @@ const Shop = () => {
                                     onClick={() => handleCategoryClick(category.name, sub.name, item)}
                                         className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 ${
                                           isCategorySelected(category.name, sub.name, item) 
-                                            ? 'bg-amber-600 text-white shadow-md' 
+                                            ? 'bg-pink-600 text-white shadow-md' 
                                             : 'text-gray-600 hover:bg-gray-50'
                                     }`}
                                   >
@@ -358,8 +367,8 @@ const Shop = () => {
                 onChange={handlePriceChange}
                 valueLabelDisplay="auto"
                 min={0}
-                max={100000}
-                className="text-amber-600"
+                max={maxPrice}
+                className="text-pink-600"
               />
               <div className="flex justify-between mt-2">
                 <span className="text-sm text-gray-600">₹{priceRange[0].toLocaleString()}</span>
@@ -373,7 +382,7 @@ const Shop = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent transition-all duration-300"
+                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent transition-all duration-300"
               >
                 <option value="popularity">Popularity</option>
                 <option value="latest">Latest</option>
@@ -384,13 +393,13 @@ const Shop = () => {
             </div>
 
             {/* Clear Filters Button */}
-            {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < 100000 || sortBy !== 'popularity') && (
+            {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < maxPrice || sortBy !== 'popularity') && (
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   setSelectedCategories({ main: null, sub: null, item: null });
-                  setPriceRange([0, 100000]);
+                  setPriceRange([0, maxPrice]);
                   setSortBy('popularity');
                 }}
                 className="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300 shadow-sm"
@@ -444,7 +453,7 @@ const Shop = () => {
                               }}
                               className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
                                 isCategorySelected(category.name) 
-                                  ? 'bg-amber-600 text-white shadow-md' 
+                                  ? 'bg-pink-600 text-white shadow-md' 
                                   : 'text-gray-600 hover:bg-gray-50'
                               }`}
                             >
@@ -482,7 +491,7 @@ const Shop = () => {
                                         }}
                                         className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
                                           isCategorySelected(category.name, sub.name) 
-                                            ? 'bg-amber-600 text-white shadow-md' 
+                                            ? 'bg-pink-600 text-white shadow-md' 
                                             : 'text-gray-600 hover:bg-gray-50'
                                         }`}
                                       >
@@ -515,7 +524,7 @@ const Shop = () => {
                                                 onClick={() => handleCategoryClick(category.name, sub.name, item)}
                                                 className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 ${
                                                   isCategorySelected(category.name, sub.name, item) 
-                                                    ? 'bg-amber-600 text-white shadow-md' 
+                                                    ? 'bg-pink-600 text-white shadow-md' 
                                                     : 'text-gray-600 hover:bg-gray-50'
                                                 }`}
                                               >
@@ -543,8 +552,8 @@ const Shop = () => {
                         onChange={handlePriceChange}
                         valueLabelDisplay="auto"
                         min={0}
-                        max={100000}
-                        className="text-amber-600"
+                        max={maxPrice}
+                        className="text-pink-600"
                       />
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-600">₹{priceRange[0].toLocaleString()}</span>
@@ -558,7 +567,7 @@ const Shop = () => {
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
-                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent transition-all duration-300"
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent transition-all duration-300"
                       >
                         <option value="popularity">Popularity</option>
                         <option value="latest">Latest</option>
@@ -569,13 +578,13 @@ const Shop = () => {
                     </div>
 
                     {/* Clear Filters Button */}
-                    {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < 100000 || sortBy !== 'popularity') && (
+                    {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < maxPrice || sortBy !== 'popularity') && (
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
                           setSelectedCategories({ main: null, sub: null, item: null });
-                          setPriceRange([0, 100000]);
+                          setPriceRange([0, maxPrice]);
                           setSortBy('popularity');
                         }}
                         className="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300 shadow-sm"
@@ -642,7 +651,7 @@ const Shop = () => {
                     setPriceRange([0, 100000]);
                     setSortBy('popularity');
                   }}
-                  className="px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors shadow-lg"
+                  className="px-6 py-3 bg-pink-600 text-white rounded-xl hover:bg-pink-700 transition-colors shadow-lg"
                 >
                   Clear All Filters
                 </motion.button>

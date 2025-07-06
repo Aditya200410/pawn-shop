@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false, showLogo = false }) => {
+const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false, showLogo = false, withHeaderFooter = false }) => {
   const sizeClasses = {
     small: 'w-8 h-8',
     medium: 'w-16 h-16',
@@ -100,6 +100,23 @@ const Loader = ({ size = 'medium', text = 'Loading...', fullScreen = false, show
   );
 
   if (fullScreen) {
+    if (withHeaderFooter) {
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+          {/* Header placeholder */}
+          <div className="h-16 bg-white border-b border-gray-100"></div>
+          
+          {/* Main content area with loader */}
+          <div className="flex-1 flex items-center justify-center min-h-[calc(100vh-8rem)]">
+            <LoaderContent />
+          </div>
+          
+          {/* Footer placeholder */}
+          <div className="h-16 bg-gray-900"></div>
+        </div>
+      );
+    }
+    
     return (
       <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
         <LoaderContent />

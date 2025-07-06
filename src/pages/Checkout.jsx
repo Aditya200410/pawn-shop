@@ -236,13 +236,8 @@ const Checkout = () => {
 
   // Calculate shipping cost based on payment method and order total
   const calculateShippingCost = () => {
-    if (formData.paymentMethod === 'cod') {
-      // COD: Free shipping above 499, 50 rupees below 499
-      return getTotalPrice() >= 499 ? 0 : 50;
-    } else {
-      // Online payment: Regular shipping logic (you can customize this)
-      return getTotalPrice() >= 499 ? 0 : 50;
-    }
+    // Free delivery for all orders
+    return 0;
   };
 
   // Calculate COD extra charge (39 rupees extra for COD orders)
@@ -587,7 +582,7 @@ const Checkout = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/shop')}
-            className="bg-gradient-to-r from-pink-500 to-pink-400 text-white px-8 py-4 rounded-xl font-medium hover:from-pink-600 hover:to-pink-500 transition-all duration-200"
+            className="bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white px-8 py-4 rounded-xl font-medium hover:from-[#8f3a61] hover:to-[#8f3a61] transition-all duration-200"
           >
             Continue Shopping
           </motion.button>
@@ -615,15 +610,15 @@ const Checkout = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={navigateToCart}
-                className="flex items-center space-x-2 text-pink-700 hover:text-pink-900 transition-colors"
+                className="flex items-center space-x-2 text-[#8f3a61] hover:text-[#8f3a61]/80 transition-colors"
               >
                 <ArrowLeft size={20} />
                 <span>Back to Cart</span>
               </motion.button>
             </div>
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-pink-900">Secure Checkout</h1>
-              <p className="text-pink-600 text-sm">Complete your purchase safely</p>
+              <h1 className="text-2xl font-bold text-[#8f3a61]">Secure Checkout</h1>
+              <p className="text-[#8f3a61]/70 text-sm">Complete your purchase safely</p>
             </div>
             <div className="flex items-center space-x-2 text-green-600">
               <Shield size={20} />
@@ -633,6 +628,33 @@ const Checkout = () => {
         </div>
       </div>
 
+      {/* Free Delivery Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto my-10 px-4 mb-6"
+      >
+        <div className="bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] rounded-xl p-4 text-white shadow-lg">
+          <div className="flex items-center justify-center space-x-3">
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+              <Truck size={20} className="text-white" />
+            </div>
+            <div className="text-center">
+              <h3 className="font-bold text-lg">🚚 FREE DELIVERY ON ALL ORDERS</h3>
+              <p className="text-white/80 text-sm">No minimum order value required</p>
+            </div>
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-2xl"
+            >
+              🎉
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
+
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Checkout Form */}
@@ -640,19 +662,19 @@ const Checkout = () => {
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden"
+              className="bg-white rounded-2xl shadow-xl border border-[#8f3a61]/20 overflow-hidden"
             >
               <div className="p-8">
               
 
-                <div className="mb-6 p-4 bg-gradient-to-r from-pink-50 to-pink-50 border border-pink-200 rounded-xl">
+                <div className="mb-6 p-4 bg-gradient-to-r from-[#8f3a61]/10 to-[#8f3a61]/5 border border-[#8f3a61]/20 rounded-xl">
                   <div className="flex items-center space-x-2 mb-2">
-                    <Sparkles size={20} className="text-pink-500" />
-                    <p className="text-sm font-medium text-pink-800">
+                    <Sparkles size={20} className="text-[#8f3a61]" />
+                    <p className="text-sm font-medium text-[#8f3a61]">
                       Premium Shopping Experience
                     </p>
                   </div>
-                  <p className="text-sm text-pink-700">
+                  <p className="text-sm text-[#8f3a61]/70">
                     <span className="text-red-500 font-semibold">*</span> indicates required fields. 
                     Your information is protected with bank-level security.
                   </p>
@@ -662,18 +684,18 @@ const Checkout = () => {
                   {/* Shipping Information */}
                   <div className="mb-8">
                     <div className="flex items-center space-x-3 mb-6">
-                      <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-pink-400 rounded-full flex items-center justify-center">
-                        <MapPin size={20} className="text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-pink-900">Shipping Information</h3>
-                        <p className="text-pink-600 text-sm">Where should we deliver your order?</p>
-                      </div>
+                                          <div className="w-10 h-10 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] rounded-full flex items-center justify-center">
+                      <MapPin size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-[#8f3a61]">Shipping Information</h3>
+                      <p className="text-[#8f3a61]/70 text-sm">Where should we deliver your order?</p>
+                    </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-semibold text-pink-900 mb-2">
+                        <label className="block text-sm font-semibold text-[#8f3a61] mb-2">
                           First Name <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -681,8 +703,8 @@ const Checkout = () => {
                           name="firstName"
                           value={formData.firstName}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 ${
-                            fieldErrors.firstName ? 'border-red-300 bg-red-50' : 'border-pink-200 bg-pink-50/30'
+                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent transition-all duration-200 ${
+                            fieldErrors.firstName ? 'border-red-300 bg-red-50' : 'border-[#8f3a61]/30 bg-[#8f3a61]/5'
                           }`}
                           required
                         />
@@ -695,7 +717,7 @@ const Checkout = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-pink-900 mb-2">
+                        <label className="block text-sm font-semibold text-[#8f3a61] mb-2">
                           Last Name <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -703,8 +725,8 @@ const Checkout = () => {
                           name="lastName"
                           value={formData.lastName}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 ${
-                            fieldErrors.lastName ? 'border-red-300 bg-red-50' : 'border-pink-200 bg-pink-50/30'
+                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent transition-all duration-200 ${
+                            fieldErrors.lastName ? 'border-red-300 bg-red-50' : 'border-[#8f3a61]/30 bg-[#8f3a61]/5'
                           }`}
                           required
                         />
@@ -717,7 +739,7 @@ const Checkout = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-pink-900 mb-2">
+                        <label className="block text-sm font-semibold text-[#8f3a61] mb-2">
                           Email <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -725,8 +747,8 @@ const Checkout = () => {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 ${
-                            fieldErrors.email ? 'border-red-300 bg-red-50' : 'border-pink-200 bg-pink-50/30'
+                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent transition-all duration-200 ${
+                            fieldErrors.email ? 'border-red-300 bg-red-50' : 'border-[#8f3a61]/30 bg-[#8f3a61]/5'
                           }`}
                           required
                         />
@@ -739,7 +761,7 @@ const Checkout = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-pink-900 mb-2">
+                        <label className="block text-sm font-semibold text-[#8f3a61] mb-2">
                           Phone <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -747,8 +769,8 @@ const Checkout = () => {
                           name="phone"
                           value={formData.phone}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 ${
-                            fieldErrors.phone ? 'border-red-300 bg-red-50' : 'border-pink-200 bg-pink-50/30'
+                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent transition-all duration-200 ${
+                            fieldErrors.phone ? 'border-red-300 bg-red-50' : 'border-[#8f3a61]/30 bg-[#8f3a61]/5'
                           }`}
                           required
                         />
@@ -783,7 +805,7 @@ const Checkout = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-pink-900 mb-2">
+                        <label className="block text-sm font-semibold text-[#8f3a61] mb-2">
                           City <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -791,8 +813,8 @@ const Checkout = () => {
                           name="city"
                           value={formData.city}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 ${
-                            fieldErrors.city ? 'border-red-300 bg-red-50' : 'border-pink-200 bg-pink-50/30'
+                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent transition-all duration-200 ${
+                            fieldErrors.city ? 'border-red-300 bg-red-50' : 'border-[#8f3a61]/30 bg-[#8f3a61]/5'
                           }`}
                           required
                         />
@@ -805,7 +827,7 @@ const Checkout = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-pink-900 mb-2">
+                        <label className="block text-sm font-semibold text-[#8f3a61] mb-2">
                           State <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -813,8 +835,8 @@ const Checkout = () => {
                           name="state"
                           value={formData.state}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 ${
-                            fieldErrors.state ? 'border-red-300 bg-red-50' : 'border-pink-200 bg-pink-50/30'
+                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent transition-all duration-200 ${
+                            fieldErrors.state ? 'border-red-300 bg-red-50' : 'border-[#8f3a61]/30 bg-[#8f3a61]/5'
                           }`}
                           required
                         />
@@ -827,7 +849,7 @@ const Checkout = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-pink-900 mb-2">
+                        <label className="block text-sm font-semibold text-[#8f3a61] mb-2">
                           ZIP Code <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -835,8 +857,8 @@ const Checkout = () => {
                           name="zipCode"
                           value={formData.zipCode}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 ${
-                            fieldErrors.zipCode ? 'border-red-300 bg-red-50' : 'border-pink-200 bg-pink-50/30'
+                          className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent transition-all duration-200 ${
+                            fieldErrors.zipCode ? 'border-red-300 bg-red-50' : 'border-[#8f3a61]/30 bg-[#8f3a61]/5'
                           }`}
                           required
                         />
@@ -923,10 +945,10 @@ const Checkout = () => {
                   </div>
 
                   {/* Coupon Code Section */}
-                  <div className="mb-6 p-4 bg-gradient-to-r from-pink-50 to-pink-50 border border-pink-200 rounded-xl">
+                  <div className="mb-6 p-4 bg-gradient-to-r from-[#8f3a61]/10 to-[#8f3a61]/5 border border-[#8f3a61]/20 rounded-xl">
                     <div className="flex items-center space-x-2 mb-4">
-                      <Gift size={20} className="text-pink-500" />
-                      <h3 className="text-lg font-semibold text-pink-900">Have a coupon?</h3>
+                      <Gift size={20} className="text-[#8f3a61]" />
+                      <h3 className="text-lg font-semibold text-[#8f3a61]">Have a coupon?</h3>
                     </div>
                     {!appliedCoupon ? (
                       <div className="flex gap-2">
@@ -938,13 +960,13 @@ const Checkout = () => {
                             setCouponError(''); // Clear error when user types
                           }}
                           placeholder="Enter coupon code"
-                          className="flex-1 px-4 py-2 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white"
+                          className="flex-1 px-4 py-2 border border-[#8f3a61]/30 rounded-lg focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent bg-white"
                           disabled={couponLoading}
                         />
                         <button
                           onClick={handleCouponSubmit}
                           disabled={couponLoading || !couponCode.trim()}
-                          className="px-4 py-2 bg-gradient-to-r from-pink-500 to-pink-400 text-white rounded-lg hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-4 py-2 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white rounded-lg hover:from-[#8f3a61] hover:to-[#8f3a61] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {couponLoading ? 'Applying...' : 'Apply'}
                         </button>
@@ -963,7 +985,7 @@ const Checkout = () => {
                         <button
                           onClick={removeCoupon}
                           type="button"
-                          className="text-pink-600 hover:text-pink-700 text-sm font-medium"
+                          className="text-[#8f3a61] hover:text-[#8f3a61]/80 text-sm font-medium"
                         >
                           Remove
                         </button>
@@ -986,19 +1008,19 @@ const Checkout = () => {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-2xl shadow-xl border border-pink-100 p-6 sticky top-24"
+              className="bg-white rounded-2xl shadow-xl border border-[#8f3a61]/20 p-6 sticky top-24"
             >
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-pink-400 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] rounded-full flex items-center justify-center">
                   <Truck size={16} className="text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-pink-900">Order Summary</h3>
+                <h3 className="text-xl font-bold text-[#8f3a61]">Order Summary</h3>
               </div>
 
               <div className="space-y-4 mb-6">
                 {!cartLoaded ? (
                   <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#8f3a61]"></div>
                     <span className="ml-3 text-gray-600">Loading cart items...</span>
                   </div>
                 ) : (
@@ -1008,13 +1030,13 @@ const Checkout = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-center space-x-4 p-3 bg-pink-50/50 rounded-xl"
+                      className="flex items-center space-x-4 p-3 bg-[#8f3a61]/5 rounded-xl"
                     >
                       <div className="relative">
                         <img 
                           src={config.fixImageUrl(getItemImage(item))} 
                           alt={item.product?.name || item.name} 
-                          className="w-16 h-16 rounded-lg object-cover border border-pink-200" 
+                          className="w-16 h-16 rounded-lg object-cover border border-[#8f3a61]/20" 
                           onError={e => {
                             e.target.onerror = null;
                             if (item.product?.images && item.product.images.length > 0) {
@@ -1027,7 +1049,7 @@ const Checkout = () => {
                             e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Product';
                           }}
                         />
-                        <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-pink-400 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-semibold">
+                        <span className="absolute -top-2 -right-2 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-semibold">
                           {item.quantity}
                         </span>
                       </div>
@@ -1047,6 +1069,33 @@ const Checkout = () => {
                 )}
               </div>
 
+              {/* Free Delivery Highlight */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="mb-6 p-4 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] rounded-xl text-white shadow-lg"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                      <Truck size={16} className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg">🚚 FREE DELIVERY</h4>
+                      <p className="text-white/80 text-sm">On all orders nationwide</p>
+                    </div>
+                  </div>
+                  <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="text-2xl font-bold"
+                  >
+                    🎉
+                  </motion.div>
+                </div>
+              </motion.div>
+
               <div className="bg-white rounded-xl p-6 mb-8">
                 <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
                 {!cartLoaded || !formData.paymentMethod ? (
@@ -1060,11 +1109,23 @@ const Checkout = () => {
                       <span>Subtotal ({cartItems.length} items)</span>
                       <span>₹{getTotalPrice().toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span>Shipping</span>
-                      <span className={calculateShippingCost() === 0 ? 'text-green-600' : ''}>
-                        {calculateShippingCost() === 0 ? 'Free' : `₹${calculateShippingCost().toFixed(2)}`}
-                      </span>
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        className="flex items-center space-x-2"
+                      >
+                        <span className="text-green-600 font-bold">FREE</span>
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity }}
+                          className="text-green-500"
+                        >
+                          ✨
+                        </motion.div>
+                      </motion.div>
                     </div>
                     {formData.paymentMethod === 'cod' && (
                       <div className="flex justify-between">
@@ -1079,7 +1140,7 @@ const Checkout = () => {
                       </div>
                       {formData.paymentMethod === 'cod' && (
                         <div className="text-sm text-gray-600 mt-1">
-                          Pay ₹{getFinalTotal().toFixed(2)} online + remaining ₹{(getTotalPrice() + calculateShippingCost()).toFixed(2)} on delivery
+                          Pay ₹{getCodExtraCharge().toFixed(2)} online + ₹{getTotalPrice().toFixed(2)} on delivery
                         </div>
                       )}
                     </div>
@@ -1096,7 +1157,7 @@ const Checkout = () => {
                     : handleSubmit
                 }
                 disabled={loading || paymentProcessing || !cartLoaded || !formData.paymentMethod}
-                className="w-full mt-6 bg-gradient-to-r from-pink-500 to-pink-400 text-white px-6 py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="w-full mt-6 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white px-6 py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {loading || paymentProcessing ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

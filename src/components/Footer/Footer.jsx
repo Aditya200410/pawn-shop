@@ -67,23 +67,23 @@ export default function Footer() {
                   <h4 className="text-base font-semibold text-white mb-3">Contact Details</h4>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
-                      <Mail className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                      <Mail className="w-4 h-4 text-pink-500 flex-shrink-0" />
                       <div className="text-sm text-gray-100">
-                        <a href="mailto:Info@Rikocraft.com" className="hover:text-amber-500 transition-colors duration-300">
+                        <a href="mailto:Info@Rikocraft.com" className="hover:text-pink-500 transition-colors duration-300">
                           Info@Rikocraft.com
                         </a>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Mail className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                      <Mail className="w-4 h-4 text-pink-500 flex-shrink-0" />
                       <div className="text-sm text-gray-100">
-                        <a href="mailto:Care@Rikocraft.com" className="hover:text-amber-500 transition-colors duration-300">
+                        <a href="mailto:Care@Rikocraft.com" className="hover:text-pink-500 transition-colors duration-300">
                           Care@Rikocraft.com
                         </a>
                       </div>
                     </div>
                     <div className="flex items-start space-x-2">
-                      <MapPin className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <MapPin className="w-4 h-4 text-pink-500 flex-shrink-0 mt-0.5" />
                       <div className="text-sm text-gray-100">
                         Jamshedpur, Jharkhand - 831004
                       </div>
@@ -93,57 +93,69 @@ export default function Footer() {
 
                 {/* Social Media Links - Mobile Only */}
                 <div className="flex items-center space-x-4 md:hidden">
-                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors duration-300 group">
                     <FacebookIcon className="w-5 h-5 text-gray-100 group-hover:text-white" />
                   </a>
-                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors duration-300 group">
                     <InstagramIcon className="w-5 h-5 text-gray-100 group-hover:text-white" />
-                  </a>
-                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                    <TwitterIcon className="w-5 h-5 text-gray-100 group-hover:text-white" />
-                  </a>
-                  <a href="#" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                    <YoutubeIcon className="w-5 h-5 text-gray-100 group-hover:text-white" />
                   </a>
                 </div>
               </div>
             </div>
 
-            {/* Popular Categories and Useful Links Row - Mobile */}
-            <div className="grid grid-cols-2 gap-6 md:hidden">
+            {/* Popular Categories and Useful Links - Mobile View Side-by-Side */}
+            <div className="md:hidden grid grid-cols-2 gap-4">
               {/* Popular Categories */}
+              <div>
+                <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
+                <ul className="space-y-3">
+                  {categories.slice(0, 4).map((category) => (
+                    <li key={category.name}>
+                      <Link 
+                        to={`/shop?category=${encodeURIComponent(category.name)}`}
+                        className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1"
+                      >
+                        {category.name}
+                      </Link>
+                    </li>
+                  ))}
+                  <li>
+                  
+                  </li>
+                </ul>
+              </div>
 
               {/* Useful Links */}
               <div>
                 <h4 className="text-base font-semibold text-white mb-4">Useful Links</h4>
                 <ul className="space-y-3">
                   <li>
-                    <Link to="/" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                       Home
                     </Link>
                   </li>
                   <li>
-                    <Link to="/about" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/about" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                       About Us
                     </Link>
                   </li>
                   <li>
-                    <Link to="/seller" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/seller" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                       Seller Program
                     </Link>
                   </li>
                   <li>
-                    <Link to="/contact" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/contact" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                       Contact Us
                     </Link>
                   </li>
                   <li>
-                    <Link to="/faq" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/faq" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                       FAQ
                     </Link>
                   </li>
                   <li>
-                    <Link to="/policies" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                    <Link to="/policies" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                       Policies
                     </Link>
                   </li>
@@ -159,46 +171,12 @@ export default function Footer() {
                   <li key={category.name}>
                     <Link 
                       to={`/shop?category=${encodeURIComponent(category.name)}`}
-                      className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1"
-                    >
-                      {category.name}
-                    </Link>
-                   
-                  </li>
-                ))}
-                <li>
-                  <Link 
-                    to="/shop"
-                    className="text-amber-500 hover:text-amber-400 transition-colors duration-300 text-sm font-medium block py-1"
-                  >
-                    View All Categories →
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Popular Categories - Mobile */}
-            <div className="md:hidden">
-              <h4 className="text-base font-semibold text-white mb-4">Popular Categories</h4>
-              <ul className="space-y-3">
-                {categories.slice(0, 4).map((category) => (
-                  <li key={category.name}>
-                    <Link 
-                      to={`/shop?category=${encodeURIComponent(category.name)}`}
-                      className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1"
+                      className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1"
                     >
                       {category.name}
                     </Link>
                   </li>
                 ))}
-                <li>
-                  <Link 
-                    to="/shop"
-                    className="text-amber-500 hover:text-amber-400 transition-colors duration-300 text-sm font-medium block py-1"
-                  >
-                    View All Categories →
-                  </Link>
-                </li>
               </ul>
             </div>
 
@@ -207,32 +185,32 @@ export default function Footer() {
               <h4 className="text-base font-semibold text-white mb-4">Useful Links</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link to="/" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                     Home
                   </Link>
                 </li>
                 <li>
-                  <Link to="/about" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/about" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link to="/blog" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/blog" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                     Blog
                   </Link>
                 </li>
                 <li>
-                  <Link to="/contact" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/contact" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                     Contact Us
                   </Link>
                 </li>
                 <li>
-                  <Link to="/faq" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/faq" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                     FAQ
                   </Link>
                 </li>
                 <li>
-                  <Link to="/policies" className="text-gray-100 hover:text-amber-500 transition-colors duration-300 text-sm block py-1">
+                  <Link to="/policies" className="text-gray-100 hover:text-pink-500 transition-colors duration-300 text-sm block py-1">
                     Policies
                   </Link>
                 </li>
@@ -248,17 +226,11 @@ export default function Footer() {
               </p>
               {/* Social Media Links - Desktop Only */}
               <div className="hidden md:flex items-center space-x-3 md:space-x-4">
-                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors duration-300 group">
                   <FacebookIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
                 </a>
-                <a href="https://www.instagram.com/riko.craft?igsh=YWlsZmRnNmk5eXp2" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
+                <a href="https://www.instagram.com/riko.craft?igsh=YWlsZmRnNmk5eXp2" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors duration-300 group">
                   <InstagramIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
-                </a>
-                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                  <TwitterIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
-                </a>
-                <a href="#" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors duration-300 group">
-                  <YoutubeIcon className="w-4 h-4 text-gray-100 group-hover:text-white" />
                 </a>
               </div>
             </div>

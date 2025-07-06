@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useState, useEffect } from 'react';
 import config from '../../config/config.js';
@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 
 const ProductCard = ({ product }) => {
   const { addToCart, cartItems } = useCart();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const isOutOfStock = product.stock === 0 || product.outOfStock === true || product.inStock === false;
   const cartQuantity = cartItems?.find(item => (item.product?._id || item.product?.id || item.id) === (product._id || product.id))?.quantity || 0;
@@ -47,7 +48,35 @@ const ProductCard = ({ product }) => {
       })
     : [];
   
-  const mainImage = validImages.length > 0 ? config.fixImageUrl(validImages[0]) : config.fixImageUrl(product.image);
+  const mainImage = validImages.length > 0 ? config.fixImageUrl(validImages[currentImageIndex]) : config.fixImageUrl(product.image);
+
+  const handlePreviousImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex(prev => prev === 0 ? validImages.length - 1 : prev - 1);
+  };
+
+  const handleNextImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex(prev => prev === validImages.length - 1 ? 0 : prev + 1);
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (validImages.length <= 1) return;
+      
+      if (e.key === 'ArrowLeft') {
+        setCurrentImageIndex(prev => prev === 0 ? validImages.length - 1 : prev - 1);
+      } else if (e.key === 'ArrowRight') {
+        setCurrentImageIndex(prev => prev === validImages.length - 1 ? 0 : prev + 1);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [validImages.length]);
 
   return (
     <div className="group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1">
@@ -62,6 +91,57 @@ const ProductCard = ({ product }) => {
               e.target.src = 'https://placehold.co/400x500/e2e8f0/475569?text=Image';
             }}
           />
+          
+          {/* Navigation Arrows - Only show if there are multiple images */}
+          {validImages.length > 1 && (
+            <>
+              {/* More Images Indicator */}
+              <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                {validImages.length} photos
+              </div>
+              
+              <button
+                onClick={handlePreviousImage}
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 hover:bg-white text-[#8f3a61] rounded-full flex items-center justify-center shadow-md backdrop-blur-sm transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                onClick={handleNextImage}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 hover:bg-white text-[#8f3a61] rounded-full flex items-center justify-center shadow-md backdrop-blur-sm transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
+                aria-label="Next image"
+              >
+                <ChevronRight size={16} />
+              </button>
+              
+              {/* Image Counter */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
+                {currentImageIndex + 1} / {validImages.length}
+              </div>
+              
+              {/* Thumbnail Dots */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1 mt-8">
+                {validImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setCurrentImageIndex(index);
+                    }}
+                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                      index === currentImageIndex 
+                        ? 'bg-white scale-125' 
+                        : 'bg-white/50 hover:bg-white/75'
+                    }`}
+                    aria-label={`Go to image ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          
           {isOutOfStock && (
             <div className="absolute top-3 right-3 bg-white/80 text-red-600 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm backdrop-blur-md">
               Out of Stock

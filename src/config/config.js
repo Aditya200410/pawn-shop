@@ -22,11 +22,14 @@ const config = {
     COUPONS: '/api/coupons',
     HERO_CAROUSEL: '/api/hero-carousel',
     REGISTER: '/api/seller/register',
+    REVIEWS: '/api/reviews',
   },
   
   // Full API URLs (constructed from base URL and endpoints)
   get API_URLS() {
-    const urls = {};
+    const urls = {
+      BASE_URL: this.API_BASE_URL,
+    };
     Object.keys(this.API_ENDPOINTS).forEach(key => {
       urls[key] = `${this.API_BASE_URL}${this.API_ENDPOINTS[key]}`;
     });
