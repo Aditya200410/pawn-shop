@@ -97,7 +97,7 @@ const ProductView = () => {
             const response = await fetch(endpoint);
             
             if (!response.ok) {
-              console.log(`Endpoint ${endpoint} returned status: ${response.status}`);
+      
               continue;
             }
             
@@ -124,7 +124,7 @@ const ProductView = () => {
             }
           } catch (error) {
             fetchError = error;
-            console.log(`Error fetching from ${endpoint}:`, error);
+    
           }
         }
 

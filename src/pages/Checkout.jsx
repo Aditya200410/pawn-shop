@@ -77,12 +77,10 @@ const Checkout = () => {
     const fetchCodUpfrontAmount = async () => {
       try {
         const response = await settingsAPI.getCodUpfrontAmount();
-        console.log('COD upfront amount response:', response);
         
         // Check both response.data and direct response
         const amount = response.data?.amount || response.amount;
         if (amount) {
-          console.log('Setting upfront amount to:', amount);
           setCodUpfrontAmount(Number(amount));
         }
       } catch (error) {
@@ -334,7 +332,7 @@ const Checkout = () => {
       couponCode: appliedCoupon ? appliedCoupon.code : undefined
     };
 
-    console.log('Creating COD order with data:', orderData);
+
     
     try {
       const response = await orderService.createOrder(orderData);
@@ -411,7 +409,7 @@ const Checkout = () => {
         couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
 
-      console.log('Initiating PhonePe payment with order data:', orderData);
+
 
       // Call backend to create PhonePe order
       const data = await paymentService.initiatePhonePePayment(orderData);
@@ -430,34 +428,40 @@ const Checkout = () => {
         try {
           const PhonePeCheckout = await getPhonePeCheckout();
           
-          // Define callback function for payment completion
+          // Define callback function for payment completion according to PhonePe documentation
           const paymentCallback = (response) => {
-            console.log('PhonePe payment callback:', response);
             
             if (response === 'USER_CANCEL') {
+              // User cancelled the payment
               toast.error('Payment was cancelled by the user.');
+              setPaymentProcessing(false);
             } else if (response === 'CONCLUDED') {
-              toast.success('Payment process has concluded.');
+              // Payment process has concluded (success or failure)
+
+              // Redirect to success page for verification
               setTimeout(() => {
-                window.location.reload();
-              }, 2000);
+                window.location.href = `${window.location.origin}/payment/success?transactionId=${data.merchantOrderId}`;
+              }, 1000);
             }
           };
 
           // Show success message
-          toast.success('Initiating PhonePe payment...');
+
           
-          // Invoke PhonePe checkout in redirect mode
+          // Invoke PhonePe checkout with tokenUrl according to documentation
+          // Based on: https://developer.phonepe.com/v1/reference/initiate-payment-using-js-standard-checkout
+          // The tokenUrl is NOT a regular redirect URL - it's specifically for PhonePeCheckout.transact()
           PhonePeCheckout.transact({ 
-            tokenUrl: data.redirectUrl 
+            tokenUrl: data.redirectUrl,
+            callback: paymentCallback
           });
           
         } catch (checkoutError) {
           console.error('PhonePe checkout error:', checkoutError);
           
-          // If PhonePe checkout fails, redirect manually
-          console.log('Redirecting to PhonePe payment URL...');
-          window.location.href = data.redirectUrl;
+          // If PhonePe checkout fails, show error instead of redirecting manually
+          setError('PhonePe checkout failed. Please try again.');
+          toast.error('PhonePe checkout failed. Please try again.');
         }
         
       } else {

@@ -16,39 +16,27 @@ const Policies = () => {
   const fetchPolicies = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://pawnbackend-xmqa.onrender.com/api'}/data-page`);
-      console.log('API Response status:', response.status);
-      
       if (response.ok) {
         const data = await response.json();
-        console.log('API Response data:', data);
-        console.log('Data type:', typeof data);
-        console.log('Is array:', Array.isArray(data));
-        console.log('Data length:', data.length);
         
         // Check if data is an array and has the expected structure
         if (Array.isArray(data) && data.length > 0) {
           const policiesMap = {};
           data.forEach((policy, index) => {
-            console.log(`Policy ${index}:`, policy);
-            console.log(`Policy ${index} type:`, policy.type);
-            console.log(`Policy ${index} heading:`, policy.heading);
-            console.log(`Policy ${index} content:`, policy.content);
-            console.log(`Policy ${index} content type:`, typeof policy.content);
-            console.log(`Policy ${index} content length:`, policy.content?.length);
             
             if (policy.type && policy.heading && policy.content) {
               policiesMap[policy.type] = policy;
             }
           });
-          console.log('Processed policies map:', policiesMap);
+
           setPolicies(policiesMap);
         } else {
-          console.log('No valid policy data found');
+
           setPolicies({});
           toast.error('No policy data available');
         }
       } else {
-        console.log('API response not ok');
+
         setPolicies({});
         toast.error('Failed to load policies from server');
       }
@@ -76,13 +64,11 @@ const Policies = () => {
 
   const renderContent = (content) => {
     if (!content) {
-      console.log('No content provided to renderContent');
+  
       return null;
     }
     
-    console.log('Rendering content:', content);
-    console.log('Content type:', typeof content);
-    console.log('Content length:', content.length);
+
     
     // Split content into sections based on headers (lines that end with colon)
     const lines = content.split('\n');
@@ -120,7 +106,7 @@ const Policies = () => {
       sections.push(currentSection);
     }
     
-    console.log('Sections found:', sections.length);
+
     
     // If no sections found, render as simple paragraphs
     if (sections.length === 0) {
@@ -140,7 +126,7 @@ const Policies = () => {
       const sectionId = `${activeTab}-${index}`;
       const isExpanded = expandedSections[sectionId];
 
-      console.log(`Section ${index}:`, { header: section.header, contentLength: section.content.length });
+
 
       return (
         <motion.div

@@ -57,7 +57,7 @@ const Shop = () => {
         const res = await fetch(config.API_URLS.SHOP);
         if (!res.ok) throw new Error('Failed to fetch products');
         const data = await res.json();
-        console.log('Fetched products:', data);
+
         const productsArray = Array.isArray(data) ? data : data.products || [];
         setProducts(productsArray);
         

@@ -126,27 +126,19 @@ const SellerProfile = () => {
   const loadHistoryData = async () => {
     setHistoryLoading(true);
     try {
-      console.log('Loading history data for seller:', seller?._id);
+      
       
       // Load withdrawal history
-      console.log('Loading withdrawal history...');
       const withdrawalData = await historyService.getWithdrawalHistory();
-      console.log('Withdrawal data received:', withdrawalData);
       setWithdrawalHistory(withdrawalData.withdrawals || []);
 
       // Load commission history
-      console.log('Loading commission history...');
       const commissionData = await historyService.getCommissionHistory();
-      console.log('Commission data received:', commissionData);
       setCommissionHistory(commissionData.commissionHistory || []);
 
       // Load commission summary
-      console.log('Loading commission summary...');
       const summaryData = await historyService.getCommissionSummary();
-      console.log('Summary data received:', summaryData);
       setCommissionSummary(summaryData || {});
-      
-      console.log('All history data loaded successfully');
     } catch (error) {
       console.error('Failed to load history data:', error);
       console.error('Error details:', {

@@ -52,19 +52,14 @@ const OTPVerification = () => {
 
     try {
       const apiUrl = `${config.API_BASE_URL}/api/auth/verify-otp`;
-      console.log('📤 Sending OTP verification to backend...');
-      console.log('🔗 API URL:', apiUrl);
-      console.log('📋 Verification data:', {
-        email: email,
-        otpLength: otp.length
-      });
+
 
       const requestBody = {
         email: email,
         otp: otp
       };
 
-      console.log('📦 Request body:', requestBody);
+
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -75,17 +70,13 @@ const OTPVerification = () => {
         body: JSON.stringify(requestBody)
       });
 
-      console.log('📥 Backend response status:', response.status);
-      console.log('📥 Backend response headers:', Object.fromEntries(response.headers.entries()));
-      
       const data = await response.json();
-      console.log('📥 Backend response data:', data);
 
       if (!response.ok) {
         throw new Error(data.message || `HTTP ${response.status}: OTP verification failed`);
       }
 
-      console.log('✅ OTP verification successful!');
+
       toast.success('Registration successful! Logging you in...');
       
       // Now automatically log in the user
@@ -112,11 +103,11 @@ const OTPVerification = () => {
           const data = JSON.parse(registrationData);
           password = data.password;
         } catch (e) {
-          console.log('Using default password for auto-login');
+  
         }
       }
 
-      console.log('🔄 Attempting auto-login...');
+
       
       const loginResponse = await fetch(`${config.API_BASE_URL}/api/auth/login`, {
         method: 'POST',
@@ -143,7 +134,7 @@ const OTPVerification = () => {
       // Clear temporary registration data
       localStorage.removeItem('tempRegistrationData');
       
-      console.log('✅ Auto-login successful!');
+
       toast.success('Welcome! You are now logged in.');
       
       // Redirect to home page
@@ -168,7 +159,7 @@ const OTPVerification = () => {
 
     try {
       const apiUrl = `${config.API_BASE_URL}/api/auth/register`;
-      console.log('📤 Resending OTP to:', email);
+
 
       const requestBody = {
         name: 'User', // We don't have the name here, but backend will handle it
@@ -205,7 +196,7 @@ const OTPVerification = () => {
   };
 
   const handleBackToSignup = () => {
-    console.log('⬅️ Going back to signup');
+
     navigate('/signup');
   };
 

@@ -241,6 +241,11 @@ class PaymentService {
         const orderResult = await this.createOrderAfterPayment(orderData, 'completed');
         return {
           success: true,
+          code: 'PAYMENT_SUCCESS',
+          data: {
+            state: 'COMPLETED',
+            message: 'Payment completed successfully'
+          },
           paymentStatus,
           order: orderResult
         };
@@ -250,6 +255,11 @@ class PaymentService {
         const orderResult = await this.createOrderAfterPayment(orderData, 'pending');
         return {
           success: true,
+          code: 'PAYMENT_PENDING',
+          data: {
+            state: 'PENDING',
+            message: 'Payment is pending. Please check your orders after a few minutes.'
+          },
           paymentStatus,
           order: orderResult
         };
@@ -258,6 +268,11 @@ class PaymentService {
         console.log('PaymentService - Payment failed:', paymentStatus.data);
         return {
           success: false,
+          code: 'PAYMENT_FAILED',
+          data: {
+            state: 'FAILED',
+            message: 'Payment failed: ' + (paymentStatus.data?.errorCode || 'Unknown error')
+          },
           paymentStatus,
           message: 'Payment failed: ' + (paymentStatus.data?.errorCode || 'Unknown error')
         };
@@ -266,6 +281,11 @@ class PaymentService {
         console.log('PaymentService - Payment verification failed:', paymentStatus);
         return {
           success: false,
+          code: 'VERIFICATION_FAILED',
+          data: {
+            state: 'UNKNOWN',
+            message: 'Payment verification failed'
+          },
           paymentStatus,
           message: 'Payment verification failed'
         };

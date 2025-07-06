@@ -23,12 +23,12 @@ const PaymentSuccess = () => {
       const urlParams = new URLSearchParams(window.location.search);
       const transactionId = urlParams.get('transactionId') || 
                            urlParams.get('orderId') || 
-                           localStorage.getItem('phonepe_order_id');
+                           localStorage.getItem('phonepe_merchant_order_id');
       
       const storedOrderData = localStorage.getItem('phonepe_order_data');
       
       console.log('PaymentSuccess - Transaction ID:', transactionId);
-      console.log('PaymentSuccess - Stored order data:', storedOrderData);
+  
       
       if (!transactionId) {
         setError('No transaction ID found. Please contact support.');
@@ -71,7 +71,8 @@ const PaymentSuccess = () => {
               clearCart();
               clearSellerToken();
               // Clear stored payment data
-              localStorage.removeItem('phonepe_transaction_id');
+              localStorage.removeItem('phonepe_order_id');
+              localStorage.removeItem('phonepe_merchant_order_id');
               localStorage.removeItem('phonepe_order_data');
               localStorage.removeItem('phonepe_redirect_time');
               
@@ -102,7 +103,16 @@ const PaymentSuccess = () => {
       console.log('PaymentSuccess - Verifying PhonePe payment...');
       
       try {
-        const result = await paymentService.completePaymentFlow(transactionId, storedOrderData ? JSON.parse(storedOrderData) : null);
+        // Get the PhonePe order ID from localStorage
+        const phonePeOrderId = localStorage.getItem('phonepe_order_id');
+        
+        if (!phonePeOrderId) {
+          setError('PhonePe order ID not found. Please contact support.');
+          setLoading(false);
+          return;
+        }
+        
+        const result = await paymentService.completePaymentFlow(phonePeOrderId, storedOrderData ? JSON.parse(storedOrderData) : null);
         
         if (result.success) {
           setOrderCreated(true);
@@ -112,14 +122,15 @@ const PaymentSuccess = () => {
           clearCart();
           clearSellerToken();
           // Clear stored payment data
-          localStorage.removeItem('phonepe_transaction_id');
+          localStorage.removeItem('phonepe_order_id');
+          localStorage.removeItem('phonepe_merchant_order_id');
           localStorage.removeItem('phonepe_order_data');
           localStorage.removeItem('phonepe_redirect_time');
           
           toast.success('Order placed successfully!');
         }
         
-        console.log('PaymentSuccess - Payment verification response:', result);
+
         setStatus(result);
         
       } catch (error) {
