@@ -328,7 +328,9 @@ const Checkout = () => {
       codExtraCharge: getCodExtraCharge(),
       finalTotal: getFinalTotal(),
       paymentMethod: formData.paymentMethod,
-      paymentStatus: formData.paymentMethod === 'cod' ? 'partial' : 'processing',
+      paymentStatus: formData.paymentMethod === 'cod' ? 'pending_upfront' : 'processing',
+      upfrontAmount: formData.paymentMethod === 'cod' ? codUpfrontAmount : 0,
+      remainingAmount: formData.paymentMethod === 'cod' ? (getFinalTotal() - codUpfrontAmount) : 0,
       sellerToken: sellerToken, // Include seller token if present
       couponCode: appliedCoupon ? appliedCoupon.code : undefined // Pass coupon code to backend
     };
@@ -400,6 +402,9 @@ const Checkout = () => {
         codExtraCharge: getCodExtraCharge(),
         finalTotal: getFinalTotal(),
         paymentMethod: formData.paymentMethod, // Use the actual payment method (cod or phonepe)
+        paymentStatus: formData.paymentMethod === 'cod' ? 'pending_upfront' : 'processing',
+        upfrontAmount: formData.paymentMethod === 'cod' ? codUpfrontAmount : 0,
+        remainingAmount: formData.paymentMethod === 'cod' ? (getFinalTotal() - codUpfrontAmount) : 0,
         sellerToken: sellerToken,
         couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
@@ -918,8 +923,16 @@ const Checkout = () => {
                             <div className="flex-1">
                               <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
                               <p className="text-sm text-gray-600 mt-1">
-                                Pay ₹39 online + remaining amount on delivery
+                                Pay ₹{codUpfrontAmount} online + remaining amount on delivery
                               </p>
+                              <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p className="text-xs text-blue-700">
+                                  <span className="font-medium">Upfront Payment:</span> ₹{codUpfrontAmount} (required)
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                  <span className="font-medium">On Delivery:</span> ₹{(getFinalTotal() - codUpfrontAmount).toFixed(2)}
+                                </p>
+                              </div>
                             </div>
                           </label>
                           <label className="flex items-center gap-3 cursor-pointer">
@@ -1162,8 +1175,24 @@ const Checkout = () => {
                         <span>₹{getFinalTotal().toFixed(2)}</span>
                       </div>
                       {formData.paymentMethod === 'cod' && (
-                        <div className="text-sm text-gray-600 mt-1">
-                          Pay ₹{codUpfrontAmount.toFixed(2)} online + ₹{(getTotalPrice() - (appliedCoupon ? appliedCoupon.discountAmount : 0)).toFixed(2)} on delivery
+                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <div className="text-sm text-blue-700 font-medium mb-2">Payment Breakdown:</div>
+                          <div className="space-y-1 text-xs">
+                            <div className="flex justify-between">
+                              <span className="text-blue-600">Upfront Payment (Online):</span>
+                              <span className="font-medium text-blue-700">₹{codUpfrontAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-blue-600">On Delivery:</span>
+                              <span className="font-medium text-blue-700">₹{(getFinalTotal() - codUpfrontAmount).toFixed(2)}</span>
+                            </div>
+                            <div className="border-t border-blue-200 pt-1 mt-1">
+                              <div className="flex justify-between font-medium">
+                                <span className="text-blue-800">Total:</span>
+                                <span className="text-blue-800">₹{getFinalTotal().toFixed(2)}</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -1174,7 +1203,7 @@ const Checkout = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={handlePhonePePayment}
+                onClick={formData.paymentMethod === 'cod' ? handleSubmit : handlePhonePePayment}
                 disabled={loading || paymentProcessing || !cartLoaded || !formData.paymentMethod}
                 className="w-full mt-6 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white px-6 py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >

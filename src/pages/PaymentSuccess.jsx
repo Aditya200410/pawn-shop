@@ -221,17 +221,46 @@ const PaymentSuccess = () => {
       </div>
     );
   } else if (status.success && (status.code === 'PAYMENT_SUCCESS' || status.data?.state === 'COMPLETED')) {
+    // Check if this was a COD order with upfront payment
+    const storedOrderData = localStorage.getItem('phonepe_order_data');
+    let isCodOrder = false;
+    let upfrontAmount = 0;
+    let remainingAmount = 0;
+    
+    if (storedOrderData) {
+      try {
+        const orderData = JSON.parse(storedOrderData);
+        isCodOrder = orderData.paymentMethod === 'cod';
+        upfrontAmount = orderData.upfrontAmount || 0;
+        remainingAmount = orderData.remainingAmount || 0;
+      } catch (e) {
+        console.error('Error parsing stored order data:', e);
+      }
+    }
+    
     content = (
       <div className="flex flex-col items-center justify-center py-12">
         <CheckCircle size={64} className="text-green-500 mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Payment Successful!</h2>
+        <h2 className="text-2xl font-bold mb-2">
+          {isCodOrder ? 'Upfront Payment Successful!' : 'Payment Successful!'}
+        </h2>
         <p className="text-gray-700 mb-6">
-          {status.data?.message || 'Thank you for your order. Your payment was received successfully.'}
+          {isCodOrder 
+            ? `Thank you for your order. Your upfront payment of ₹${upfrontAmount} was received successfully. You will pay the remaining ₹${remainingAmount} on delivery.`
+            : (status.data?.message || 'Thank you for your order. Your payment was received successfully.')
+          }
         </p>
         {status.order && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
             <p className="text-green-800 font-semibold">Order ID: {status.order.order?._id || 'Processing...'}</p>
             <p className="text-green-700 text-sm">You will receive an email confirmation shortly.</p>
+            {isCodOrder && (
+              <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
+                <p className="text-blue-800 text-sm font-medium">Payment Breakdown:</p>
+                <p className="text-blue-700 text-xs">✅ Upfront: ₹{upfrontAmount}</p>
+                <p className="text-blue-700 text-xs">💰 On Delivery: ₹{remainingAmount}</p>
+              </div>
+            )}
           </div>
         )}
         <div className="flex gap-4">
