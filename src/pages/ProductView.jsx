@@ -34,6 +34,8 @@ const ProductView = () => {
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const { user } = useAuth();
   const token = localStorage.getItem('token');
+  const [isEditingReview, setIsEditingReview] = useState(false);
+  const [error, setError] = useState(null);
 
   const tabs = [
     { id: 'description', label: 'Description', icon: DocumentTextIcon },
@@ -42,10 +44,40 @@ const ProductView = () => {
     { id: 'reviews', label: 'Reviews', icon: ChatBubbleLeftRightIcon },
   ];
 
+  // Load reviews for the product
+  const loadReviews = async () => {
+    if (!product?._id) return;
+    
+    setReviewsLoading(true);
+    try {
+      const reviewsData = await ReviewService.getProductReviews(product._id);
+      setReviews(reviewsData.reviews || []);
+      
+      // Check if current user has reviewed this product
+      if (user && user.email) {
+        try {
+          const userReviewData = await ReviewService.getUserReview(product._id, user.email);
+          setUserReview(userReviewData);
+        } catch (error) {
+          // User hasn't reviewed this product
+          setUserReview(null);
+        }
+      } else {
+        setUserReview(null);
+      }
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+      toast.error('Failed to load reviews');
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
+        setError(null);
         
         // Try fetching from each collection until we find the product
         const endpoints = [
@@ -103,8 +135,8 @@ const ProductView = () => {
         setProduct(foundProduct);
       } catch (error) {
         console.error('Error fetching product:', error);
+        setError(error.message || 'Failed to load product details');
         toast.error('Failed to load product details');
-        // Don't navigate away, let user try again or navigate manually
       } finally {
         setLoading(false);
       }
@@ -115,14 +147,50 @@ const ProductView = () => {
     }
   }, [id]);
 
-  // Load reviews when product is loaded
+  // Load reviews when product is loaded or user changes
   useEffect(() => {
     if (product?._id) {
       loadReviews();
     }
-  }, [product?._id, user, token]);
+  }, [product?._id, user?.email]);
+
+  // Keyboard navigation for image gallery - MUST be before any conditional returns
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!product) return;
+      
+      // Get product images dynamically to avoid initialization issues
+      const images = product.images && Array.isArray(product.images) && product.images.length > 0
+        ? product.images
+            .filter(img => {
+              if (!img || typeof img !== 'string') return false;
+              const ext = img.toLowerCase().split('.').pop();
+              return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+            })
+            .map(img => config.fixImageUrl(img))
+        : [config.fixImageUrl(product.image)];
+      
+      if (images.length <= 1) return;
+      
+      if (e.key === 'ArrowLeft') {
+        setSelectedImage(prev => prev === 0 ? images.length - 1 : prev - 1);
+      } else if (e.key === 'ArrowRight') {
+        setSelectedImage(prev => prev === images.length - 1 ? 0 : prev + 1);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [product]);
 
   if (loading) return <Loader fullScreen={true} withHeaderFooter={true} size="large" text="Loading product details..." showLogo={true} />;
+  if (error) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+      <h2 className="text-2xl font-bold text-red-600 mb-2">Product Not Found</h2>
+      <p className="text-gray-700 mb-4">{error}</p>
+      <button onClick={() => window.location.href = '/shop'} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Back to Shop</button>
+    </div>
+  );
   if (!product) return null;
 
   // Consistent out-of-stock logic
@@ -175,39 +243,10 @@ const ProductView = () => {
     }
   };
 
-
-
   // Calculate average rating
   const averageRating = reviews.length > 0 
     ? reviews.reduce((acc, review) => acc + review.stars, 0) / reviews.length 
     : 0;
-
-  // Load reviews for the product
-  const loadReviews = async () => {
-    if (!product?._id) return;
-    
-    setReviewsLoading(true);
-    try {
-      const reviewsData = await ReviewService.getProductReviews(product._id);
-      setReviews(reviewsData.reviews || []);
-      
-      // Load user's review if logged in
-      if (user && token) {
-        try {
-          const userReviewData = await ReviewService.getUserReview(product._id, token);
-          setUserReview(userReviewData);
-        } catch (error) {
-          // User hasn't reviewed this product
-          setUserReview(null);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading reviews:', error);
-      toast.error('Failed to load reviews');
-    } finally {
-      setReviewsLoading(false);
-    }
-  };
 
   // Handle review submission
   const handleReviewSubmitted = (newReview) => {
@@ -237,22 +276,6 @@ const ProductView = () => {
   const handleNextImage = () => {
     setSelectedImage((prev) => (prev === productImages.length - 1 ? 0 : prev + 1));
   };
-
-  // Keyboard navigation for image gallery
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (productImages.length <= 1) return;
-      
-      if (e.key === 'ArrowLeft') {
-        setSelectedImage(prev => prev === 0 ? productImages.length - 1 : prev - 1);
-      } else if (e.key === 'ArrowRight') {
-        setSelectedImage(prev => prev === productImages.length - 1 ? 0 : prev + 1);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [productImages.length]);
 
   const handleAddToCart = async () => {
     try {
@@ -854,9 +877,21 @@ const ProductView = () => {
                       <ReviewForm
                         productId={product._id}
                         existingReview={userReview}
-                        onReviewSubmitted={handleReviewSubmitted}
-                        onReviewUpdated={handleReviewUpdated}
-                        onReviewDeleted={handleReviewDeleted}
+                        isEditing={isEditingReview}
+                        onStartEdit={() => setIsEditingReview(true)}
+                        onCancelEdit={() => setIsEditingReview(false)}
+                        onReviewSubmitted={(review) => {
+                          handleReviewSubmitted(review);
+                          setIsEditingReview(false);
+                        }}
+                        onReviewUpdated={(review) => {
+                          handleReviewUpdated(review);
+                          setIsEditingReview(false);
+                        }}
+                        onReviewDeleted={() => {
+                          handleReviewDeleted();
+                          setIsEditingReview(false);
+                        }}
                       />
 
                       {/* Review List */}

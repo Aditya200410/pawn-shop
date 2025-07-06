@@ -8,7 +8,7 @@ const config = {
   ...env,
   
   // Backend API URL - Change this to switch between environments
-  API_BASE_URL: 'https://pawnbackend-xmqa.onrender.com',
+  API_BASE_URL:  'https://pawnbackend-xmqa.onrender.com',
   
   // API endpoints
   API_ENDPOINTS: {
@@ -23,6 +23,9 @@ const config = {
     HERO_CAROUSEL: '/api/hero-carousel',
     REGISTER: '/api/seller/register',
     REVIEWS: '/api/reviews',
+    LOVED: '/api/loved',
+    BESTSELLER: '/api/bestseller',
+    FEATURED_PRODUCTS: '/api/featured-products',
   },
   
   // Full API URLs (constructed from base URL and endpoints)

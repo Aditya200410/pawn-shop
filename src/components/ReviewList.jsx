@@ -72,12 +72,12 @@ const ReviewList = ({ reviews = [], averageRating = 0, totalReviews = 0 }) => {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
                   <span className="text-sm font-medium text-gray-600">
-                    {review.user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    {review.userName?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-900">
-                    {review.user?.name || 'Anonymous'}
+                    {review.userName || 'Anonymous'}
                   </h4>
                   <p className="text-xs text-gray-500">
                     {new Date(review.createdAt || review.date).toLocaleDateString()}
