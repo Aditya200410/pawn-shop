@@ -182,7 +182,7 @@ function AppContent() {
       </Routes>
       <Footer />
       <ScrollToTop />
-      <Toaster position="top-right" />
+      {/* <Toaster position="top-right" /> */}
       {toast && (
         <Toast
           message={toast.message}

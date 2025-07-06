@@ -115,10 +115,7 @@ const ProductCard = ({ product }) => {
                 <ChevronRight size={16} />
               </button>
               
-              {/* Image Counter */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-                {currentImageIndex + 1} / {validImages.length}
-              </div>
+          
               
               {/* Thumbnail Dots */}
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1 mt-8">

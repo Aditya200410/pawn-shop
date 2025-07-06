@@ -187,7 +187,7 @@ const PaymentSuccess = () => {
         </div>
       </div>
     );
-  } else if (status && status.success && (status.code === 'PAYMENT_SUCCESS' || status.data?.state === 'COMPLETED')) {
+  } else if (status && status.success && status.code === 'PAYMENT_SUCCESS') {
     // Check if this was a COD order with upfront payment
     const storedOrderData = localStorage.getItem('phonepe_order_data');
     let isCodOrder = false;
@@ -236,7 +236,7 @@ const PaymentSuccess = () => {
         </div>
       </div>
     );
-  } else if (status && status.success && (status.code === 'PAYMENT_PENDING' || status.data?.state === 'PENDING')) {
+  } else if (status && status.success && status.code === 'PAYMENT_PENDING') {
     content = (
       <div className="flex flex-col items-center justify-center py-12">
         <Clock size={64} className="text-yellow-500 mb-4 animate-pulse" />
@@ -250,13 +250,28 @@ const PaymentSuccess = () => {
         </div>
       </div>
     );
-  } else {
+  } else if (status && !status.success) {
     content = (
       <div className="flex flex-col items-center justify-center py-12">
         <XCircle size={64} className="text-red-500 mb-4" />
         <h2 className="text-2xl font-bold mb-2">Payment Failed</h2>
         <p className="text-gray-700 mb-6">
           {status.message || 'Sorry, your payment could not be processed. Please try again or contact support.'}
+        </p>
+        <div className="flex gap-4 flex-wrap justify-center">
+          <button onClick={handleGoOrders} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-semibold transition">View Orders</button>
+          <button onClick={handleGoHome} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">Go to Home</button>
+        </div>
+      </div>
+    );
+  } else {
+    // Default case - no status or unknown status
+    content = (
+      <div className="flex flex-col items-center justify-center py-12">
+        <AlertTriangle size={64} className="text-orange-500 mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Payment Status Unknown</h2>
+        <p className="text-gray-700 mb-6">
+          We couldn't determine your payment status. Please check your orders or contact support.
         </p>
         <div className="flex gap-4 flex-wrap justify-center">
           <button onClick={handleGoOrders} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-semibold transition">View Orders</button>
