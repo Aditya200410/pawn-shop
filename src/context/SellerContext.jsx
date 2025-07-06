@@ -72,6 +72,7 @@ export const SellerProvider = ({ children }) => {
         withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt || new Date().toISOString(),
         blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false,
+        approved: typeof data.seller.approved === 'boolean' ? data.seller.approved : false,
         upi: data.seller.upi || data.seller.bankDetails?.upi || ''
       };
 
@@ -140,6 +141,7 @@ export const SellerProvider = ({ children }) => {
         withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt || new Date().toISOString(),
         blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false,
+        approved: typeof data.seller.approved === 'boolean' ? data.seller.approved : false,
         upi: data.seller.upi || data.seller.bankDetails?.upi || ''
       };
 
@@ -203,6 +205,7 @@ export const SellerProvider = ({ children }) => {
         withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt || new Date().toISOString(),
         blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false,
+        approved: typeof data.seller.approved === 'boolean' ? data.seller.approved : false,
         upi: data.seller.upi || data.seller.bankDetails?.upi || ''
       };
 
@@ -268,6 +271,7 @@ export const SellerProvider = ({ children }) => {
         withdrawals: data.seller.withdrawals || [],
         createdAt: data.seller.createdAt || new Date().toISOString(),
         blocked: typeof data.seller.blocked === 'boolean' ? data.seller.blocked : false,
+        approved: typeof data.seller.approved === 'boolean' ? data.seller.approved : false,
         upi: data.seller.upi || data.seller.bankDetails?.upi || ''
       };
 

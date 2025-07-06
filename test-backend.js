@@ -14,41 +14,31 @@ const config = {
   },
 };
 
-async function testBackend() {
-  console.log('Testing backend connectivity...');
-  
-  try {
-    // Test 1: Check if backend is accessible
-    console.log('\n1. Testing backend accessibility...');
-    const response = await axios.get(config.API_URLS.CART, {
-      headers: {
-        'Authorization': 'Bearer test-token',
-        'Content-Type': 'application/json'
-      }
-    });
-    console.log('✅ Backend is accessible');
-    console.log('Response status:', response.status);
-  } catch (error) {
-    console.log('❌ Backend test failed');
-    console.log('Error status:', error.response?.status);
-    console.log('Error message:', error.response?.data);
-  }
-  
-  try {
-    // Test 2: Check auth endpoint
-    console.log('\n2. Testing auth endpoint...');
-    const authResponse = await axios.get(config.API_URLS.AUTH + '/me', {
-      headers: {
-        'Authorization': 'Bearer test-token',
-        'Content-Type': 'application/json'
-      }
-    });
-    console.log('✅ Auth endpoint is accessible');
-  } catch (error) {
-    console.log('❌ Auth endpoint test failed');
-    console.log('Error status:', error.response?.status);
-    console.log('Error message:', error.response?.data);
-  }
-}
+// Simple test to verify backend is working
+console.log('Testing Backend Connection...');
 
-testBackend().catch(console.error); 
+// Test 1: Check if server is running
+fetch('http://localhost:5000/health')
+  .then(response => {
+    console.log('Health endpoint status:', response.status);
+    return response.json();
+  })
+  .then(data => {
+    console.log('✅ Backend is running:', data);
+  })
+  .catch(error => {
+    console.log('❌ Backend not running:', error.message);
+  });
+
+// Test 2: Check if reviews endpoint exists
+fetch('http://localhost:5000/api/reviews/product/test')
+  .then(response => {
+    console.log('Reviews endpoint status:', response.status);
+    return response.json();
+  })
+  .then(data => {
+    console.log('✅ Reviews endpoint working:', data);
+  })
+  .catch(error => {
+    console.log('❌ Reviews endpoint error:', error.message);
+  }); 

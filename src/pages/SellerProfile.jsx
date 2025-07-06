@@ -27,7 +27,8 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiAlertCircle,
-  FiRefreshCw
+  FiRefreshCw,
+  FiClock
 } from 'react-icons/fi';
 import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
@@ -422,6 +423,7 @@ const SellerProfile = () => {
     createdAt: seller.createdAt || '',
     verified: typeof seller.verified === 'boolean' ? seller.verified : false,
     blocked: typeof seller.blocked === 'boolean' ? seller.blocked : false,
+    approved: typeof seller.approved === 'boolean' ? seller.approved : false,
     upi: seller.upi || seller.bankDetails?.upi || ''
   };
 
@@ -852,6 +854,44 @@ const SellerProfile = () => {
                         Download Poster
                       </button>
                     </motion.div>
+
+                    {/* Approval Status Card */}
+                    <motion.div
+                      whileHover={{ y: -5 }}
+                      className={`p-4 sm:p-6 rounded-2xl border ${
+                        safeSeller.approved 
+                          ? 'bg-gradient-to-br from-green-50 to-green-100 border-green-200' 
+                          : 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200'
+                      }`}
+                    >
+                      <div className="flex items-center mb-4">
+                        <div className={`p-2 sm:p-3 rounded-xl mr-3 sm:mr-4 ${
+                          safeSeller.approved ? 'bg-green-500' : 'bg-yellow-500'
+                        }`}>
+                          {safeSeller.approved ? (
+                            <FiCheck className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                          ) : (
+                            <FiClock className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Account Status</h3>
+                          <p className="text-xs sm:text-sm text-gray-600">
+                            {safeSeller.approved ? 'Approved' : 'Pending Approval'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className={`text-lg sm:text-xl font-bold ${
+                        safeSeller.approved ? 'text-green-600' : 'text-yellow-600'
+                      }`}>
+                        {safeSeller.approved ? '✓ Approved' : '⏳ Pending'}
+                      </div>
+                      {!safeSeller.approved && (
+                        <p className="text-xs text-yellow-700 mt-2">
+                          Your account is under review. You'll be able to make withdrawals once approved.
+                        </p>
+                      )}
+                    </motion.div>
                   </div>
 
                   {/* QR Code Display */}
@@ -1153,16 +1193,23 @@ const SellerProfile = () => {
                 >
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Earnings & Withdrawals</h2>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setShowWithdrawForm(true)}
-                      disabled={availableToWithdraw <= 0}
-                      className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-                    >
-                      <FiCreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                      Withdraw Earnings
-                    </motion.button>
+                    {!safeSeller.approved ? (
+                      <div className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-yellow-100 text-yellow-800 rounded-xl border border-yellow-200">
+                        <FiClock className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span className="text-sm sm:text-base">Pending Approval</span>
+                      </div>
+                    ) : (
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setShowWithdrawForm(true)}
+                        disabled={availableToWithdraw <= 0}
+                        className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                      >
+                        <FiCreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                        Withdraw Earnings
+                      </motion.button>
+                    )}
                   </div>
 
                   {/* Earnings Overview */}
@@ -1546,7 +1593,19 @@ const SellerProfile = () => {
               className="bg-white rounded-2xl p-4 sm:p-8 w-full max-w-md shadow-2xl"
             >
               <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-900">Withdraw to Bank</h3>
-              <form onSubmit={handleWithdraw} className="space-y-3 sm:space-y-4">
+              
+              {!safeSeller.approved ? (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <FiClock className="w-5 h-5 text-yellow-600" />
+                    <span className="text-yellow-800 font-medium">Account Not Approved</span>
+                  </div>
+                  <p className="text-yellow-700 text-sm mt-2">
+                    Your account is pending approval. You'll be able to make withdrawals once your account is approved by the admin.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleWithdraw} className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Account Holder Name</label>
                   <input
@@ -1622,6 +1681,7 @@ const SellerProfile = () => {
                   </motion.button>
                 </div>
               </form>
+              )}
             </motion.div>
           </motion.div>
         )}
