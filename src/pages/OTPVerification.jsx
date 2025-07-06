@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import OtpWidget from '../components/OtpWidget';
 import { toast } from 'react-hot-toast';
+import config from '../config/config';
 
 const OTPVerification = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [phone, setPhone] = useState('');
-  const [showWidget, setShowWidget] = useState(false);
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,44 +17,46 @@ const OTPVerification = () => {
   useEffect(() => {
     console.log('🔍 OTP Verification Page Loaded');
     console.log('📍 Location state:', location.state);
+    console.log('🔧 API Base URL:', config.API_BASE_URL);
     
-    // Get phone from location state or localStorage
-    let phoneNumber = '';
+    // Get email from location state or localStorage
+    let emailAddress = '';
     let userData = null;
 
-    if (location.state?.phone) {
-      phoneNumber = location.state.phone;
-      console.log('📱 Phone from location state:', phoneNumber);
+    if (location.state?.email) {
+      emailAddress = location.state.email;
+      console.log('📧 Email from location state:', emailAddress);
     } else {
       // Try to get from localStorage
       const storedData = localStorage.getItem('pendingRegistration');
       if (storedData) {
         try {
           userData = JSON.parse(storedData);
-          phoneNumber = userData.phone;
-          console.log('📱 Phone from localStorage:', phoneNumber);
+          emailAddress = userData.email;
+          console.log('📧 Email from localStorage:', emailAddress);
         } catch (err) {
           console.error('❌ Error parsing stored registration data:', err);
         }
       }
     }
 
-    if (phoneNumber) {
-      setPhone(phoneNumber);
+    if (emailAddress) {
+      setEmail(emailAddress);
       setRegistrationData(userData);
-      console.log('✅ Phone number set:', phoneNumber);
+      console.log('✅ Email address set:', emailAddress);
     } else {
-      console.warn('⚠️ No phone number found, redirecting to signup');
+      console.warn('⚠️ No email address found, redirecting to signup');
       toast.error('Please complete registration first');
       navigate('/signup');
     }
   }, [location.state, navigate]);
 
-  const handleOtpSuccess = async (msg91Token) => {
-    console.log('🎉 OTP Success - Token received:', msg91Token ? '✅' : '❌');
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    console.log('🎉 OTP Submission - Email:', email, 'OTP Length:', otp.length);
     
-    if (!msg91Token) {
-      const error = 'No verification token received';
+    if (!otp || otp.length !== 6) {
+      const error = 'Please enter a valid 6-digit OTP';
       console.error('❌', error);
       setError(error);
       toast.error(error);
@@ -65,39 +67,41 @@ const OTPVerification = () => {
     setError('');
 
     try {
-      console.log('📤 Sending registration data to backend...');
-      console.log('📋 Registration data:', {
-        name: registrationData?.name || 'N/A',
-        email: registrationData?.email || 'N/A',
-        phone: phone,
-        hasPassword: !!registrationData?.password
+      const apiUrl = `${config.API_BASE_URL}/api/auth/verify-otp`;
+      console.log('📤 Sending OTP verification to backend...');
+      console.log('🔗 API URL:', apiUrl);
+      console.log('📋 Verification data:', {
+        email: email,
+        otpLength: otp.length
       });
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register-with-msg91`, {
+      const requestBody = {
+        email: email,
+        otp: otp
+      };
+
+      console.log('📦 Request body:', requestBody);
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          name: registrationData?.name || 'User',
-          email: registrationData?.email || '',
-          password: registrationData?.password || 'defaultPassword123',
-          phone: phone,
-          msg91Token: msg91Token
-        })
+        body: JSON.stringify(requestBody)
       });
 
       console.log('📥 Backend response status:', response.status);
+      console.log('📥 Backend response headers:', Object.fromEntries(response.headers.entries()));
       
       const data = await response.json();
       console.log('📥 Backend response data:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(data.message || `HTTP ${response.status}: OTP verification failed`);
       }
 
-      console.log('✅ Registration successful!');
+      console.log('✅ OTP verification successful!');
       toast.success('Registration successful! Please login.');
       
       // Clear stored data
@@ -107,8 +111,8 @@ const OTPVerification = () => {
       navigate('/login');
       
     } catch (err) {
-      console.error('❌ Registration error:', err);
-      const errorMessage = err.message || 'Registration failed. Please try again.';
+      console.error('❌ OTP verification error:', err);
+      const errorMessage = err.message || 'OTP verification failed. Please try again.';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -116,22 +120,52 @@ const OTPVerification = () => {
     }
   };
 
-  const handleOtpFailure = (error) => {
-    console.error('❌ MSG91 OTP Failed:', {
-      error: error,
-      message: error?.message || 'Unknown error',
-      code: error?.code || 'No code'
-    });
-    
-    const errorMessage = error?.message || 'OTP verification failed. Please try again.';
-    setError(errorMessage);
-    toast.error(errorMessage);
-  };
+  const handleResendOtp = async () => {
+    if (!email) {
+      toast.error('Email address is required');
+      return;
+    }
 
-  const handleStartVerification = () => {
-    console.log('🚀 Starting OTP verification for phone:', phone);
+    setIsLoading(true);
     setError('');
-    setShowWidget(true);
+
+    try {
+      const apiUrl = `${config.API_BASE_URL}/api/auth/register`;
+      console.log('📤 Resending OTP to:', email);
+
+      const requestBody = {
+        name: registrationData?.name || 'User',
+        email: email,
+        password: registrationData?.password || 'defaultPassword123',
+        phone: registrationData?.phone || ''
+      };
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to resend OTP');
+      }
+
+      toast.success('OTP resent to your email');
+      setOtp(''); // Clear the OTP input
+      
+    } catch (err) {
+      console.error('❌ Resend OTP error:', err);
+      const errorMessage = err.message || 'Failed to resend OTP';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBackToSignup = () => {
@@ -147,10 +181,10 @@ const OTPVerification = () => {
           <div className="text-center">
             <img src="/logo.png" alt="Riko Craft" className="mx-auto h-20 w-auto mb-3" />
             <h2 className="text-3xl font-bold tracking-tight text-primary">
-              Verify Your Phone
+              Verify Your Email
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              We'll send you a verification code to your phone number
+              We've sent a verification code to your email address
             </p>
           </div>
 
@@ -164,58 +198,75 @@ const OTPVerification = () => {
             </div>
           )}
 
-          <div className="space-y-4">
+          <form onSubmit={handleOtpSubmit} className="space-y-4">
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
               </label>
               <input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="block w-full px-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
-                placeholder="Enter phone number"
+                placeholder="Enter email address"
                 disabled={isLoading}
               />
             </div>
 
-            {!showWidget && (
-              <button
-                onClick={handleStartVerification}
-                disabled={isLoading || !phone}
-                className="group relative w-full flex justify-center py-2.5 px-5 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ 
-                  backgroundImage: 'url(/footer.png)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
-                }}
-              >
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
-                <span className="relative z-10 flex items-center justify-center">
-                  {isLoading ? 'Verifying...' : 'Verify with OTP'}
-                </span>
-              </button>
-            )}
+            <div>
+              <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-2">
+                Verification Code
+              </label>
+              <input
+                id="otp"
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="block w-full px-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                placeholder="Enter 6-digit OTP"
+                maxLength={6}
+                disabled={isLoading}
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Enter the 6-digit code sent to your email
+              </p>
+            </div>
 
             <button
+              type="submit"
+              disabled={isLoading || !otp || otp.length !== 6}
+              className="group relative w-full flex justify-center py-2.5 px-5 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ 
+                backgroundImage: 'url(/footer.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
+              <span className="relative z-10 flex items-center justify-center">
+                {isLoading ? 'Verifying...' : 'Verify OTP'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={isLoading}
+              className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
+            >
+              Resend OTP
+            </button>
+
+            <button
+              type="button"
               onClick={handleBackToSignup}
               disabled={isLoading}
               className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
             >
               Back to Signup
             </button>
-          </div>
-
-          {showWidget && (
-            <div className="mt-6">
-              <OtpWidget
-                phone={phone}
-                onSuccess={handleOtpSuccess}
-                onFailure={handleOtpFailure}
-              />
-            </div>
-          )}
+          </form>
         </div>
       </div>
 
@@ -226,19 +277,19 @@ const OTPVerification = () => {
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-white text-center">
             <h2 className="text-4xl font-light mb-6">
-              Verify Your <span className="font-serif italic">Phone</span>
+              Verify Your <span className="font-serif italic">Email</span>
             </h2>
             <p className="text-lg text-gray-100 mb-8">
-              Secure verification via SMS OTP to protect your account.
+              Secure verification via email OTP to protect your account.
             </p>
             <div className="space-y-4 text-left max-w-md mx-auto">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span>Secure SMS verification</span>
+                <span>Secure email verification</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">

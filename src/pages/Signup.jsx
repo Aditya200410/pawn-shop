@@ -20,32 +20,7 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load MSG91 script
-  useEffect(() => {
-    console.log('🚀 Loading MSG91 script for signup page');
-    
-    const loadScript = async () => {
-      try {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://verify.msg91.com/otp-provider.js';
-        
-        script.onload = () => {
-          console.log('✅ MSG91 script loaded successfully in signup');
-        };
-        
-        script.onerror = (error) => {
-          console.error('❌ MSG91 script loading error in signup:', error);
-        };
 
-        document.head.appendChild(script);
-      } catch (error) {
-        console.error('❌ MSG91 script loading error in signup:', error);
-      }
-    };
-
-    loadScript();
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,11 +65,10 @@ const Signup = () => {
       localStorage.setItem('pendingRegistration', JSON.stringify(registrationData));
 
       console.log('🔄 Navigating to OTP verification page');
-      // Navigate to OTP verification page with MSG91
+      // Navigate to OTP verification page with email
       navigate('/otp-verification', { 
         state: { 
-          phone: formData.phone,
-          useMsg91: true 
+          email: formData.email
         } 
       });
     } catch (err) {
