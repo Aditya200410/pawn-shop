@@ -17,164 +17,121 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     const verifyPayment = async () => {
-      try {
-        // Get transactionId from URL parameters
-        const params = new URLSearchParams(window.location.search);
-        const transactionId = params.get('transactionId') || 
-                             params.get('merchantTransactionId') || 
-                             params.get('txnId');
-        
-        console.log('PaymentSuccess - Transaction ID from URL:', transactionId);
-        
-        // Also check localStorage for transaction ID and order data
-        const storedTransactionId = localStorage.getItem('phonepe_transaction_id');
-        const storedOrderData = localStorage.getItem('phonepe_order_data');
-        const finalTransactionId = transactionId || storedTransactionId;
-        
-        if (!finalTransactionId) {
-          console.log('PaymentSuccess - No transaction ID found in URL or localStorage');
-          setError('No transaction ID found');
-          setLoading(false);
-          return;
-        }
+      setLoading(true);
+      
+      // Get transaction ID from URL or localStorage
+      const urlParams = new URLSearchParams(window.location.search);
+      const transactionId = urlParams.get('transactionId') || 
+                           urlParams.get('orderId') || 
+                           localStorage.getItem('phonepe_order_id');
+      
+      const storedOrderData = localStorage.getItem('phonepe_order_data');
+      
+      console.log('PaymentSuccess - Transaction ID:', transactionId);
+      console.log('PaymentSuccess - Stored order data:', storedOrderData);
+      
+      if (!transactionId) {
+        setError('No transaction ID found. Please contact support.');
+        setLoading(false);
+        return;
+      }
 
-        // Check URL parameters for payment status
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const state = urlParams.get('state');
-        const responseCode = urlParams.get('responseCode');
-        const message = urlParams.get('message');
-        
-        console.log('PaymentSuccess - URL params:', { 
-          code, 
-          state, 
-          responseCode, 
-          message, 
-          transactionId: finalTransactionId 
+      // Check if order was already created
+      const orderCreated = localStorage.getItem('order_created_' + transactionId);
+      if (orderCreated === 'true') {
+        console.log('PaymentSuccess - Order already created for transaction:', transactionId);
+        setOrderCreated(true);
+        setStatus({ 
+          success: true, 
+          code: 'PAYMENT_SUCCESS', 
+          data: { 
+            state: 'COMPLETED',
+            message: 'Payment completed successfully'
+          } 
         });
+        setLoading(false);
+        return;
+      }
 
-        // Check if payment appears successful from URL params
-        const isSuccessFromURL = code === 'SUCCESS' || 
-                                state === 'COMPLETED' || 
-                                responseCode === 'SUCCESS' ||
-                                (code && !code.includes('FAIL'));
-
-        if (isSuccessFromURL) {
-          console.log('PaymentSuccess - Payment appears successful based on URL params');
-          
-          // Try to create order if we have order data
-          if (storedOrderData && !orderCreated) {
-            try {
-              const orderData = JSON.parse(storedOrderData);
-              orderData.transactionId = finalTransactionId;
+      // For COD orders with upfront payment
+      if (storedOrderData) {
+        try {
+          const orderData = JSON.parse(storedOrderData);
+          if (orderData.paymentMethod === 'cod') {
+            console.log('PaymentSuccess - COD order with upfront payment detected');
+            
+            // For COD orders, we need to verify the upfront payment
+            const result = await paymentService.completePaymentFlow(transactionId, orderData);
+            
+            if (result.success) {
+              setOrderCreated(true);
+              localStorage.setItem('order_created_' + transactionId, 'true');
               
-              console.log('PaymentSuccess - Creating order with data:', orderData);
+              // Clear cart and seller token after successful order creation
+              clearCart();
+              clearSellerToken();
+              // Clear stored payment data
+              localStorage.removeItem('phonepe_transaction_id');
+              localStorage.removeItem('phonepe_order_data');
+              localStorage.removeItem('phonepe_redirect_time');
               
-              const result = await paymentService.completePaymentFlow(finalTransactionId, orderData);
-              
-              if (result.success) {
-                setOrderCreated(true);
-                // Clear cart and seller token after successful order creation
-                clearCart();
-                clearSellerToken();
-                // Clear stored payment data
-                localStorage.removeItem('phonepe_transaction_id');
-                localStorage.removeItem('phonepe_order_data');
-                localStorage.removeItem('phonepe_redirect_time');
-                
-                toast.success('Order placed successfully!');
-              }
+              toast.success('Order placed successfully!');
               
               setStatus({ 
                 success: true, 
                 code: 'PAYMENT_SUCCESS', 
                 data: { 
                   state: 'COMPLETED',
-                  message: message || 'Payment completed successfully'
+                  message: 'Upfront payment successful! Order placed successfully.'
                 },
                 order: result.order
               });
-            } catch (orderError) {
-              console.error('PaymentSuccess - Order creation failed:', orderError);
-              // Payment succeeded but order creation failed
-              setStatus({ 
-                success: true, 
-                code: 'PAYMENT_SUCCESS_ORDER_FAILED', 
-                data: { 
-                  state: 'COMPLETED',
-                  message: 'Payment successful but order creation failed. Please contact support.'
-                }
-              });
+            } else {
+              setError(result.message || 'Failed to verify payment and create order.');
             }
-          } else {
-            setStatus({ 
-              success: true, 
-              code: 'PAYMENT_SUCCESS', 
-              data: { 
-                state: 'COMPLETED',
-                message: message || 'Payment completed successfully'
-              } 
-            });
-          }
-          
-          setLoading(false);
-          return;
-        }
-
-        // Verify payment with backend
-        console.log('PaymentSuccess - Verifying payment with backend...');
-        
-        try {
-          const result = await paymentService.completePaymentFlow(finalTransactionId, storedOrderData ? JSON.parse(storedOrderData) : null);
-          
-          if (result.success) {
-            setOrderCreated(true);
-            // Clear cart and seller token after successful order creation
-            clearCart();
-            clearSellerToken();
-            // Clear stored payment data
-            localStorage.removeItem('phonepe_transaction_id');
-            localStorage.removeItem('phonepe_order_data');
-            localStorage.removeItem('phonepe_redirect_time');
             
-            toast.success('Order placed successfully!');
+            setLoading(false);
+            return;
           }
-          
-          console.log('PaymentSuccess - Backend verification response:', result);
-          setStatus(result);
-        } catch (backendError) {
-          console.error('PaymentSuccess - Backend verification failed:', backendError);
-          
-          // If backend verification fails, try to determine status from URL params
-          if (code === 'FAILED' || state === 'FAILED' || responseCode === 'FAILED') {
-            setStatus({ 
-              success: false, 
-              code: 'PAYMENT_FAILED', 
-              message: message || 'Payment failed'
-            });
-          } else if (code === 'PENDING' || state === 'PENDING') {
-            setStatus({ 
-              success: true, 
-              code: 'PAYMENT_PENDING', 
-              message: 'Payment is being processed'
-            });
-          } else {
-            // If we can't determine status, show error
-            setError(backendError.message);
-            setStatus({ success: false, message: backendError.message });
-          }
+        } catch (parseError) {
+          console.error('PaymentSuccess - Error parsing stored order data:', parseError);
         }
-      } catch (err) {
-        console.error('PaymentSuccess - Error verifying payment:', err);
-        setError(err.message);
-        setStatus({ success: false, message: err.message });
-      } finally {
-        setLoading(false);
       }
+
+      // For PhonePe payments, verify payment status
+      console.log('PaymentSuccess - Verifying PhonePe payment...');
+      
+      try {
+        const result = await paymentService.completePaymentFlow(transactionId, storedOrderData ? JSON.parse(storedOrderData) : null);
+        
+        if (result.success) {
+          setOrderCreated(true);
+          localStorage.setItem('order_created_' + transactionId, 'true');
+          
+          // Clear cart and seller token after successful order creation
+          clearCart();
+          clearSellerToken();
+          // Clear stored payment data
+          localStorage.removeItem('phonepe_transaction_id');
+          localStorage.removeItem('phonepe_order_data');
+          localStorage.removeItem('phonepe_redirect_time');
+          
+          toast.success('Order placed successfully!');
+        }
+        
+        console.log('PaymentSuccess - Payment verification response:', result);
+        setStatus(result);
+        
+      } catch (error) {
+        console.error('PaymentSuccess - Payment verification failed:', error);
+        setError(error.message || 'Failed to verify payment. Please contact support.');
+      }
+      
+      setLoading(false);
     };
 
     verifyPayment();
-  }, [retryCount, orderCreated, clearCart, clearSellerToken]);
+  }, [clearCart, clearSellerToken]);
 
   // Retry mechanism
   const handleRetry = () => {

@@ -286,32 +286,26 @@ const Checkout = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleCodOrder = async () => {
     setLoading(true);
     setError(null);
-
-    // Basic validation
-    if (cartItems.length === 0) {
-      setError("Your cart is empty.");
-      setLoading(false);
-      return;
-    }
-
-    // Prevent COD order if not available
-    if (!isCodAvailableForCart && formData.paymentMethod === 'cod') {
-      setError("Cash on Delivery is not available for one or more items in your cart. Please use online payment.");
-      setLoading(false);
-      return;
-    }
-
-    // Validate form fields
+    
     if (!validateForm()) {
       setError("Please fill in all required fields correctly.");
       setLoading(false);
       return;
     }
 
+    // For COD orders, we need to collect upfront payment first
+    if (codUpfrontAmount > 0) {
+      console.log('COD order with upfront payment - initiating PhonePe payment for upfront amount');
+      
+      // Use PhonePe for upfront payment
+      await handlePhonePePayment();
+      return;
+    }
+
+    // For COD orders without upfront payment, create order directly
     const orderData = {
       customerName: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
@@ -332,25 +326,22 @@ const Checkout = () => {
       shippingCost: calculateShippingCost(),
       codExtraCharge: getCodExtraCharge(),
       finalTotal: getFinalTotal(),
-      paymentMethod: formData.paymentMethod,
-      paymentStatus: formData.paymentMethod === 'cod' ? 'pending_upfront' : 'processing',
-      upfrontAmount: formData.paymentMethod === 'cod' ? codUpfrontAmount : 0,
-      remainingAmount: formData.paymentMethod === 'cod' ? (getFinalTotal() - codUpfrontAmount) : 0,
-      sellerToken: sellerToken, // Include seller token if present
-      couponCode: appliedCoupon ? appliedCoupon.code : undefined // Pass coupon code to backend
+      paymentMethod: 'cod',
+      paymentStatus: 'pending',
+      upfrontAmount: 0,
+      remainingAmount: getFinalTotal(),
+      sellerToken: sellerToken,
+      couponCode: appliedCoupon ? appliedCoupon.code : undefined
     };
-    
 
+    console.log('Creating COD order with data:', orderData);
     
     try {
       const response = await orderService.createOrder(orderData);
 
       if (response.success) {
-        toast.success('Order placed successfully!');
-        if (sellerToken) {
-       
-        }
-        clearCart(); // Clear cart on successful order
+        toast.success('Order placed successfully! Pay on delivery.');
+        clearCart();
         clearSellerToken();
         navigate('/account?tab=orders');
       } else {
@@ -358,7 +349,7 @@ const Checkout = () => {
         toast.error(response.message || "Failed to create order.");
       }
     } catch (err) {
-      console.error('Order creation error:', err);
+      console.error('COD order creation error:', err);
       setError("Failed to create order. Please try again.");
       toast.error("Failed to create order.");
     } finally {
@@ -412,7 +403,7 @@ const Checkout = () => {
         shippingCost: calculateShippingCost(),
         codExtraCharge: getCodExtraCharge(),
         finalTotal: getFinalTotal(),
-        paymentMethod: formData.paymentMethod, // Use the actual payment method (cod or phonepe)
+        paymentMethod: formData.paymentMethod,
         paymentStatus: formData.paymentMethod === 'cod' ? 'pending_upfront' : 'processing',
         upfrontAmount: formData.paymentMethod === 'cod' ? codUpfrontAmount : 0,
         remainingAmount: formData.paymentMethod === 'cod' ? (getFinalTotal() - codUpfrontAmount) : 0,
@@ -440,17 +431,13 @@ const Checkout = () => {
           const PhonePeCheckout = await getPhonePeCheckout();
           
           // Define callback function for payment completion
-          // Based on: https://developer.phonepe.com/v1/reference/initiate-payment-using-js-standard-checkout
           const paymentCallback = (response) => {
             console.log('PhonePe payment callback:', response);
             
             if (response === 'USER_CANCEL') {
               toast.error('Payment was cancelled by the user.');
-              // Add any custom logic for cancelled payment
             } else if (response === 'CONCLUDED') {
               toast.success('Payment process has concluded.');
-              // Add any custom logic for completed payment
-              // You can verify payment status here
               setTimeout(() => {
                 window.location.reload();
               }, 2000);
@@ -461,47 +448,27 @@ const Checkout = () => {
           toast.success('Initiating PhonePe payment...');
           
           // Invoke PhonePe checkout in redirect mode
-          // Based on: https://developer.phonepe.com/v1/reference/initiate-payment-using-js-standard-checkout
           PhonePeCheckout.transact({ 
             tokenUrl: data.redirectUrl 
           });
           
-        } catch (scriptError) {
-          console.error('Failed to load PhonePe script:', scriptError);
-          // Fallback to direct redirect
-          toast.success('Opening PhonePe payment gateway...');
-          setTimeout(() => {
-            window.open(data.redirectUrl, '_blank', 'noopener,noreferrer');
-          }, 1000);
+        } catch (checkoutError) {
+          console.error('PhonePe checkout error:', checkoutError);
+          
+          // If PhonePe checkout fails, redirect manually
+          console.log('Redirecting to PhonePe payment URL...');
+          window.location.href = data.redirectUrl;
         }
         
       } else {
-        const errorMsg = data.message || data.error?.message || "Failed to initiate PhonePe payment.";
-        setError(errorMsg);
-        toast.error(errorMsg);
+        setError(data.message || "Failed to initiate PhonePe payment.");
+        toast.error(data.message || "Failed to initiate PhonePe payment.");
       }
+      
     } catch (error) {
       console.error('PhonePe payment error:', error);
-      let errorMsg = error.message || "PhonePe payment failed.";
-      
-      if (error.response?.data?.error?.message) {
-        errorMsg = error.response.data.error.message;
-      } else if (error.response?.data?.message) {
-        errorMsg = error.response.data.message;
-      } else if (error.code === 'ECONNABORTED') {
-        errorMsg = 'Payment gateway timeout. Please try again.';
-      } else if (error.code === 'ENOTFOUND') {
-        errorMsg = 'Payment gateway not reachable. Please try again.';
-      } else if (error.response?.status === 500) {
-        errorMsg = 'Payment gateway error. Please try again later.';
-      } else if (error.response?.status === 400) {
-        errorMsg = 'Invalid payment request. Please check your details.';
-      } else if (error.response?.status === 401) {
-        errorMsg = 'Payment gateway authentication failed. Please try again.';
-      }
-      
-      setError(errorMsg);
-      toast.error(errorMsg);
+      setError(error.message || "Failed to process PhonePe payment.");
+      toast.error(error.message || "Failed to process PhonePe payment.");
     } finally {
       setPaymentProcessing(false);
     }
@@ -583,6 +550,24 @@ const Checkout = () => {
     setAppliedCoupon(null);
     setCouponError('');
     toast.success('Coupon removed successfully');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      setError("Please fill in all required fields correctly.");
+      return;
+    }
+
+    // Handle different payment methods
+    if (formData.paymentMethod === 'cod') {
+      await handleCodOrder();
+    } else if (formData.paymentMethod === 'phonepe') {
+      await handlePhonePePayment();
+    } else {
+      setError("Please select a valid payment method.");
+    }
   };
 
   // Show authentication prompt if user is not signed in
@@ -1214,7 +1199,7 @@ const Checkout = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={handlePhonePePayment}
+                onClick={handleSubmit}
                 disabled={loading || paymentProcessing || !cartLoaded || !formData.paymentMethod}
                 className="w-full mt-6 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white px-6 py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
