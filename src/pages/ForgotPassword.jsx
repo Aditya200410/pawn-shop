@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { authService } from '../services/authService';
 import { PaperAirplaneIcon, ArrowLeftIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-hot-toast';
+import config from '../config/config';
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1); // 1: email, 2: otp+new password
@@ -18,9 +18,24 @@ const ForgotPassword = () => {
     setError('');
     setMessage('');
     setIsLoading(true);
+    
     try {
-      const response = await authService.forgotPassword(email);
-      setMessage(response.message);
+      const response = await fetch(`${config.API_BASE_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send OTP');
+      }
+
+      setMessage(data.message);
       toast.success('OTP sent to your email');
       setStep(2);
     } catch (err) {
@@ -37,9 +52,24 @@ const ForgotPassword = () => {
     setError('');
     setMessage('');
     setIsLoading(true);
+    
     try {
-      const response = await authService.verifyForgotOtp(email, otp, newPassword);
-      setMessage(response.message);
+      const response = await fetch(`${config.API_BASE_URL}/api/auth/verify-forgot-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email, otp, newPassword })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to reset password');
+      }
+
+      setMessage(data.message);
       toast.success('Password reset successful!');
       setStep(3);
     } catch (err) {

@@ -11,43 +11,27 @@ const OTPVerification = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Get registration data from location state or localStorage
-  const [registrationData, setRegistrationData] = useState(null);
-
   useEffect(() => {
     console.log('🔍 OTP Verification Page Loaded');
     console.log('📍 Location state:', location.state);
     console.log('🔧 API Base URL:', config.API_BASE_URL);
     
-    // Get email from location state or localStorage
+    // Get email from location state
     let emailAddress = '';
-    let userData = null;
 
     if (location.state?.email) {
       emailAddress = location.state.email;
       console.log('📧 Email from location state:', emailAddress);
     } else {
-      // Try to get from localStorage
-      const storedData = localStorage.getItem('pendingRegistration');
-      if (storedData) {
-        try {
-          userData = JSON.parse(storedData);
-          emailAddress = userData.email;
-          console.log('📧 Email from localStorage:', emailAddress);
-        } catch (err) {
-          console.error('❌ Error parsing stored registration data:', err);
-        }
-      }
+      console.warn('⚠️ No email address found, redirecting to signup');
+      toast.error('Please complete registration first');
+      navigate('/signup');
+      return;
     }
 
     if (emailAddress) {
       setEmail(emailAddress);
-      setRegistrationData(userData);
       console.log('✅ Email address set:', emailAddress);
-    } else {
-      console.warn('⚠️ No email address found, redirecting to signup');
-      toast.error('Please complete registration first');
-      navigate('/signup');
     }
   }, [location.state, navigate]);
 
@@ -104,9 +88,6 @@ const OTPVerification = () => {
       console.log('✅ OTP verification successful!');
       toast.success('Registration successful! Please login.');
       
-      // Clear stored data
-      localStorage.removeItem('pendingRegistration');
-      
       // Redirect to login
       navigate('/login');
       
@@ -134,10 +115,9 @@ const OTPVerification = () => {
       console.log('📤 Resending OTP to:', email);
 
       const requestBody = {
-        name: registrationData?.name || 'User',
+        name: 'User', // We don't have the name here, but backend will handle it
         email: email,
-        password: registrationData?.password || 'defaultPassword123',
-        phone: registrationData?.phone || ''
+        password: 'defaultPassword123' // Backend will use existing temp user data
       };
 
       const response = await fetch(apiUrl, {

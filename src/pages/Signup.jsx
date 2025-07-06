@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Phone } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import config from '../config/config';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -13,14 +14,11 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
     password: '',
     confirmPassword: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,32 +37,32 @@ const Signup = () => {
       return;
     }
 
-    // Validate phone number format (basic validation)
-    const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      const error = 'Please enter a valid 10-digit mobile number';
-      console.error('❌ Phone validation error:', error);
-      setError(error);
-      toast.error(error);
-      setIsLoading(false);
-      return;
-    }
-
     console.log('✅ Form validation passed');
 
     try {
-      // Store user data in localStorage for OTP verification
-      const registrationData = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password
-      };
+      // Call the backend register endpoint
+      const response = await fetch(`${config.API_BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        })
+      });
 
-      console.log('💾 Storing registration data in localStorage');
-      localStorage.setItem('pendingRegistration', JSON.stringify(registrationData));
+      const data = await response.json();
 
-      console.log('🔄 Navigating to OTP verification page');
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      console.log('✅ Registration successful, OTP sent');
+      toast.success('OTP sent to your email!');
+      
       // Navigate to OTP verification page with email
       navigate('/otp-verification', { 
         state: { 
@@ -76,6 +74,7 @@ const Signup = () => {
       const errorMessage = err.message || contextError || 'Failed to create account';
       setError(errorMessage);
       toast.error(errorMessage);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -105,7 +104,7 @@ const Signup = () => {
               Create Account
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Join us and start your journey with secure phone verification
+              Join us and start your journey with secure email verification
             </p>
           </div>
 
@@ -153,25 +152,6 @@ const Signup = () => {
                     placeholder="Email address"
                     value={formData.email}
                     onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="sr-only">Phone Number</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    required
-                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
-                    placeholder="Phone Number (10 digits)"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    maxLength="10"
                   />
                 </div>
               </div>
@@ -286,10 +266,10 @@ const Signup = () => {
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span>Secure phone verification</span>
+                <span>Secure email verification</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
