@@ -59,7 +59,9 @@ const ReviewForm = ({ productId, onReviewSubmitted, onReviewUpdated, onReviewDel
         productId,
         stars,
         reviewTitle: reviewTitle.trim(),
-        reviewDescription: reviewDescription.trim()
+        reviewDescription: reviewDescription.trim(),
+        userEmail: user.email,
+        userName: user.name
       };
 
       if (existingReview && isEditing) {
@@ -94,7 +96,7 @@ const ReviewForm = ({ productId, onReviewSubmitted, onReviewUpdated, onReviewDel
     setIsSubmitting(true);
 
     try {
-      await ReviewService.deleteReview(existingReview._id);
+      await ReviewService.deleteReview(existingReview._id, user.email);
       toast.success('Review deleted successfully!');
       onReviewDeleted && onReviewDeleted();
     } catch (error) {
