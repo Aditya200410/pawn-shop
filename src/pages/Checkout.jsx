@@ -980,60 +980,7 @@ const Checkout = () => {
                     </div>
                   </div>
 
-                  {/* Coupon Code Section */}
-                  <div className="mb-6 p-4 bg-gradient-to-r from-[#8f3a61]/10 to-[#8f3a61]/5 border border-[#8f3a61]/20 rounded-xl">
-                    <div className="flex items-center space-x-2 mb-4">
-                      <Gift size={20} className="text-[#8f3a61]" />
-                      <h3 className="text-lg font-semibold text-[#8f3a61]">Have a coupon?</h3>
-                    </div>
-                    {!appliedCoupon ? (
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={couponCode}
-                          onChange={(e) => {
-                            setCouponCode(e.target.value);
-                            setCouponError(''); // Clear error when user types
-                          }}
-                          placeholder="Enter coupon code"
-                          className="flex-1 px-4 py-2 border border-[#8f3a61]/30 rounded-lg focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent bg-white"
-                          disabled={couponLoading}
-                        />
-                        <button
-                          onClick={handleCouponSubmit}
-                          disabled={couponLoading || !couponCode.trim()}
-                          className="px-4 py-2 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white rounded-lg hover:from-[#8f3a61] hover:to-[#8f3a61] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {couponLoading ? 'Applying...' : 'Apply'}
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-between bg-green-50 p-3 rounded-lg border border-green-200">
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle size={20} className="text-green-500" />
-                          <div>
-                            <p className="text-green-700 font-medium">{appliedCoupon.code}</p>
-                            <p className="text-sm text-green-600">
-                              {appliedCoupon.discountPercentage}% off (₹{appliedCoupon.discountAmount.toFixed(2)} saved)
-                            </p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={removeCoupon}
-                          type="button"
-                          className="text-[#8f3a61] hover:text-[#8f3a61]/80 text-sm font-medium"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    )}
-                    {couponError && (
-                      <p className="mt-2 text-red-500 text-sm flex items-center">
-                        <AlertCircle size={14} className="mr-1" />
-                        {couponError}
-                      </p>
-                    )}
-                  </div>
+
                 </form>
               </div>
             </motion.div>
@@ -1132,6 +1079,66 @@ const Checkout = () => {
                 </div>
               </motion.div>
 
+              {/* Coupon Code Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="mb-6 p-4 bg-gradient-to-r from-[#8f3a61]/10 to-[#8f3a61]/5 border border-[#8f3a61]/20 rounded-xl"
+              >
+                <div className="flex items-center space-x-2 mb-4">
+                  <Gift size={20} className="text-[#8f3a61]" />
+                  <h3 className="text-lg font-semibold text-[#8f3a61]">Have a coupon?</h3>
+                </div>
+                {!appliedCoupon ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => {
+                        setCouponCode(e.target.value);
+                        setCouponError(''); // Clear error when user types
+                      }}
+                      placeholder="Enter coupon code"
+                      className="flex-1 px-4 py-2 border border-[#8f3a61]/30 rounded-lg focus:ring-2 focus:ring-[#8f3a61] focus:border-transparent bg-white"
+                      disabled={couponLoading}
+                    />
+                    <button
+                      onClick={handleCouponSubmit}
+                      disabled={couponLoading || !couponCode.trim()}
+                      className="px-4 py-2 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white rounded-lg hover:from-[#8f3a61] hover:to-[#8f3a61] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {couponLoading ? 'Applying...' : 'Apply'}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between bg-green-50 p-3 rounded-lg border border-green-200">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle size={20} className="text-green-500" />
+                      <div>
+                        <p className="text-green-700 font-medium">{appliedCoupon.code}</p>
+                        <p className="text-sm text-green-600">
+                          {appliedCoupon.discountPercentage}% off (₹{appliedCoupon.discountAmount.toFixed(2)} saved)
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={removeCoupon}
+                      type="button"
+                      className="text-[#8f3a61] hover:text-[#8f3a61]/80 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+                {couponError && (
+                  <p className="mt-2 text-red-500 text-sm flex items-center">
+                    <AlertCircle size={14} className="mr-1" />
+                    {couponError}
+                  </p>
+                )}
+              </motion.div>
+
               <div className="bg-white rounded-xl p-6 mb-8">
                 <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
                 {!cartLoaded || !formData.paymentMethod ? (
@@ -1163,6 +1170,12 @@ const Checkout = () => {
                         </motion.div>
                       </motion.div>
                     </div>
+                    {appliedCoupon && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Discount ({appliedCoupon.code})</span>
+                        <span>-₹{appliedCoupon.discountAmount.toFixed(2)}</span>
+                      </div>
+                    )}
                     {formData.paymentMethod === 'cod' && (
                       <div className="flex justify-between">
                         <span>COD Extra Charge</span>
