@@ -195,6 +195,11 @@ class PaymentService {
     try {
       console.log('PaymentService - Creating order after payment with data:', orderData);
       
+      // Ensure orderData is not null or undefined
+      if (!orderData) {
+        throw new Error('Order data is required to create order');
+      }
+      
       const orderPayload = {
         customerName: orderData.customerName,
         email: orderData.email,
@@ -221,7 +226,7 @@ class PaymentService {
       return response;
     } catch (error) {
       console.error('PaymentService - Order creation error:', error);
-      throw new Error('Failed to create order after payment');
+      throw new Error('Failed to create order after payment: ' + (error.message || 'Unknown error'));
     }
   }
 
@@ -238,31 +243,59 @@ class PaymentService {
       if (paymentStatus.success && paymentStatus.data?.state === 'COMPLETED') {
         // Payment is successful, create order
         console.log('PaymentService - Payment completed, creating order...');
-        const orderResult = await this.createOrderAfterPayment(orderData, 'completed');
-        return {
-          success: true,
-          code: 'PAYMENT_SUCCESS',
-          data: {
-            state: 'COMPLETED',
-            message: 'Payment completed successfully'
-          },
-          paymentStatus,
-          order: orderResult
-        };
+        try {
+          const orderResult = await this.createOrderAfterPayment(orderData, 'completed');
+          return {
+            success: true,
+            code: 'PAYMENT_SUCCESS',
+            data: {
+              state: 'COMPLETED',
+              message: 'Payment completed successfully'
+            },
+            paymentStatus,
+            order: orderResult
+          };
+        } catch (orderError) {
+          console.error('PaymentService - Order creation failed after successful payment:', orderError);
+          return {
+            success: false,
+            code: 'ORDER_CREATION_FAILED',
+            data: {
+              state: 'COMPLETED',
+              message: 'Payment successful but order creation failed'
+            },
+            paymentStatus,
+            message: 'Payment was successful but we could not create your order. Please contact support with your transaction ID.'
+          };
+        }
       } else if (paymentStatus.success && paymentStatus.data?.state === 'PENDING') {
         // Payment is pending, create order with pending status
         console.log('PaymentService - Payment pending, creating order with pending status...');
-        const orderResult = await this.createOrderAfterPayment(orderData, 'pending');
-        return {
-          success: true,
-          code: 'PAYMENT_PENDING',
-          data: {
-            state: 'PENDING',
-            message: 'Payment is pending. Please check your orders after a few minutes.'
-          },
-          paymentStatus,
-          order: orderResult
-        };
+        try {
+          const orderResult = await this.createOrderAfterPayment(orderData, 'pending');
+          return {
+            success: true,
+            code: 'PAYMENT_PENDING',
+            data: {
+              state: 'PENDING',
+              message: 'Payment is pending. Please check your orders after a few minutes.'
+            },
+            paymentStatus,
+            order: orderResult
+          };
+        } catch (orderError) {
+          console.error('PaymentService - Order creation failed for pending payment:', orderError);
+          return {
+            success: false,
+            code: 'ORDER_CREATION_FAILED',
+            data: {
+              state: 'PENDING',
+              message: 'Payment is pending but order creation failed'
+            },
+            paymentStatus,
+            message: 'Payment is being processed but we could not create your order. Please contact support.'
+          };
+        }
       } else if (paymentStatus.success && paymentStatus.data?.state === 'FAILED') {
         // Payment failed
         console.log('PaymentService - Payment failed:', paymentStatus.data);

@@ -13,7 +13,7 @@ const PaymentSuccess = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [orderCreated, setOrderCreated] = useState(false);
   const navigate = useNavigate();
-  const { clearCart, clearSellerToken } = useCart();
+    const { clearCart, clearSellerToken } = useCart();
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -28,7 +28,7 @@ const PaymentSuccess = () => {
       const storedOrderData = localStorage.getItem('phonepe_order_data');
       
       console.log('PaymentSuccess - Transaction ID:', transactionId);
-  
+
       
       if (!transactionId) {
         setError('No transaction ID found. Please contact support.');
@@ -112,7 +112,36 @@ const PaymentSuccess = () => {
           return;
         }
         
-        const result = await paymentService.completePaymentFlow(phonePeOrderId, storedOrderData ? JSON.parse(storedOrderData) : null);
+        // If no stored order data, try to get it from URL parameters or provide a fallback
+        let orderData = null;
+        if (storedOrderData) {
+          try {
+            orderData = JSON.parse(storedOrderData);
+          } catch (parseError) {
+            console.error('PaymentSuccess - Error parsing stored order data:', parseError);
+          }
+        }
+        
+        // If still no order data, create a minimal order data structure for verification
+        if (!orderData) {
+          console.log('PaymentSuccess - No order data found, creating minimal structure for verification');
+          orderData = {
+            customerName: 'Customer',
+            email: 'customer@example.com',
+            phone: '0000000000',
+            address: 'Address not available',
+            city: 'City not available',
+            state: 'State not available',
+            pincode: '000000',
+            country: 'India',
+            items: [],
+            totalAmount: 0,
+            paymentMethod: 'phonepe',
+            transactionId: transactionId
+          };
+        }
+        
+        const result = await paymentService.completePaymentFlow(phonePeOrderId, orderData);
         
         if (result.success) {
           setOrderCreated(true);
@@ -128,6 +157,16 @@ const PaymentSuccess = () => {
           localStorage.removeItem('phonepe_redirect_time');
           
           toast.success('Order placed successfully!');
+        } else {
+          // Payment verification failed but payment might be successful
+          console.error('PaymentSuccess - Payment verification failed:', result);
+          
+          // If payment is successful but order creation failed, show special message
+          if (result.code === 'ORDER_CREATION_FAILED') {
+            setError(result.message || 'Payment successful but order creation failed. Please contact support.');
+          } else {
+            setError(result.message || 'Payment verification failed. Please contact support.');
+          }
         }
         
         setStatus(result);
@@ -135,6 +174,11 @@ const PaymentSuccess = () => {
       } catch (error) {
         console.error('PaymentSuccess - Payment verification failed:', error);
         setError(error.message || 'Failed to verify payment. Please contact support.');
+        
+        // If order data is missing, provide specific guidance
+        if (!storedOrderData) {
+          setError('Order data not found. Please try placing your order again.');
+        }
       }
       
       setLoading(false);
@@ -149,7 +193,74 @@ const PaymentSuccess = () => {
       setRetryCount(prev => prev + 1);
       setLoading(true);
       setError(null);
+      // Re-run the verification process
+      setTimeout(() => {
+        verifyPayment();
+      }, 1000);
     }
+  };
+
+  // Manual order creation retry
+  const handleRetryOrderCreation = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const storedOrderData = localStorage.getItem('phonepe_order_data');
+      const phonePeOrderId = localStorage.getItem('phonepe_order_id');
+      const urlParams = new URLSearchParams(window.location.search);
+      const transactionId = urlParams.get('transactionId') || 
+                           urlParams.get('orderId') || 
+                           localStorage.getItem('phonepe_merchant_order_id');
+      
+      if (!phonePeOrderId) {
+        setError('Order ID not found. Please contact support.');
+        setLoading(false);
+        return;
+      }
+      
+      let orderData = null;
+      if (storedOrderData) {
+        try {
+          orderData = JSON.parse(storedOrderData);
+        } catch (parseError) {
+          console.error('PaymentSuccess - Error parsing stored order data:', parseError);
+        }
+      }
+      
+      if (!orderData) {
+        setError('Order data not found. Please try placing your order again.');
+        setLoading(false);
+        return;
+      }
+      
+      // Try to create order directly
+      const orderResult = await paymentService.createOrderAfterPayment(orderData, 'completed');
+      
+      if (orderResult.success) {
+        setOrderCreated(true);
+        localStorage.setItem('order_created_' + transactionId, 'true');
+        clearCart();
+        clearSellerToken();
+        toast.success('Order created successfully!');
+        setStatus({ 
+          success: true, 
+          code: 'PAYMENT_SUCCESS', 
+          data: { 
+            state: 'COMPLETED',
+            message: 'Order created successfully'
+          },
+          order: orderResult
+        });
+      } else {
+        setError('Failed to create order. Please contact support.');
+      }
+    } catch (error) {
+      console.error('PaymentSuccess - Manual order creation failed:', error);
+      setError('Failed to create order: ' + error.message);
+    }
+    
+    setLoading(false);
   };
 
   const handleGoHome = () => navigate('/');
@@ -247,6 +358,30 @@ const PaymentSuccess = () => {
         <div className="flex gap-4">
           <button onClick={handleGoOrders} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-semibold transition">View Orders</button>
           <button onClick={handleGoHome} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">Go to Home</button>
+        </div>
+      </div>
+    );
+  } else if (status && status.code === 'ORDER_CREATION_FAILED') {
+    const urlParams = new URLSearchParams(window.location.search);
+    const transactionId = urlParams.get('transactionId') || 
+                         urlParams.get('orderId') || 
+                         localStorage.getItem('phonepe_merchant_order_id');
+    
+    content = (
+      <div className="flex flex-col items-center justify-center py-12">
+        <AlertTriangle size={64} className="text-orange-500 mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Payment Successful - Order Issue</h2>
+        <p className="text-gray-700 mb-6">
+          {status.message || 'Your payment was successful, but we encountered an issue creating your order. Please contact support with your transaction details.'}
+        </p>
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+          <p className="text-orange-800 font-semibold">Transaction ID: {transactionId}</p>
+          <p className="text-orange-700 text-sm">Please save this ID for support reference.</p>
+        </div>
+        <div className="flex gap-4 flex-wrap justify-center">
+          <button onClick={handleRetryOrderCreation} className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold transition">Retry Order Creation</button>
+          <button onClick={handleGoHome} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-semibold transition">Go to Home</button>
+          <button onClick={handleGoOrders} className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">View Orders</button>
         </div>
       </div>
     );
