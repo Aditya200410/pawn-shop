@@ -277,17 +277,17 @@ class PaymentService {
           message: 'Payment failed: ' + (paymentStatus.data?.errorCode || 'Unknown error')
         };
       } else {
-        // Payment verification failed
-        console.log('PaymentService - Payment verification failed:', paymentStatus);
+        // Payment verification failed or unknown state
+        console.log('PaymentService - Payment verification failed or unknown state:', paymentStatus);
         return {
           success: false,
           code: 'VERIFICATION_FAILED',
           data: {
             state: 'UNKNOWN',
-            message: 'Payment verification failed'
+            message: 'Payment verification failed or payment status is unknown'
           },
           paymentStatus,
-          message: 'Payment verification failed'
+          message: 'Payment verification failed or payment status is unknown'
         };
       }
     } catch (error) {

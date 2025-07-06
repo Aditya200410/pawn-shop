@@ -130,7 +130,6 @@ const PaymentSuccess = () => {
           toast.success('Order placed successfully!');
         }
         
-
         setStatus(result);
         
       } catch (error) {
@@ -188,7 +187,7 @@ const PaymentSuccess = () => {
         </div>
       </div>
     );
-  } else if (status.success && (status.code === 'PAYMENT_SUCCESS' || status.data?.state === 'COMPLETED')) {
+  } else if (status && status.success && (status.code === 'PAYMENT_SUCCESS' || status.data?.state === 'COMPLETED')) {
     // Check if this was a COD order with upfront payment
     const storedOrderData = localStorage.getItem('phonepe_order_data');
     let isCodOrder = false;
@@ -237,7 +236,7 @@ const PaymentSuccess = () => {
         </div>
       </div>
     );
-  } else if (status.success && (status.code === 'PAYMENT_PENDING' || status.data?.state === 'PENDING')) {
+  } else if (status && status.success && (status.code === 'PAYMENT_PENDING' || status.data?.state === 'PENDING')) {
     content = (
       <div className="flex flex-col items-center justify-center py-12">
         <Clock size={64} className="text-yellow-500 mb-4 animate-pulse" />
