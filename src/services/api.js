@@ -66,5 +66,10 @@ const applyCoupon = (data) => {
   return axios.post(`${config.API_BASE_URL}/api/coupons/apply`, data);
 };
 
+// Settings API endpoints
+export const settingsAPI = {
+  getCodUpfrontAmount: () => api.get('/settings/cod-upfront-amount'),
+};
+
 // Default export for general API usage
 export default api; 

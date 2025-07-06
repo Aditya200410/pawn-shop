@@ -204,8 +204,8 @@ class PaymentService {
         country: orderData.country,
         items: orderData.items,
         totalAmount: orderData.totalAmount,
-        paymentMethod: 'phonepe',
-        paymentStatus: paymentStatus,
+        paymentMethod: orderData.paymentMethod, // Use the actual payment method from orderData
+        paymentStatus: orderData.paymentMethod === 'cod' ? 'partial' : paymentStatus, // COD orders are partial payment
         sellerToken: orderData.sellerToken,
         orderId: orderData.orderId,
         merchantOrderId: orderData.merchantOrderId,

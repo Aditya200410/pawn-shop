@@ -17,15 +17,10 @@ class ReviewService {
     }
   }
 
-  // Get user's review for a product
-  static async getUserReview(productId, token) {
+  // Get user's review for a product (by email)
+  static async getUserReview(productId, userEmail) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/reviews/user/${productId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await fetch(`${API_BASE_URL}/api/reviews/user/${productId}?userEmail=${encodeURIComponent(userEmail)}`);
       
       if (response.status === 404) {
         return null; // User hasn't reviewed this product
@@ -43,12 +38,11 @@ class ReviewService {
   }
 
   // Create a new review
-  static async createReview(reviewData, token) {
+  static async createReview(reviewData) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/reviews`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(reviewData)
@@ -67,12 +61,11 @@ class ReviewService {
   }
 
   // Update a review
-  static async updateReview(reviewId, reviewData, token) {
+  static async updateReview(reviewId, reviewData) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/reviews/${reviewId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(reviewData)
@@ -91,14 +84,14 @@ class ReviewService {
   }
 
   // Delete a review
-  static async deleteReview(reviewId, token) {
+  static async deleteReview(reviewId, userEmail) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/reviews/${reviewId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ userEmail })
       });
       
       if (!response.ok) {

@@ -31,6 +31,7 @@ import AuthPrompt from '../components/AuthPrompt';
 import FlashMessage from '../components/FlashMessage';
 import cartService from '../services/cartService';
 import { useSellerNavigation } from '../hooks/useSellerNavigation';
+import { settingsAPI } from '../services/api';
 
 // Get PhonePe checkout object
 const getPhonePeCheckout = () => {
@@ -70,6 +71,23 @@ const Checkout = () => {
       setSellerTokenFromURL(urlSellerToken);
     }
   }, [searchParams, setSellerTokenFromURL]);
+
+  // Fetch COD upfront amount
+  useEffect(() => {
+    const fetchCodUpfrontAmount = async () => {
+      try {
+        const response = await settingsAPI.getCodUpfrontAmount();
+        if (response.success && response.amount) {
+          setCodUpfrontAmount(response.amount);
+        }
+      } catch (error) {
+        console.error('Failed to fetch COD upfront amount:', error);
+        // Keep default value of 39
+      }
+    };
+
+    fetchCodUpfrontAmount();
+  }, []);
   
   const [activeStep, setActiveStep] = useState('shipping');
   const [formData, setFormData] = useState({
@@ -108,6 +126,7 @@ const Checkout = () => {
   const [couponLoading, setCouponLoading] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [cartLoading, setCartLoading] = useState(true);
+  const [codUpfrontAmount, setCodUpfrontAmount] = useState(39); // Default value
   const [cartLoaded, setCartLoaded] = useState(false);
 
   // Pre-fill form with user data if logged in
@@ -240,9 +259,9 @@ const Checkout = () => {
     return 0;
   };
 
-  // Calculate COD extra charge (39 rupees extra for COD orders)
+  // Calculate COD extra charge (dynamic amount for COD orders)
   const getCodExtraCharge = () => {
-    return formData.paymentMethod === 'cod' ? 39 : 0;
+    return formData.paymentMethod === 'cod' ? codUpfrontAmount : 0;
   };
 
   // Calculate final total
@@ -253,9 +272,13 @@ const Checkout = () => {
     return subtotal + shipping + codExtra;
   };
 
-  // Calculate amount to be paid online (for COD: full amount including extra charge, for online: full amount)
+  // Calculate amount to be paid online (for COD: only 39 rupees upfront, for online: full amount)
   const getOnlinePaymentAmount = () => {
-    return getFinalTotal();
+    if (formData.paymentMethod === 'cod') {
+      return getCodExtraCharge(); // Only 39 rupees for COD upfront
+    } else {
+      return getFinalTotal(); // Full amount for online payment
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -376,7 +399,7 @@ const Checkout = () => {
         shippingCost: calculateShippingCost(),
         codExtraCharge: getCodExtraCharge(),
         finalTotal: getFinalTotal(),
-        paymentMethod: 'phonepe',
+        paymentMethod: formData.paymentMethod, // Use the actual payment method (cod or phonepe)
         sellerToken: sellerToken,
         couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
@@ -895,7 +918,7 @@ const Checkout = () => {
                             <div className="flex-1">
                               <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
                               <p className="text-sm text-gray-600 mt-1">
-                                Pay full amount online + ₹39 extra charge + remaining amount on delivery
+                                Pay ₹39 online + remaining amount on delivery
                               </p>
                             </div>
                           </label>
@@ -1140,7 +1163,7 @@ const Checkout = () => {
                       </div>
                       {formData.paymentMethod === 'cod' && (
                         <div className="text-sm text-gray-600 mt-1">
-                          Pay ₹{getCodExtraCharge().toFixed(2)} online + ₹{getTotalPrice().toFixed(2)} on delivery
+                          Pay ₹{codUpfrontAmount.toFixed(2)} online + ₹{(getTotalPrice() - (appliedCoupon ? appliedCoupon.discountAmount : 0)).toFixed(2)} on delivery
                         </div>
                       )}
                     </div>
@@ -1151,11 +1174,7 @@ const Checkout = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={
-                  formData.paymentMethod === 'phonepe'
-                    ? handlePhonePePayment
-                    : handleSubmit
-                }
+                onClick={handlePhonePePayment}
                 disabled={loading || paymentProcessing || !cartLoaded || !formData.paymentMethod}
                 className="w-full mt-6 bg-gradient-to-r from-[#8f3a61] to-[#8f3a61] text-white px-6 py-4 rounded-xl font-semibold hover:from-pink-600 hover:to-pink-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
@@ -1167,7 +1186,7 @@ const Checkout = () => {
                   <>
                     <Lock size={20} />
                     <span>
-                      {formData.paymentMethod === 'phonepe' ? 'Proceed to PhonePe Payment' : 'Place Order'}
+                      {formData.paymentMethod === 'cod' ? `Pay ₹${codUpfrontAmount} Online + Rest on Delivery` : 'Proceed to PhonePe Payment'}
                     </span>
                   </>
                 )}
