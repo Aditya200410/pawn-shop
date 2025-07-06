@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { loadMSG91Script } from '../utils/msg91Loader';
 
 const Signup = () => {
   const navigate = useNavigate();
   const { register, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,47 +19,28 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [msg91Token, setMsg91Token] = useState(null);
-  const [isOtpSent, setIsOtpSent] = useState(false);
-
-  // MSG91 Configuration
-  const msg91Config = {
-    widgetId: "356765707a68343736313035",
-    tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
-    exposeMethods: "true",
-    success: (data) => {
-      console.log('MSG91 success response', data);
-      setMsg91Token(data.token);
-      setIsOtpSent(true);
-      toast.success('OTP sent successfully! Please verify your phone number.');
-    },
-    failure: (error) => {
-      console.log('MSG91 failure reason', error);
-      
-      // Handle specific MSG91 errors
-      if (error.code === '408' || error.message?.includes('IPBlocked')) {
-        setError('MSG91 service temporarily unavailable. Please try again later or contact support.');
-        toast.error('MSG91 service temporarily unavailable. Please try again later.');
-      } else if (error.code === '401' || error.message?.includes('Unauthorized')) {
-        setError('MSG91 authentication failed. Please contact support.');
-        toast.error('MSG91 authentication failed. Please contact support.');
-      } else {
-        setError('Failed to send OTP. Please try again.');
-        toast.error('Failed to send OTP. Please try again.');
-      }
-      setIsLoading(false);
-    },
-  };
 
   // Load MSG91 script
   useEffect(() => {
+    console.log('🚀 Loading MSG91 script for signup page');
+    
     const loadScript = async () => {
       try {
-        await loadMSG91Script();
-        console.log('MSG91 script loaded successfully');
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://verify.msg91.com/otp-provider.js';
+        
+        script.onload = () => {
+          console.log('✅ MSG91 script loaded successfully in signup');
+        };
+        
+        script.onerror = (error) => {
+          console.error('❌ MSG91 script loading error in signup:', error);
+        };
+
+        document.head.appendChild(script);
       } catch (error) {
-        console.error('MSG91 script loading error:', error);
-        // Don't show error to user as we have fallback
+        console.error('❌ MSG91 script loading error in signup:', error);
       }
     };
 
@@ -71,8 +52,14 @@ const Signup = () => {
     setError('');
     setIsLoading(true);
 
+    console.log('📝 Form submission started');
+
+    // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      const error = 'Passwords do not match';
+      console.error('❌ Validation error:', error);
+      setError(error);
+      toast.error(error);
       setIsLoading(false);
       return;
     }
@@ -80,43 +67,41 @@ const Signup = () => {
     // Validate phone number format (basic validation)
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(formData.phone)) {
-      setError('Please enter a valid 10-digit mobile number');
+      const error = 'Please enter a valid 10-digit mobile number';
+      console.error('❌ Phone validation error:', error);
+      setError(error);
+      toast.error(error);
       setIsLoading(false);
       return;
     }
 
+    console.log('✅ Form validation passed');
+
     try {
       // Store user data in localStorage for OTP verification
-      localStorage.setItem('pendingRegistration', JSON.stringify({
+      const registrationData = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         password: formData.password
-      }));
+      };
 
-      // Check if MSG91 is available, if not use traditional registration
-      const isMsg91Available = await loadMSG91Script().then(() => true).catch(() => false);
-      
-      if (isMsg91Available) {
-        // Navigate to OTP verification page with MSG91
-        navigate('/otp-verification', { 
-          state: { 
-            phone: formData.phone,
-            useMsg91: true 
-          } 
-        });
-      } else {
-        // Use traditional registration without MSG91
-        console.log('MSG91 not available, using traditional registration');
-        navigate('/otp-verification', { 
-          state: { 
-            phone: formData.phone,
-            useMsg91: false 
-          } 
-        });
-      }
+      console.log('💾 Storing registration data in localStorage');
+      localStorage.setItem('pendingRegistration', JSON.stringify(registrationData));
+
+      console.log('🔄 Navigating to OTP verification page');
+      // Navigate to OTP verification page with MSG91
+      navigate('/otp-verification', { 
+        state: { 
+          phone: formData.phone,
+          useMsg91: true 
+        } 
+      });
     } catch (err) {
-      setError(err.message || contextError || 'Failed to create account');
+      console.error('❌ Signup error:', err);
+      const errorMessage = err.message || contextError || 'Failed to create account';
+      setError(errorMessage);
+      toast.error(errorMessage);
       setIsLoading(false);
     }
   };
@@ -131,196 +116,148 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Form */}
-      <motion.div 
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full lg:w-1/2 flex items-start lg:items-center justify-center px-4 sm:px-6 lg:px-8 pt-8 lg:pt-0"
-      >
-        <div className="max-w-md w-full space-y-8">
-          <div>
-            <h2 className="mt-6 text-4xl font-light tracking-tight text-gray-900">
-              Join Our <span className="font-serif italic">Heritage</span> Community
+      <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center px-4 sm:px-6 lg:px-8 pt-8 lg:pt-0">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md space-y-5 p-8 sm:p-10 bg-white shadow-2xl rounded-xl border border-gray-100"
+        >
+          <div className="text-center">
+            <Link to="/">
+              <img src="/logo.png" alt="Riko Craft" className="mx-auto h-20 w-auto mb-3" />
+            </Link>
+            <h2 className="text-3xl font-bold tracking-tight text-primary">
+              Create Account
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-primary hover:text-primary-dark">
-                Sign in
-              </Link>
+              Join us and start your journey with secure phone verification
             </p>
           </div>
 
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-              <span className="block sm:inline">{error}</span>
+            <div className="rounded-md bg-red-50 p-3 sm:p-4 ring-1 ring-red-200">
+              <div className="flex">
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                </div>
+              </div>
             </div>
           )}
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="mt-5 space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Full Name
-                  </label>
-                  <div className="mt-1 relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                      placeholder="Enter your full name"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email address
-                  </label>
-                  <div className="mt-1 relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                      placeholder="Enter your email"
-                    />
-                  </div>
+              <div>
+                <label htmlFor="name" className="sr-only">Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    required
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Mobile Number
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </div>
+                <label htmlFor="email" className="sr-only">Email address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="Email address"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="sr-only">Phone Number</label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     id="phone"
                     name="phone"
                     type="tel"
                     autoComplete="tel"
                     required
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="Phone Number (10 digits)"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                    placeholder="Enter your mobile number"
+                    maxLength="10"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
+                <label htmlFor="password" className="sr-only">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     id="password"
                     name="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
                     required
+                    className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="Password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                    placeholder="Create a password"
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5" />
-                      ) : (
-                        <Eye className="h-5 w-5" />
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                  Confirm Password
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
+                <label htmlFor="confirmPassword" className="sr-only">Confirm Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
                     required
+                    className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="Confirm Password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                    placeholder="Confirm your password"
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5" />
-                      ) : (
-                        <Eye className="h-5 w-5" />
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
               </div>
-            </div>
-
-            <div className="flex items-center">
-              <input
-                id="terms"
-                name="terms"
-                type="checkbox"
-                required
-                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-              />
-              <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
-                I agree to the{' '}
-                <Link to="/policies" className="font-medium text-primary hover:text-primary-dark">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link to="/policies" className="font-medium text-primary hover:text-primary-dark">
-                  Privacy Policy
-                </Link>
-              </label>
             </div>
 
             <div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className="group relative w-full flex justify-center py-2.5 px-5 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ 
                   backgroundImage: 'url(/footer.png)',
                   backgroundSize: 'cover',
@@ -328,10 +265,7 @@ const Signup = () => {
                 }}
               >
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
-                <span className="absolute left-0 inset-y-0 flex items-center pl-3 z-10">
-                  <ArrowRight className="h-5 w-5 text-white/80 group-hover:text-white" />
-                </span>
-                <span className="relative z-10">
+                <span className="relative z-10 flex items-center justify-center">
                   {isLoading ? (
                     <span className="flex items-center">
                       <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -341,152 +275,68 @@ const Signup = () => {
                       Creating Account...
                     </span>
                   ) : (
-                    'Create Account'
+                    <span className="flex items-center">
+                      Create Account
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </span>
                   )}
                 </span>
               </button>
             </div>
-
-            {/* Seller Signup Link */}
-            <div className="text-center pt-4 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-2">
-                Want to sell your products?
-              </p>
-              <Link 
-                to="/seller" 
-                className="inline-flex items-center text-amber-600 hover:text-amber-700 font-medium text-sm transition-colors"
-              >
-                Become a Seller
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
           </form>
-        </div>
-      </motion.div>
 
-      {/* Mobile Content Section */}
-      <div className="lg:hidden w-full bg-gray-50 py-12 px-4">
-        <div className="max-w-md mx-auto">
-          <h3 className="text-2xl font-semibold text-gray-900 text-center mb-8">
-            Join Our Trusted Heritage Community
-          </h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="text-center">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-primary hover:text-primary/80">
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Right Side - Image */}
+      <div className="hidden lg:block lg:w-1/2 relative">
+        <img src="/footer.png" alt="Signup Banner" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className="text-white text-center">
+            <h2 className="text-4xl font-light mb-6">
+              Join <span className="font-serif italic">Riko Craft</span>
+            </h2>
+            <p className="text-lg text-gray-100 mb-8">
+              Create your account and discover amazing handmade products.
+            </p>
+            <div className="space-y-4 text-left max-w-md mx-auto">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <span>Secure phone verification</span>
               </div>
-              <h4 className="font-medium text-gray-900 mb-1">Variety of items</h4>
-              <p className="text-sm text-gray-600">Value for money</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span>Quick and easy setup</span>
               </div>
-              <h4 className="font-medium text-gray-900 mb-1">Reliable</h4>
-              <p className="text-sm text-gray-600">Trusted service</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <span>Access to exclusive products</span>
               </div>
-              <h4 className="font-medium text-gray-900 mb-1">Secure</h4>
-              <p className="text-sm text-gray-600">Safe transactions</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h4 className="font-medium text-gray-900 mb-1">Fair</h4>
-              <p className="text-sm text-gray-600">Best value offered</p>
             </div>
           </div>
         </div>
       </div>
-
-     {/* Right Side - Image */}
-<motion.div 
-  initial={{ opacity: 0, x: 20 }}
-  animate={{ opacity: 1, x: 0 }}
-  transition={{ duration: 0.5, delay: 0.2 }}
-  className="hidden lg:block lg:w-1/2 relative"
->
-  <img src="/footer.png" alt="Signup Banner" className="absolute inset-0 w-full h-full object-cover" />
-  <div className="absolute inset-0 bg-black/50" />
-  <div className="absolute inset-0 flex items-center justify-center p-12">
-    <div className="text-white text-center">
-      <h2 className="text-4xl font-light mb-6">
-        Unlock a World of <span className="font-serif italic">Unique Finds</span>
-      </h2>
-      <p className="text-lg text-gray-100 mb-8">
-        Join our community to buy, sell, and discover one-of-a-kind items.
-      </p>
-      <div className="space-y-4 text-left max-w-md mx-auto">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <span>Curated collections from trusted sellers</span>
-        </div>
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <span>Secure transactions and buyer protection</span>
-        </div>
-
-        {/* New Premium Features */}
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <span>Authentic <span className="italic">Dhokra Art</span> from master artisans</span>
-        </div>
-
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <span>Exquisite <span className="italic">Heritage Products</span> with timeless appeal</span>
-        </div>
-
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <span>Finely crafted <span className="italic">Art & Craft</span> for discerning tastes</span>
-        </div>
-
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <span>Exclusive <span className="italic">Seller Program</span> for passionate creators</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</motion.div>
-
     </div>
   );
 };
