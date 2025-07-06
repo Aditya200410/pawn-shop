@@ -112,7 +112,7 @@ const ReviewForm = ({ productId, onReviewSubmitted, onReviewUpdated, onReviewDel
         <p className="text-gray-600 mb-4">Please login to write a review for this product.</p>
         <a 
           href="/login" 
-          className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+          className="inline-block px-4 py-2 bg-[#8f3a61] text-white rounded-md hover:bg-[#8f3a61] transition-colors"
         >
           Login to Review
         </a>
@@ -270,7 +270,7 @@ const ReviewForm = ({ productId, onReviewSubmitted, onReviewUpdated, onReviewDel
           <button
             type="submit"
             disabled={isSubmitting || stars === 0}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-[#8f3a61] text-white rounded-md hover:bg-[#8f3a61] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Submitting...' : (existingReview ? 'Update Review' : 'Submit Review')}
           </button>

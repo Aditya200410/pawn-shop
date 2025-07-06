@@ -40,7 +40,7 @@ const ProductView = () => {
   const tabs = [
     { id: 'description', label: 'Description', icon: DocumentTextIcon },
     { id: 'specifications', label: 'Specifications', icon: CogIcon },
-    { id: 'shipping', label: 'Shipping & Returns', icon: TruckIcon },
+    { id: 'shipping', label: 'Shipping', icon: TruckIcon },
     { id: 'reviews', label: 'Reviews', icon: ChatBubbleLeftRightIcon },
   ];
 
