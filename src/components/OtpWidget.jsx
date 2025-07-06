@@ -33,6 +33,13 @@ const OtpWidget = ({ phone, onSuccess, onFailure }) => {
       tokenAuth: tokenAuth,
       identifier: phone,
       exposeMethods: true,
+      // hCaptcha configuration to fix the missing captcha error
+      captcha: {
+        type: 'hcaptcha',
+        sitekey: '10000000-ffff-ffff-ffff-000000000001', // Test sitekey
+        theme: 'light',
+        size: 'normal'
+      },
       success: (data) => {
         console.log('✅ MSG91 OTP verification successful:', {
           token: data?.token ? '✅ Present' : '❌ Missing',
