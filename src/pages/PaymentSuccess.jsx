@@ -143,10 +143,28 @@ const PaymentSuccess = () => {
         
         const result = await paymentService.completePaymentFlow(phonePeOrderId, orderData);
         
-        if (result.success) {
+        // --- Begin: Transaction ID match logic ---
+        let isPaymentCompleted = false;
+        let paymentDetails = result?.paymentStatus?.data?.paymentDetails || [];
+        if (!Array.isArray(paymentDetails)) paymentDetails = [];
+        // Check if any paymentDetails entry matches the expected transactionId or upiTransactionId
+        if (
+          result.success &&
+          result.data?.state === 'COMPLETED' &&
+          paymentDetails.some(
+            (pd) =>
+              pd.state === 'COMPLETED' &&
+              (pd.transactionId === transactionId ||
+                (pd.rail && (pd.rail.upiTransactionId === transactionId || pd.rail.utr === transactionId)))
+          )
+        ) {
+          isPaymentCompleted = true;
+        }
+        // --- End: Transaction ID match logic ---
+        
+        if (isPaymentCompleted) {
           setOrderCreated(true);
           localStorage.setItem('order_created_' + transactionId, 'true');
-          
           // Clear cart and seller token after successful order creation
           clearCart();
           clearSellerToken();
@@ -155,20 +173,11 @@ const PaymentSuccess = () => {
           localStorage.removeItem('phonepe_merchant_order_id');
           localStorage.removeItem('phonepe_order_data');
           localStorage.removeItem('phonepe_redirect_time');
-          
           toast.success('Order placed successfully!');
         } else {
-          // Payment verification failed but payment might be successful
-          console.error('PaymentSuccess - Payment verification failed:', result);
-          
-          // If payment is successful but order creation failed, show special message
-          if (result.code === 'ORDER_CREATION_FAILED') {
-            setError(result.message || 'Payment successful but order creation failed. Please contact support.');
-          } else {
-            setError(result.message || 'Payment verification failed. Please contact support.');
-          }
+          // Payment verification failed or transactionId mismatch
+          setError('Payment not successful or transaction mismatch. Please contact support.');
         }
-        
         setStatus(result);
         
       } catch (error) {
