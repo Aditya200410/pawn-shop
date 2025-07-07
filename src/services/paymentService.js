@@ -4,14 +4,12 @@ import orderService from './orderService';
 
 const API_BASE_URL = config.API_BASE_URL;
 
-class PaymentService {
-  // Initiate PhonePe payment according to official API documentation
-  async initiatePhonePePayment(orderData) {
+const paymentService = {
+  // Initiate PhonePe payment (returns { success, redirectUrl, orderId, ... })
+  initiatePhonePePayment: async (orderData) => {
     try {
-  
-      
-      // Prepare order data according to PhonePe API requirements
-      const phonePeOrderData = {
+      // Send all fields as required by backend controller
+      const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe`, {
         amount: orderData.amount,
         customerName: orderData.customerName,
         email: orderData.email,
@@ -26,81 +24,61 @@ class PaymentService {
         shippingCost: orderData.shippingCost,
         codExtraCharge: orderData.codExtraCharge,
         finalTotal: orderData.finalTotal,
-        paymentMethod: 'phonepe',
+        paymentMethod: orderData.paymentMethod,
+        paymentStatus: orderData.paymentStatus,
+        upfrontAmount: orderData.upfrontAmount,
+        remainingAmount: orderData.remainingAmount,
         sellerToken: orderData.sellerToken,
         couponCode: orderData.couponCode
-      };
-      
-      
-      
-      const response = await axios.post(`${API_BASE_URL}/api/payment/phonepe`, phonePeOrderData, {
-        timeout: 30000, // 30 second timeout
+      }, {
+        timeout: 30000,
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
-      
       return response.data;
     } catch (error) {
-      console.error('PaymentService - PhonePe initiation error:', error);
-      
       let errorMessage = 'Failed to initiate PhonePe payment';
-      
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
-      } else if (error.response?.data?.error?.message) {
-        errorMessage = error.response.data.error.message;
       } else if (error.code === 'ECONNABORTED') {
         errorMessage = 'Payment gateway timeout. Please try again.';
-      } else if (error.code === 'ENOTFOUND') {
-        errorMessage = 'Payment gateway not reachable. Please try again.';
-      } else if (error.response?.status === 404) {
-        errorMessage = 'Payment service not found. Please contact support.';
-      } else if (error.response?.status === 500) {
-        errorMessage = 'Payment gateway error. Please try again later.';
-      } else if (error.response?.status === 401) {
-        errorMessage = 'Payment gateway authentication failed. Please try again.';
       }
-      
       throw new Error(errorMessage);
     }
-  }
+  },
 
-  // Check PhonePe payment status
-  async checkPhonePeStatus(orderId) {
+  // Check PhonePe payment status (returns { status, data, message })
+  getPhonePeStatus: async (orderId) => {
     try {
-      console.log('PaymentService - Checking PhonePe status for order:', orderId);
-      
       const response = await axios.get(`${API_BASE_URL}/api/payment/phonepe/status/${orderId}`, {
         timeout: 30000,
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
-      console.log('PaymentService - PhonePe status response:', response.data);
-      return response.data;
+      const data = response.data;
+      let status = 'unknown';
+      if (data && data.data && data.data.state) {
+        if (data.data.state === 'COMPLETED') {
+          status = 'success';
+        } else if (data.data.state === 'PENDING') {
+          status = 'pending';
+        } else if (data.data.state === 'FAILED') {
+          status = 'failed';
+        }
+      }
+      return { status, ...data };
     } catch (error) {
-      console.error('PaymentService - PhonePe status check error:', error);
-      
       let errorMessage = 'Failed to check PhonePe payment status';
-      
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
-      } else if (error.response?.data?.error?.message) {
-        errorMessage = error.response.data.error.message;
       } else if (error.code === 'ECONNABORTED') {
         errorMessage = 'Payment verification timeout. Please try again.';
-      } else if (error.response?.status === 404) {
-        errorMessage = 'Transaction not found. Please contact support.';
-      } else if (error.response?.status === 401) {
-        errorMessage = 'Payment verification authentication failed.';
       }
-      
       throw new Error(errorMessage);
     }
-  }
+  },
 
   // Handle PhonePe callback verification
   async verifyPhonePeCallback(callbackData) {
@@ -120,7 +98,7 @@ class PaymentService {
       console.error('PaymentService - Callback verification error:', error);
       throw new Error('Failed to verify payment callback');
     }
-  }
+  },
 
   // Process refund through PhonePe
   async processRefund(refundData) {
@@ -155,7 +133,7 @@ class PaymentService {
       
       throw new Error(errorMessage);
     }
-  }
+  },
 
   // Check refund status
   async checkRefundStatus(merchantRefundId) {
@@ -188,7 +166,7 @@ class PaymentService {
       
       throw new Error(errorMessage);
     }
-  }
+  },
 
   // Create order after successful payment
   async createOrderAfterPayment(orderData, paymentStatus = 'completed') {
@@ -228,7 +206,7 @@ class PaymentService {
       console.error('PaymentService - Order creation error:', error);
       throw new Error('Failed to create order after payment: ' + (error.message || 'Unknown error'));
     }
-  }
+  },
 
   // Complete payment flow - verify payment and create order
   async completePaymentFlow(orderId, orderData) {
@@ -236,7 +214,7 @@ class PaymentService {
       console.log('PaymentService - Completing payment flow for order:', orderId);
       
       // First verify payment status with PhonePe
-      const paymentStatus = await this.checkPhonePeStatus(orderId);
+      const paymentStatus = await this.getPhonePeStatus(orderId);
       
       console.log('PaymentService - Payment status response:', paymentStatus);
       
@@ -328,6 +306,6 @@ class PaymentService {
       throw error;
     }
   }
-}
+};
 
-export default new PaymentService(); 
+export default paymentService; 

@@ -36,8 +36,8 @@ import SellerAuth from './pages/SellerAuth';
 import SellerProfile from './pages/SellerProfile';
 import VerifyOTP from './pages/OTPVerification';
 import Policies from './pages/Policies';
-import PaymentSuccess from './pages/PaymentSuccess';
-import PaymentFailure from './pages/PaymentFailure';
+
+import PaymentStatus from './pages/PaymentStatus';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -176,8 +176,8 @@ function AppContent() {
         <Route path="/product/:id" element={<ProductView />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/policies" element={<Policies />} />
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/failure" element={<PaymentFailure />} />
+        
+        <Route path="/payment/status" element={<PaymentStatus />} />
 
       </Routes>
       <Footer />
