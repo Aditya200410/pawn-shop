@@ -38,7 +38,6 @@ export const CartProvider = ({ children }) => {
         }
       } catch (error) {
         console.error('Error loading cart:', error);
-        toast.error('Failed to load cart');
       } finally {
         setLoading(false);
       }
@@ -239,7 +238,6 @@ export const CartProvider = ({ children }) => {
           }
         } catch (error) {
           console.error('Error syncing cart:', error);
-          toast.error('Failed to sync cart');
         }
       }
     };

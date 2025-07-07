@@ -100,7 +100,6 @@ export const AuthProvider = ({ children }) => {
             return response;
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Failed to update profile';
-            toast.error(errorMessage);
             throw error;
         }
     };
@@ -112,7 +111,6 @@ export const AuthProvider = ({ children }) => {
             return response.data;
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Failed to send reset link';
-            toast.error(errorMessage);
             throw error;
         }
     };

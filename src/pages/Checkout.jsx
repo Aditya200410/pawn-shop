@@ -344,12 +344,10 @@ const Checkout = () => {
         navigate('/account?tab=orders');
       } else {
         setError(response.message || "Failed to create order. Please try again.");
-        toast.error(response.message || "Failed to create order.");
       }
     } catch (err) {
       console.error('COD order creation error:', err);
       setError("Failed to create order. Please try again.");
-      toast.error("Failed to create order.");
     } finally {
       setLoading(false);
     }
@@ -461,18 +459,15 @@ const Checkout = () => {
           
           // If PhonePe checkout fails, show error instead of redirecting manually
           setError('PhonePe checkout failed. Please try again.');
-          toast.error('PhonePe checkout failed. Please try again.');
         }
         
       } else {
         setError(data.message || "Failed to initiate PhonePe payment.");
-        toast.error(data.message || "Failed to initiate PhonePe payment.");
       }
       
     } catch (error) {
       console.error('PhonePe payment error:', error);
       setError(error.message || "Failed to process PhonePe payment.");
-      toast.error(error.message || "Failed to process PhonePe payment.");
     } finally {
       setPaymentProcessing(false);
     }
@@ -532,17 +527,14 @@ const Checkout = () => {
           toast.success(message);
         } else {
           setCouponError('Failed to apply coupon. Please try again.');
-          toast.error('Failed to apply coupon.');
         }
       } else {
         setCouponError(data.message || 'Invalid coupon code');
-        toast.error(data.message || 'Invalid coupon code');
       }
     } catch (error) {
       console.error('Coupon error:', error);
       const errorMessage = 'Failed to process coupon. Please try again.';
       setCouponError(errorMessage);
-      toast.error(errorMessage);
     } finally {
       setCouponLoading(false);
     }
