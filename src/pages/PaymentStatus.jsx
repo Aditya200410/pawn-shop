@@ -255,12 +255,9 @@ const PaymentStatus = () => {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center">
                   <Truck size={16} className="text-pink-500 mr-2" />
-                  <span>Order will be shipped within 24-48 hours</span>
+                  <span>Order will be shipped within 5-7 days</span>
                 </div>
-                <div className="flex items-center">
-                  <CreditCard size={16} className="text-pink-500 mr-2" />
-                  <span>You'll receive tracking details via email</span>
-                </div>
+               
                 <div className="flex items-center">
                   <Shield size={16} className="text-pink-500 mr-2" />
                   <span>Secure payment processed successfully</span>
