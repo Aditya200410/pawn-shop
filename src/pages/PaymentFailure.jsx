@@ -2,36 +2,39 @@ import { useEffect, useState } from 'react';
 import { XCircle, AlertTriangle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import paymentService from '../services/paymentService';
 
 const PaymentFailure = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    // Get failure details from URL parameters
-    const code = searchParams.get('code');
-    const message = searchParams.get('message');
-    const transactionId = searchParams.get('transactionId') || 
-                         searchParams.get('merchantTransactionId') || 
-                         searchParams.get('txnId');
-
-    console.log('PaymentFailure - Failure details:', { code, message, transactionId });
-
-    // Clear any stored payment data
-    localStorage.removeItem('phonepe_transaction_id');
-    localStorage.removeItem('phonepe_order_data');
-    localStorage.removeItem('phonepe_redirect_time');
-
-    // Show appropriate error message
-    if (message) {
-      toast.error(message);
-    } else if (code === 'PAYMENT_CANCELLED') {
-      toast.error('Payment was cancelled by you');
-    } else {
-      toast.error('Payment failed. Please try again.');
+    const urlParams = new URLSearchParams(window.location.search);
+    const phonePeOrderId = urlParams.get('orderId');
+    if (!phonePeOrderId) {
+      setError('No payment order ID found in URL.');
+      return;
     }
-  }, [searchParams]);
+    paymentService.checkPhonePeStatus(phonePeOrderId)
+      .then((result) => {
+        if (result.data?.state === 'FAILED') {
+          setError('Payment failed. Please try again or contact support.');
+        } else if (result.data?.state === 'PENDING') {
+          setError('Payment is still pending. Please check again later.');
+        } else if (result.data?.state === 'COMPLETED') {
+          setError('Payment was successful.');
+        } else {
+          setError('Unknown payment status. Please contact support.');
+        }
+        setStatus(result.data);
+      })
+      .catch((err) => {
+        setError('Failed to check payment status: ' + (err.message || 'Unknown error'));
+      });
+  }, []);
 
   const handleRetryPayment = () => {
     setLoading(true);
@@ -111,6 +114,23 @@ const PaymentFailure = () => {
                 </div>
               </div>
             </div>
+
+            {status && (
+              <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="text-sm text-gray-800">
+                    <p className="font-semibold mb-1">Order ID:</p>
+                    <p>{status.orderId}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 mt-2">
+                  <div className="text-sm text-gray-800">
+                    <p className="font-semibold mb-1">Merchant Order ID:</p>
+                    <p>{status.merchantOrderId}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

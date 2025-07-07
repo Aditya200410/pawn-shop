@@ -414,14 +414,6 @@ const Checkout = () => {
       
       if (data.success && data.redirectUrl) {
         
-        // Store transaction data for later verification
-        if (data.orderId) {
-          localStorage.setItem('phonepe_order_id', data.orderId);
-          localStorage.setItem('phonepe_merchant_order_id', data.merchantOrderId);
-          localStorage.setItem('phonepe_order_data', JSON.stringify(orderData));
-          localStorage.setItem('phonepe_redirect_time', new Date().toISOString());
-        }
-        
         // Get PhonePe checkout object
         try {
           const PhonePeCheckout = await getPhonePeCheckout();
@@ -438,7 +430,7 @@ const Checkout = () => {
 
               // Redirect to success page for verification
               setTimeout(() => {
-                window.location.href = `${window.location.origin}/payment/success?transactionId=${data.merchantOrderId}`;
+                window.location.href = `${window.location.origin}/payment/success?orderId=${data.orderId}`;
               }, 1000);
             }
           };
