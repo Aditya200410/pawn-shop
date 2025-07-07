@@ -376,86 +376,61 @@ const Checkout = () => {
 
       // Prepare order data according to PhonePe API requirements
       const orderData = {
+        merchantOrderId: `ORD-${Date.now()}-${Math.floor(Math.random()*10000)}`,
         amount: paymentAmount,
-        customerName: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        pincode: formData.zipCode,
-        country: formData.country,
-        items: cartItems.map(item => ({
-          productId: item.product?._id || item.id,
-          name: item.product?.name || item.name,
-          quantity: item.quantity,
-          price: item.product?.price || item.price,
-          image: getItemImage(item)
-        })),
-        totalAmount: getTotalPrice(),
-        shippingCost: calculateShippingCost(),
-        codExtraCharge: getCodExtraCharge(),
-        finalTotal: getFinalTotal(),
-        paymentMethod: formData.paymentMethod,
-        paymentStatus: formData.paymentMethod === 'cod' ? 'pending_upfront' : 'processing',
-        upfrontAmount: formData.paymentMethod === 'cod' ? codUpfrontAmount : 0,
-        remainingAmount: formData.paymentMethod === 'cod' ? (getFinalTotal() - codUpfrontAmount) : 0,
-        sellerToken: sellerToken,
-        couponCode: appliedCoupon ? appliedCoupon.code : undefined
+        metaInfo: {
+          udf1: `${formData.firstName} ${formData.lastName}`,
+          udf2: formData.email,
+          udf3: formData.phone,
+          udf4: formData.address,
+          udf5: formData.city
+        },
+        redirectUrl: `${window.location.origin}/payment/success` // This will be used by PhonePe to redirect after payment
       };
-
-
 
       // Call backend to create PhonePe order
       const data = await paymentService.initiatePhonePePayment(orderData);
       
-      if (data.success && data.redirectUrl) {
-        
-        // Get PhonePe checkout object
+      if (data.success && data.redirectUrl && data.orderId) {
         try {
           const PhonePeCheckout = await getPhonePeCheckout();
-          
-          // Define callback function for payment completion according to PhonePe documentation
-          const paymentCallback = (response) => {
-            
+          const paymentCallback = async (response) => {
             if (response === 'USER_CANCEL') {
-              // User cancelled the payment
               toast.error('Payment was cancelled by the user.');
               setPaymentProcessing(false);
             } else if (response === 'CONCLUDED') {
-              // Payment process has concluded (success or failure)
-
-              // Redirect to success page for verification
-              setTimeout(() => {
-                window.location.href = `${window.location.origin}/payment/success?orderId=${data.orderId}`;
-              }, 1000);
+              // Check payment status from backend
+              try {
+                const statusData = await paymentService.checkPhonePeStatus(data.orderId);
+                if (statusData.status === 'COMPLETED') {
+                  // Payment successful
+                  toast.success('Payment successful!');
+                  clearCart();
+                  clearSellerToken();
+                  navigate(`/payment/success?orderId=${data.orderId}`);
+                } else {
+                  // Payment not successful
+                  toast.error('Payment not completed. Please try again.');
+                  navigate(`/payment/failure?orderId=${data.orderId}`);
+                }
+              } catch (statusErr) {
+                setError('Could not verify payment status. Please check your order history.');
+                navigate(`/payment/failure?orderId=${data.orderId}`);
+              }
+              setPaymentProcessing(false);
             }
           };
-
-          // Show success message
-
-          
-          // Invoke PhonePe checkout with tokenUrl according to documentation
-          // Based on: https://developer.phonepe.com/v1/reference/initiate-payment-using-js-standard-checkout
-          // The tokenUrl is NOT a regular redirect URL - it's specifically for PhonePeCheckout.transact()
           PhonePeCheckout.transact({ 
             tokenUrl: data.redirectUrl,
             callback: paymentCallback
           });
-          
         } catch (checkoutError) {
-          console.error('PhonePe checkout error:', checkoutError);
-          
-          // If PhonePe checkout fails, show error instead of redirecting manually
           setError('PhonePe checkout failed. Please try again.');
         }
-        
       } else {
         setError(data.message || "Failed to initiate PhonePe payment.");
       }
-      
     } catch (error) {
-      console.error('PhonePe payment error:', error);
       setError(error.message || "Failed to process PhonePe payment.");
     } finally {
       setPaymentProcessing(false);
