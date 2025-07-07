@@ -87,37 +87,45 @@ const PaymentStatus = () => {
   // Place order after payment is successful
   const placeOrderAfterPayment = async () => {
     try {
-      // Build orderData as in Checkout
-      if (!user || !cartItems || cartItems.length === 0) {
-        toast.error('Order cannot be placed: missing cart or user info');
+      // Check if order has already been placed for this payment
+      const orderKey = `order_placed_${orderId || transactionId}`;
+      const orderAlreadyPlaced = localStorage.getItem(orderKey);
+      
+      if (orderAlreadyPlaced === 'true') {
+        console.log('Order already placed for this payment');
+        setOrderPlaced(true);
         return;
       }
-      
+
+      // Check if we have the required data
+      if (!cartItems || cartItems.length === 0) {
+        toast.error('No items in cart to place order');
+        // Redirect to checkout page to place order there
+        navigate('/checkout?paymentSuccess=true&orderId=' + (orderId || transactionId));
+        return;
+      }
+
+      // Check if we have form data
       const formData = savedFormData;
-      const appliedCoupon = savedCoupon;
-      const codUpfrontAmount = savedCodUpfrontAmount;
-      const paymentMethod = 'phonepe';
-      
-      // Validate required fields with fallbacks
-      const customerName = `${formData.firstName || user.name || ''} ${formData.lastName || ''}`.trim();
-      const email = formData.email || user.email;
-      const phone = formData.phone || user.phone;
-      const address = formData.address || user.address;
-      
-      if (!customerName || !email || !phone || !address) {
-        toast.error('Missing required order information. Please contact support.');
+      if (!formData.firstName && !formData.email && !formData.phone) {
+        // If form data is missing, redirect to checkout to place order there
+        navigate('/checkout?paymentSuccess=true&orderId=' + (orderId || transactionId));
         return;
       }
+
+      // Use the same order creation logic as Checkout
+      const appliedCoupon = savedCoupon;
       
+      // Create order data similar to Checkout page
       const orderData = {
-        customerName,
-        email,
-        phone,
-        address,
-        city: formData.city || user.city || '',
-        state: formData.state || user.state || '',
-        pincode: formData.zipCode || user.zipCode || '',
-        country: formData.country || user.country || 'India',
+        customerName: `${formData.firstName || user?.name || ''} ${formData.lastName || ''}`.trim(),
+        email: formData.email || user?.email,
+        phone: formData.phone || user?.phone,
+        address: formData.address || user?.address,
+        city: formData.city || user?.city || '',
+        state: formData.state || user?.state || '',
+        pincode: formData.zipCode || user?.zipCode || '',
+        country: formData.country || user?.country || 'India',
         items: cartItems.map(item => ({
           productId: item.product?._id || item.id,
           name: item.product?.name || item.name,
@@ -126,10 +134,10 @@ const PaymentStatus = () => {
           image: getItemImage(item)
         })),
         totalAmount: getTotalPrice(),
-        shippingCost: 0,
-        codExtraCharge: 0,
+        shippingCost: 0, // No shipping cost for online payment
+        codExtraCharge: 0, // No COD charge for online payment
         finalTotal: getTotalPrice(),
-        paymentMethod,
+        paymentMethod: 'phonepe',
         paymentStatus: 'completed',
         upfrontAmount: 0,
         remainingAmount: 0,
@@ -137,12 +145,24 @@ const PaymentStatus = () => {
         couponCode: appliedCoupon ? appliedCoupon.code : undefined,
         phonepeOrderId: orderDetails?.orderId || orderId,
       };
-      await orderService.createOrder(orderData);
-      setOrderPlaced(true);
-      clearCart();
-      toast.success('Order placed successfully!');
+
+      // Create the order using the same service as Checkout
+      const response = await orderService.createOrder(orderData);
+
+      if (response.success) {
+        // Mark this order as placed to prevent duplicates
+        localStorage.setItem(orderKey, 'true');
+        setOrderPlaced(true);
+        clearCart();
+        toast.success('Order placed successfully!');
+      } else {
+        toast.error(response.message || 'Failed to place order');
+      }
     } catch (err) {
+      console.error('Order placement error:', err);
       toast.error('Failed to place order after payment: ' + (err.message || 'Unknown error'));
+      // If order placement fails, redirect to checkout to try again
+      navigate('/checkout?paymentSuccess=true&orderId=' + (orderId || transactionId));
     }
   };
 

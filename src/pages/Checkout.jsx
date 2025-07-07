@@ -64,6 +64,10 @@ const Checkout = () => {
   const [searchParams] = useSearchParams();
   const { navigateToCart } = useSellerNavigation();
   
+  // Check if we're coming from successful payment
+  const paymentSuccess = searchParams.get('paymentSuccess');
+  const orderId = searchParams.get('orderId');
+  
   // Always set seller token from URL if present (robustness)
   useEffect(() => {
     const urlSellerToken = searchParams.get('seller');
@@ -71,6 +75,14 @@ const Checkout = () => {
       setSellerTokenFromURL(urlSellerToken);
     }
   }, [searchParams, setSellerTokenFromURL]);
+
+  // Handle successful payment redirect
+  useEffect(() => {
+    if (paymentSuccess === 'true' && orderId && cartItems.length > 0) {
+      // Automatically place order for successful payment
+      handleSuccessfulPaymentOrder();
+    }
+  }, [paymentSuccess, orderId, cartItems]);
 
   // Fetch COD upfront amount
   useEffect(() => {
@@ -557,6 +569,73 @@ const Checkout = () => {
       await handlePhonePePayment();
     } else {
       setError("Please select a valid payment method.");
+    }
+  };
+
+  const handleSuccessfulPaymentOrder = async () => {
+    try {
+      // Check if order has already been placed for this payment
+      const orderKey = `order_placed_${orderId}`;
+      const orderAlreadyPlaced = localStorage.getItem(orderKey);
+      
+      if (orderAlreadyPlaced === 'true') {
+        console.log('Order already placed for this payment');
+        toast.success('Order already placed successfully!');
+        clearCart();
+        clearSellerToken();
+        navigate('/');
+        return;
+      }
+
+      setLoading(true);
+      
+      // Create order data for successful payment
+      const orderData = {
+        customerName: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.zipCode,
+        country: formData.country,
+        items: cartItems.map(item => ({
+          productId: item.product?._id || item.id,
+          name: item.product?.name || item.name,
+          quantity: item.quantity,
+          price: item.product?.price || item.price,
+          image: getItemImage(item)
+        })),
+        totalAmount: getTotalPrice(),
+        shippingCost: 0,
+        codExtraCharge: 0,
+        finalTotal: getTotalPrice(),
+        paymentMethod: 'phonepe',
+        paymentStatus: 'completed',
+        upfrontAmount: 0,
+        remainingAmount: 0,
+        sellerToken: sellerToken,
+        couponCode: appliedCoupon ? appliedCoupon.code : undefined,
+        phonepeOrderId: orderId,
+      };
+
+      const response = await orderService.createOrder(orderData);
+
+      if (response.success) {
+        // Mark this order as placed to prevent duplicates
+        localStorage.setItem(orderKey, 'true');
+        toast.success('Order placed successfully!');
+        clearCart();
+        clearSellerToken();
+        navigate('/');
+      } else {
+        toast.error(response.message || 'Failed to place order');
+      }
+    } catch (err) {
+      console.error('Order placement error:', err);
+      toast.error('Failed to place order: ' + (err.message || 'Unknown error'));
+    } finally {
+      setLoading(false);
     }
   };
 
