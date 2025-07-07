@@ -56,7 +56,6 @@ const Account = () => {
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState(() => {
     const initialTab = query.get('tab') || 'overview';
-    console.log('Initial activeTab set to:', initialTab);
     return initialTab;
   });
   const [orders, setOrders] = useState([]);
@@ -70,11 +69,9 @@ const Account = () => {
 
   // Function to handle tab changes and update URL
   const handleTabChange = (tabId) => {
-    console.log('handleTabChange called with:', tabId);
     setActiveTab(tabId);
     // Update URL without reloading the page
     const newUrl = `/account?tab=${tabId}`;
-    console.log('Navigating to:', newUrl);
     navigate(newUrl, { replace: true });
   };
 
@@ -116,9 +113,7 @@ const Account = () => {
 
   useEffect(() => {
     const tab = query.get('tab');
-    console.log('URL changed, tab from query:', tab);
     if (tab) {
-      console.log('Setting active tab to:', tab);
       setActiveTab(tab);
     }
   }, [location.search]);
@@ -144,7 +139,6 @@ const Account = () => {
         throw new Error(data.message || 'No success field in response');
       }
     } catch (error) {
-      console.error('Error fetching orders:', error, error?.response);
       let errorMsg = error?.message || 'Failed to fetch orders';
       if (error?.response?.data?.message) errorMsg = error.response.data.message;
       toast.error(errorMsg);
@@ -159,7 +153,6 @@ const Account = () => {
       await updateQuantity(productId, newQuantity);
       toast.success('Cart updated successfully');
     } catch (error) {
-      console.error('Error updating quantity:', error);
       toast.error('Failed to update cart');
     }
   };
@@ -169,7 +162,6 @@ const Account = () => {
       await removeFromCart(productId);
       toast.success('Item removed from cart');
     } catch (error) {
-      console.error('Error removing item:', error);
       toast.error('Failed to remove item from cart');
     }
   };
@@ -179,7 +171,6 @@ const Account = () => {
       await clearCart();
       toast.success('Cart cleared successfully');
     } catch (error) {
-      console.error('Error clearing cart:', error);
       toast.error('Failed to clear cart');
     }
   };
@@ -270,7 +261,6 @@ const Account = () => {
       await logout();
       navigate('/');
     } catch (error) {
-      console.error('Logout error:', error);
       toast.error('Failed to logout');
     } finally {
       setIsLoggingOut(false);
@@ -650,7 +640,6 @@ const Account = () => {
                               disabled
                               className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
                             />
-                            <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>

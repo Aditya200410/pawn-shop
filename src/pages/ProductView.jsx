@@ -66,7 +66,6 @@ const ProductView = () => {
         setUserReview(null);
       }
     } catch (error) {
-      console.error('Error loading reviews:', error);
       toast.error('Failed to load reviews');
     } finally {
       setReviewsLoading(false);
@@ -93,11 +92,9 @@ const ProductView = () => {
 
         for (const endpoint of endpoints) {
           try {
-            console.log('Trying endpoint:', endpoint);
             const response = await fetch(endpoint);
             
             if (!response.ok) {
-      
               continue;
             }
             
@@ -119,12 +116,10 @@ const ProductView = () => {
                 // Ensure images array exists
                 images: foundProduct.images || [foundProduct.image],
               };
-              console.log('Found product:', foundProduct);
               break;
             }
           } catch (error) {
             fetchError = error;
-    
           }
         }
 
@@ -134,7 +129,6 @@ const ProductView = () => {
 
         setProduct(foundProduct);
       } catch (error) {
-        console.error('Error fetching product:', error);
         setError(error.message || 'Failed to load product details');
         toast.error('Failed to load product details');
       } finally {
@@ -208,34 +202,16 @@ const ProductView = () => {
         })
         .map(img => config.fixImageUrl(img));
       
-      // Debug logging
-      console.log('Product:', product.name);
-      console.log('Original images array:', product.images);
-      console.log('Valid images after filtering:', validImages);
-      console.log('Using images array:', validImages.length > 0);
-      console.log('Fallback image would be:', config.fixImageUrl(product.image));
-      
       // If we have valid images, use them; otherwise fallback to single image
       if (validImages.length > 0) {
-        console.log('✅ Using images array for:', product.name);
         return validImages;
       }
     }
-    
-    // Debug logging for fallback case
-    console.log('Product:', product.name);
-    console.log('No valid images array, using fallback image:', product.image);
-    console.log('❌ Using fallback image for:', product.name);
     
     // Use the single image field as fallback
     const fallbackImage = config.fixImageUrl(product.image);
     return [fallbackImage];
   })();
-
-  // Debug logging to check images
-  console.log('Product:', product.name);
-  console.log('Product images array:', product.images);
-  console.log('Processed productImages:', productImages);
 
   const handleQuantityChange = (value) => {
     if (value >= 1) {
@@ -282,7 +258,6 @@ const ProductView = () => {
       await addToCart(product, quantity);
       toast.success('Added to cart successfully!');
     } catch (error) {
-      console.error('Error adding to cart:', error);
       toast.error('Failed to add to cart');
     }
   };
@@ -329,7 +304,6 @@ const ProductView = () => {
       }
       setIsShareModalOpen(false);
     } catch (error) {
-      console.error('Error sharing:', error);
       toast.error('Failed to share product');
       setIsShareModalOpen(false);
     }
@@ -393,7 +367,6 @@ const ProductView = () => {
                   className="w-full h-full object-cover cursor-pointer"
                   onClick={handleImageClick}
                   onError={e => {
-                    console.log('Image failed to load:', productImages[selectedImage]);
                     e.target.onerror = null;
                     // Try fallback to product.image if different from current image
                     if (productImages[selectedImage] !== config.fixImageUrl(product.image)) {

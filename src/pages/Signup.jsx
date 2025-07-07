@@ -25,19 +25,14 @@ const Signup = () => {
     setError('');
     setIsLoading(true);
 
-    console.log('📝 Form submission started');
-
     // Validation
     if (formData.password !== formData.confirmPassword) {
       const error = 'Passwords do not match';
-      console.error('❌ Validation error:', error);
       setError(error);
       toast.error(error);
       setIsLoading(false);
       return;
     }
-
-    console.log('✅ Form validation passed');
 
     try {
       // Store password temporarily for auto-login after OTP verification
@@ -65,7 +60,6 @@ const Signup = () => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      console.log('✅ Registration successful, OTP sent');
       toast.success('OTP sent to your email!');
       
       // Navigate to OTP verification page with email
@@ -75,7 +69,6 @@ const Signup = () => {
         } 
       });
     } catch (err) {
-      console.error('❌ Signup error:', err);
       const errorMessage = err.message || contextError || 'Failed to create account';
       setError(errorMessage);
       toast.error(errorMessage);

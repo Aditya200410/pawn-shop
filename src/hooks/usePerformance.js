@@ -96,10 +96,8 @@ export const useCachedFetch = (url, options = {}) => {
       setData(result);
     } catch (err) {
       if (err.name === 'AbortError') {
-        console.log('Request was aborted');
         return;
       }
-      console.error('Fetch error:', err);
       setError(err.message);
     } finally {
       setLoading(false);

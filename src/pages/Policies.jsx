@@ -41,7 +41,6 @@ const Policies = () => {
         toast.error('Failed to load policies from server');
       }
     } catch (error) {
-      console.error('Error fetching policies:', error);
       toast.error('Failed to load policies from server');
       setPolicies({});
     } finally {
@@ -315,9 +314,6 @@ const Policies = () => {
                     
                     <div className="bg-white rounded-2xl shadow-xl p-8 border border-pink-100">
                       {(() => {
-                        console.log('Rendering policy for tab:', activeTab);
-                        console.log('Policy data:', policies[activeTab]);
-                        console.log('Policy content:', policies[activeTab].content);
                         return renderContent(policies[activeTab].content);
                       })()}
                     </div>

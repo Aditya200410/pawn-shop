@@ -115,7 +115,6 @@ const Shop = () => {
       }))
     }));
     
-    console.log('Generated dynamic categories:', categories);
     setDynamicCategories(categories);
   };
 

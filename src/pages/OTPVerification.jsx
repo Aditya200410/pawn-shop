@@ -12,18 +12,12 @@ const OTPVerification = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    console.log('🔍 OTP Verification Page Loaded');
-    console.log('📍 Location state:', location.state);
-    console.log('🔧 API Base URL:', config.API_BASE_URL);
-    
     // Get email from location state
     let emailAddress = '';
 
     if (location.state?.email) {
       emailAddress = location.state.email;
-      console.log('📧 Email from location state:', emailAddress);
     } else {
-      console.warn('⚠️ No email address found, redirecting to signup');
       toast.error('Please complete registration first');
       navigate('/signup');
       return;
@@ -31,17 +25,14 @@ const OTPVerification = () => {
 
     if (emailAddress) {
       setEmail(emailAddress);
-      console.log('✅ Email address set:', emailAddress);
     }
   }, [location.state, navigate]);
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-    console.log('🎉 OTP Submission - Email:', email, 'OTP Length:', otp.length);
     
     if (!otp || otp.length !== 6) {
       const error = 'Please enter a valid 6-digit OTP';
-      console.error('❌', error);
       setError(error);
       toast.error(error);
       return;
@@ -83,7 +74,6 @@ const OTPVerification = () => {
       await autoLogin(email);
       
     } catch (err) {
-      console.error('❌ OTP verification error:', err);
       const errorMessage = err.message || 'OTP verification failed. Please try again.';
       setError(errorMessage);
       toast.error(errorMessage);
@@ -141,7 +131,6 @@ const OTPVerification = () => {
       navigate('/');
       
     } catch (err) {
-      console.error('❌ Auto-login error:', err);
       // If auto-login fails, redirect to login page
       toast.error('Registration successful! Please login with your credentials.');
       navigate('/login');
@@ -186,7 +175,6 @@ const OTPVerification = () => {
       setOtp(''); // Clear the OTP input
       
     } catch (err) {
-      console.error('❌ Resend OTP error:', err);
       const errorMessage = err.message || 'Failed to resend OTP';
       setError(errorMessage);
       toast.error(errorMessage);

@@ -8,7 +8,6 @@ class HistoryService {
   async getWithdrawalHistory(params = {}) {
     try {
       const token = localStorage.getItem('seller_jwt');
-      console.log('Getting withdrawal history with token:', token ? 'Token exists' : 'No token');
       
       // Use the withdrawal history endpoint directly
       const response = await axios.get(`${API_BASE_URL}/api/withdrawal/history`, {
@@ -19,7 +18,6 @@ class HistoryService {
         }
       });
       
-      console.log('Withdrawal history response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Get withdrawal history error:', error);
@@ -68,9 +66,6 @@ class HistoryService {
   async getCommissionHistory(params = {}) {
     try {
       const token = localStorage.getItem('seller_jwt');
-      console.log('Getting commission history with token:', token ? 'Token exists' : 'No token');
-      console.log('API URL:', `${API_BASE_URL}/api/commission/history`);
-      console.log('Params:', params);
       
       const response = await axios.get(`${API_BASE_URL}/api/commission/history`, {
         params,
@@ -79,7 +74,6 @@ class HistoryService {
           'Content-Type': 'application/json'
         }
       });
-      console.log('Commission history response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Get commission history error:', error);
@@ -110,7 +104,6 @@ class HistoryService {
   async getCommissionSummary() {
     try {
       const token = localStorage.getItem('seller_jwt');
-      console.log('Getting commission summary with token:', token ? 'Token exists' : 'No token');
       
       const response = await axios.get(`${API_BASE_URL}/api/commission/summary`, {
         headers: {
@@ -118,7 +111,6 @@ class HistoryService {
           'Content-Type': 'application/json'
         }
       });
-      console.log('Commission summary response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Get commission summary error:', error);

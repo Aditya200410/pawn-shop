@@ -84,7 +84,6 @@ const Checkout = () => {
           setCodUpfrontAmount(Number(amount));
         }
       } catch (error) {
-        console.error('Failed to fetch COD upfront amount:', error);
         // Keep default value of 39
       }
     };
@@ -296,8 +295,6 @@ const Checkout = () => {
 
     // For COD orders, we need to collect upfront payment first
     if (codUpfrontAmount > 0) {
-      console.log('COD order with upfront payment - initiating PhonePe payment for upfront amount');
-      
       // Use PhonePe for upfront payment
       await handlePhonePePayment();
       return;
