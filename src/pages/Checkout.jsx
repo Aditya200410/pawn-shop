@@ -332,8 +332,9 @@ const Checkout = () => {
       couponCode: appliedCoupon ? appliedCoupon.code : undefined
     };
 
+    // Save form data to localStorage for potential use
+    localStorage.setItem('checkoutFormData', JSON.stringify(formData));
 
-    
     try {
       const response = await orderService.createOrder(orderData);
 
@@ -407,12 +408,13 @@ const Checkout = () => {
         couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
 
-
-
       // Call backend to create PhonePe order
       const data = await paymentService.initiatePhonePePayment(orderData);
       
       if (data.success && data.redirectUrl) {
+        
+        // Save form data to localStorage for PaymentStatus page
+        localStorage.setItem('checkoutFormData', JSON.stringify(formData));
         
         // Get PhonePe checkout object
         try {
@@ -890,7 +892,7 @@ const Checkout = () => {
                     <div className="flex flex-col gap-4">
                       {!cartLoaded || !formData.paymentMethod ? (
                         <div className="flex items-center justify-center py-4">
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
+                          <div className="animate-spin rounded-full h-6 w-6 border-pink-500"></div>
                           <span className="ml-2 text-gray-600">Loading payment options...</span>
                         </div>
                       ) : isCodAvailableForCart ? (

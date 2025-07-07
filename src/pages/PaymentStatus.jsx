@@ -92,18 +92,31 @@ const PaymentStatus = () => {
         toast.error('Order cannot be placed: missing cart or user info');
         return;
       }
+      
       const formData = savedFormData;
       const appliedCoupon = savedCoupon;
       const codUpfrontAmount = savedCodUpfrontAmount;
       const paymentMethod = 'phonepe';
+      
+      // Validate required fields with fallbacks
+      const customerName = `${formData.firstName || user.name || ''} ${formData.lastName || ''}`.trim();
+      const email = formData.email || user.email;
+      const phone = formData.phone || user.phone;
+      const address = formData.address || user.address;
+      
+      if (!customerName || !email || !phone || !address) {
+        toast.error('Missing required order information. Please contact support.');
+        return;
+      }
+      
       const orderData = {
-        customerName: `${formData.firstName || user.name || ''} ${formData.lastName || ''}`.trim(),
-        email: formData.email || user.email,
-        phone: formData.phone || user.phone,
-        address: formData.address || user.address,
-        city: formData.city || user.city,
-        state: formData.state || user.state,
-        pincode: formData.zipCode || user.zipCode,
+        customerName,
+        email,
+        phone,
+        address,
+        city: formData.city || user.city || '',
+        state: formData.state || user.state || '',
+        pincode: formData.zipCode || user.zipCode || '',
         country: formData.country || user.country || 'India',
         items: cartItems.map(item => ({
           productId: item.product?._id || item.id,
