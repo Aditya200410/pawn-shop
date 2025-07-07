@@ -17,155 +17,37 @@ const PaymentSuccess = () => {
     const { clearCart, clearSellerToken } = useCart();
 
   useEffect(() => {
-    const verifyPayment = async () => {
-      setLoading(true);
-      
-      // Get transaction ID from URL or localStorage
-      const urlParams = new URLSearchParams(window.location.search);
-      const transactionId = urlParams.get('transactionId') || 
-                           urlParams.get('orderId') || 
-                           localStorage.getItem('phonepe_merchant_order_id');
-      
-      const storedOrderData = localStorage.getItem('phonepe_order_data');
-      
-      console.log('PaymentSuccess - Transaction ID:', transactionId);
+    let attempts = 0;
+    let interval;
+    const maxAttempts = 5; // Check up to 5 times (15 seconds)
 
-      
-      if (!transactionId) {
-        setError('No transaction ID found. Please contact support.');
-        setLoading(false);
-        return;
-      }
-
-      // Check if order was already created
-      const orderCreated = localStorage.getItem('order_created_' + transactionId);
-      if (orderCreated === 'true') {
-        console.log('PaymentSuccess - Order already created for transaction:', transactionId);
-        setOrderCreated(true);
-        setStatus({ 
-          success: true, 
-          code: 'PAYMENT_SUCCESS', 
-          data: { 
-            state: 'COMPLETED',
-            message: 'Payment completed successfully'
-          } 
-        });
-        setLoading(false);
-        return;
-      }
-
-      // For COD orders with upfront payment
-      if (storedOrderData) {
-        try {
-          const orderData = JSON.parse(storedOrderData);
-          if (orderData.paymentMethod === 'cod') {
-            console.log('PaymentSuccess - COD order with upfront payment detected');
-            
-            // For COD orders, we need to verify the upfront payment
-            const result = await paymentService.completePaymentFlow(transactionId, orderData);
-            
-            if (result.success) {
-              setOrderCreated(true);
-              localStorage.setItem('order_created_' + transactionId, 'true');
-              
-              // Clear cart and seller token after successful order creation
-              clearCart();
-              clearSellerToken();
-              // Clear stored payment data
-              localStorage.removeItem('phonepe_order_id');
-              localStorage.removeItem('phonepe_merchant_order_id');
-              localStorage.removeItem('phonepe_order_data');
-              localStorage.removeItem('phonepe_redirect_time');
-              
-              toast.success('Order placed successfully!');
-              
-              setStatus({ 
-                success: true, 
-                code: 'PAYMENT_SUCCESS', 
-                data: { 
-                  state: 'COMPLETED',
-                  message: 'Upfront payment successful! Order placed successfully.'
-                },
-                order: result.order
-              });
-            } else {
-              setError(result.message || 'Failed to verify payment and create order.');
-            }
-            
-            setLoading(false);
-            return;
-          }
-        } catch (parseError) {
-          console.error('PaymentSuccess - Error parsing stored order data:', parseError);
-        }
-      }
-
-      // For PhonePe payments, verify payment status
-      console.log('PaymentSuccess - Verifying PhonePe payment...');
-      
+    const pollPaymentStatus = async () => {
+      attempts++;
       try {
-        // Get the PhonePe order ID from URL
-        const phonePeOrderId = urlParams.get('orderId');
-        if (!phonePeOrderId) {
-          setError('PhonePe order ID not found in URL. Please contact support.');
-          setLoading(false);
-          return;
-        }
-        
-        // Fetch order/payment details from backend using orderId
-        let merchantOrderId = null;
-        let statusResult = null;
-        try {
-          statusResult = await paymentService.checkPhonePeStatus(phonePeOrderId);
-          merchantOrderId = statusResult.data?.merchantOrderId || null;
-        } catch (fetchError) {
-          setError('Failed to fetch order/payment details: ' + (fetchError.message || 'Unknown error'));
-          setLoading(false);
-          return;
-        }
-        
-        // Show payment as successful only if state === 'COMPLETED'
-        if (statusResult.data?.state === 'COMPLETED') {
+        const statusResult = await verifyPayment();
+        if (statusResult?.data?.state === 'COMPLETED') {
           setOrderCreated(true);
           clearCart();
           clearSellerToken();
           toast.success('Order Done!');
-        } else {
-          setError('Unknown payment status. Please contact support.');
-        }
-        setStatus(statusResult.data);
-        
-        // If payment is completed and order not yet created, create the order
-        if (statusResult.data?.state === 'COMPLETED' && !orderCreated) {
-          // You may need to reconstruct orderData or fetch it from backend
-          // For now, show a placeholder for order creation logic
-          try {
-            // Example: fetch orderData from backend or reconstruct from statusResult if possible
-            // const orderData = await fetchOrderData(phonePeOrderId);
-            // await paymentService.createOrderAfterPayment(orderData, 'completed');
-            // For demo, just setOrderCreated(true)
-            setOrderCreated(true);
-            clearCart();
-            clearSellerToken();
-            toast.success('Order placed successfully!');
-          } catch (orderError) {
-            setError('Payment was successful but order creation failed. Please contact support.');
-          }
+          setStatus(statusResult.data);
+          setLoading(false);
+          clearInterval(interval);
+        } else if (attempts >= maxAttempts) {
+          setError('Payment not completed. Please try again or contact support.');
+          setLoading(false);
+          clearInterval(interval);
         }
       } catch (error) {
-        console.error('PaymentSuccess - Payment verification failed:', error);
-        setError(error.message || 'Failed to verify payment. Please contact support.');
-        
-        // If order data is missing, provide specific guidance
-        if (!storedOrderData) {
-          setError('Order data not found. Please try placing your order again.');
-        }
+        setError('Error checking payment status.');
+        setLoading(false);
+        clearInterval(interval);
       }
-      
-      setLoading(false);
     };
 
-    verifyPayment();
+    interval = setInterval(pollPaymentStatus, 3000);
+    pollPaymentStatus(); // Initial check
+    return () => clearInterval(interval);
   }, [clearCart, clearSellerToken, orderCreationRetry]);
 
   // Retry mechanism
