@@ -129,11 +129,7 @@ const PaymentSuccess = () => {
           setOrderCreated(true);
           clearCart();
           clearSellerToken();
-          toast.success('Order placed successfully!');
-        } else if (statusResult.data?.state === 'FAILED') {
-          setError('Payment failed. Please try again or contact support.');
-        } else if (statusResult.data?.state === 'PENDING') {
-          setError('Payment is still pending. Please check again later.');
+          toast.success('Order Done!');
         } else {
           setError('Unknown payment status. Please contact support.');
         }

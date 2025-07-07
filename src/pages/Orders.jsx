@@ -138,7 +138,7 @@ export default function Orders() {
                           {order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}
                         </span>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPaymentStatusColor(order.paymentStatus)}`}>
-                          {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
+                          {order.paymentStatus && order.paymentStatus.toUpperCase() === 'COMPLETED' ? 'Order Done' : 'Place Order'}
                         </span>
                       </div>
                     </div>
