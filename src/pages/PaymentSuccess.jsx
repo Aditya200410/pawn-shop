@@ -12,6 +12,7 @@ const PaymentSuccess = () => {
   const [error, setError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
   const [orderCreated, setOrderCreated] = useState(false);
+  const [orderCreationRetry, setOrderCreationRetry] = useState(0);
   const navigate = useNavigate();
     const { clearCart, clearSellerToken } = useCart();
 
@@ -174,8 +175,15 @@ const PaymentSuccess = () => {
           localStorage.removeItem('phonepe_order_data');
           localStorage.removeItem('phonepe_redirect_time');
           toast.success('Order placed successfully!');
+        } else if (result.code === 'ORDER_CREATION_FAILED' && orderCreationRetry < 3) {
+          // Retry order creation up to 3 times
+          setOrderCreationRetry(prev => prev + 1);
+          setTimeout(() => verifyPayment(), 1000);
+          return;
+        } else if (result.code === 'ORDER_CREATION_FAILED') {
+          // Payment was successful but order creation failed after retries
+          setStatus(result);
         } else {
-          // Payment verification failed or transactionId mismatch
           setError('Payment not successful or transaction mismatch. Please contact support.');
         }
         setStatus(result);
@@ -194,7 +202,7 @@ const PaymentSuccess = () => {
     };
 
     verifyPayment();
-  }, [clearCart, clearSellerToken]);
+  }, [clearCart, clearSellerToken, orderCreationRetry]);
 
   // Retry mechanism
   const handleRetry = () => {
@@ -381,7 +389,7 @@ const PaymentSuccess = () => {
         <AlertTriangle size={64} className="text-orange-500 mb-4" />
         <h2 className="text-2xl font-bold mb-2">Payment Successful - Order Issue</h2>
         <p className="text-gray-700 mb-6">
-          {status.message || 'Your payment was successful, but we encountered an issue creating your order. Please contact support with your transaction details.'}
+          Payment was successful, but we could not create your order. Please contact support with your transaction ID.
         </p>
         <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
           <p className="text-orange-800 font-semibold">Transaction ID: {transactionId}</p>
