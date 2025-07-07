@@ -33,7 +33,7 @@ const PaymentStatus = () => {
   const placingOrderRef = useRef(false);
 
   // Get cart and user context
-  const { cartItems, getTotalPrice, clearCart, getItemImage, sellerToken } = useCart();
+  const { cartItems: contextCartItems, getTotalPrice, clearCart, getItemImage, sellerToken } = useCart();
   const { user } = useAuth();
 
   // Try to get form data from localStorage (set in Checkout before payment)
@@ -43,6 +43,10 @@ const PaymentStatus = () => {
 
   const orderId = searchParams.get('orderId');
   const transactionId = searchParams.get('transactionId');
+
+  // Fallback: Load cartItems from localStorage if contextCartItems is empty
+  const localCartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+  const cartItems = (contextCartItems && contextCartItems.length > 0) ? contextCartItems : localCartItems;
 
   useEffect(() => {
     if (!orderId && !transactionId) {
