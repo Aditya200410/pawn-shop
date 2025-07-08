@@ -89,6 +89,16 @@ const PaymentStatus = () => {
     // eslint-disable-next-line
   }, [status]);
 
+  // Add redirect after payment success
+  useEffect(() => {
+    if (status === 'success') {
+      const timer = setTimeout(() => {
+        navigate('/');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [status, navigate]);
+
   const checkPaymentStatus = async () => {
     try {
       setLoading(true);
@@ -352,7 +362,7 @@ const PaymentStatus = () => {
 
       <div className="text-center">
         <p className="text-gray-500 text-sm mb-4">
-          Redirecting to home page in 3 seconds...
+          Redirecting to home page in 5 seconds...
         </p>
         <div className="space-y-3">
           <button

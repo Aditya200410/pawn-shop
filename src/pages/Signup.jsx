@@ -71,7 +71,7 @@ const Signup = () => {
     } catch (err) {
       const errorMessage = err.message || contextError || 'Failed to create account';
       setError(errorMessage);
-      toast.error(errorMessage);
+      
       // Clear temporary data on error
       localStorage.removeItem('tempRegistrationData');
     } finally {
