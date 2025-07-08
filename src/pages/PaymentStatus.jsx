@@ -36,17 +36,35 @@ const PaymentStatus = () => {
   const { cartItems: contextCartItems, getTotalPrice, clearCart, getItemImage, sellerToken } = useCart();
   const { user } = useAuth();
 
-  // Try to get form data from localStorage (set in Checkout before payment)
-  const savedFormData = JSON.parse(localStorage.getItem('checkoutFormData') || '{}');
-  const savedCoupon = JSON.parse(localStorage.getItem('appliedCoupon') || 'null');
+  // Try to get form data and cart from localStorage (set in Checkout before payment)
+  let savedFormData = {};
+  let savedCoupon = null;
+  let savedCartItems = [];
+  try {
+    savedFormData = JSON.parse(localStorage.getItem('checkoutFormData') || '{}') || {};
+  } catch (e) { savedFormData = {}; }
+  try {
+    savedCoupon = JSON.parse(localStorage.getItem('appliedCoupon') || 'null') || JSON.parse(localStorage.getItem('checkoutAppliedCoupon') || 'null');
+  } catch (e) { savedCoupon = null; }
+  try {
+    savedCartItems = JSON.parse(localStorage.getItem('checkoutCartItems') || '[]') || [];
+  } catch (e) { savedCartItems = []; }
+
   const savedCodUpfrontAmount = Number(localStorage.getItem('codUpfrontAmount') || 39);
 
   const orderId = searchParams.get('orderId');
   const transactionId = searchParams.get('transactionId');
 
-  // Fallback: Load cartItems from localStorage if contextCartItems is empty
-  const localCartItems = JSON.parse(localStorage.getItem('cart') || '[]');
-  const cartItems = (contextCartItems && contextCartItems.length > 0) ? contextCartItems : localCartItems;
+  // Use cart from localStorage if contextCartItems is empty
+  const cartItems = (contextCartItems && contextCartItems.length > 0) ? contextCartItems : savedCartItems;
+
+  // Helper to calculate total with coupon
+  const getFinalTotal = () => {
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.product?.price || item.price) * item.quantity, 0);
+    const discount = savedCoupon && typeof savedCoupon.discountAmount === 'number' ? savedCoupon.discountAmount : 0;
+    const total = subtotal - discount;
+    return total > 0 ? total : 0;
+  };
 
   useEffect(() => {
     if (!orderId && !transactionId) {
@@ -98,22 +116,47 @@ const PaymentStatus = () => {
       }
 
       // Check if we have the required data
-      if (!cartItems || cartItems.length === 0) {
+      if (!orderId && !transactionId) {
+        toast.error('Missing payment/order ID. Cannot place order.');
+        // Clear persisted data
+        localStorage.removeItem('checkoutFormData');
+        localStorage.removeItem('checkoutCartItems');
+        localStorage.removeItem('appliedCoupon');
+        localStorage.removeItem('checkoutAppliedCoupon');
+        setError('Missing payment/order ID. Please try again.');
+        return;
+      }
+      if (!Array.isArray(cartItems) || cartItems.length === 0) {
         toast.error('No items in cart to place order');
+        // Clear persisted data
+        localStorage.removeItem('checkoutFormData');
+        localStorage.removeItem('checkoutCartItems');
+        localStorage.removeItem('appliedCoupon');
+        localStorage.removeItem('checkoutAppliedCoupon');
         // Redirect to checkout page to place order there
         navigate('/checkout?paymentSuccess=true&orderId=' + (orderId || transactionId));
         return;
       }
 
-      // Check if we have form data
+      // Check if we have form data and all required fields
       const formData = savedFormData;
-      if (!formData.firstName && !formData.email && !formData.phone) {
-        // If form data is missing, redirect to checkout to place order there
+      const requiredFields = [
+        'firstName', 'lastName', 'email', 'phone', 'address', 'city', 'state', 'zipCode', 'country'
+      ];
+      const missingFields = requiredFields.filter(f => !formData[f] || String(formData[f]).trim() === '');
+      if (missingFields.length > 0) {
+        toast.error('Missing required info: ' + missingFields.join(', '));
+        // Clear persisted data
+        localStorage.removeItem('checkoutFormData');
+        localStorage.removeItem('checkoutCartItems');
+        localStorage.removeItem('appliedCoupon');
+        localStorage.removeItem('checkoutAppliedCoupon');
+        // Redirect to checkout to fix
         navigate('/checkout?paymentSuccess=true&orderId=' + (orderId || transactionId));
         return;
       }
 
-      // Use the same order creation logic as Checkout
+      // Use the same order creation logic as Checkout page
       const appliedCoupon = savedCoupon;
       
       // Create order data similar to Checkout page
@@ -133,10 +176,10 @@ const PaymentStatus = () => {
           price: item.product?.price || item.price,
           image: getItemImage(item)
         })),
-        totalAmount: getTotalPrice(),
+        totalAmount: getFinalTotal(),
         shippingCost: 0, // No shipping cost for online payment
         codExtraCharge: 0, // No COD charge for online payment
-        finalTotal: getTotalPrice(),
+        finalTotal: getFinalTotal(),
         paymentMethod: 'phonepe',
         paymentStatus: 'completed',
         upfrontAmount: 0,
@@ -154,13 +197,28 @@ const PaymentStatus = () => {
         localStorage.setItem(orderKey, 'true');
         setOrderPlaced(true);
         clearCart();
+        // Clear persisted checkout data after order placed
+        localStorage.removeItem('checkoutFormData');
+        localStorage.removeItem('checkoutCartItems');
+        localStorage.removeItem('appliedCoupon');
+        localStorage.removeItem('checkoutAppliedCoupon');
         toast.success('Order placed successfully!');
       } else {
         toast.error(response.message || 'Failed to place order');
+        // Clear persisted data on error
+        localStorage.removeItem('checkoutFormData');
+        localStorage.removeItem('checkoutCartItems');
+        localStorage.removeItem('appliedCoupon');
+        localStorage.removeItem('checkoutAppliedCoupon');
       }
     } catch (err) {
       console.error('Order placement error:', err);
       toast.error('Failed to place order after payment: ' + (err.message || 'Unknown error'));
+      // Clear persisted data on error
+      localStorage.removeItem('checkoutFormData');
+      localStorage.removeItem('checkoutCartItems');
+      localStorage.removeItem('appliedCoupon');
+      localStorage.removeItem('checkoutAppliedCoupon');
       // If order placement fails, redirect to checkout to try again
       navigate('/checkout?paymentSuccess=true&orderId=' + (orderId || transactionId));
     }

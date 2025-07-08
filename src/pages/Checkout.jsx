@@ -226,6 +226,26 @@ const Checkout = () => {
     }
   }, [cartLoaded, cartItems, isCodAvailableForCart]);
 
+  // Restore cartItems and formData from localStorage if missing (for payment success redirect)
+  useEffect(() => {
+    if ((cartItems.length === 0 || !cartItems) && localStorage.getItem('checkoutCartItems')) {
+      try {
+        const savedCart = JSON.parse(localStorage.getItem('checkoutCartItems'));
+        if (Array.isArray(savedCart) && savedCart.length > 0 && typeof setCartItems === 'function') {
+          setCartItems(savedCart);
+        }
+      } catch (e) { /* ignore */ }
+    }
+    if (!formData.phone && localStorage.getItem('checkoutFormData')) {
+      try {
+        const savedForm = JSON.parse(localStorage.getItem('checkoutFormData'));
+        if (savedForm && typeof savedForm === 'object') {
+          setFormData(prev => ({ ...prev, ...savedForm }));
+        }
+      } catch (e) { /* ignore */ }
+    }
+  }, []);
+
   const validateForm = () => {
     const errors = {};
     const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'state', 'zipCode'];
@@ -284,7 +304,9 @@ const Checkout = () => {
     const subtotal = getTotalPrice();
     const shipping = calculateShippingCost();
     const codExtra = getCodExtraCharge();
-    return subtotal + shipping + codExtra;
+    // Use discounted price if coupon is applied
+    const discountedSubtotal = appliedCoupon ? appliedCoupon.finalPrice : subtotal;
+    return discountedSubtotal + shipping + codExtra;
   };
 
   // Calculate amount to be paid online (for COD: only 39 rupees upfront, for online: full amount)
@@ -292,7 +314,7 @@ const Checkout = () => {
     if (formData.paymentMethod === 'cod') {
       return getCodExtraCharge(); // Only 39 rupees for COD upfront
     } else {
-      return getFinalTotal(); // Full amount for online payment
+      return getFinalTotal(); // Full amount for online payment (discounted if coupon applied)
     }
   };
 
@@ -332,7 +354,7 @@ const Checkout = () => {
         price: item.product?.price || item.price,
         image: getItemImage(item)
       })),
-      totalAmount: getTotalPrice(),
+      totalAmount: appliedCoupon ? appliedCoupon.finalPrice : getTotalPrice(),
       shippingCost: calculateShippingCost(),
       codExtraCharge: getCodExtraCharge(),
       finalTotal: getFinalTotal(),
@@ -354,6 +376,9 @@ const Checkout = () => {
         toast.success('Order placed successfully! Pay on delivery.');
         clearCart();
         clearSellerToken();
+        // Clear persisted data after order placed
+        localStorage.removeItem('checkoutFormData');
+        localStorage.removeItem('checkoutCartItems');
         navigate('/account?tab=orders');
       } else {
         setError(response.message || "Failed to create order. Please try again.");
@@ -392,7 +417,7 @@ const Checkout = () => {
 
       // Prepare order data according to PhonePe API requirements
       const orderData = {
-        amount: paymentAmount,
+        amount: getOnlinePaymentAmount(), // Use discounted amount if coupon applied
         customerName: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phone,
@@ -408,7 +433,7 @@ const Checkout = () => {
           price: item.product?.price || item.price,
           image: getItemImage(item)
         })),
-        totalAmount: getTotalPrice(),
+        totalAmount: appliedCoupon ? appliedCoupon.finalPrice : getTotalPrice(),
         shippingCost: calculateShippingCost(),
         codExtraCharge: getCodExtraCharge(),
         finalTotal: getFinalTotal(),
@@ -427,6 +452,7 @@ const Checkout = () => {
         
         // Save form data to localStorage for PaymentStatus page
         localStorage.setItem('checkoutFormData', JSON.stringify(formData));
+        localStorage.setItem('checkoutCartItems', JSON.stringify(cartItems));
         
         // Get PhonePe checkout object
         try {
@@ -583,6 +609,9 @@ const Checkout = () => {
         toast.success('Order already placed successfully!');
         clearCart();
         clearSellerToken();
+        // Clear persisted data after order placed
+        localStorage.removeItem('checkoutFormData');
+        localStorage.removeItem('checkoutCartItems');
         navigate('/');
         return;
       }
@@ -606,10 +635,10 @@ const Checkout = () => {
           price: item.product?.price || item.price,
           image: getItemImage(item)
         })),
-        totalAmount: getTotalPrice(),
+        totalAmount: appliedCoupon ? appliedCoupon.finalPrice : getTotalPrice(),
         shippingCost: 0,
         codExtraCharge: 0,
-        finalTotal: getTotalPrice(),
+        finalTotal: getFinalTotal(),
         paymentMethod: 'phonepe',
         paymentStatus: 'completed',
         upfrontAmount: 0,
@@ -627,6 +656,9 @@ const Checkout = () => {
         toast.success('Order placed successfully!');
         clearCart();
         clearSellerToken();
+        // Clear persisted data after order placed
+        localStorage.removeItem('checkoutFormData');
+        localStorage.removeItem('checkoutCartItems');
         navigate('/');
       } else {
         toast.error(response.message || 'Failed to place order');
