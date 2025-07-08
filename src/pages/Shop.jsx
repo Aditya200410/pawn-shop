@@ -249,234 +249,87 @@ const Shop = () => {
             <Loader size="large" text="Loading products..." />
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-            {/* Filters - Desktop */}
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="hidden md:block w-64 space-y-6"
-            >
-              {/* Categories Filter */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Categories</h3>
-                <div className="space-y-2">
-                  {dynamicCategories.map((category) => (
-                    <div key={category.name}>
-                      <button
-                        onClick={() => {
-                          handleCategoryClick(category.name);
-                          if (category.submenu?.length > 0) {
-                            toggleCategory(category.name);
-                          }
-                        }}
-                        className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
-                          isCategorySelected(category.name) 
-                            ? 'bg-pink-600 text-white shadow-md' 
-                            : 'text-gray-600 hover:bg-gray-50'
-                        }`}
-                      >
-                        <span>{category.name}</span>
-                        {category.submenu?.length > 0 && (
-                          <svg
-                            className={`w-4 h-4 transform transition-transform duration-300 ${
-                              expandedCategories[category.name] ? 'rotate-180' : ''
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        )}
-                      </button>
-                      <AnimatePresence>
-                      {expandedCategories[category.name] && category.submenu && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="ml-4 mt-2 space-y-2 overflow-hidden"
-                          >
-                          {category.submenu.map((sub) => (
-                            <div key={sub.name}>
-                              <button
-                                onClick={() => {
-                                  handleCategoryClick(category.name, sub.name);
-                                  if (sub.items?.length > 0) {
-                                    toggleCategory(sub.name);
-                                  }
-                                }}
-                                  className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
-                                    isCategorySelected(category.name, sub.name) 
-                                      ? 'bg-pink-600 text-white shadow-md' 
-                                      : 'text-gray-600 hover:bg-gray-50'
-                                }`}
-                              >
-                                <span>{sub.name}</span>
-                                {sub.items?.length > 0 && (
-                                  <svg
-                                      className={`w-4 h-4 transform transition-transform duration-300 ${
-                                      expandedCategories[sub.name] ? 'rotate-180' : ''
-                                    }`}
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                )}
-                              </button>
-                                <AnimatePresence>
-                              {expandedCategories[sub.name] && sub.items && (
-                                    <motion.div
-                                      initial={{ opacity: 0, height: 0 }}
-                                      animate={{ opacity: 1, height: 'auto' }}
-                                      exit={{ opacity: 0, height: 0 }}
-                                      transition={{ duration: 0.3 }}
-                                      className="ml-4 mt-2 space-y-2 overflow-hidden"
-                                    >
-                                  {sub.items.map((item) => (
-                                    <button
-                                      key={item}
-                                      onClick={() => handleCategoryClick(category.name, sub.name, item)}
-                                          className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 ${
-                                            isCategorySelected(category.name, sub.name, item) 
-                                              ? 'bg-pink-600 text-white shadow-md' 
-                                              : 'text-gray-600 hover:bg-gray-50'
-                                        }`}
-                                    >
-                                      {item}
-                                    </button>
-                                  ))}
-                                    </motion.div>
-                              )}
-                                </AnimatePresence>
-                            </div>
-                          ))}
-                          </motion.div>
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+          {/* Filters - Desktop */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="hidden md:block w-64 space-y-6"
+          >
+            {/* Categories Filter */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Categories</h3>
+              <div className="space-y-2">
+                {dynamicCategories.map((category) => (
+                  <div key={category.name}>
+                    <button
+                      onClick={() => {
+                        handleCategoryClick(category.name);
+                        if (category.submenu?.length > 0) {
+                          toggleCategory(category.name);
+                        }
+                      }}
+                      className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
+                        isCategorySelected(category.name) 
+                          ? 'bg-pink-600 text-white shadow-md' 
+                          : 'text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span>{category.name}</span>
+                      {category.submenu?.length > 0 && (
+                        <svg
+                          className={`w-4 h-4 transform transition-transform duration-300 ${
+                            expandedCategories[category.name] ? 'rotate-180' : ''
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
                       )}
-                      </AnimatePresence>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price Range Filter */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Price Range</h3>
-                <Slider
-                  value={priceRange}
-                  onChange={handlePriceChange}
-                  valueLabelDisplay="auto"
-                  min={0}
-                  max={maxPrice}
-                  className="text-pink-600"
-                />
-                <div className="flex justify-between mt-2">
-                  <span className="text-sm text-gray-600">₹{priceRange[0].toLocaleString()}</span>
-                  <span className="text-sm text-gray-600">₹{priceRange[1].toLocaleString()}</span>
-                </div>
-              </div>
-
-              {/* Sort By Filter */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Sort By</h3>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent transition-all duration-300"
-                >
-                  <option value="popularity">Popularity</option>
-                  <option value="latest">Latest</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="alphabetical">Alphabetical</option>
-                </select>
-              </div>
-
-              {/* Clear Filters Button */}
-              {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < maxPrice || sortBy !== 'popularity') && (
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setSelectedCategories({ main: null, sub: null, item: null });
-                    setPriceRange([0, maxPrice]);
-                    setSortBy('popularity');
-                  }}
-                  className="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300 shadow-sm"
-                >
-                  Clear All Filters
-                </motion.button>
-              )}
-            </motion.div>
-
-            {/* Mobile Filters Sidebar */}
-            <AnimatePresence>
-              {isMobileFiltersOpen && (
-                <>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
-                    onClick={() => setIsMobileFiltersOpen(false)}
-                  />
-                  <motion.div
-                    initial={{ x: '100%' }}
-                    animate={{ x: 0 }}
-                    exit={{ x: '100%' }}
-                    transition={{ type: 'spring', damping: 20 }}
-                    className="fixed right-0 top-0 h-full w-80 bg-white z-50 p-6 overflow-y-auto md:hidden"
-                  >
-                    <div className="flex justify-between items-center mb-6">
-                      <h2 className="text-xl font-semibold">Filters</h2>
-                      <button
-                        onClick={() => setIsMobileFiltersOpen(false)}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                      >
-                        <XMarkIcon className="h-6 w-6" />
-                      </button>
-                    </div>
-                    {/* Mobile Filters Content */}
-                    <div className="space-y-6">
-                      {/* Categories Filter */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
-                        <div className="space-y-2">
-                          {dynamicCategories.map((category) => (
-                            <div key={category.name}>
-                              <button
-                                onClick={() => {
-                                  handleCategoryClick(category.name);
-                                  if (category.submenu?.length > 0) {
-                                    toggleCategory(category.name);
-                                  }
-                                }}
+                    </button>
+                    <AnimatePresence>
+                    {expandedCategories[category.name] && category.submenu && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="ml-4 mt-2 space-y-2 overflow-hidden"
+                        >
+                        {category.submenu.map((sub) => (
+                          <div key={sub.name}>
+                            <button
+                              onClick={() => {
+                                handleCategoryClick(category.name, sub.name);
+                                if (sub.items?.length > 0) {
+                                  toggleCategory(sub.name);
+                                }
+                              }}
                                 className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
-                                  isCategorySelected(category.name) 
+                                  isCategorySelected(category.name, sub.name) 
                                     ? 'bg-pink-600 text-white shadow-md' 
                                     : 'text-gray-600 hover:bg-gray-50'
-                                }`}
-                              >
-                                <span>{category.name}</span>
-                                {category.submenu?.length > 0 && (
-                                  <svg
+                              }`}
+                            >
+                              <span>{sub.name}</span>
+                              {sub.items?.length > 0 && (
+                                <svg
                                     className={`w-4 h-4 transform transition-transform duration-300 ${
-                                      expandedCategories[category.name] ? 'rotate-180' : ''
-                                    }`}
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                )}
-                              </button>
+                                    expandedCategories[sub.name] ? 'rotate-180' : ''
+                                  }`}
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              )}
+                            </button>
                               <AnimatePresence>
-                                {expandedCategories[category.name] && category.submenu && (
+                            {expandedCategories[sub.name] && sub.items && (
                                   <motion.div
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
@@ -484,181 +337,328 @@ const Shop = () => {
                                     transition={{ duration: 0.3 }}
                                     className="ml-4 mt-2 space-y-2 overflow-hidden"
                                   >
-                                    {category.submenu.map((sub) => (
-                                      <div key={sub.name}>
-                                        <button
-                                          onClick={() => {
-                                            handleCategoryClick(category.name, sub.name);
-                                            if (sub.items?.length > 0) {
-                                              toggleCategory(sub.name);
-                                            }
-                                          }}
-                                          className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
-                                            isCategorySelected(category.name, sub.name) 
-                                              ? 'bg-pink-600 text-white shadow-md' 
-                                              : 'text-gray-600 hover:bg-gray-50'
-                                          }`}
-                                        >
-                                          <span>{sub.name}</span>
-                                          {sub.items?.length > 0 && (
-                                            <svg
-                                              className={`w-4 h-4 transform transition-transform duration-300 ${
-                                                expandedCategories[sub.name] ? 'rotate-180' : ''
-                                              }`}
-                                              fill="none"
-                                              stroke="currentColor"
-                                              viewBox="0 0 24 24"
-                                            >
-                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                            </svg>
-                                          )}
-                                        </button>
-                                        <AnimatePresence>
-                                          {expandedCategories[sub.name] && sub.items && (
-                                            <motion.div
-                                              initial={{ opacity: 0, height: 0 }}
-                                              animate={{ opacity: 1, height: 'auto' }}
-                                              exit={{ opacity: 0, height: 0 }}
-                                              transition={{ duration: 0.3 }}
-                                              className="ml-4 mt-2 space-y-2 overflow-hidden"
-                                            >
-                                              {sub.items.map((item) => (
-                                                <button
-                                                  key={item}
-                                                  onClick={() => handleCategoryClick(category.name, sub.name, item)}
-                                                  className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 ${
-                                                    isCategorySelected(category.name, sub.name, item) 
-                                                      ? 'bg-pink-600 text-white shadow-md' 
-                                                      : 'text-gray-600 hover:bg-gray-50'
-                                                  }`}
-                                                >
-                                                  {item}
-                                                </button>
-                                              ))}
-                                            </motion.div>
-                                          )}
-                                        </AnimatePresence>
-                                      </div>
-                                    ))}
+                                {sub.items.map((item) => (
+                                  <button
+                                    key={item}
+                                    onClick={() => handleCategoryClick(category.name, sub.name, item)}
+                                        className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 ${
+                                          isCategorySelected(category.name, sub.name, item) 
+                                            ? 'bg-pink-600 text-white shadow-md' 
+                                            : 'text-gray-600 hover:bg-gray-50'
+                                    }`}
+                                  >
+                                    {item}
+                                  </button>
+                                ))}
                                   </motion.div>
-                                )}
+                            )}
                               </AnimatePresence>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Price Range Filter */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Price Range</h3>
-                        <Slider
-                          value={priceRange}
-                          onChange={handlePriceChange}
-                          valueLabelDisplay="auto"
-                          min={0}
-                          max={maxPrice}
-                          className="text-pink-600"
-                        />
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-600">₹{priceRange[0].toLocaleString()}</span>
-                          <span className="text-sm text-gray-600">₹{priceRange[1].toLocaleString()}</span>
-                        </div>
-                      </div>
-
-                      {/* Sort By Filter */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Sort By</h3>
-                        <select
-                          value={sortBy}
-                          onChange={(e) => setSortBy(e.target.value)}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent transition-all duration-300"
-                        >
-                          <option value="popularity">Popularity</option>
-                          <option value="latest">Latest</option>
-                          <option value="price-low">Price: Low to High</option>
-                          <option value="price-high">Price: High to Low</option>
-                          <option value="alphabetical">Alphabetical</option>
-                        </select>
-                      </div>
-
-                      {/* Clear Filters Button */}
-                      {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < maxPrice || sortBy !== 'popularity') && (
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => {
-                            setSelectedCategories({ main: null, sub: null, item: null });
-                            setPriceRange([0, maxPrice]);
-                            setSortBy('popularity');
-                          }}
-                          className="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300 shadow-sm"
-                        >
-                          Clear All Filters
-                        </motion.button>
-                      )}
-                    </div>
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-
-            {/* Products Grid */}
-            <div className="flex-1">
-              {error ? (
-                <div className="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100">
-                  <svg className="w-12 h-12 text-red-500 mb-4" fill="none" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path fill="currentColor" d="M15 9l-6 6m0-6l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span className="text-lg text-red-600">{error}</span>
-                </div>
-              ) : filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                  {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100"
-                >
-                  <svg
-                    className="w-16 h-16 text-gray-400 mb-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No Products Available</h3>
-                  <p className="text-gray-600 text-center mb-6">
-                    {selectedCategories.main
-                      ? "No products found matching your selected filters. Try adjusting your filters or browse other categories."
-                      : "No products found in this category. Please check back later or browse other categories."}
-                  </p>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      setSelectedCategories({ main: null, sub: null, item: null });
-                      setPriceRange([0, 100000]);
-                      setSortBy('popularity');
-                    }}
-                    className="px-6 py-3 bg-pink-600 text-white rounded-xl hover:bg-pink-700 transition-colors shadow-lg"
-                  >
-                    Clear All Filters
-                  </motion.button>
-                </motion.div>
-              )}
+                          </div>
+                        ))}
+                        </motion.div>
+                    )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {/* Price Range Filter */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Price Range</h3>
+              <Slider
+                value={priceRange}
+                onChange={handlePriceChange}
+                valueLabelDisplay="auto"
+                min={0}
+                max={maxPrice}
+                className="text-pink-600"
+              />
+              <div className="flex justify-between mt-2">
+                <span className="text-sm text-gray-600">₹{priceRange[0].toLocaleString()}</span>
+                <span className="text-sm text-gray-600">₹{priceRange[1].toLocaleString()}</span>
+              </div>
+            </div>
+
+            {/* Sort By Filter */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Sort By</h3>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent transition-all duration-300"
+              >
+                <option value="popularity">Popularity</option>
+                <option value="latest">Latest</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="alphabetical">Alphabetical</option>
+              </select>
+            </div>
+
+            {/* Clear Filters Button */}
+            {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < maxPrice || sortBy !== 'popularity') && (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  setSelectedCategories({ main: null, sub: null, item: null });
+                  setPriceRange([0, maxPrice]);
+                  setSortBy('popularity');
+                }}
+                className="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300 shadow-sm"
+              >
+                Clear All Filters
+              </motion.button>
+            )}
+          </motion.div>
+
+          {/* Mobile Filters Sidebar */}
+          <AnimatePresence>
+            {isMobileFiltersOpen && (
+              <>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                  onClick={() => setIsMobileFiltersOpen(false)}
+                />
+                <motion.div
+                  initial={{ x: '100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '100%' }}
+                  transition={{ type: 'spring', damping: 20 }}
+                  className="fixed right-0 top-0 h-full w-80 bg-white z-50 p-6 overflow-y-auto md:hidden"
+                >
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Filters</h2>
+                    <button
+                      onClick={() => setIsMobileFiltersOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <XMarkIcon className="h-6 w-6" />
+                    </button>
+                  </div>
+                  {/* Mobile Filters Content */}
+                  <div className="space-y-6">
+                    {/* Categories Filter */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
+                      <div className="space-y-2">
+                        {dynamicCategories.map((category) => (
+                          <div key={category.name}>
+                            <button
+                              onClick={() => {
+                                handleCategoryClick(category.name);
+                                if (category.submenu?.length > 0) {
+                                  toggleCategory(category.name);
+                                }
+                              }}
+                              className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
+                                isCategorySelected(category.name) 
+                                  ? 'bg-pink-600 text-white shadow-md' 
+                                  : 'text-gray-600 hover:bg-gray-50'
+                              }`}
+                            >
+                              <span>{category.name}</span>
+                              {category.submenu?.length > 0 && (
+                                <svg
+                                  className={`w-4 h-4 transform transition-transform duration-300 ${
+                                    expandedCategories[category.name] ? 'rotate-180' : ''
+                                  }`}
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              )}
+                            </button>
+                            <AnimatePresence>
+                              {expandedCategories[category.name] && category.submenu && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={{ duration: 0.3 }}
+                                  className="ml-4 mt-2 space-y-2 overflow-hidden"
+                                >
+                                  {category.submenu.map((sub) => (
+                                    <div key={sub.name}>
+                                      <button
+                                        onClick={() => {
+                                          handleCategoryClick(category.name, sub.name);
+                                          if (sub.items?.length > 0) {
+                                            toggleCategory(sub.name);
+                                          }
+                                        }}
+                                        className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
+                                          isCategorySelected(category.name, sub.name) 
+                                            ? 'bg-pink-600 text-white shadow-md' 
+                                            : 'text-gray-600 hover:bg-gray-50'
+                                        }`}
+                                      >
+                                        <span>{sub.name}</span>
+                                        {sub.items?.length > 0 && (
+                                          <svg
+                                            className={`w-4 h-4 transform transition-transform duration-300 ${
+                                              expandedCategories[sub.name] ? 'rotate-180' : ''
+                                            }`}
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                          </svg>
+                                        )}
+                                      </button>
+                                      <AnimatePresence>
+                                        {expandedCategories[sub.name] && sub.items && (
+                                          <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="ml-4 mt-2 space-y-2 overflow-hidden"
+                                          >
+                                            {sub.items.map((item) => (
+                                              <button
+                                                key={item}
+                                                onClick={() => handleCategoryClick(category.name, sub.name, item)}
+                                                className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 ${
+                                                  isCategorySelected(category.name, sub.name, item) 
+                                                    ? 'bg-pink-600 text-white shadow-md' 
+                                                    : 'text-gray-600 hover:bg-gray-50'
+                                                }`}
+                                              >
+                                                {item}
+                                              </button>
+                                            ))}
+                                          </motion.div>
+                                        )}
+                                      </AnimatePresence>
+                                    </div>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Price Range Filter */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Price Range</h3>
+                      <Slider
+                        value={priceRange}
+                        onChange={handlePriceChange}
+                        valueLabelDisplay="auto"
+                        min={0}
+                        max={maxPrice}
+                        className="text-pink-600"
+                      />
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">₹{priceRange[0].toLocaleString()}</span>
+                        <span className="text-sm text-gray-600">₹{priceRange[1].toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    {/* Sort By Filter */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Sort By</h3>
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent transition-all duration-300"
+                      >
+                        <option value="popularity">Popularity</option>
+                        <option value="latest">Latest</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="alphabetical">Alphabetical</option>
+                      </select>
+                    </div>
+
+                    {/* Clear Filters Button */}
+                    {(selectedCategories.main || priceRange[0] > 0 || priceRange[1] < maxPrice || sortBy !== 'popularity') && (
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          setSelectedCategories({ main: null, sub: null, item: null });
+                          setPriceRange([0, maxPrice]);
+                          setSortBy('popularity');
+                        }}
+                        className="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300 shadow-sm"
+                      >
+                        Clear All Filters
+                      </motion.button>
+                    )}
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+
+          {/* Products Grid */}
+          <div className="flex-1">
+              {error ? (
+              <div className="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100">
+                <svg className="w-12 h-12 text-red-500 mb-4" fill="none" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path fill="currentColor" d="M15 9l-6 6m0-6l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="text-lg text-red-600">{error}</span>
+              </div>
+            ) : filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100"
+              >
+                <svg
+                  className="w-16 h-16 text-gray-400 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No Products Available</h3>
+                <p className="text-gray-600 text-center mb-6">
+                  {selectedCategories.main
+                    ? "No products found matching your selected filters. Try adjusting your filters or browse other categories."
+                    : "No products found in this category. Please check back later or browse other categories."}
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setSelectedCategories({ main: null, sub: null, item: null });
+                    setPriceRange([0, 100000]);
+                    setSortBy('popularity');
+                  }}
+                  className="px-6 py-3 bg-pink-600 text-white rounded-xl hover:bg-pink-700 transition-colors shadow-lg"
+                >
+                  Clear All Filters
+                </motion.button>
+              </motion.div>
+            )}
           </div>
+        </div>
         )}
       </div>
     </div>

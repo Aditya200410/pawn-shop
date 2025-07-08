@@ -140,12 +140,8 @@ const SellerProfile = () => {
       const summaryData = await historyService.getCommissionSummary();
       setCommissionSummary(summaryData || {});
     } catch (error) {
-      console.error('Failed to load history data:', error);
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        response: error.response?.data
-      });
+     
+      
       toast.error(`Failed to load history data: ${error.message}`);
     } finally {
       setHistoryLoading(false);
@@ -234,7 +230,7 @@ const SellerProfile = () => {
         }
       }
     } catch (error) {
-      console.error('Error checking withdrawal updates:', error);
+     
     }
   };
 
@@ -305,7 +301,7 @@ const SellerProfile = () => {
         }
       }
     } catch (error) {
-      console.error('Error checking commission updates:', error);
+      
     }
   };
 
@@ -362,21 +358,15 @@ const SellerProfile = () => {
   }, [showNotifications]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader fullScreen={true} text="Loading profile..." />;
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-white p-8 rounded-xl shadow-xl border border-red-200 text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
-          <p className="text-gray-700 mb-6">{error}</p>
-          <button onClick={() => window.location.reload()} className="px-6 py-3 bg-pink-500 text-white rounded-xl hover:bg-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl">Reload</button>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <h2 className="text-2xl font-bold text-red-600 mb-2">Login Error</h2>
+        <p className="text-gray-700 mb-4">{error}</p>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Reload</button>
       </div>
     );
   }
@@ -485,7 +475,7 @@ const SellerProfile = () => {
         }, 200);
       });
     } catch (error) {
-      console.error('Error downloading poster:', error);
+     
       toast.error('Failed to download poster');
     }
   };
