@@ -51,10 +51,23 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const registerWithPhone = async (userData) => {
+        try {
+            setError(null);
+            const data = await authService.registerWithPhone(userData);
+            setUser(data.user);
+            return data;
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        }
+    };
+
     const logout = () => {
         authService.logout();
         setUser(null);
     };
+    
 
     const updateProfile = async (userData) => {
         try {
@@ -86,6 +99,7 @@ export const AuthProvider = ({ children }) => {
         error,
         login,
         register,
+        registerWithPhone,
         logout,
         updateProfile,
         forgotPassword,

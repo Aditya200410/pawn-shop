@@ -44,7 +44,7 @@ export default function ContactPage() {
                 M/S Srejonee Art & Creations<br />
                 623 Active Business Park<br />
                 54/10 D C Dey Road<br />
-                Tangra, Kolkata – 700015<br />
+                Tangra, Kolkata – 808015<br />
                 West Bengal, India
               </p>
             </div>

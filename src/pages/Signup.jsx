@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, registerWithPhone } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -17,31 +17,69 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [usePhone, setUsePhone] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [showPhoneSignup, setShowPhoneSignup] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
-      });
-      toast.success('Account created successfully! Please sign in.');
-      navigate('/login');
-    } catch (err) {
-      setError(err.message || 'Failed to create account');
-      toast.error(err.message || 'Failed to create account');
-    } finally {
-      setIsLoading(false);
+    if (showPhoneSignup) {
+      // Phone signup flow
+      if (!formData.name || !phone || !formData.password || !formData.confirmPassword) {
+        setError('Name, phone, and password are required');
+        setIsLoading(false);
+        return;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        setError('Passwords do not match');
+        setIsLoading(false);
+        return;
+      }
+      try {
+        // Always send phone with '91' prefix
+        let formattedPhone = phone.startsWith('91') ? phone : '91' + phone;
+        await registerWithPhone({
+          name: formData.name,
+          phone: formattedPhone,
+          password: formData.password
+        });
+        toast.success('Account created successfully! Please sign in.');
+        navigate('/login');
+      } catch (err) {
+        setError(err.message || 'Failed to create account');
+        toast.error(err.message || 'Failed to create account');
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      // Email signup flow (existing logic)
+      if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+        setError('Name, email, and password are required');
+        setIsLoading(false);
+        return;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        setError('Passwords do not match');
+        setIsLoading(false);
+        return;
+      }
+      try {
+        await register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        });
+        toast.success('Account created successfully! Please sign in.');
+        navigate('/login');
+      } catch (err) {
+        setError(err.message || 'Failed to create account');
+        toast.error(err.message || 'Failed to create account');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -103,27 +141,52 @@ const Signup = () => {
                     />
                   </div>
                 </div>
-
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email address
-                  </label>
-                  <div className="mt-1 relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
-                      placeholder="Enter your email"
-                    />
-                  </div>
+                  {!showPhoneSignup ? (
+                    <>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                        Email address
+                      </label>
+                      <div className="mt-1 relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Mail className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          required
+                          value={formData.email}
+                          onChange={handleChange}
+                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                          placeholder="Enter your email"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                        Phone Number
+                      </label>
+                      <div className="mt-1 relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Phone className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          id="phone"
+                          name="phone"
+                          type="text"
+                          autoComplete="tel"
+                          required
+                          value={phone}
+                          onChange={e => setPhone(e.target.value)}
+                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                          placeholder="Enter your phone number"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -203,7 +266,7 @@ const Signup = () => {
               </label>
             </div>
 
-            <div>
+            {!showPhoneSignup && (
               <button
                 type="submit"
                 disabled={isLoading}
@@ -224,7 +287,47 @@ const Signup = () => {
                   'Create Account'
                 )}
               </button>
-            </div>
+            )}
+            {!showPhoneSignup && (
+              <button
+                className="w-full mt-4 py-2 bg-orange-100 text-orange-700 rounded hover:bg-orange-200 transition"
+                onClick={e => { e.preventDefault(); setShowPhoneSignup(true); }}
+                type="button"
+              >
+                Signup with phone number
+              </button>
+            )}
+            {showPhoneSignup && (
+              <>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <ArrowRight className="h-5 w-5 text-orange-500 group-hover:text-orange-400" />
+                  </span>
+                  {isLoading ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Creating Account...
+                    </span>
+                  ) : (
+                    'Create Account'
+                  )}
+                </button>
+                <button
+                  className="w-full mt-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition"
+                  onClick={e => { e.preventDefault(); setShowPhoneSignup(false); }}
+                  type="button"
+                >
+                  Back to email signup
+                </button>
+              </>
+            )}
           </form>
         </div>
       </motion.div>

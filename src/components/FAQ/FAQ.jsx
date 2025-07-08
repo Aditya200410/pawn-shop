@@ -12,7 +12,7 @@ const faqCategories = [
       },
       {
         q: 'Where Is Srejonee\'s Head Office Located?',
-        a: '• Srejonee Art & Creations\' Head Office is located in KOLKATA, India. Our address is: 623 Active Business Park, 54/10 D C Dey Road, Tangra, Kolkata – 700015.\n• Our only physical Store till now, we call it \'Srejonee Gallery\', is also co-located at the same address.'
+        a: '• Srejonee Art & Creations\' Head Office is located in KOLKATA, India. Our address is: 623 Active Business Park, 54/10 D C Dey Road, Tangra, Kolkata – 808015.\n• Our only physical Store till now, we call it \'Srejonee Gallery\', is also co-located at the same address.'
       },
       {
         q: 'Where Can I Buy Srejonee Products In India?',

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,6 +16,14 @@ const Login = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpStep, setOtpStep] = useState(1);
+  const [otpLog, setOtpLog] = useState('');
+  const [jwt, setJwt] = useState('');
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [usePhone, setUsePhone] = useState(false);
+  const [showPhoneLogin, setShowPhoneLogin] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +47,38 @@ const Login = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleSendOtp = async () => {
+    setOtpLoading(true);
+    setOtpLog('');
+    try {
+      const res = await axios.post('http://localhost:5000/api/msg91/send-otp', { phone });
+      setOtpLog('OTP sent!');
+      setOtpStep(2);
+    } catch (err) {
+      setOtpLog('Error sending OTP: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setOtpLoading(true);
+    setOtpLog('');
+    try {
+      const res = await axios.post('http://localhost:5000/api/msg91/verify-otp', { phone, otp });
+      if (res.data.success) {
+        setJwt(res.data.token);
+        setOtpLog('OTP verified! JWT: ' + res.data.token);
+      } else {
+        setOtpLog('Invalid OTP');
+      }
+    } catch (err) {
+      setOtpLog('Error verifying OTP: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setOtpLoading(false);
+    }
   };
 
   return (
@@ -68,110 +109,197 @@ const Login = () => {
             </div>
           )}
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email address
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
+          {!showPhoneLogin && (
+            <>
+              <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor={usePhone ? "phone" : "email"} className="block text-sm font-medium text-gray-700">
+                      {usePhone ? "Phone Number" : "Email address"}
+                    </label>
+                    <div className="mt-1 relative flex items-center">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        {usePhone ? (
+                          <Phone className="h-5 w-5 text-gray-400" />
+                        ) : (
+                          <Mail className="h-5 w-5 text-gray-400" />
+                        )}
+                      </div>
+                      <input
+                        id={usePhone ? "phone" : "email"}
+                        name={usePhone ? "phone" : "email"}
+                        type={usePhone ? "text" : "email"}
+                        autoComplete={usePhone ? "tel" : "email"}
+                        required
+                        value={usePhone ? phone : formData.email}
+                        onChange={usePhone ? (e) => setPhone(e.target.value) : handleChange}
+                        className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                        placeholder={usePhone ? "Enter your phone number" : "Enter your email"}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setUsePhone(!usePhone)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-orange-600 focus:outline-none"
+                        aria-label={usePhone ? "Use email login" : "Use phone login"}
+                      >
+                        <Phone className={`h-5 w-5 ${usePhone ? 'text-orange-600' : ''}`} />
+                      </button>
+                    </div>
                   </div>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
-                    placeholder="Enter your email"
-                  />
+                  {!usePhone && (
+                    <div>
+                      <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                        Password
+                      </label>
+                      <div className="mt-1 relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Lock className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          id="password"
+                          name="password"
+                          type={showPassword ? 'text' : 'password'}
+                          autoComplete="current-password"
+                          required
+                          value={formData.password}
+                          onChange={handleChange}
+                          className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
+                          placeholder="Enter your password"
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-5 w-5" />
+                            ) : (
+                              <Eye className="h-5 w-5" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
 
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      id="remember-me"
+                      name="remember-me"
+                      type="checkbox"
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-600 border-gray-300 rounded"
+                    />
+                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                      Remember me
+                    </label>
                   </div>
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete="current-password"
-                    required
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200"
-                    placeholder="Enter your password"
-                  />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5" />
-                      ) : (
-                        <Eye className="h-5 w-5" />
-                      )}
-                    </button>
+
+                  <div className="text-sm">
+                    <Link to="/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
+                      Forgot your password?
+                    </Link>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-orange-600 focus:ring-orange-600 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <Link to="/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
-                  Forgot your password?
-                </Link>
-              </div>
-            </div>
-
-            <div>
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                      <Lock className="h-5 w-5 text-orange-500 group-hover:text-orange-400" />
+                    </span>
+                    {isLoading ? (
+                      <span className="flex items-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Signing in...
+                      </span>
+                    ) : (
+                      'Sign in'
+                    )}
+                  </button>
+                </div>
+              </form>
               <button
-                type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full mt-4 py-2 bg-orange-100 text-orange-700 rounded hover:bg-orange-200 transition"
+                onClick={() => setShowPhoneLogin(true)}
+                type="button"
               >
-                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <Lock className="h-5 w-5 text-orange-500 group-hover:text-orange-400" />
-                </span>
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Signing in...
-                  </span>
-                ) : (
-                  'Sign in'
-                )}
+                Login with phone number
+              </button>
+            </>
+          )}
+          {showPhoneLogin && (
+            <div className="bg-white shadow rounded-lg p-6 mt-8 flex flex-col items-center w-full">
+              <h2 className="text-lg font-semibold mb-4 text-center">Login with Phone OTP</h2>
+              {jwt ? (
+                <div className="text-green-600 text-center w-full">
+                  <p className="font-medium">Phone verified successfully!</p>
+                  <p className="break-all text-xs mt-2">JWT: {jwt}</p>
+                </div>
+              ) : (
+                <>
+                  {otpStep === 1 && (
+                    <>
+                      <input
+                        type="text"
+                        placeholder="Enter phone number (e.g. 91XXXXXXXXXX)"
+                        value={phone}
+                        onChange={e => setPhone(e.target.value)}
+                        className="w-full px-4 py-2 border rounded mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      />
+                      <button
+                        onClick={handleSendOtp}
+                        disabled={otpLoading || !phone}
+                        className="w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700 transition disabled:opacity-50"
+                      >
+                        {otpLoading ? 'Sending OTP...' : 'Send OTP'}
+                      </button>
+                    </>
+                  )}
+                  {otpStep === 2 && (
+                    <>
+                      <input
+                        type="text"
+                        placeholder="Enter OTP"
+                        value={otp}
+                        onChange={e => setOtp(e.target.value)}
+                        className="w-full px-4 py-2 border rounded mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      />
+                      <button
+                        onClick={handleVerifyOtp}
+                        disabled={otpLoading || !otp}
+                        className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition disabled:opacity-50"
+                      >
+                        {otpLoading ? 'Verifying...' : 'Verify OTP'}
+                      </button>
+                      <button
+                        onClick={() => { setOtpStep(1); setOtp(''); setOtpLog(''); }}
+                        className="w-full mt-2 text-sm text-orange-600 hover:underline"
+                      >
+                        Change phone number
+                      </button>
+                    </>
+                  )}
+                  {otpLog && <div className="mt-3 text-center text-sm text-red-500">{otpLog}</div>}
+                </>
+              )}
+              <button
+                className="w-full mt-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition"
+                onClick={() => setShowPhoneLogin(false)}
+                type="button"
+              >
+                Back to email login
               </button>
             </div>
-          </form>
-
+          )}
         </div>
       </motion.div>
 

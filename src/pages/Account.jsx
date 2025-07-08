@@ -26,6 +26,13 @@ const Account = () => {
   const navigate = useNavigate();
   const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice, loading: cartLoading } = useCart();
   const { user, logout, updateProfile, isAuthenticated } = useAuth();
+  // OTP state
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpStep, setOtpStep] = useState(1); // 1: enter phone, 2: enter otp
+  const [otpLog, setOtpLog] = useState('');
+  const [jwt, setJwt] = useState('');
+  const [otpLoading, setOtpLoading] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -195,6 +202,39 @@ const Account = () => {
     }
   };
 
+  // OTP handlers
+  const handleSendOtp = async () => {
+    setOtpLoading(true);
+    setOtpLog('');
+    try {
+      const res = await axios.post('http://localhost:5000/api/msg91/send-otp', { phone });
+      setOtpLog('OTP sent!');
+      setOtpStep(2);
+    } catch (err) {
+      setOtpLog('Error sending OTP: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setOtpLoading(true);
+    setOtpLog('');
+    try {
+      const res = await axios.post('http://localhost:5000/api/msg91/verify-otp', { phone, otp });
+      if (res.data.success) {
+        setJwt(res.data.token);
+        setOtpLog('OTP verified! JWT: ' + res.data.token);
+      } else {
+        setOtpLog('Invalid OTP');
+      }
+    } catch (err) {
+      setOtpLog('Error verifying OTP: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
   if (loading || cartLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -206,6 +246,62 @@ const Account = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
+        {/* OTP Section */}
+        <div className="bg-white shadow rounded-lg p-6 mb-8 flex flex-col items-center w-full max-w-md mx-auto">
+          <h2 className="text-xl font-semibold mb-4 text-center">Phone Verification (OTP)</h2>
+          {jwt ? (
+            <div className="text-green-600 text-center w-full">
+              <p className="font-medium">Phone verified successfully!</p>
+              <p className="break-all text-xs mt-2">JWT: {jwt}</p>
+            </div>
+          ) : (
+            <>
+              {otpStep === 1 && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Enter phone number (e.g. 91XXXXXXXXXX)"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    className="w-full px-4 py-2 border rounded mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <button
+                    onClick={handleSendOtp}
+                    disabled={otpLoading || !phone}
+                    className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition disabled:opacity-50"
+                  >
+                    {otpLoading ? 'Sending OTP...' : 'Send OTP'}
+                  </button>
+                </>
+              )}
+              {otpStep === 2 && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Enter OTP"
+                    value={otp}
+                    onChange={e => setOtp(e.target.value)}
+                    className="w-full px-4 py-2 border rounded mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <button
+                    onClick={handleVerifyOtp}
+                    disabled={otpLoading || !otp}
+                    className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition disabled:opacity-50"
+                  >
+                    {otpLoading ? 'Verifying...' : 'Verify OTP'}
+                  </button>
+                  <button
+                    onClick={() => { setOtpStep(1); setOtp(''); setOtpLog(''); }}
+                    className="w-full mt-2 text-sm text-indigo-600 hover:underline"
+                  >
+                    Change phone number
+                  </button>
+                </>
+              )}
+              {otpLog && <div className="mt-3 text-center text-sm text-red-500">{otpLog}</div>}
+            </>
+          )}
+        </div>
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
           <div className="px-4 py-5 sm:px-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
