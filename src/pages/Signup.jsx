@@ -80,37 +80,50 @@ const Signup = () => {
     });
   };
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     setOtpError("");
     setOtpSuccess("");
-    if (!window.initSendOTP) {
-      setOtpError("OTP widget not loaded. Please try again.");
-      return;
+    setOtpLoading(true);
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/api/msg91/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to send OTP");
+      }
+      setOtpSent(true);
+      setOtpSuccess("OTP sent successfully!");
+    } catch (err) {
+      setOtpError(err.message || "Failed to send OTP");
+    } finally {
+      setOtpLoading(false);
     }
-    const configuration = {
-      widgetId: "3567686d316c363335313136",
-      tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
-      identifier: phone,
-      exposeMethods: true,
-      success: async (data) => {
-        setOtpVerified(true);
-        setOtpSuccess("Phone verified successfully!");
-        setOtpSent(true);
-        // Auto-login after OTP success
-        try {
-          await completeRegistrationAfterOtp({ email: formData.email, password: formData.password });
-          toast.success('Registration complete! You are now logged in.');
-          navigate('/');
-        } catch (err) {
-          setError(err.message || 'Auto-login failed after OTP verification.');
-        }
-      },
-      failure: (error) => {
-        setOtpError(error?.message || "OTP verification failed");
-        setOtpVerified(false);
-      },
-    };
-    window.initSendOTP(configuration);
+  };
+
+  const handleVerifyOtp = async () => {
+    setOtpError("");
+    setOtpSuccess("");
+    setOtpLoading(true);
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/api/msg91/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, otp }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Invalid OTP");
+      }
+      setOtpVerified(true);
+      setOtpSuccess("OTP verified successfully!");
+    } catch (err) {
+      setOtpError(err.message || "Failed to verify OTP");
+    } finally {
+      setOtpLoading(false);
+    }
   };
 
   return (
@@ -258,17 +271,41 @@ const Signup = () => {
                   type="button"
                   onClick={handleSendOtp}
                   className="mt-3 w-full inline-flex justify-center items-center px-4 py-3 bg-primary text-white font-medium border border-primary rounded-xl transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={otpLoading || otpVerified || !phone.match(/^\d{10}$/)}
+                  disabled={otpLoading || otpSent || otpVerified || !phone.match(/^\d{10}$/)}
                   title="Send OTP to this phone number"
                 >
                   {otpLoading ? (
                     <svg className="animate-spin h-4 w-4 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                  ) : otpVerified ? (
-                    <span className="flex items-center"><svg className="h-4 w-4 mr-1 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>Verified</span>
+                  ) : otpSent ? (
+                    <span>OTP Sent</span>
                   ) : (
                     <span>Send OTP</span>
                   )}
                 </button>
+                {otpSent && !otpVerified && (
+                  <div className="mt-3 flex gap-2">
+                    <input
+                      id="otp"
+                      name="otp"
+                      type="text"
+                      required
+                      pattern="[0-9]{4,6}"
+                      className="block w-full pl-3 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                      placeholder="Enter OTP"
+                      value={otp}
+                      onChange={e => setOtp(e.target.value)}
+                      disabled={otpVerified}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleVerifyOtp}
+                      className="inline-flex items-center px-4 py-3 bg-green-600 text-white font-medium border border-green-600 rounded-xl transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={otpLoading || otpVerified || !otp.match(/^\d{4,6}$/)}
+                    >
+                      {otpLoading ? "Verifying..." : "Verify OTP"}
+                    </button>
+                  </div>
+                )}
                 {otpError && <div className="text-red-600 text-sm mt-1">{otpError}</div>}
                 {otpSuccess && <div className="text-green-600 text-sm mt-1">{otpSuccess}</div>}
               </div>
