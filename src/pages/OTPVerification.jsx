@@ -6,52 +6,42 @@ import config from '../config/config';
 const OTPVerification = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Get email from location state
-    let emailAddress = '';
-
-    if (location.state?.email) {
-      emailAddress = location.state.email;
+    // Get phone from location state
+    let phoneNumber = '';
+    if (location.state?.phone) {
+      phoneNumber = location.state.phone;
     } else {
       toast.error('Please complete registration first');
       navigate('/signup');
       return;
     }
-
-    if (emailAddress) {
-      setEmail(emailAddress);
+    if (phoneNumber) {
+      setPhone(phoneNumber);
     }
   }, [location.state, navigate]);
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!otp || otp.length !== 6) {
-      const error = 'Please enter a valid 6-digit OTP';
+    if (!otp || otp.length < 4) {
+      const error = 'Please enter a valid OTP';
       setError(error);
       toast.error(error);
       return;
     }
-
     setIsLoading(true);
     setError('');
-
     try {
-      const apiUrl = `${config.API_BASE_URL}/api/auth/verify-otp`;
-
-
+      const apiUrl = `${config.API_BASE_URL}/api/msg91/verify-otp`;
       const requestBody = {
-        email: email,
+        phone: phone,
         otp: otp
       };
-
-
-
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 
@@ -60,19 +50,12 @@ const OTPVerification = () => {
         },
         body: JSON.stringify(requestBody)
       });
-
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP ${response.status}: OTP verification failed`);
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || data.message || `HTTP ${response.status}: OTP verification failed`);
       }
-
-
-      toast.success('Registration successful! Logging you in...');
-      
-      // Now automatically log in the user
-      await autoLogin(email);
-      
+      toast.success('Phone verified! Logging you in...');
+      await autoLogin();
     } catch (err) {
       const errorMessage = err.message || 'OTP verification failed. Please try again.';
       setError(errorMessage);
@@ -82,23 +65,23 @@ const OTPVerification = () => {
     }
   };
 
-  const autoLogin = async (userEmail) => {
+  const autoLogin = async () => {
     try {
       // Get the password from the registration data (we'll need to store it temporarily)
       const registrationData = localStorage.getItem('tempRegistrationData');
       let password = 'defaultPassword123'; // fallback
-      
+      let email = '';
       if (registrationData) {
         try {
           const data = JSON.parse(registrationData);
           password = data.password;
-        } catch (e) {
-  
-        }
+          email = data.email || '';
+        } catch (e) {}
       }
-
-
-      
+      // Try to get email from location.state as fallback
+      if (!email && location.state?.email) {
+        email = location.state.email;
+      }
       const loginResponse = await fetch(`${config.API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
@@ -106,74 +89,48 @@ const OTPVerification = () => {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          email: userEmail,
+          email: email,
           password: password
         })
       });
-
       const loginData = await loginResponse.json();
-
       if (!loginResponse.ok) {
         throw new Error(loginData.message || 'Auto-login failed');
       }
-
       // Store the token
       localStorage.setItem('token', loginData.token);
       localStorage.setItem('user', JSON.stringify(loginData.user));
-      
       // Clear temporary registration data
       localStorage.removeItem('tempRegistrationData');
-      
-
       toast.success('Welcome! You are now logged in.');
-      
-      // Redirect to home page
       navigate('/');
-      
     } catch (err) {
-      // If auto-login fails, redirect to login page
       toast.error('Registration successful! Please login with your credentials.');
       navigate('/login');
     }
   };
 
   const handleResendOtp = async () => {
-    if (!email) {
-      toast.error('Email address is required');
+    if (!phone) {
+      toast.error('Phone number is required');
       return;
     }
-
     setIsLoading(true);
     setError('');
-
     try {
-      const apiUrl = `${config.API_BASE_URL}/api/auth/register`;
-
-
-      const requestBody = {
-        name: 'User', // We don't have the name here, but backend will handle it
-        email: email,
-        password: 'defaultPassword123' // Backend will use existing temp user data
-      };
-
+      const apiUrl = `${config.API_BASE_URL}/api/msg91/send-otp`;
+      const requestBody = { phone: phone };
       const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to resend OTP');
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || data.message || 'Failed to resend OTP');
       }
-
-      toast.success('OTP resent to your email');
-      setOtp(''); // Clear the OTP input
-      
+      toast.success('OTP resent to your phone');
+      setOtp('');
     } catch (err) {
       const errorMessage = err.message || 'Failed to resend OTP';
       setError(errorMessage);
@@ -184,7 +141,6 @@ const OTPVerification = () => {
   };
 
   const handleBackToSignup = () => {
-
     navigate('/signup');
   };
 
@@ -196,10 +152,10 @@ const OTPVerification = () => {
           <div className="text-center">
             <img src="/logo.png" alt="Riko Craft" className="mx-auto h-20 w-auto mb-3" />
             <h2 className="text-3xl font-bold tracking-tight text-primary">
-              Verify Your Email
+              Verify Your Phone
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              We've sent a verification code to your email address
+              Enter the OTP sent to <span className="font-semibold">{phone}</span>
             </p>
           </div>
 
@@ -215,21 +171,6 @@ const OTPVerification = () => {
 
           <form onSubmit={handleOtpSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="block w-full px-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
-                placeholder="Enter email address"
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
               <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-2">
                 Verification Code
               </label>
@@ -239,18 +180,18 @@ const OTPVerification = () => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 className="block w-full px-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
-                placeholder="Enter 6-digit OTP"
-                maxLength={6}
+                placeholder="Enter OTP"
+                maxLength={4}
                 disabled={isLoading}
               />
               <p className="mt-1 text-xs text-gray-500">
-                Enter the 6-digit code sent to your email
+                Enter the 4-digit code sent to your phone
               </p>
             </div>
 
             <button
               type="submit"
-              disabled={isLoading || !otp || otp.length !== 6}
+              disabled={isLoading || !otp || otp.length < 4}
               className="group relative w-full flex justify-center py-2.5 px-5 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ 
                 backgroundImage: 'url(/footer.png)',
@@ -292,10 +233,10 @@ const OTPVerification = () => {
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-white text-center">
             <h2 className="text-4xl font-light mb-6">
-              Verify Your <span className="font-serif italic">Email</span>
+              Verify Your <span className="font-serif italic">Phone</span>
             </h2>
             <p className="text-lg text-gray-100 mb-8">
-              Secure verification via email OTP to protect your account.
+              Secure verification via phone OTP to protect your account.
             </p>
             <div className="space-y-4 text-left max-w-md mx-auto">
               <div className="flex items-center space-x-3">
@@ -304,7 +245,7 @@ const OTPVerification = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span>Secure email verification</span>
+                <span>Secure phone verification</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">

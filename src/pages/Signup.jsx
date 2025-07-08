@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import config from '../config/config';
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { register, error: contextError } = useAuth();
+  const { register, completeRegistrationAfterOtp, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -19,6 +19,27 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [otpSuccess, setOtpSuccess] = useState("");
+  const widgetScriptLoaded = useRef(false);
+
+  useEffect(() => {
+    // Dynamically load MSG91 widget script once
+    if (!widgetScriptLoaded.current) {
+      const script = document.createElement('script');
+      script.src = 'https://verify.msg91.com/otp-provider.js';
+      script.async = true;
+      script.onload = () => {
+        widgetScriptLoaded.current = true;
+      };
+      document.body.appendChild(script);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,51 +50,24 @@ const Signup = () => {
     if (formData.password !== formData.confirmPassword) {
       const error = 'Passwords do not match';
       setError(error);
-     
       setIsLoading(false);
       return;
     }
 
     try {
-      // Store password temporarily for auto-login after OTP verification
-      localStorage.setItem('tempRegistrationData', JSON.stringify({
-        password: formData.password
-      }));
-
       // Call the backend register endpoint
-      const response = await fetch(`${config.API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password
-        })
+      await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: phone,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
-
-      toast.success('OTP sent to your email!');
-      
-      // Navigate to OTP verification page with email
-      navigate('/otp-verification', { 
-        state: { 
-          email: formData.email
-        } 
-      });
+      toast.success('OTP sent to your phone!');
+      // Wait for OTP verification via widget, then login
+      // (handled in handleSendOtp success)
     } catch (err) {
       const errorMessage = err.message || contextError || 'Failed to create account';
       setError(errorMessage);
-      
-      // Clear temporary data on error
-      localStorage.removeItem('tempRegistrationData');
     } finally {
       setIsLoading(false);
     }
@@ -86,140 +80,215 @@ const Signup = () => {
     });
   };
 
+  const handleSendOtp = () => {
+    setOtpError("");
+    setOtpSuccess("");
+    if (!window.initSendOTP) {
+      setOtpError("OTP widget not loaded. Please try again.");
+      return;
+    }
+    const configuration = {
+      widgetId: "3567686d316c363335313136",
+      tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
+      identifier: phone,
+      exposeMethods: true,
+      success: async (data) => {
+        setOtpVerified(true);
+        setOtpSuccess("Phone verified successfully!");
+        setOtpSent(true);
+        // Auto-login after OTP success
+        try {
+          await completeRegistrationAfterOtp({ email: formData.email, password: formData.password });
+          toast.success('Registration complete! You are now logged in.');
+          navigate('/');
+        } catch (err) {
+          setError(err.message || 'Auto-login failed after OTP verification.');
+        }
+      },
+      failure: (error) => {
+        setOtpError(error?.message || "OTP verification failed");
+        setOtpVerified(false);
+      },
+    };
+    window.initSendOTP(configuration);
+  };
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Form */}
-      <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center px-4 sm:px-6 lg:px-8 pt-8 lg:pt-0">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md space-y-5 p-8 sm:p-10 bg-white shadow-2xl rounded-xl border border-gray-100"
-        >
-          <div className="text-center">
-            <Link to="/">
-              <img src="/logo.png" alt="Riko Craft" className="mx-auto h-20 w-auto mb-3" />
-            </Link>
-            <h2 className="text-3xl font-bold tracking-tight text-primary">
-              Create Account
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full lg:w-1/2 flex items-start lg:items-center justify-center px-4 sm:px-6 lg:px-8 pt-8 lg:pt-0"
+      >
+        <div className="max-w-md w-full space-y-8">
+          <div>
+            <h2 className="text-4xl font-light tracking-tight text-gray-900">
+              Create <span className="font-serif italic">Account</span>
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Join us and start your journey with secure email verification
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-primary hover:text-primary-dark">
+                Sign in
+              </Link>
             </p>
           </div>
-
           {error && (
-            <div className="rounded-md bg-red-50 p-3 sm:p-4 ring-1 ring-red-200">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
-                </div>
-              </div>
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <span className="block sm:inline">{error}</span>
             </div>
           )}
-
-          <form className="mt-5 space-y-5" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="name" className="sr-only">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <User className="h-5 w-5 text-gray-400" />
+                  </div>
                   <input
                     id="name"
                     name="name"
                     type="text"
                     autoComplete="name"
                     required
-                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="Full Name"
                     value={formData.name}
                     onChange={handleChange}
                   />
                 </div>
               </div>
-
               <div>
-                <label htmlFor="email" className="sr-only">Email address</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400" />
+                  </div>
                   <input
                     id="email"
                     name="email"
                     type="email"
                     autoComplete="email"
                     required
-                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="Email address"
                     value={formData.email}
                     onChange={handleChange}
                   />
                 </div>
               </div>
-
               <div>
-                <label htmlFor="password" className="sr-only">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-400" />
+                  </div>
                   <input
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
                     required
-                    className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="Password"
                     value={formData.password}
                     onChange={handleChange}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
                 </div>
               </div>
-
               <div>
-                <label htmlFor="confirmPassword" className="sr-only">Confirm Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-400" />
+                  </div>
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     autoComplete="new-password"
                     required
-                    className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 bg-white placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="Confirm Password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
                 </div>
               </div>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Phone className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    pattern="[0-9]{10}"
+                    className="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    placeholder="Phone Number"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    disabled={otpVerified}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  className="mt-3 w-full inline-flex justify-center items-center px-4 py-3 bg-primary text-white font-medium border border-primary rounded-xl transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={otpLoading || otpVerified || !phone.match(/^\d{10}$/)}
+                  title="Send OTP to this phone number"
+                >
+                  {otpLoading ? (
+                    <svg className="animate-spin h-4 w-4 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  ) : otpVerified ? (
+                    <span className="flex items-center"><svg className="h-4 w-4 mr-1 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>Verified</span>
+                  ) : (
+                    <span>Send OTP</span>
+                  )}
+                </button>
+                {otpError && <div className="text-red-600 text-sm mt-1">{otpError}</div>}
+                {otpSuccess && <div className="text-green-600 text-sm mt-1">{otpSuccess}</div>}
+              </div>
             </div>
-
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-2.5 px-5 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ 
                   backgroundImage: 'url(/footer.png)',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center'
                 }}
+                disabled={isLoading || !otpVerified}
               >
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
-                <span className="relative z-10 flex items-center justify-center">
+                <span className="absolute left-0 inset-y-0 flex items-center pl-3 z-10">
+                  <ArrowRight className="h-5 w-5 text-white/80 group-hover:text-white" />
+                </span>
+                <span className="relative z-10">
                   {isLoading ? (
                     <span className="flex items-center">
                       <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -229,26 +298,14 @@ const Signup = () => {
                       Creating Account...
                     </span>
                   ) : (
-                    <span className="flex items-center">
-                      Create Account
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </span>
+                    'Create Account'
                   )}
                 </span>
               </button>
             </div>
           </form>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-primary hover:text-primary/80">
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
 
       {/* Right Side - Image */}
       <div className="hidden lg:block lg:w-1/2 relative">

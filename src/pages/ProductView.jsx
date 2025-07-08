@@ -177,7 +177,7 @@ const ProductView = () => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [product]);
 
-  if (loading) return <Loader fullScreen={true} withHeaderFooter={true} size="large" text="Loading product details..." showLogo={true} />;
+  if (loading) return <Loader fullScreen={true} withHeaderFooter={true} size="large" text="Loading product details..."  />;
   if (error) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
       <h2 className="text-2xl font-bold text-red-600 mb-2">Product Not Found</h2>
@@ -354,30 +354,21 @@ const ProductView = () => {
             transition={{ duration: 0.5 }}
             className="lg:col-span-5 space-y-3 lg:space-y-4 flex flex-col"
           >
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-50 group shadow-lg">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={selectedImage}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                  src={productImages[selectedImage]}
-                  alt={product.name}
-                  className="w-full h-full object-cover cursor-pointer"
-                  onClick={handleImageClick}
-                  onError={e => {
-                    e.target.onerror = null;
-                    // Try fallback to product.image if different from current image
-                    if (productImages[selectedImage] !== config.fixImageUrl(product.image)) {
-                      e.target.src = config.fixImageUrl(product.image);
-                    } else {
-                      // Final fallback to placeholder
-                      e.target.src = 'https://placehold.co/600x600/e2e8f0/475569?text=Product+Image';
-                    }
-                  }}
-                />
-              </AnimatePresence>
+            <div className="relative w-full flex items-center justify-center rounded-xl overflow-hidden bg-gray-50 group shadow-lg" style={{ maxHeight: '60vh' }}>
+              <img
+                src={productImages[selectedImage]}
+                alt={product.name}
+                className="max-w-full max-h-[60vh] object-contain"
+                onClick={handleImageClick}
+                onError={e => {
+                  e.target.onerror = null;
+                  if (productImages[selectedImage] !== config.fixImageUrl(product.image)) {
+                    e.target.src = config.fixImageUrl(product.image);
+                  } else {
+                    e.target.src = 'https://placehold.co/600x600/e2e8f0/475569?text=Product+Image';
+                  }
+                }}
+              />
               
               {/* Gallery indicator overlay */}
               {productImages.length > 1 && (
@@ -453,7 +444,7 @@ const ProductView = () => {
                     <img 
                       src={image} 
                       alt={`${product.name} - Image ${index + 1}`}
-                      className="w-full h-full object-cover" 
+                      className="w-full h-full object-fit bg-white" 
                       onError={e => {
                         e.target.onerror = null;
                         e.target.src = 'https://placehold.co/150x150/e2e8f0/475569?text=Image';
@@ -918,27 +909,20 @@ const ProductView = () => {
               </button>
 
               {/* Main Image */}
-              <div className="relative">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={modalSelectedImage}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                    src={productImages[modalSelectedImage]}
-                    alt={`${product.name} - Full size view`}
-                    className="max-w-full max-h-[90vh] object-contain rounded-lg"
-                    onError={e => {
-                      e.target.onerror = null;
-                      if (productImages[modalSelectedImage] !== config.fixImageUrl(product.image)) {
-                        e.target.src = config.fixImageUrl(product.image);
-                      } else {
-                        e.target.src = 'https://placehold.co/800x600/e2e8f0/475569?text=Product+Image';
-                      }
-                    }}
-                  />
-                </AnimatePresence>
+              <div className="relative w-full flex items-center justify-center" style={{ maxHeight: '90vh' }}>
+                <img
+                  src={productImages[modalSelectedImage]}
+                  alt={`${product.name} - Full size view`}
+                  className="max-w-full max-h-[90vh] object-contain rounded-lg"
+                  onError={e => {
+                    e.target.onerror = null;
+                    if (productImages[modalSelectedImage] !== config.fixImageUrl(product.image)) {
+                      e.target.src = config.fixImageUrl(product.image);
+                    } else {
+                      e.target.src = 'https://placehold.co/800x600/e2e8f0/475569?text=Product+Image';
+                    }
+                  }}
+                />
 
                 {/* Navigation Arrows */}
                 {productImages.length > 1 && (
@@ -984,7 +968,7 @@ const ProductView = () => {
                       <img 
                         src={image} 
                         alt={`${product.name} - Thumbnail ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-fit bg-white"
                         onError={e => {
                           e.target.onerror = null;
                           e.target.src = 'https://placehold.co/64x64/e2e8f0/475569?text=Image';
