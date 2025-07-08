@@ -53,7 +53,7 @@ export default function WeeklyBestsellers() {
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : data.products || []);
       } catch (err) {
-        console.error('Error fetching bestseller products:', err);
+      
         setError(err.message || 'Error fetching bestseller products');
         // Set empty array to prevent crashes
         setProducts([]);

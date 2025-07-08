@@ -37,7 +37,7 @@ export const CartProvider = ({ children }) => {
     }
         }
       } catch (error) {
-        console.error('Error loading cart:', error);
+       
       } finally {
         setLoading(false);
       }
@@ -50,8 +50,7 @@ export const CartProvider = ({ children }) => {
     const savedSellerToken = localStorage.getItem('sellerToken');
     const urlSellerToken = getSellerTokenFromURL();
     
-    console.log('CartContext - Loading sellerToken from localStorage:', savedSellerToken);
-    console.log('CartContext - sellerToken from URL:', urlSellerToken);
+    
     
     // Priority: URL token > localStorage token
     const tokenToUse = urlSellerToken || savedSellerToken;
@@ -61,7 +60,7 @@ export const CartProvider = ({ children }) => {
       localStorage.setItem('sellerToken', tokenToUse);
       // Ensure URL has the token
       updateURLWithSellerToken(tokenToUse);
-      console.log('CartContext - sellerToken set to:', tokenToUse);
+     
     }
   }, []);
 
@@ -87,13 +86,13 @@ export const CartProvider = ({ children }) => {
 
   // Function to set seller token from URL and persist it
   const setSellerTokenFromURL = (token) => {
-    console.log('CartContext - setSellerTokenFromURL called with:', token);
+   
     if (token) {
       setSellerToken(token);
       localStorage.setItem('sellerToken', token);
       // Update URL to include seller token
       updateURLWithSellerToken(token);
-      console.log('CartContext - sellerToken set to:', token);
+   
     }
   };
 
@@ -129,7 +128,7 @@ export const CartProvider = ({ children }) => {
         toast.error('Please sign in to add items to cart');
       }
     } catch (error) {
-      console.error('Error adding to cart:', error);
+    
       toast.error('Failed to add item to cart');
     }
   };
@@ -150,7 +149,7 @@ export const CartProvider = ({ children }) => {
         toast.error('Please sign in to manage your cart');
       }
     } catch (error) {
-      console.error('Error removing from cart:', error);
+     
       toast.error('Failed to remove item from cart');
     }
   };
@@ -172,7 +171,7 @@ export const CartProvider = ({ children }) => {
         toast.error('Please sign in to manage your cart');
       }
     } catch (error) {
-      console.error('Error updating cart:', error);
+      
       toast.error('Failed to update cart');
     }
   };
@@ -193,7 +192,7 @@ export const CartProvider = ({ children }) => {
         toast.error('Please sign in to manage your cart');
       }
     } catch (error) {
-      console.error('Error clearing cart:', error);
+   
       toast.error('Failed to clear cart');
     }
   };
@@ -237,7 +236,7 @@ export const CartProvider = ({ children }) => {
             setCartItems(cartData.items || []);
           }
         } catch (error) {
-          console.error('Error syncing cart:', error);
+          
         }
       }
     };

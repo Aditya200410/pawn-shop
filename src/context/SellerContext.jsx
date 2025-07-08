@@ -84,7 +84,7 @@ export const SellerProvider = ({ children }) => {
       setSellerToken(null);
       setLoggedIn(false);
       // Show a user-friendly error, do not log out immediately
-      toast.error(err.message || 'Failed to fetch seller profile');
+    
     } finally {
       setLoading(false);
     }
@@ -151,7 +151,7 @@ export const SellerProvider = ({ children }) => {
     } catch (err) {
       setError(err.message);
       setLoggedIn(false);
-      toast.error(err.message);
+     
       throw err;
     } finally {
       setLoading(false);
@@ -214,7 +214,7 @@ export const SellerProvider = ({ children }) => {
       return data;
     } catch (err) {
       setError(err.message);
-      toast.error(err.message);
+     
       throw err;
     } finally {
       setLoading(false);

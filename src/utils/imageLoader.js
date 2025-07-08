@@ -16,7 +16,7 @@ export const imageLoader = {
     try {
       await Promise.allSettled(promises);
     } catch (error) {
-      console.warn('Some images failed to preload:', error);
+     
     }
   },
 
@@ -70,7 +70,7 @@ export const cachedImageLoader = {
       imageCache.set(src, img);
       return img;
     } catch (error) {
-      console.warn(`Failed to load image: ${src}`, error);
+     
       throw error;
     }
   },

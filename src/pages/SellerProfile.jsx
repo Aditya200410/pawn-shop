@@ -290,14 +290,7 @@ const SellerProfile = () => {
           // Add notification
           setNotifications(prev => [notification, ...prev.slice(0, 4)]); // Keep only last 5 notifications
           
-          // Show toast notification
-          if (notification.color === 'green') {
-            toast.success(notification.message);
-          } else if (notification.color === 'red') {
-            toast.error(notification.message);
-          } else {
-            toast.info(notification.message);
-          }
+       
         });
 
         // Update commission history

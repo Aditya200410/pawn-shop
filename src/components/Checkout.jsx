@@ -175,7 +175,7 @@ export default function Checkout() {
         throw new Error(response.message || 'Failed to place order.');
       }
     } catch (err) {
-      console.error('Checkout failed:', err);
+    
       setError(err.message || 'An error occurred during checkout.');
     } finally {
       setIsSubmitting(false);
@@ -225,7 +225,7 @@ export default function Checkout() {
         toast.error(data.message);
       }
     } catch (error) {
-      console.error('Error applying coupon:', error);
+    
       setCouponError('Error applying coupon. Please try again.');
       toast.error('Error applying coupon. Please try again.');
     } finally {

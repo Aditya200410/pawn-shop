@@ -34,7 +34,7 @@ export default function SellerAuth() {
       toast.success('Login successful!');
       // Navigation is handled by useEffect
     } catch (err) {
-      toast.error(err.message || 'Authentication failed');
+     
     }
   };
 
