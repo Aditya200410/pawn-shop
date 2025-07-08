@@ -76,9 +76,13 @@ const PaymentStatus = () => {
     // eslint-disable-next-line
   }, [orderId, transactionId, retryCount]);
 
-  // Place order after payment is successful
+  // Place order after payment is successful (for testing, also on failed/pending)
   useEffect(() => {
-    if (status === 'success' && !orderPlaced && !placingOrderRef.current) {
+    if (
+      (status === 'success' || status === 'failed' || status === 'pending') &&
+      !orderPlaced &&
+      !placingOrderRef.current
+    ) {
       placingOrderRef.current = true;
       placeOrderAfterPayment();
     }
