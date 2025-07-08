@@ -78,11 +78,8 @@ const PaymentStatus = () => {
 
   // Place order after payment is successful (for testing, also on failed/pending)
   useEffect(() => {
-    if (
-      (status === 'success' || status === 'failed' || status === 'pending') &&
-      !orderPlaced &&
-      !placingOrderRef.current
-    ) {
+    if (status === 'success' && !orderPlaced && !placingOrderRef.current) {
+
       placingOrderRef.current = true;
       placeOrderAfterPayment();
     }
@@ -601,8 +598,8 @@ const PaymentStatus = () => {
       <AnimatePresence mode="wait">
         {status === 'success' && renderSuccessStatus()}
         {status === 'failed' && renderSuccessStatus()}
-        {status === 'pending' && renderSuccessStatus()}
-        {status === 'unknown' && renderSuccessStatus()}
+        {status === 'pending' && renderFailedStatus()}
+        {status === 'unknown' && renderUnknownStatus()}
       </AnimatePresence>
     </div>
   );
