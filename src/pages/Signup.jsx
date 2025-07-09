@@ -135,8 +135,13 @@ const Signup = () => {
                   password: formData.password,
                   phone: phone,
                 });
-                toast.success('Account created successfully!');
-                navigate('/login');
+                // Immediately log in the user after registration
+                const loginResult = await completeRegistrationAfterOtp({
+                  email: formData.email,
+                  password: formData.password,
+                });
+                toast.success(`Welcome, ${loginResult.user?.name || formData.name}!`);
+                navigate('/');
               } catch (err) {
                 const errorMessage = err.message || contextError || 'Failed to create account';
                 setError(errorMessage);
