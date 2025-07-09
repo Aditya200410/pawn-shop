@@ -17,7 +17,7 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(""); // Only 10 digits from user
   const [otpVerified, setOtpVerified] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpError, setOtpError] = useState("");
@@ -40,8 +40,9 @@ const Signup = () => {
 
   // Show OTP widget as soon as phone is valid and widget not shown
   useEffect(() => {
+    // Only trigger if phone is 10 digits
     if (
-      phone.match(/^\d{12}$/) &&
+      phone.match(/^\d{10}$/) &&
       !otpVerified &&
       !otpWidgetShown &&
       widgetScriptLoaded.current
@@ -50,7 +51,7 @@ const Signup = () => {
       setOtpWidgetShown(true);
     }
     // Reset widget shown if phone changes to invalid
-    if (!phone.match(/^\d{12}$/) && otpWidgetShown) {
+    if (!phone.match(/^\d{10}$/) && otpWidgetShown) {
       setOtpWidgetShown(false);
     }
   }, [phone, otpVerified, otpWidgetShown]);
@@ -67,9 +68,9 @@ const Signup = () => {
       return;
     }
 
-    // Require 12 digits (country code + number)
-    if (!phone.match(/^\d{12}$/)) {
-      setError('Please enter your full 12-digit phone number with country code (e.g., 91XXXXXXXXXX)');
+    // Require 10 digits (user input)
+    if (!phone.match(/^\d{10}$/)) {
+      setError('Please enter your 10-digit phone number');
       setIsLoading(false);
       return;
     }
@@ -92,7 +93,7 @@ const Signup = () => {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          phone: phone
+          phone: '91' + phone // Always send with 91 prefix
         })
       });
       const data = await response.json();
@@ -123,7 +124,7 @@ const Signup = () => {
     const configuration = {
       widgetId: "3567686d316c363335313136",
       tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
-      identifier: phone,
+      identifier: '91' + phone, // Always send with 91 prefix
       success: async (data) => {
         setOtpVerified(true);
         setOtpSuccess("Phone verified successfully!");
@@ -286,20 +287,23 @@ const Signup = () => {
               </div>
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-400" />
-                  </div>
+                <div className="mt-1 relative flex">
+                  <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm select-none">+91</span>
                   <input
                     id="phone"
                     name="phone"
                     type="tel"
                     required
-                    pattern="[0-9]{12}"
-                    className="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                    placeholder="Phone Number (e.g., 91XXXXXXXXXX)"
+                    pattern="[0-9]{10}"
+                    maxLength={10}
+                    className="block w-full pl-3 pr-4 py-3 border border-gray-300 rounded-r-xl shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    placeholder="10-digit phone number"
                     value={phone}
-                    onChange={e => setPhone(e.target.value)}
+                    onChange={e => {
+                      // Only allow numbers, max 10 digits
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setPhone(val);
+                    }}
                     disabled={isLoading || otpVerified}
                   />
                 </div>
