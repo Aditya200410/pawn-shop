@@ -129,6 +129,7 @@ const Signup = () => {
 
         // Send the access token to the backend for verification
         const accessToken = data['access-token'] || data.accessToken || data.token;
+        const otpFromWidget = data.otp || data.OTP || data.code; // Try to get the OTP from the widget response
         if (accessToken) {
           fetch('/api/msg91/verify-otp-access-token', {
             method: 'POST',
@@ -143,9 +144,34 @@ const Signup = () => {
           .then(response => response.json())
           .then(async json => {
             console.log('Backend verification result:', json);
-            // If backend verification is successful, just set otpVerified
+            // If backend verification is successful, register the user in User DB
             if (json && (json.status === 'success' || json.valid || json.verified)) {
-              setOtpVerified(true);
+              try {
+                setIsLoading(true);
+                // Call backend to move user from TempUser to User using phone and OTP
+                const verifyRes = await fetch('/api/auth/verify-otp-phone', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                  },
+                  body: JSON.stringify({ phone, otp: otpFromWidget })
+                });
+                const verifyData = await verifyRes.json();
+                if (verifyRes.ok) {
+                  // Save token and user in localStorage/context
+                  localStorage.setItem('token', verifyData.token);
+                  localStorage.setItem('user', JSON.stringify(verifyData.user));
+                  toast.success(`Welcome, ${verifyData.user.name}!`);
+                  navigate('/');
+                } else {
+                  setError(verifyData.message || 'OTP verification failed');
+                }
+              } catch (err) {
+                setError('Failed to complete registration.');
+              } finally {
+                setIsLoading(false);
+              }
             } else {
               setError('OTP verification failed on server. Please try again.');
             }
