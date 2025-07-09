@@ -2,13 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Phone } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import config from '../config/config';
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { register, completeRegistrationAfterOtp, error: contextError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,7 +22,6 @@ const Signup = () => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpError, setOtpError] = useState("");
   const [otpSuccess, setOtpSuccess] = useState("");
-  const [registrationData, setRegistrationData] = useState(null);
   const [otpWidgetShown, setOtpWidgetShown] = useState(false); // NEW
   const widgetScriptLoaded = useRef(false);
 
@@ -65,16 +62,14 @@ const Signup = () => {
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      const error = 'Passwords do not match';
-      setError(error);
+      setError('Passwords do not match');
       setIsLoading(false);
       return;
     }
 
     // Require 12 digits (country code + number)
     if (!phone.match(/^\d{12}$/)) {
-      const error = 'Please enter your full 12-digit phone number with country code (e.g., 91XXXXXXXXXX)';
-      setError(error);
+      setError('Please enter your full 12-digit phone number with country code (e.g., 91XXXXXXXXXX)');
       setIsLoading(false);
       return;
     }
@@ -87,7 +82,7 @@ const Signup = () => {
 
     try {
       // Register the user directly (backend will log in and return token)
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${config.API_URLS.AUTH}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,10 +97,8 @@ const Signup = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        toast.success(`Welcome, ${data.user.name}!`);
-        navigate('/');
+        toast.success('Account created successfully! Please log in.');
+        navigate('/login');
       } else {
         setError(data.message || 'Registration failed');
       }

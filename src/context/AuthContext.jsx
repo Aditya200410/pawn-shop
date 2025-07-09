@@ -115,14 +115,6 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    /**
-     * Call this after MSG91 OTP widget success to log in and complete registration
-     * @param {Object} credentials - { email, password } or { phone, password }
-     */
-    const completeRegistrationAfterOtp = async (credentials) => {
-        return login(credentials);
-    };
-
     const value = {
         user,
         loading,
@@ -133,7 +125,6 @@ export const AuthProvider = ({ children }) => {
         updateProfile,
         forgotPassword,
         isAuthenticated: !!user,
-        completeRegistrationAfterOtp,
     };
 
     return (
