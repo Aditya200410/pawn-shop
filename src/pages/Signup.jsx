@@ -18,6 +18,7 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [phone, setPhone] = useState(""); // Only 10 digits from user
+  const [phoneImmediateError, setPhoneImmediateError] = useState("");
   const [otpVerified, setOtpVerified] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpError, setOtpError] = useState("");
@@ -40,21 +41,22 @@ const Signup = () => {
 
   // Show OTP widget as soon as phone is valid and widget not shown
   useEffect(() => {
-    // Only trigger if phone is 10 digits
+    // Only trigger if phone is 10 digits and no error
     if (
       phone.match(/^\d{10}$/) &&
       !otpVerified &&
       !otpWidgetShown &&
-      widgetScriptLoaded.current
+      widgetScriptLoaded.current &&
+      !phoneImmediateError
     ) {
       triggerOtpWidget();
       setOtpWidgetShown(true);
     }
     // Reset widget shown if phone changes to invalid
-    if (!phone.match(/^\d{10}$/) && otpWidgetShown) {
+    if ((!phone.match(/^\d{10}$/) || phoneImmediateError) && otpWidgetShown) {
       setOtpWidgetShown(false);
     }
-  }, [phone, otpVerified, otpWidgetShown]);
+  }, [phone, otpVerified, otpWidgetShown, phoneImmediateError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +71,11 @@ const Signup = () => {
     }
 
     // Require 10 digits (user input)
+    if (phone.length === 11) {
+      setError('Please enter a 10-digit phone number');
+      setIsLoading(false);
+      return;
+    }
     if (!phone.match(/^\d{10}$/)) {
       setError('Please enter your 10-digit phone number');
       setIsLoading(false);
@@ -295,18 +302,26 @@ const Signup = () => {
                     type="tel"
                     required
                     pattern="[0-9]{10}"
-                    maxLength={10}
+                    maxLength={11}
                     className="block w-full pl-3 pr-4 py-3 border border-gray-300 rounded-r-xl shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="10-digit phone number"
                     value={phone}
                     onChange={e => {
-                      // Only allow numbers, max 10 digits
-                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      // Only allow numbers, max 11 digits for error check
+                      let val = e.target.value.replace(/\D/g, '').slice(0, 11);
                       setPhone(val);
+                      if (val.length === 11) {
+                        setPhoneImmediateError('Please enter a 10-digit phone number');
+                      } else {
+                        setPhoneImmediateError('');
+                      }
                     }}
                     disabled={isLoading || otpVerified}
                   />
                 </div>
+                {phoneImmediateError && (
+                  <div className="text-red-500 text-sm mt-1">{phoneImmediateError}</div>
+                )}
               </div>
             </div>
             <div>
