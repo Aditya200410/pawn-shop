@@ -20,12 +20,11 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpError, setOtpError] = useState("");
   const [otpSuccess, setOtpSuccess] = useState("");
+  const [registrationData, setRegistrationData] = useState(null);
   const widgetScriptLoaded = useRef(false);
 
   useEffect(() => {
@@ -54,23 +53,75 @@ const Signup = () => {
       return;
     }
 
+    if (!phone.match(/^\d{10}$/)) {
+      const error = 'Please enter a valid 10-digit phone number';
+      setError(error);
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      // Call the backend register endpoint
-      await register({
+      // Store registration data for later use after OTP verification
+      setRegistrationData({
         name: formData.name,
         email: formData.email,
         password: formData.password,
         phone: phone,
       });
-      toast.success('OTP sent to your phone!');
-      // Wait for OTP verification via widget, then login
-      // (handled in handleSendOtp success)
+
+      // Trigger OTP widget
+      triggerOtpWidget();
+      
     } catch (err) {
       const errorMessage = err.message || contextError || 'Failed to create account';
       setError(errorMessage);
-    } finally {
       setIsLoading(false);
     }
+  };
+
+  const triggerOtpWidget = () => {
+    setOtpError("");
+    setOtpSuccess("");
+    setOtpLoading(true);
+    
+    if (!window.initSendOTP) {
+      setOtpError("OTP widget not loaded. Please try again.");
+      setOtpLoading(false);
+      setIsLoading(false);
+      return;
+    }
+
+    const configuration = {
+      widgetId: "3567686d316c363335313136",
+      tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
+      identifier: phone,
+      success: async (data) => {
+        setOtpVerified(true);
+        setOtpSuccess("Phone verified successfully!");
+        setOtpLoading(false);
+        
+        // Now complete the registration with the stored data
+        try {
+          await register(registrationData);
+          toast.success('Account created successfully!');
+          navigate('/login');
+        } catch (err) {
+          const errorMessage = err.message || contextError || 'Failed to create account';
+          setError(errorMessage);
+          setOtpVerified(false);
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      failure: (error) => {
+        setOtpError(error?.message || "OTP verification failed");
+        setOtpVerified(false);
+        setOtpLoading(false);
+        setIsLoading(false);
+      },
+    };
+    
+    window.initSendOTP(configuration);
   };
 
   const handleChange = (e) => {
@@ -78,52 +129,6 @@ const Signup = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleSendOtp = async () => {
-    setOtpError("");
-    setOtpSuccess("");
-    setOtpLoading(true);
-    try {
-      const response = await fetch(`${config.API_BASE_URL}/api/msg91/send-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Failed to send OTP");
-      }
-      setOtpSent(true);
-      setOtpSuccess("OTP sent successfully!");
-    } catch (err) {
-      setOtpError(err.message || "Failed to send OTP");
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
-  const handleVerifyOtp = async () => {
-    setOtpError("");
-    setOtpSuccess("");
-    setOtpLoading(true);
-    try {
-      const response = await fetch(`${config.API_BASE_URL}/api/msg91/verify-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, otp }),
-      });
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Invalid OTP");
-      }
-      setOtpVerified(true);
-      setOtpSuccess("OTP verified successfully!");
-    } catch (err) {
-      setOtpError(err.message || "Failed to verify OTP");
-    } finally {
-      setOtpLoading(false);
-    }
   };
 
   return (
@@ -152,6 +157,16 @@ const Signup = () => {
               <span className="block sm:inline">{error}</span>
             </div>
           )}
+          {otpError && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <span className="block sm:inline">{otpError}</span>
+            </div>
+          )}
+          {otpSuccess && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+              <span className="block sm:inline">{otpSuccess}</span>
+            </div>
+          )}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
@@ -170,6 +185,7 @@ const Signup = () => {
                     placeholder="Full Name"
                     value={formData.name}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -189,6 +205,7 @@ const Signup = () => {
                     placeholder="Email address"
                     value={formData.email}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -208,12 +225,14 @@ const Signup = () => {
                     placeholder="Password"
                     value={formData.password}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -236,12 +255,14 @@ const Signup = () => {
                     placeholder="Confirm Password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                      disabled={isLoading}
                     >
                       {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -264,50 +285,9 @@ const Signup = () => {
                     placeholder="Phone Number"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    disabled={otpVerified}
+                    disabled={isLoading}
                   />
                 </div>
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  className="mt-3 w-full inline-flex justify-center items-center px-4 py-3 bg-primary text-white font-medium border border-primary rounded-xl transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={otpLoading || otpSent || otpVerified || !phone.match(/^\d{10}$/)}
-                  title="Send OTP to this phone number"
-                >
-                  {otpLoading ? (
-                    <svg className="animate-spin h-4 w-4 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                  ) : otpSent ? (
-                    <span>OTP Sent</span>
-                  ) : (
-                    <span>Send OTP</span>
-                  )}
-                </button>
-                {otpSent && !otpVerified && (
-                  <div className="mt-3 flex gap-2">
-                    <input
-                      id="otp"
-                      name="otp"
-                      type="text"
-                      required
-                      pattern="[0-9]{4,6}"
-                      className="block w-full pl-3 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                      placeholder="Enter OTP"
-                      value={otp}
-                      onChange={e => setOtp(e.target.value)}
-                      disabled={otpVerified}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleVerifyOtp}
-                      className="inline-flex items-center px-4 py-3 bg-green-600 text-white font-medium border border-green-600 rounded-xl transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={otpLoading || otpVerified || !otp.match(/^\d{4,6}$/)}
-                    >
-                      {otpLoading ? "Verifying..." : "Verify OTP"}
-                    </button>
-                  </div>
-                )}
-                {otpError && <div className="text-red-600 text-sm mt-1">{otpError}</div>}
-                {otpSuccess && <div className="text-green-600 text-sm mt-1">{otpSuccess}</div>}
               </div>
             </div>
             <div>
@@ -319,20 +299,20 @@ const Signup = () => {
                   backgroundSize: 'cover',
                   backgroundPosition: 'center'
                 }}
-                disabled={isLoading || !otpVerified}
+                disabled={isLoading || otpLoading}
               >
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3 z-10">
                   <ArrowRight className="h-5 w-5 text-white/80 group-hover:text-white" />
                 </span>
                 <span className="relative z-10">
-                  {isLoading ? (
+                  {isLoading || otpLoading ? (
                     <span className="flex items-center">
                       <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Creating Account...
+                      {otpLoading ? 'Verifying OTP...' : 'Creating Account...'}
                     </span>
                   ) : (
                     'Create Account'
@@ -363,7 +343,7 @@ const Signup = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span>Secure email verification</span>
+                <span>Secure phone verification</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
