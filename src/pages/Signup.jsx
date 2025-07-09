@@ -123,38 +123,53 @@ const Signup = () => {
       tokenAuth: "458779TNIVxOl3qDwI6866bc33P1",
       identifier: phone,
       success: async (data) => {
-        setOtpVerified(true);
-        setOtpSuccess("Phone verified successfully!");
-        setOtpLoading(false);
-
-        // Send the access token to the backend for verification
-        const accessToken = data['access-token'] || data.accessToken || data.token;
-        if (accessToken) {
-          fetch('/api/msg91/verify-otp-access-token', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-            },
-            body: JSON.stringify({
-              accessToken
-            })
-          })
-          .then(response => response.json())
-          .then(async json => {
-            console.log('Backend verification result:', json);
-            // If backend verification is successful, just set otpVerified
-            if (json && (json.status === 'success' || json.valid || json.verified)) {
-              setOtpVerified(true);
-            } else {
-              setError('OTP verification failed on server. Please try again.');
-            }
-          })
-          .catch(err => {
-            console.error('Backend verification failed:', err);
-            setError('OTP verification failed on server. Please try again.');
-          });
+        setOtpLoading(true);
+        setOtpError("");
+        setOtpSuccess("");
+        // Get the OTP from the widget data (if available)
+        const otpFromWidget = data.otp || data.OTP || window.lastOtpEntered; // adapt as needed
+        // If the widget does not provide the OTP, prompt the user for it
+        let otp = otpFromWidget;
+        if (!otp) {
+          otp = prompt("Enter the OTP you received on your phone:");
         }
+        if (!otp) {
+          setOtpError("OTP is required to complete registration.");
+          setOtpLoading(false);
+          return;
+        }
+        // Call backend to verify OTP by phone and create user
+        fetch('/api/auth/verify-otp-phone', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify({
+            phone,
+            otp
+          })
+        })
+        .then(res => res.json())
+        .then(json => {
+          if (json && json.token && json.user) {
+            // Store token and user in localStorage
+            localStorage.setItem('token', json.token);
+            localStorage.setItem('user', JSON.stringify(json.user));
+            setOtpSuccess("Phone verified and account created!");
+            setOtpVerified(true);
+            toast.success(`Welcome, ${json.user.name}!`);
+            navigate('/');
+          } else {
+            setOtpError(json.message || 'OTP verification failed.');
+          }
+        })
+        .catch(err => {
+          setOtpError('OTP verification failed. Please try again.');
+        })
+        .finally(() => {
+          setOtpLoading(false);
+        });
       },
       failure: (error) => {
         setOtpError(error?.message || "OTP verification failed");
