@@ -85,8 +85,26 @@ const Signup = () => {
       return;
     }
 
-    // Do not register here; registration is now handled after OTP verification
-    setIsLoading(false);
+    try {
+      await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: phone,
+      });
+      // Immediately log in the user after registration
+      const loginResult = await completeRegistrationAfterOtp({
+        email: formData.email,
+        password: formData.password,
+      });
+      toast.success(`Welcome, ${loginResult.user?.name || formData.name}!`);
+      navigate('/');
+    } catch (err) {
+      const errorMessage = err.message || contextError || 'Failed to create account';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const triggerOtpWidget = () => {
@@ -125,29 +143,9 @@ const Signup = () => {
           .then(response => response.json())
           .then(async json => {
             console.log('Backend verification result:', json);
-            // If backend verification is successful, register the user
+            // If backend verification is successful, just set otpVerified
             if (json && (json.status === 'success' || json.valid || json.verified)) {
-              try {
-                setIsLoading(true);
-                await register({
-                  name: formData.name,
-                  email: formData.email,
-                  password: formData.password,
-                  phone: phone,
-                });
-                // Immediately log in the user after registration
-                const loginResult = await completeRegistrationAfterOtp({
-                  email: formData.email,
-                  password: formData.password,
-                });
-                toast.success(`Welcome, ${loginResult.user?.name || formData.name}!`);
-                navigate('/');
-              } catch (err) {
-                const errorMessage = err.message || contextError || 'Failed to create account';
-                setError(errorMessage);
-              } finally {
-                setIsLoading(false);
-              }
+              setOtpVerified(true);
             } else {
               setError('OTP verification failed on server. Please try again.');
             }
