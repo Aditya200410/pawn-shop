@@ -27,8 +27,8 @@ export const authService = {
         const response = await fetch(`${config.API_URLS.AUTH}/login`, {
             method: 'POST',
             headers: config.CORS.HEADERS,
-                credentials: 'include',
-            body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+            credentials: 'include',
+            body: JSON.stringify({ identifier: credentials.identifier, password: credentials.password }),
         });
         
         if (!response.ok) {

@@ -649,9 +649,7 @@ const ProductView = () => {
                   transition={{ duration: 0.3 }}
                   className="prose max-w-none"
                 >
-                  <p className="text-sm text-gray-700 leading-relaxed">
-                    {product.description}
-                  </p>
+                 
                   
                   <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-gray-50 p-4 rounded-lg">

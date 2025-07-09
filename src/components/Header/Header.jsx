@@ -385,18 +385,7 @@ const Header = () => {
             {/* Desktop Icons */}
             <div className="hidden md:flex items-center space-x-6">
             
-              {user ? (
-                <div className="flex items-center space-x-4">
-                  
-                  <Link to="/account" className="text-white/80 hover:text-white transition-colors">
-                    <User size={20} />
-                  </Link>
-                </div>
-              ) : (
-                <Link to="/account" className="text-white/80 hover:text-white transition-colors">
-                <User size={20} />
-              </Link>
-              )}
+           
               <Link to="/cart" className="text-white/80 hover:text-white transition-colors relative">
                 <ShoppingCart size={20} />
                 {cartItems.length > 0 && (
