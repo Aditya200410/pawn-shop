@@ -85,21 +85,8 @@ const Signup = () => {
       return;
     }
 
-    try {
-      await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        phone: phone,
-      });
-      toast.success('Account created successfully!');
-      navigate('/login');
-    } catch (err) {
-      const errorMessage = err.message || contextError || 'Failed to create account';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
+    // Do not register here; registration is now handled after OTP verification
+    setIsLoading(false);
   };
 
   const triggerOtpWidget = () => {
@@ -136,12 +123,33 @@ const Signup = () => {
             })
           })
           .then(response => response.json())
-          .then(json => {
+          .then(async json => {
             console.log('Backend verification result:', json);
-            // Optionally, handle backend response here
+            // If backend verification is successful, register the user
+            if (json && (json.status === 'success' || json.valid || json.verified)) {
+              try {
+                setIsLoading(true);
+                await register({
+                  name: formData.name,
+                  email: formData.email,
+                  password: formData.password,
+                  phone: phone,
+                });
+                toast.success('Account created successfully!');
+                navigate('/login');
+              } catch (err) {
+                const errorMessage = err.message || contextError || 'Failed to create account';
+                setError(errorMessage);
+              } finally {
+                setIsLoading(false);
+              }
+            } else {
+              setError('OTP verification failed on server. Please try again.');
+            }
           })
           .catch(err => {
             console.error('Backend verification failed:', err);
+            setError('OTP verification failed on server. Please try again.');
           });
         }
       },
