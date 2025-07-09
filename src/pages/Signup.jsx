@@ -82,12 +82,38 @@ const Signup = () => {
     if (!otpVerified) {
       setError('Please verify your phone number with OTP before signing up.');
       setIsLoading(false);
-      // Optionally, trigger OTP widget here if you want
       return;
     }
 
-    // If phone is verified, registration and login are handled in OTP widget success
-    setIsLoading(false);
+    try {
+      // Register the user directly (backend will log in and return token)
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone: phone
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        toast.success(`Welcome, ${data.user.name}!`);
+        navigate('/');
+      } else {
+        setError(data.message || 'Registration failed');
+      }
+    } catch (err) {
+      setError('Failed to create account.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const triggerOtpWidget = () => {
@@ -109,61 +135,7 @@ const Signup = () => {
         setOtpVerified(true);
         setOtpSuccess("Phone verified successfully!");
         setOtpLoading(false);
-
-        // Send the access token to the backend for verification
-        const accessToken = data['access-token'] || data.accessToken || data.token;
-        const otpFromWidget = data.otp || data.OTP || data.code; // Try to get the OTP from the widget response
-        if (accessToken) {
-          fetch('/api/msg91/verify-otp-access-token', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-            },
-            body: JSON.stringify({
-              accessToken
-            })
-          })
-          .then(response => response.json())
-          .then(async json => {
-            console.log('Backend verification result:', json);
-            // If backend verification is successful, register the user in User DB
-            if (json && (json.status === 'success' || json.valid || json.verified)) {
-              try {
-                setIsLoading(true);
-                // Call backend to move user from TempUser to User using phone only (no OTP needed)
-                const verifyRes = await fetch('/api/auth/verify-otp-phone', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                  },
-                  body: JSON.stringify({ phone })
-                });
-                const verifyData = await verifyRes.json();
-                if (verifyRes.ok) {
-                  // Save token and user in localStorage/context
-                  localStorage.setItem('token', verifyData.token);
-                  localStorage.setItem('user', JSON.stringify(verifyData.user));
-                  toast.success(`Welcome, ${verifyData.user.name}!`);
-                  navigate('/');
-                } else {
-                  setError(verifyData.message || 'OTP verification failed');
-                }
-              } catch (err) {
-                setError('Failed to complete registration.');
-              } finally {
-                setIsLoading(false);
-              }
-            } else {
-              setError('OTP verification failed on server. Please try again.');
-            }
-          })
-          .catch(err => {
-            console.error('Backend verification failed:', err);
-            setError('OTP verification failed on server. Please try again.');
-          });
-        }
+        // Only mark phone as verified. Do not register or login here.
       },
       failure: (error) => {
         setOtpError(error?.message || "OTP verification failed");
