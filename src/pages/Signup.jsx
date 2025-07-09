@@ -53,8 +53,9 @@ const Signup = () => {
       return;
     }
 
-    if (!phone.match(/^\d{10}$/)) {
-      const error = 'Please enter a valid 10-digit phone number';
+    // Require 12 digits (country code + number)
+    if (!phone.match(/^\d{12}$/)) {
+      const error = 'Please enter your full 12-digit phone number with country code (e.g., 91XXXXXXXXXX)';
       setError(error);
       setIsLoading(false);
       return;
@@ -280,9 +281,9 @@ const Signup = () => {
                     name="phone"
                     type="tel"
                     required
-                    pattern="[0-9]{10}"
+                    pattern="[0-9]{12}"
                     className="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                    placeholder="Phone Number"
+                    placeholder="Phone Number (e.g., 91XXXXXXXXXX)"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                     disabled={isLoading}
