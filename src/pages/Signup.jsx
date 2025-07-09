@@ -25,6 +25,7 @@ const Signup = () => {
   const [otpError, setOtpError] = useState("");
   const [otpSuccess, setOtpSuccess] = useState("");
   const [registrationData, setRegistrationData] = useState(null);
+  const [otpWidgetShown, setOtpWidgetShown] = useState(false); // NEW
   const widgetScriptLoaded = useRef(false);
 
   useEffect(() => {
@@ -39,6 +40,23 @@ const Signup = () => {
       document.body.appendChild(script);
     }
   }, []);
+
+  // Show OTP widget as soon as phone is valid and widget not shown
+  useEffect(() => {
+    if (
+      phone.match(/^\d{12}$/) &&
+      !otpVerified &&
+      !otpWidgetShown &&
+      widgetScriptLoaded.current
+    ) {
+      triggerOtpWidget();
+      setOtpWidgetShown(true);
+    }
+    // Reset widget shown if phone changes to invalid
+    if (!phone.match(/^\d{12}$/) && otpWidgetShown) {
+      setOtpWidgetShown(false);
+    }
+  }, [phone, otpVerified, otpWidgetShown]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,21 +79,25 @@ const Signup = () => {
       return;
     }
 
+    if (!otpVerified) {
+      setError('Please verify your phone number with OTP before signing up.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      // Store registration data for later use after OTP verification
-      setRegistrationData({
+      await register({
         name: formData.name,
         email: formData.email,
         password: formData.password,
         phone: phone,
       });
-
-      // Trigger OTP widget
-      triggerOtpWidget();
-      
+      toast.success('Account created successfully!');
+      navigate('/login');
     } catch (err) {
       const errorMessage = err.message || contextError || 'Failed to create account';
       setError(errorMessage);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -88,7 +110,6 @@ const Signup = () => {
     if (!window.initSendOTP) {
       setOtpError("OTP widget not loaded. Please try again.");
       setOtpLoading(false);
-      setIsLoading(false);
       return;
     }
 
@@ -100,28 +121,36 @@ const Signup = () => {
         setOtpVerified(true);
         setOtpSuccess("Phone verified successfully!");
         setOtpLoading(false);
-        
-        // Now complete the registration with the stored data
-        try {
-          await register(registrationData);
-          toast.success('Account created successfully!');
-          navigate('/login');
-        } catch (err) {
-          const errorMessage = err.message || contextError || 'Failed to create account';
-          setError(errorMessage);
-          setOtpVerified(false);
-        } finally {
-          setIsLoading(false);
+
+        // Send the access token to the backend for verification
+        const accessToken = data['access-token'] || data.accessToken || data.token;
+        if (accessToken) {
+          fetch('/api/msg91/verify-otp-access-token', {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            body: JSON.stringify({
+              accessToken
+            })
+          })
+          .then(response => response.json())
+          .then(json => {
+            console.log('Backend verification result:', json);
+            // Optionally, handle backend response here
+          })
+          .catch(err => {
+            console.error('Backend verification failed:', err);
+          });
         }
       },
       failure: (error) => {
         setOtpError(error?.message || "OTP verification failed");
         setOtpVerified(false);
         setOtpLoading(false);
-        setIsLoading(false);
       },
     };
-    
     window.initSendOTP(configuration);
   };
 
@@ -286,7 +315,7 @@ const Signup = () => {
                     placeholder="Phone Number (e.g., 91XXXXXXXXXX)"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    disabled={isLoading}
+                    disabled={isLoading || otpVerified}
                   />
                 </div>
               </div>
