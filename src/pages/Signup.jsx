@@ -82,29 +82,12 @@ const Signup = () => {
     if (!otpVerified) {
       setError('Please verify your phone number with OTP before signing up.');
       setIsLoading(false);
+      // Optionally, trigger OTP widget here if you want
       return;
     }
 
-    try {
-      await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        phone: phone,
-      });
-      // Immediately log in the user after registration
-      const loginResult = await completeRegistrationAfterOtp({
-        email: formData.email,
-        password: formData.password,
-      });
-      toast.success(`Welcome, ${loginResult.user?.name || formData.name}!`);
-      navigate('/');
-    } catch (err) {
-      const errorMessage = err.message || contextError || 'Failed to create account';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
+    // If phone is verified, registration and login are handled in OTP widget success
+    setIsLoading(false);
   };
 
   const triggerOtpWidget = () => {
@@ -148,14 +131,14 @@ const Signup = () => {
             if (json && (json.status === 'success' || json.valid || json.verified)) {
               try {
                 setIsLoading(true);
-                // Call backend to move user from TempUser to User using phone and OTP
+                // Call backend to move user from TempUser to User using phone only (no OTP needed)
                 const verifyRes = await fetch('/api/auth/verify-otp-phone', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                   },
-                  body: JSON.stringify({ phone, otp: otpFromWidget })
+                  body: JSON.stringify({ phone })
                 });
                 const verifyData = await verifyRes.json();
                 if (verifyRes.ok) {

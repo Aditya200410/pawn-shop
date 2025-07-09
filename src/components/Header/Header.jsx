@@ -273,7 +273,7 @@ const Header = () => {
                 <Link to="/seller" className="text-white/80 hover:text-white">Seller Program</Link>
                 <div className="flex items-center space-x-4 text-white">
                   <a href="#" className="hover:opacity-80"><FaFacebookF /></a>
-                  <a href="#" className="hover:opacity-80"><FaTwitter /></a>
+                
                   <a href="https://www.instagram.com/riko.craft?igsh=YWlsZmRnNmk5eXp2" className="hover:opacity-80"><FaInstagram /></a>
                 </div>
               </div>
