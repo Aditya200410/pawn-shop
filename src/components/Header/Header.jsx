@@ -273,17 +273,14 @@ const Header = () => {
           <div className="container mx-auto px-6">
             <div className="flex items-center justify-between h-12 text-sm">
               <div className="flex items-center space-x-8">
-                <a href="tel:+9183406246358" className="text-white/90 hover:text-white transition-colors duration-200 flex items-center gap-2">
-                  <Phone size={16} className="opacity-80" />
-                  +91 83406246358
-                </a>
+                
                 <a href="mailto:care@rikocraft.com" className="text-white/90 hover:text-white transition-colors duration-200 flex items-center gap-2">
                   <Mail size={16} className="opacity-80" />
                   care@rikocraft.com
                 </a>
               </div>
               <div className="flex items-center space-x-8">
-                <a href="/about" className="text-white/90 hover:text-white transition-colors duration-200">Our Story</a>
+                <a href="/about" className="text-white/90 hover:text-white transition-colors duration-200">About</a>
                 <a href="/contact" className="text-white/90 hover:text-white transition-colors duration-200">Contact</a>
                 <a href="/FAQ" className="text-white/90 hover:text-white transition-colors duration-200">FAQ</a>
                 <Link to="/seller" className="text-white/90 hover:text-white transition-colors duration-200">Seller Program</Link>

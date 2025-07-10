@@ -164,15 +164,7 @@ export default function ContactPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-[#8f3a61]-50 rounded-2xl">
-                      <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600 mt-1 flex-shrink-0" />
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Phone Number</h3>
-                        <a href="tel:+918340624635" className="text-pink-600 hover:text-pink-700 font-medium text-sm sm:text-base">
-                          +91 8340624635
-                        </a>
-                      </div>
-                    </div>
+                    
                   </div>
 
                   <div className="space-y-4 sm:space-y-6">

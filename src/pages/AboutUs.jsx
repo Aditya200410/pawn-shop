@@ -173,15 +173,7 @@ const AboutUs = () => {
                 </div>
               </div>
               
-              <div className="bg-pink-50 p-4 md:p-6 rounded-2xl">
-                <div className="flex items-start space-x-3 md:space-x-4">
-                  <Phone className="w-5 h-5 md:w-6 md:h-6 text-pink-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">Phone</h3>
-                    <p className="text-gray-600 text-sm md:text-base">+918340624635</p>
-                  </div>
-                </div>
-              </div>
+            
               
               <div className="bg-pink-50 p-4 md:p-6 rounded-2xl">
                 <div className="flex items-start space-x-3 md:space-x-4">

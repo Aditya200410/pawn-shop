@@ -15,14 +15,8 @@ const faqCategories = [
         q: 'Where Can I Buy Riko Craft Products In India?',
         a: '• You can buy RIKO CRAFT products directly from our Stores: "Riko Craft Gallery" at Jamshedpur,jharkhand.\n• **Alternatively** you can also buy our products **online** from our website: **rikocraft.com**'
       },
-      {
-        q: 'Are Riko Craft Products Available Internationally?',
-        a: 'Yes, we export our products directly to our customers in Europe, USA, Canada, Middle East, Australia and many more other countries.'
-      },
-      {
-        q: 'Are Gift Vouchers / Discount Coupons Available At Riko Craft Gallery / Online?',
-        a: '• Yes, walk-in customers normally enjoy a Gift Voucher at our Stores.\n• Registered Customers of RIKO CRAFT enjoy 10% Discount on MRP while buying from our website **rikocraft.com**\n• Furthermore, we run different promotion Schemes / Festive Sale for our registered customers or general public time to time.'
-      }
+     
+      
     ]
   },
   {
@@ -36,10 +30,7 @@ const faqCategories = [
         q: 'Are All RIKO CRAFT Products Handmade?',
         a: 'YES almost all of Riko Craft products are purely handmade using age old traditional skills. In some products such as appeal etc, if the cloth is from power loom, the final product is made using hand stitch, hand-woven, hand block-print etc process using vegetable dyes or natural colours as far as possible.'
       },
-      {
-        q: 'Do RIKO CRAFT Sizes Conform To International Norms?',
-        a: 'There are no true international norms for clothing and every company tends to have its own sizing standards. You can refer to our Size Guide where we have suggested basic guidelines of how RIKO CRAFT sizing compares to other international sizing. The best approach is to take your own measurements and compare these to our measurement charts.'
-      }
+      
     ]
   },
   {

@@ -70,14 +70,7 @@ export default function Footer() {
                 <div className="mb-6">
                   <h4 className="text-lg font-bold text-white mb-4 tracking-wide">Contact Details</h4>
                   <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <Phone className="w-5 h-5 text-pink-400 flex-shrink-0" />
-                      <div className="text-base text-gray-100">
-                        <a href="tel:+918797624635" className="hover:text-pink-400 transition-colors duration-200 font-medium">
-                          +91 8797624635
-                        </a>
-                      </div>
-                    </div>
+                    
                     <div className="flex items-center space-x-3">
                       <Mail className="w-5 h-5 text-pink-400 flex-shrink-0" />
                       <div className="text-base text-gray-100">
