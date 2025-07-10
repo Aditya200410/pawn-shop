@@ -418,7 +418,7 @@ const Header = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Link to="/cart" className="text-white/90 hover:text-white transition-colors duration-200 relative p-2 rounded-full hover:bg-white/10">
+                <Link to="/cart" className="text-white/90 transition-colors duration-200 relative p-2 rounded-full ">
                   <ShoppingCart size={22} />
                   {cartItems.length > 0 && (
                     <motion.span 
