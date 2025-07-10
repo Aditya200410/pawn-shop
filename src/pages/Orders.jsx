@@ -42,7 +42,7 @@ export default function Orders() {
       const userOrders = response.data.filter(order => order.email === user.email);
       setOrders(userOrders);
     } catch (error) {
-      console.error('Error fetching orders:', error);
+   
       const errorMessage = error.response?.data?.message || 'Failed to fetch orders. Please try again later.';
       setError(errorMessage);
       toast.error(errorMessage);

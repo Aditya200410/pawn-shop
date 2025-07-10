@@ -120,14 +120,14 @@ const env = {
   // Log helper for development
   log: (...args) => {
     if (env.IS_DEVELOPMENT && env.ENABLE_LOGGING) {
-      console.log('[ENV]', ...args);
+     
     }
   },
   
   // Error helper for development
   logError: (...args) => {
     if (env.IS_DEVELOPMENT && env.ENABLE_LOGGING) {
-      console.error('[ENV ERROR]', ...args);
+   
     }
   },
 };

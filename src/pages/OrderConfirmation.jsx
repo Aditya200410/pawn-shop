@@ -27,7 +27,7 @@ const OrderConfirmation = () => {
         setOrder(response.data);
       } catch (err) {
         setError('Failed to fetch order details. Please try again later.');
-        console.error('Order fetch error:', err);
+        
       } finally {
         setLoading(false);
       }

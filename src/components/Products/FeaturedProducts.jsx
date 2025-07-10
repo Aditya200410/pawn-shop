@@ -78,7 +78,7 @@ export default function FeaturedProducts() {
         
         setProducts(Array.isArray(data) ? data : data.products || []);
       } catch (err) {
-        console.error('Error fetching featured products:', err);
+       
         setError(err.message || 'Error fetching featured products');
         // Set empty array to prevent crashes
         setProducts([]);

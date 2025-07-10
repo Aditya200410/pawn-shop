@@ -96,7 +96,7 @@ const Checkout = () => {
           setCodUpfrontAmount(Number(amount));
         }
       } catch (error) {
-        console.error('Failed to fetch COD upfront amount:', error);
+      
         // Keep default value of 39
       }
     };
@@ -194,7 +194,7 @@ const Checkout = () => {
             }
           }
         } catch (err) {
-          console.error('Failed to refresh cart on checkout:', err);
+          
         }
       }
       setCartLoading(false);
@@ -330,7 +330,7 @@ const Checkout = () => {
 
     // For COD orders, we need to collect upfront payment first
     if (codUpfrontAmount > 0) {
-      console.log('COD order with upfront payment - initiating PhonePe payment for upfront amount');
+    
       
       // Use PhonePe for upfront payment
       await handlePhonePePayment();
@@ -384,7 +384,7 @@ const Checkout = () => {
         setError(response.message || "Failed to create order. Please try again.");
       }
     } catch (err) {
-      console.error('COD order creation error:', err);
+     
       setError("Failed to create order. Please try again.");
     } finally {
       setLoading(false);
@@ -487,7 +487,7 @@ const Checkout = () => {
           });
           
         } catch (checkoutError) {
-          console.error('PhonePe checkout error:', checkoutError);
+     
           
           // If PhonePe checkout fails, show error instead of redirecting manually
           setError('PhonePe checkout failed. Please try again.');
@@ -498,7 +498,7 @@ const Checkout = () => {
       }
       
     } catch (error) {
-      console.error('PhonePe payment error:', error);
+     
       setError(error.message || "Failed to process PhonePe payment.");
     } finally {
       setPaymentProcessing(false);
@@ -564,7 +564,7 @@ const Checkout = () => {
         setCouponError(data.message || 'Invalid coupon code');
       }
     } catch (error) {
-      console.error('Coupon error:', error);
+     
       const errorMessage = 'Failed to process coupon. Please try again.';
       setCouponError(errorMessage);
     } finally {
@@ -605,7 +605,7 @@ const Checkout = () => {
       const orderAlreadyPlaced = localStorage.getItem(orderKey);
       
       if (orderAlreadyPlaced === 'true') {
-        console.log('Order already placed for this payment');
+       
         toast.success('Order already placed successfully!');
         clearCart();
         clearSellerToken();
@@ -664,7 +664,7 @@ const Checkout = () => {
         toast.error(response.message || 'Failed to place order');
       }
     } catch (err) {
-      console.error('Order placement error:', err);
+     
       toast.error('Failed to place order: ' + (err.message || 'Unknown error'));
     } finally {
       setLoading(false);

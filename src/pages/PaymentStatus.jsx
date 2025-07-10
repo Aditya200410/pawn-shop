@@ -121,7 +121,7 @@ const PaymentStatus = () => {
       const orderAlreadyPlaced = localStorage.getItem(orderKey);
       
       if (orderAlreadyPlaced === 'true') {
-        console.log('Order already placed for this payment');
+        
         setOrderPlaced(true);
         return;
       }
@@ -223,7 +223,7 @@ const PaymentStatus = () => {
         localStorage.removeItem('checkoutAppliedCoupon');
       }
     } catch (err) {
-      console.error('Order placement error:', err);
+    
       toast.error('Failed to place order after payment: ' + (err.message || 'Unknown error'));
       // Clear persisted data on error
       localStorage.removeItem('checkoutFormData');

@@ -78,7 +78,7 @@ export default function MostLoved() {
         
         setProducts(Array.isArray(data) ? data : data.products || []);
       } catch (err) {
-        console.error('Error fetching most loved products:', err);
+       
         setError(err.message || 'Error fetching most loved products');
         // Set empty array to prevent crashes
         setProducts([]);
