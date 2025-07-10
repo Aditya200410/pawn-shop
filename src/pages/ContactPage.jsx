@@ -110,26 +110,7 @@ export default function ContactPage() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="bg-white rounded-3xl shadow-xl overflow-hidden"
         >
-          {/* Tab Navigation */}
-          <div className=" bg-[#8f3a61] p-2 text-white">
-            <div className="flex flex-wrap gap-2 justify-center">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 text-sm sm:text-base ${
-                    activeTab === tab.id
-                      ? 'bg-white text-pink-600 shadow-lg'
-                      : 'text-white hover:text-pink-600 hover:bg-white/50'
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                  <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          
 
           {/* Tab Content */}
           <div className="p-4 sm:p-8">
