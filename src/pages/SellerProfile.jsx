@@ -476,7 +476,7 @@ const SellerProfile = () => {
   const handleLogout = () => {
     logout();
     navigate('/seller');
-    window.location.reload();
+    
   };
 
   const downloadQRCode = async () => {
