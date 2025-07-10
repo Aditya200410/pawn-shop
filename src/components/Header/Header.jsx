@@ -483,18 +483,8 @@ const Header = () => {
                   {activeMobileTab === 'menu' && (
                     <div className="p-4 space-y-4">
                       {/* Search Bar */}
-                      <form onSubmit={handleSearch} className="relative">
-                        <input
-                          type="text"
-                          placeholder="Search products..."
-                          value={searchQuery}
-                          onChange={e => setSearchQuery(e.target.value)}
-                          className="w-full pl-4 pr-10 py-2 border border-white/30 rounded-md bg-[#8f3a61] text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-                        />
-                        <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70">
-                          <Search size={18}/>
-                        </button>
-                      </form>
+                      
+                      
                       {/* Navigation Links */}
                       <nav>
                         <ul className="space-y-1">
