@@ -389,8 +389,12 @@ const SellerProfile = () => {
   }, [showNotifications]);
 
   // Remove old loading check, use only fullyLoaded
-  if (!fullyLoaded) {
-    return <Loader fullScreen={true} text="Loading profile..." />;
+  if (loading || !fullyLoaded) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-100px)] pt-[100px] bg-white">
+        <Loader size="large" text="Loading Seller Profile..." />
+      </div>
+    );
   }
 
   if (error) {
@@ -494,10 +498,10 @@ const SellerProfile = () => {
         root.render(<RikoCraftPoster qrSrc={seller.qrCode} />);
         setTimeout(async () => {
           const canvas = await html2canvas(tempDiv, { backgroundColor: null, useCORS: true });
-          const url = canvas.toDataURL('image/png');
+          const url = canvas.toDataURL('image/jpeg', 0.7);
           const link = document.createElement('a');
           link.href = url;
-          link.download = `${seller.businessName}-poster.png`;
+          link.download = `${seller.businessName}-poster.jpg`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -527,10 +531,10 @@ const SellerProfile = () => {
         root.render(<RikoCraftcert qrSrc={seller.qrCode} />);
         setTimeout(async () => {
           const canvas = await html2canvas(tempDiv, { backgroundColor: null, useCORS: true });
-          const url = canvas.toDataURL('image/png');
+          const url = canvas.toDataURL('image/jpeg', 0.7);
           const link = document.createElement('a');
           link.href = url;
-          link.download = `${seller.businessName}-poster.png`;
+          link.download = `${seller.businessName}-poster.jpg`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);

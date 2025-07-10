@@ -25,17 +25,17 @@ const RikoCraftPoster = ({ qrSrc = "/qr.jpg", bgSrc = "/qr.jpg" }) => {
       <div
         style={{
           position: "absolute",
-          top: imgSize.height * 0.3000 + "px", // 600/1920 for default
+          top: imgSize.height * 0.3200 + "px", // 600/1920 for default
           left: `calc(50% - ${imgSize.width * 0.2000}px)`, // 240/1080 for default, width 480/1080
           width: imgSize.width * 0.4000 + "px", // 480/1080
-          height: imgSize.width * 0.3850 + "px", // 480/1080
+          height: imgSize.width * 0.3900 + "px", // 480/1080
           background: "#fff",
-          borderRadius: "32px",
+          
           border: "8px solid #fff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.10)",
+          
           overflow: "hidden"
         }}
       >
@@ -43,10 +43,10 @@ const RikoCraftPoster = ({ qrSrc = "/qr.jpg", bgSrc = "/qr.jpg" }) => {
           src={qrSrc}
           alt="Shop QR"
           style={{
-            width: "100%",
-            height: "100%",
+            width: "110%",
+            height: "110%",
             objectFit: "cover",
-            borderRadius: "24px",
+         
             background: "#fff"
           }}
         />
