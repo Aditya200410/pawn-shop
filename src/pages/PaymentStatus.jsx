@@ -597,8 +597,8 @@ const PaymentStatus = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-500 via-white to-pink-100 flex items-center justify-center p-4">
       <AnimatePresence mode="wait">
         {status === 'success' && renderSuccessStatus()}
-        {status === 'failed' && renderSuccessStatus()}
-        {status === 'pending' && renderFailedStatus()}
+        {status === 'failed' && renderFailedStatus()}
+        {status === 'pending' && renderPendingStatus()}
         {status === 'unknown' && renderUnknownStatus()}
       </AnimatePresence>
     </div>
