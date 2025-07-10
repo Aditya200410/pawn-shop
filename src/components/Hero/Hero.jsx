@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import config from '../../config/config';
+import { useNavigate } from 'react-router-dom';
 
 const isMobile = () => window.innerWidth <= 768;
 
@@ -11,6 +12,33 @@ const Hero = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const containerRef = useRef(null);
+  const [containerHeight, setContainerHeight] = useState(undefined);
+  const navigate = useNavigate();
+
+  // Helper to update container height based on image aspect ratio
+  const updateContainerHeight = (naturalWidth, naturalHeight) => {
+    if (containerRef.current && naturalWidth && naturalHeight) {
+      const containerWidth = containerRef.current.offsetWidth;
+      const aspectRatio = naturalHeight / naturalWidth;
+      setContainerHeight(containerWidth * aspectRatio);
+    }
+  };
+
+  // Recalculate on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (carouselData.length > 0 && containerRef.current && containerHeight) {
+        const img = new window.Image();
+        img.src = carouselData[currentSlide].image;
+        img.onload = () => {
+          updateContainerHeight(img.naturalWidth, img.naturalHeight);
+        };
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [carouselData, currentSlide, containerHeight]);
 
   useEffect(() => {
     fetchCarouselData();
@@ -62,7 +90,7 @@ const Hero = () => {
 
   if (loading || error || !carouselData?.length) {
     return (
-      <div className="w-full h-[600px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="w-full h-[400px] md:h-[600px] lg:h-[700px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         {loading ? (
           <div className="w-12 h-12 border-4 border-pink-100 border-l-pink-500 rounded-full animate-spin" />
         ) : (
@@ -73,13 +101,18 @@ const Hero = () => {
   }
 
   return (
-    <div className="relative h-[600px] overflow-hidden z-[1]">
+    <div
+      ref={containerRef}
+      className="relative overflow-hidden z-[1] cursor-pointer"
+      style={containerHeight ? { height: containerHeight } : { height: 400 }}
+      onClick={() => navigate('/shop')}
+    >
       {/* Navigation Buttons */}
       <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 z-[1]">
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={prevSlide}
+          onClick={e => { e.stopPropagation(); prevSlide(); }}
           className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
         >
           <svg
@@ -100,7 +133,7 @@ const Hero = () => {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={nextSlide}
+          onClick={e => { e.stopPropagation(); nextSlide(); }}
           className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-lg"
         >
           <svg
@@ -129,102 +162,37 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
           className="absolute inset-0 z-0"
         >
-          <div className="absolute inset-0">
-            {isVideo(carouselData[currentSlide].image) ? (
-              <video
-                className="absolute inset-0 w-full h-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                onError={handleMediaError}
-              >
-                <source src={carouselData[currentSlide].image} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <img
-                src={carouselData[currentSlide].image}
-                alt={carouselData[currentSlide].title}
-                className="absolute inset-0 w-full h-full object-cover"
-                onError={handleMediaError}
-              />
-            )}
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-          
-          <div className="relative h-full flex items-center">
-            <div className="container mx-auto px-4">
-              <div className="max-w-2xl md:ml-0 mx-auto md:mx-0 text-center md:text-left">
-                <motion.h1
-                  initial={{ y: -50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ 
-                    delay: 0.2, 
-                    duration: 0.8, 
-                    ease: [0.22, 1, 0.36, 1],
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
-                >
-                  {carouselData[currentSlide].title}
-                </motion.h1>
-                <motion.p
-                  initial={{ y: -50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ 
-                    delay: 0.4, 
-                    duration: 0.8, 
-                    ease: [0.22, 1, 0.36, 1],
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  className="text-lg md:text-xl text-white/90 mb-8"
-                >
-                  {carouselData[currentSlide].description}
-                </motion.p>
-                <motion.a
-                  href={carouselData[currentSlide].buttonLink}
-                  initial={{ x: 100, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ 
-                    delay: 0.6, 
-                    duration: 0.8, 
-                    ease: [0.22, 1, 0.36, 1],
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center bg-pink-800 text-white px-7 py-3 rounded-full font-semibold hover:bg-pink-900 transition-colors text-lg md:text-xl lg:text-2xl shadow-lg"
-                  style={{ gap: '0.75rem' }}
-                >
-                  <span className="mr-2 md:mr-4">{carouselData[currentSlide].buttonText}</span>
-                  <motion.span
-                    whileHover={{ x: 8, scale: 1.15 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                    className="flex items-center ml-2 md:ml-4"
-                  >
-                    <svg
-                      className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </motion.span>
-                </motion.a>
-              </div>
-            </div>
-          </div>
+          {isVideo(carouselData[currentSlide].image) ? (
+            <video
+              className="absolute inset-0 w-full h-full object-contain"
+              onLoadedMetadata={e => {
+                if (e.target.videoWidth && e.target.videoHeight) {
+                  updateContainerHeight(e.target.videoWidth, e.target.videoHeight);
+                }
+              }}
+              autoPlay
+              loop
+              muted
+              playsInline
+              onError={handleMediaError}
+            >
+              <source src={carouselData[currentSlide].image} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <img
+              src={carouselData[currentSlide].image}
+              alt={carouselData[currentSlide].title}
+              className="absolute inset-0 w-full h-full object-contain"
+              onLoad={e => {
+                if (e.target.naturalWidth && e.target.naturalHeight) {
+                  updateContainerHeight(e.target.naturalWidth, e.target.naturalHeight);
+                }
+              }}
+              onError={handleMediaError}
+            />
+          )}
+          <div className="absolute inset-0 bg-black/30 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
 
