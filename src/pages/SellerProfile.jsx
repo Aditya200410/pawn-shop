@@ -72,6 +72,30 @@ const SellerProfile = () => {
   const [activeHistoryTab, setActiveHistoryTab] = useState('withdrawals');
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [fullyLoaded, setFullyLoaded] = useState(false); // NEW
+
+  // Centralized async loading for all data
+  const loadAllData = async () => {
+    setFullyLoaded(false);
+    try {
+      // Load seller profile if not present
+      if (!seller) {
+        const token = localStorage.getItem('seller_jwt');
+        if (token) await fetchProfile(token);
+      }
+      // Load history data
+      await loadHistoryData();
+    } catch (err) {
+      // Optionally handle error
+    } finally {
+      setFullyLoaded(true);
+    }
+  };
+
+  useEffect(() => {
+    loadAllData();
+    // eslint-disable-next-line
+  }, []);
 
   // Fetch seller profile on mount if not present
   useEffect(() => {
@@ -364,7 +388,8 @@ const SellerProfile = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showNotifications]);
 
-  if (loading || !seller) {
+  // Remove old loading check, use only fullyLoaded
+  if (!fullyLoaded) {
     return <Loader fullScreen={true} text="Loading profile..." />;
   }
 
