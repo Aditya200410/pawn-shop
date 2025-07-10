@@ -121,9 +121,7 @@ export default function Footer() {
                 <h4 className="text-lg font-bold text-white mb-4 tracking-wide">Useful Links</h4>
                 <ul className="space-y-3">
                   <li>
-                    <Link to="/" className="text-gray-100 hover:text-pink-400 transition-colors duration-200 text-base block py-1 font-medium">
-                      Home
-                    </Link>
+                    
                   </li>
                   <li>
                     <Link to="/about" className="text-gray-100 hover:text-pink-400 transition-colors duration-200 text-base block py-1 font-medium">
@@ -140,11 +138,7 @@ export default function Footer() {
                       Contact Us
                     </Link>
                   </li>
-                  <li>
-                    <Link to="/faq" className="text-gray-100 hover:text-pink-400 transition-colors duration-200 text-base block py-1 font-medium">
-                      FAQ
-                    </Link>
-                  </li>
+                  
                   <li>
                     <Link to="/policies" className="text-gray-100 hover:text-pink-400 transition-colors duration-200 text-base block py-1 font-medium">
                       Policies
