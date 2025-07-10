@@ -196,11 +196,11 @@ const Header = () => {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-12 py-2 border border-gray-200 rounded-full text-base focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent shadow-sm"
+                className="w-full pl-4 pr-12 py-2 border border-gray-200 rounded-full text-base focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent shadow-sm"
               />
               <button
                 type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-pink-600 transition-colors"
               >
                 <Search size={20} />
               </button>
@@ -208,7 +208,7 @@ const Header = () => {
             {/* Results Dropdown */}
             <div className="w-full max-w-2xl mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
               {searchLoading && (
-                <div className="flex items-center justify-center py-6 text-orange-600">
+                <div className="flex items-center justify-center py-6 text-pink-600">
                   <Loader />
                 </div>
               )}
@@ -220,7 +220,7 @@ const Header = () => {
                   {searchResults.slice(0, 8).map(product => (
                     <li
                       key={product._id}
-                      className="flex items-center px-4 py-3 hover:bg-orange-50 cursor-pointer transition-colors border-b last:border-b-0"
+                      className="flex items-center px-4 py-3 hover:bg-pink-50 cursor-pointer transition-colors border-b last:border-b-0"
                       onClick={() => handleResultClick(product._id)}
                     >
                       <img
@@ -232,7 +232,7 @@ const Header = () => {
                         <div className="font-medium text-gray-900">{product.name}</div>
                         <div className="text-sm text-gray-500 truncate">{product.description}</div>
                       </div>
-                      <div className="ml-4 text-orange-600 font-semibold whitespace-nowrap">₹{product.price}</div>
+                      <div className="ml-4 text-pink-600 font-semibold whitespace-nowrap">₹{product.price}</div>
                     </li>
                   ))}
                 </ul>
@@ -373,8 +373,8 @@ const Header = () => {
                   to={item.path}
                   className={`text-sm font-medium transition-colors duration-200 ${
                     isActive(item.path)
-                      ? 'text-orange-600'
-                      : 'text-white hover:text-orange-600'
+                      ? 'text-pink-600'
+                      : 'text-white hover:text-pink-600'
                   }`}
                 >
                   {item.name}
