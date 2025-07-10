@@ -192,7 +192,7 @@ const Hero = () => {
               onError={handleMediaError}
             />
           )}
-          <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+          <div className="absolute inset-0 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
 
