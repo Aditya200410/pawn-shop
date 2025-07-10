@@ -23,10 +23,7 @@ export default function ContactPage() {
 
   const tabs = [
     { id: 'contact', label: 'Contact Info', icon: MessageSquare },
-    { id: 'about', label: 'About Riko Craft', icon: Building },
-  
-    { id: 'support', label: 'Customer Support', icon: Users }
-  ];
+    ];
 
   const companyStats = [
     { icon: Users, number: "500+", label: "Happy Customers" },
