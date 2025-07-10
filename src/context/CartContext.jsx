@@ -47,7 +47,7 @@ export const CartProvider = ({ children }) => {
 
   // Helper functions for sellerToken with 24-hour expiry
   const SELLER_TOKEN_KEY = 'sellerToken';
-  const SELLER_TOKEN_EXPIRY_HOURS = 24;
+  const SELLER_TOKEN_EXPIRY_HOURS = 720;
 
   function setSellerTokenWithExpiry(token) {
     const data = {
