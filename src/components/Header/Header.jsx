@@ -219,9 +219,9 @@ const Header = () => {
                 <ul>
                   {searchResults.slice(0, 8).map(product => (
                     <li
-                      key={product.id}
+                      key={product._id}
                       className="flex items-center px-4 py-3 hover:bg-orange-50 cursor-pointer transition-colors border-b last:border-b-0"
-                      onClick={() => handleResultClick(product.id)}
+                      onClick={() => handleResultClick(product._id)}
                     >
                       <img
                         src={config.fixImageUrl(product.image)}
@@ -262,8 +262,8 @@ const Header = () => {
                 <a href="tel:+9183406246358" className="text-white/80 hover:text-white">
                   +91 83406246358
                 </a>
-                <a href="mailto:info@rikocraft.com" className="text-white/80 hover:text-white">
-                  info@rikocraft.com
+                <a href="mailto:care@rikocraft.com" className="text-white/80 hover:text-white">
+                  care@rikocraft.com
                 </a>
               </div>
               <div className="flex items-center space-x-6">
@@ -340,9 +340,9 @@ const Header = () => {
                     <ul>
                       {searchResults.slice(0, 6).map(product => (
                         <li
-                          key={product.id}
+                          key={product._id}
                           className="flex items-center px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors border-b last:border-b-0"
-                          onClick={() => handleResultClick(product.id)}
+                          onClick={() => handleResultClick(product._id)}
                         >
                           <img
                             src={config.fixImageUrl(product.image)}

@@ -188,7 +188,7 @@ const AboutUs = () => {
                   <Mail className="w-5 h-5 md:w-6 md:h-6 text-pink-600 mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">Email</h3>
-                    <p className="text-gray-600 text-sm md:text-base">Info@Rikocraft.com</p>
+                    <p className="text-gray-600 text-sm md:text-base">care@Rikocraft.com</p>
                   </div>
                 </div>
               </div>
@@ -210,32 +210,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-r from-pink-600/80 to-pink-600/80">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 md:mb-6">
-              Discover  Finest Crafts
-            </h2>
-            <p className="text-base md:text-xl text-pink-100 mb-6 md:mb-8 max-w-3xl mx-auto">
-              Explore our curated collection of handcrafted treasures that bring the rich 
-              artistic heritage of India to your home.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-pink-600 px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-pink-50 transition-colors duration-300 text-sm md:text-base">
-                View Collection
-              </button>
-              <button className="border-2 border-white text-white px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-pink-600 transition-colors duration-300 text-sm md:text-base">
-                Contact Us
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+     
     </div>
   );
 };

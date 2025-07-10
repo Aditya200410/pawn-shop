@@ -45,22 +45,48 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, [isAuthenticated, user]);
 
+  // Helper functions for sellerToken with 24-hour expiry
+  const SELLER_TOKEN_KEY = 'sellerToken';
+  const SELLER_TOKEN_EXPIRY_HOURS = 24;
+
+  function setSellerTokenWithExpiry(token) {
+    const data = {
+      token,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(SELLER_TOKEN_KEY, JSON.stringify(data));
+  }
+
+  function getSellerTokenWithExpiry() {
+    const dataStr = localStorage.getItem(SELLER_TOKEN_KEY);
+    if (!dataStr) return null;
+    try {
+      const data = JSON.parse(dataStr);
+      if (!data.token || !data.timestamp) return null;
+      const now = Date.now();
+      const age = now - data.timestamp;
+      if (age > SELLER_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000) {
+        localStorage.removeItem(SELLER_TOKEN_KEY);
+        return null;
+      }
+      return data.token;
+    } catch {
+      localStorage.removeItem(SELLER_TOKEN_KEY);
+      return null;
+    }
+  }
+
   // Load seller token from localStorage on mount and update URL
   useEffect(() => {
-    const savedSellerToken = localStorage.getItem('sellerToken');
+    const savedSellerToken = getSellerTokenWithExpiry();
     const urlSellerToken = getSellerTokenFromURL();
-    
-    
-    
     // Priority: URL token > localStorage token
     const tokenToUse = urlSellerToken || savedSellerToken;
-    
     if (tokenToUse) {
       setSellerToken(tokenToUse);
-      localStorage.setItem('sellerToken', tokenToUse);
+      setSellerTokenWithExpiry(tokenToUse);
       // Ensure URL has the token
       updateURLWithSellerToken(tokenToUse);
-     
     }
   }, []);
 
@@ -74,11 +100,11 @@ export const CartProvider = ({ children }) => {
   // Save seller token to localStorage and update URL
   useEffect(() => {
     if (sellerToken) {
-      localStorage.setItem('sellerToken', sellerToken);
+      setSellerTokenWithExpiry(sellerToken);
       // Update URL to include seller token
       updateURLWithSellerToken(sellerToken);
     } else {
-      localStorage.removeItem('sellerToken');
+      localStorage.removeItem(SELLER_TOKEN_KEY);
       // Remove seller token from URL
       removeSellerTokenFromURL();
     }
@@ -86,20 +112,18 @@ export const CartProvider = ({ children }) => {
 
   // Function to set seller token from URL and persist it
   const setSellerTokenFromURL = (token) => {
-   
     if (token) {
       setSellerToken(token);
-      localStorage.setItem('sellerToken', token);
+      setSellerTokenWithExpiry(token);
       // Update URL to include seller token
       updateURLWithSellerToken(token);
-   
     }
   };
 
   // Function to clear seller token
   const clearSellerToken = () => {
     setSellerToken(null);
-    localStorage.removeItem('sellerToken');
+    localStorage.removeItem(SELLER_TOKEN_KEY);
     // Remove seller token from URL
     removeSellerTokenFromURL();
   };

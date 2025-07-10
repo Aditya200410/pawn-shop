@@ -26,6 +26,7 @@ const config = {
     LOVED: '/api/loved',
     BESTSELLER: '/api/bestseller',
     FEATURED_PRODUCTS: '/api/featured-products',
+    DATA: '/api/data-page',
   },
   
   // Full API URLs (constructed from base URL and endpoints)

@@ -28,10 +28,12 @@ import {
   FiXCircle,
   FiAlertCircle,
   FiRefreshCw,
-  FiClock
+  FiClock,
+  FiHelpCircle
 } from 'react-icons/fi';
 import RikoCraftPoster from '../components/RikoCraftPoster';
 import html2canvas from 'html2canvas';
+import RikoCraftcert from '../components/RikoCraftcert';
 import config from '../config/config';
 import historyService from '../services/historyService';
 import { createRoot } from 'react-dom/client';
@@ -313,10 +315,10 @@ const SellerProfile = () => {
         phone: seller.phone || '',
         address: seller.address || '',
         businessType: seller.businessType || '',
-        accountHolderName: seller.accountHolderName || '',
-        bankAccountNumber: seller.bankAccountNumber || '',
-        ifscCode: seller.ifscCode || '',
-        bankName: seller.bankName || '',
+        accountHolderName: seller.accountHolderName || seller.bankDetails?.accountName || '',
+        bankAccountNumber: seller.bankAccountNumber || seller.bankDetails?.accountNumber || '',
+        ifscCode: seller.ifscCode || seller.bankDetails?.ifsc || '',
+        bankName: seller.bankName || seller.bankDetails?.bankName || '',
         upi: seller.upi || seller.bankDetails?.upi || ''
       });
       setBankDetails({
@@ -326,9 +328,14 @@ const SellerProfile = () => {
         bankName: seller.bankName || seller.bankDetails?.bankName || '',
         upi: seller.upi || seller.bankDetails?.upi || ''
       });
-      setAvailableToWithdraw(Math.round(seller.availableCommission || 0));
+      // Only commissions that are confirmed and at least 7 days old are available to withdraw
+      const now = Date.now();
+      const available = commissionHistory
+        .filter(c => c.status === 'confirmed' && (now - new Date(c.createdAt).getTime()) >= 7 * 24 * 60 * 60 * 1000)
+        .reduce((sum, c) => sum + (c.amount || 0), 0);
+      setAvailableToWithdraw(Math.round(available));
     }
-  }, [seller]);
+  }, [seller, commissionHistory]);
 
   useEffect(() => {
     if (!loading && !seller && loggedIn) {
@@ -357,7 +364,7 @@ const SellerProfile = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showNotifications]);
 
-  if (loading) {
+  if (loading || !seller) {
     return <Loader fullScreen={true} text="Loading profile..." />;
   }
 
@@ -480,6 +487,39 @@ const SellerProfile = () => {
     }
   };
 
+  const downloadp = async () => {
+    if (!seller.qrCode) {
+      toast.error('QR code not available');
+      return;
+    }
+    try {
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      document.body.appendChild(tempDiv);
+      import('../components/RikoCraftcert.jsx').then(({ default: RikoCraftcert}) => {
+        const root = createRoot(tempDiv);
+        root.render(<RikoCraftcert qrSrc={seller.qrCode} />);
+        setTimeout(async () => {
+          const canvas = await html2canvas(tempDiv, { backgroundColor: null, useCORS: true });
+          const url = canvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${seller.businessName}-poster.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          root.unmount();
+          document.body.removeChild(tempDiv);
+          toast.success('certificate downloaded successfully!');
+        }, 200);
+      });
+    } catch (error) {
+     
+      toast.error('Failed to download poster');
+    }
+  };
+
   const handleWithdraw = async (e) => {
     e.preventDefault();
     setWithdrawing(true);
@@ -592,6 +632,15 @@ const SellerProfile = () => {
     }
   ];
 
+  // Replace setShowWithdrawForm(true) with a function that checks availableToWithdraw
+  const handleOpenWithdrawForm = () => {
+    if (availableToWithdraw > 2000) {
+      setShowWithdrawForm(true);
+    } else {
+      toast.error('You need at least ₹2,000 available to withdraw.');
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hidden poster for download */}
@@ -600,6 +649,13 @@ const SellerProfile = () => {
           <RikoCraftPoster qrSrc={safeSeller.qrCode} />
         </div>
       </div>
+
+      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+        <div ref={posterRef}>
+          <RikoCraftcert qrSrc={safeSeller.qrCode} />
+        </div>
+      </div>
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <motion.div
@@ -829,6 +885,27 @@ const SellerProfile = () => {
                         Download Poster
                       </button>
                     </motion.div>
+                    <motion.div
+                      whileHover={{ y: -5 }}
+                      className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 sm:p-6 rounded-2xl border border-pink-200"
+                    >
+                      <div className="flex items-center mb-4">
+                        <div className="p-2 sm:p-3 bg-pink-500 rounded-xl mr-3 sm:mr-4">
+                          <FiSmartphone className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Certificate download</h3>
+                          <p className="text-xs sm:text-sm text-gray-600">Download & share</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={downloadp}
+                        className="flex items-center text-pink-600 hover:text-pink-700 font-medium text-sm sm:text-base"
+                      >
+                        <FiDownload className="w-4 h-4 sm:w-4 sm:h-4 mr-2" />
+                        Download Certificate
+                      </button>
+                    </motion.div>
 
                     {/* Approval Status Card */}
                     <motion.div
@@ -891,6 +968,8 @@ const SellerProfile = () => {
                       </p>
                     </motion.div>
                   )}
+
+                  
 
                  
                 </motion.div>
@@ -1177,7 +1256,7 @@ const SellerProfile = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setShowWithdrawForm(true)}
+                        onClick={handleOpenWithdrawForm}
                         disabled={availableToWithdraw <= 0}
                         className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                       >
@@ -1504,38 +1583,61 @@ const SellerProfile = () => {
                                     </tr>
                                   </thead>
                                   <tbody className="bg-white divide-y divide-pink-50">
-                                    {commissionHistory.map((commission) => (
-                                      <tr key={commission._id} className="hover:bg-pink-50">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${historyService.getTypeColor(commission.type)}`}>
-                                            {commission.type}
-                                          </span>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                          <div className="text-sm font-semibold text-gray-900">
-                                            {historyService.formatAmount(commission.amount)}
-                                          </div>
-                                          {commission.orderAmount > 0 && (
-                                            <div className="text-xs text-gray-500">
-                                              Order: {historyService.formatAmount(commission.orderAmount)}
+                                    {commissionHistory.map((commission) => {
+                                      const created = new Date(commission.createdAt);
+                                      const now = new Date();
+                                      const diffDays = Math.max(0, 7 - Math.floor((now - created) / (1000 * 60 * 60 * 24)));
+                                      const isAvailable = commission.status === 'confirmed' && diffDays === 0;
+                                      return (
+                                        <tr key={commission._id} className="hover:bg-pink-50">
+                                          <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${historyService.getTypeColor(commission.type)}`}>
+                                              {commission.type}
+                                            </span>
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-semibold text-gray-900">
+                                              {historyService.formatAmount(commission.amount)}
                                             </div>
-                                          )}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                          {historyService.formatDate(commission.createdAt)}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">
-                                          <div className="max-w-xs truncate" title={commission.description}>
-                                            {commission.description}
-                                          </div>
-                                          {commission.orderDetails?.orderNumber && (
-                                            <div className="text-xs text-gray-500">
-                                              Order: #{commission.orderDetails.orderNumber}
+                                            {commission.orderAmount > 0 && (
+                                              <div className="text-xs text-gray-500">
+                                                Order: {historyService.formatAmount(commission.orderAmount)}
+                                              </div>
+                                            )}
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {historyService.formatDate(commission.createdAt)}
+                                            {commission.status === 'confirmed' && (
+                                              <div className="text-xs mt-1 flex items-center gap-1 relative group">
+                                                {isAvailable ? (
+                                                  <span className="text-green-600 font-semibold">Available</span>
+                                                ) : (
+                                                  <>
+                                                    <span className="text-yellow-600">{diffDays} day{diffDays !== 1 ? 's' : ''} left</span>
+                                                    <span className="ml-1 cursor-pointer">
+                                                      <FiHelpCircle className="inline-block text-yellow-500 group-hover:animate-bounce" />
+                                                    </span>
+                                                    <div className="absolute left-6 top-1/2 z-10 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs rounded px-3 py-1 shadow-lg pointer-events-none whitespace-nowrap">
+                                                      You can withdraw this amount after {diffDays} day{diffDays !== 1 ? 's' : ''}.
+                                                    </div>
+                                                  </>
+                                                )}
+                                              </div>
+                                            )}
+                                          </td>
+                                          <td className="px-6 py-4 text-sm text-gray-900">
+                                            <div className="max-w-xs truncate" title={commission.description}>
+                                              {commission.description}
                                             </div>
-                                          )}
-                                        </td>
-                                      </tr>
-                                    ))}
+                                            {commission.orderDetails?.orderNumber && (
+                                              <div className="text-xs text-gray-500">
+                                                Order: #{commission.orderDetails.orderNumber}
+                                              </div>
+                                            )}
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
                                   </tbody>
                                 </table>
                               </div>

@@ -180,8 +180,8 @@ export default function ContactPage() {
                       <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600 mt-1 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Email Address</h3>
-                        <a href="mailto:Info@Rikocraft.com" className="text-pink-600 hover:text-pink-700 font-medium text-sm sm:text-base">
-                          Info@Rikocraft.com
+                        <a href="mailto:care@Rikocraft.com" className="text-pink-600 hover:text-pink-700 font-medium text-sm sm:text-base">
+                          care@Rikocraft.com
                         </a>
                         <p className="text-xs sm:text-sm text-gray-500 mt-1">We respond within 24 hours</p>
                       </div>
@@ -327,7 +327,7 @@ export default function ContactPage() {
                       Call Us Now
                     </a>
                     <a 
-                      href="mailto:Info@Rikocraft.com"
+                      href="mailto:care@Rikocraft.com"
                       className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-pink-600 text-pink-600 rounded-xl font-medium hover:bg-[#8f3a61]-600 hover:text-white transition-colors text-sm sm:text-base"
                     >
                       <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />

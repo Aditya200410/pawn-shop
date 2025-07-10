@@ -77,6 +77,7 @@ export const SellerProvider = ({ children }) => {
       };
 
       setSeller(sellerData);
+      setError(null); // Clear error on successful profile fetch
       setLoggedIn(true);
     } catch (err) {
       setError(err.message);
@@ -146,6 +147,7 @@ export const SellerProvider = ({ children }) => {
       };
 
       setSeller(sellerData);
+      setError(null); // Clear error on successful login
       toast.success('Login successful!');
       return data;
     } catch (err) {
@@ -225,6 +227,7 @@ export const SellerProvider = ({ children }) => {
     setSeller(null);
     setSellerTokenAndPersist(null);
     setLoggedIn(false);
+    setError(null); // Clear error on logout
     toast.success('Logged out successfully');
     window.location.href = '/'; // Redirect to home page
   };
@@ -305,4 +308,4 @@ export const SellerProvider = ({ children }) => {
       {children}
     </SellerContext.Provider>
   );
-}; 
+};

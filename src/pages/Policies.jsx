@@ -15,34 +15,28 @@ const Policies = () => {
 
   const fetchPolicies = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://pawnbackend-xmqa.onrender.com/api'}/data-page`);
+      const response = await fetch('https://pawnbackend-xmqa.onrender.com/api/data-page');
       if (response.ok) {
         const data = await response.json();
-        
-        // Check if data is an array and has the expected structure
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
+          // Map by type, even if some fields are missing
           const policiesMap = {};
-          data.forEach((policy, index) => {
-            
-            if (policy.type && policy.heading && policy.content) {
+          data.forEach(policy => {
+            if (policy.type) {
               policiesMap[policy.type] = policy;
             }
           });
-
           setPolicies(policiesMap);
         } else {
-
           setPolicies({});
-          toast.error('No policy data available');
         }
       } else {
-
         setPolicies({});
         toast.error('Failed to load policies from server');
       }
     } catch (error) {
-      toast.error('Failed to load policies from server');
       setPolicies({});
+      toast.error('Failed to load policies from server');
     } finally {
       setLoading(false);
     }

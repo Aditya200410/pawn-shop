@@ -178,7 +178,7 @@ const Account = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'processing':
-        return 'bg-amber-50 text-amber-700 border-amber-200';
+        return 'bg-pink-50 text-pink-700 border-pink-200';
       case 'confirmed':
         return 'bg-blue-50 text-blue-700 border-blue-200';
       case 'manufacturing':
@@ -285,7 +285,7 @@ const Account = () => {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
             >
               <option value="all">All Orders</option>
               <option value="processing">Processing</option>
@@ -299,7 +299,7 @@ const Account = () => {
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-amber-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-pink-500"></div>
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="text-center py-12">
@@ -309,7 +309,7 @@ const Account = () => {
             <div className="mt-6">
               <Link
                 to="/shop"
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
               >
                 Browse Shop
               </Link>
@@ -390,7 +390,7 @@ const Account = () => {
                       </div>
                       <button
                         onClick={() => setSelectedOrderId(order._id)}
-                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                       >
                         <EyeIcon className="h-4 w-4" />
                         View Details
@@ -551,15 +551,7 @@ const Account = () => {
                           <span className="font-medium text-gray-900">View Orders</span>
                         </motion.button>
                         
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => handleTabChange('profile')}
-                          className="flex items-center space-x-3 p-4 bg-secondary rounded-xl hover:bg-primary transition-colors"
-                        >
-                          <PencilSquareIcon className="h-6 w-6 text-primary-dark" />
-                          <span className="font-medium text-gray-900">Edit Profile</span>
-                        </motion.button>
+                        
                         
                       </div>
                     </div>
@@ -604,17 +596,7 @@ const Account = () => {
                   >
                     <div className="flex justify-between items-center mb-6">
                       <h3 className="text-xl font-semibold text-gray-900">Profile Information</h3>
-                      {!isEditing && (
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => setIsEditing(true)}
-                          className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
-                        >
-                          <PencilSquareIcon className="h-4 w-4" />
-                          <span>Edit Profile</span>
-                        </motion.button>
-                      )}
+                     
                     </div>
 
                     {isEditing ? (
@@ -913,7 +895,7 @@ const Account = () => {
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+                            className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
                           >
                             Enable 2FA
                           </motion.button>

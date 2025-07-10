@@ -21,8 +21,14 @@ const Login = () => {
     setError('');
     setIsLoading(true);
     
+    // Add '91' prefix if identifier is a 10-digit phone number
+    let identifier = formData.identifier;
+    if (/^\d{10}$/.test(identifier)) {
+      identifier = '91' + identifier;
+    }
+    const loginData = { ...formData, identifier };
     try {
-      await login(formData);
+      await login(loginData);
       toast.success('Welcome back!');
       navigate('/');
       window.location.reload();
