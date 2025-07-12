@@ -93,13 +93,15 @@ const AboutUs = () => {
               transition={{ duration: 0.8 }}
               className="relative order-1 md:order-2"
             >
-              <div className="bg-pink-600 w-full h-64 md:h-96 rounded-2xl shadow-2xl"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-600/80 to-pink-600/80 rounded-2xl flex items-center justify-center">
-                <div className="text-center text-white">
-                  <div className="text-4xl md:text-6xl mb-3 md:mb-4">🎨</div>
-                  <div className="text-lg md:text-2xl font-semibold">Eastern Heritage</div>
-                  <div className="text-sm md:text-lg opacity-90">Modern Appeal</div>
-                </div>
+              <div className="w-full h-64 md:h-96 rounded-2xl shadow-2xl overflow-hidden">
+                <img 
+                  src="/eastern.jpg" 
+                  alt="Eastern India Heritage" 
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              </div>
+              <div className="absolute inset-0  rounded-2xl flex items-center justify-center">
+               
               </div>
             </motion.div>
           </div>
